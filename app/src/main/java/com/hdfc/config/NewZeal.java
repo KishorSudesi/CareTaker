@@ -1,12 +1,11 @@
-package com.hdfc.newzeal;
+package com.hdfc.config;
 
 import android.app.Application;
-import android.os.Handler;
 
 import com.hdfc.db.DbCon;
 
 /**
- * Created by user on 02-01-2016.
+ * Created by balamurugan@adstringo.in on 02-01-2016.
  */
 public class NewZeal extends Application {
 

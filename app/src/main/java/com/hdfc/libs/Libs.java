@@ -20,12 +20,10 @@ import android.media.ExifInterface;
 import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
@@ -41,13 +39,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hdfc.config.Config;
-import com.hdfc.newzeal.NewZeal;
-import com.hdfc.newzeal.R;
+import com.hdfc.config.NewZeal;
 import com.hdfc.newzeal.SignupActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -76,38 +71,11 @@ import javax.crypto.spec.SecretKeySpec;
 public class Libs {
 
     private static  Context _ctxt;
-
-    public enum ScalingLogic {
-        CROP, FIT
-    }
-
     private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-
     private static ArrayList<String> pathExternals;
 
     public Libs(Context context) {
-        this._ctxt=context;
-    }
-
-    public void createAlertDialog(String msg) {
-        AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-        alertbox.setTitle("NewZeal");
-        alertbox.setMessage(msg);
-        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-            }
-        });
-        alertbox.show();
-    }
-
-    public boolean isEmailValid(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    public void getMemory(){
-        Runtime rt = Runtime.getRuntime();
-        int maxMemory = (int)rt.maxMemory()/(1024*1024);
-        int totalMemory = (int)rt.totalMemory()/(1024*1024);
+        _ctxt = context;
     }
 
     public static double round(double value, int places) {
@@ -158,26 +126,6 @@ public class Libs {
         }catch (Exception e){e.printStackTrace();}
 
         return true;
-    }
-
-    public void createFolder(String path){
-        File root = new File(path);
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-    }
-
-    public void setExifData(String pathName) throws Exception {
-
-        try {
-            //working for Exif defined attributes
-            ExifInterface exif = new ExifInterface(pathName);
-            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
-            exif.saveAttributes();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     //creating scaled bitmap with required width and height
@@ -263,7 +211,6 @@ public class Libs {
             }
         }/////////////////*/
     }
-    //
 
     //source and destinatino rectangular regions to decode
     public static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight, ScalingLogic scalingLogic) {
@@ -351,21 +298,7 @@ public class Libs {
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
-
-    public String getUUID(){
-        final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
-
-        final String tmDevice, tmSerial, androidId;
-
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(_ctxt.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
-        String deviceId = deviceUuid.toString();
-
-        return deviceId;
-    }
+    //
 
     public static ArrayList<String> getExternals(){
 
@@ -399,48 +332,6 @@ public class Libs {
         }
 
         return pathExternals;
-    }
-
-    public Date convertStringToDate(String strDate){
-
-        Date date = null;
-        try {
-            date = fmt.parse(strDate);
-            Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date; //
-    }
-
-    public String convertDateToString(Date dtDate){
-
-        String date = null;
-
-        try {
-            date = fmt.format(dtDate);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
-        return date; //
-    }
-
-    public boolean isConnectingToInternet(){
-        ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null)
-        {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null)
-                for (int i = 0; i < info.length; i++)
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
-                    {
-                        return true;
-                    }
-
-        }
-        return false;
     }
 
     public static final String sha512(final String toEncrypt) {
@@ -477,41 +368,6 @@ public class Libs {
         }
 
         mRecorder.start();
-    }
-
-    public boolean isPasswordValid(String password) {
-        return password.length() > 1;
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public void showProgress(final boolean show, final View mFormView, final View mProgressView) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = _ctxt.getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
     public static String encrypt(String Data){
@@ -572,6 +428,172 @@ public class Libs {
     private static Key generateKey() throws Exception {
         Key key = new SecretKeySpec(Config.key.getBytes(), Config.mode);
         return key;
+    }
+
+    public static String getDeviceID(Activity activity) {
+        String deviceId = Settings.Secure.getString(activity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        return deviceId;
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public static String loadJSONFromAsset(Context ctx, String file) {
+        String json = null;
+        try {
+            InputStream is = ctx.getAssets().open(file);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+    public static void setBtnDrawable(Button btn, Drawable drw) {
+        if (Build.VERSION.SDK_INT <= 16)
+            btn.setBackgroundDrawable(drw);
+        else
+            btn.setBackground(drw);
+    }
+
+    public void createAlertDialog(String msg) {
+        AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
+        alertbox.setTitle("NewZeal");
+        alertbox.setMessage(msg);
+        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+            }
+        });
+        alertbox.show();
+    }
+
+    public boolean isEmailValid(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public void getMemory() {
+        Runtime rt = Runtime.getRuntime();
+        int maxMemory = (int) rt.maxMemory() / (1024 * 1024);
+        int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
+    }
+
+    public void createFolder(String path) {
+        File root = new File(path);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+    }
+
+    public void setExifData(String pathName) throws Exception {
+
+        try {
+            //working for Exif defined attributes
+            ExifInterface exif = new ExifInterface(pathName);
+            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
+            exif.saveAttributes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getUUID() {
+        final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
+
+        final String tmDevice, tmSerial, androidId;
+
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(_ctxt.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String deviceId = deviceUuid.toString();
+
+        return deviceId;
+    }
+
+    public Date convertStringToDate(String strDate) {
+
+        Date date = null;
+        try {
+            date = fmt.parse(strDate);
+            Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date; //
+    }
+
+    public String convertDateToString(Date dtDate) {
+
+        String date = null;
+
+        try {
+            date = fmt.format(dtDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
+    public boolean isConnectingToInternet() {
+        ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null)
+                for (int i = 0; i < info.length; i++)
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+
+        }
+        return false;
+    }
+
+    public boolean isPasswordValid(String password) {
+        return password.length() > 1;
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show, final View mFormView, final View mProgressView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = _ctxt.getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -639,41 +661,6 @@ public class Libs {
                 setupUI(innerView);
             }
         }
-    }
-
-    public static String getDeviceID(Activity activity){
-        String deviceId = Settings.Secure.getString(activity.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-        return deviceId;
-    }
-
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }
-
-    public static String loadJSONFromAsset(Context ctx, String file) {
-        String json = null;
-        try {
-            InputStream is = ctx.getAssets().open(file);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-    public static void setBtnDrawable(Button btn, Drawable drw){
-        if (Build.VERSION.SDK_INT <= 16)
-            btn.setBackgroundDrawable(drw);
-        else
-            btn.setBackground(drw);
     }
 
     public File createFileInternal(String strFileName) {
@@ -773,5 +760,9 @@ public class Libs {
         if(ret==null)
             ret = "Unsaved";
         return ret;
+    }
+
+    public enum ScalingLogic {
+        CROP, FIT
     }
 }

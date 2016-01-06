@@ -1,7 +1,7 @@
 package com.hdfc.model;
 
 /**
- * Created by user on 01-01-2016.
+ * Created by balamurugan@adstringo.in on 01-01-2016.
  */
 public class DependantModel {
 

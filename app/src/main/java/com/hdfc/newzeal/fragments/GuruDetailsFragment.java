@@ -1,8 +1,7 @@
-package com.hdfc.newzeal;
+package com.hdfc.newzeal.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -19,7 +18,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.hdfc.config.Config;
+import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
+import com.hdfc.newzeal.R;
+import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.views.CustomViewPager;
 
 import java.io.File;
@@ -74,7 +76,7 @@ public class GuruDetailsFragment extends Fragment {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera(libs.sha512(SignupActivity.longUserId+""));
+                openCamera(Libs.sha512(SignupActivity.longUserId + ""));
             }
         });
 
@@ -84,8 +86,6 @@ public class GuruDetailsFragment extends Fragment {
                 validateUser();
             }
         });
-
-        Log.e("TAG", String.valueOf(SignupActivity.longUserId));
 
         return rootView;
     }
@@ -170,10 +170,10 @@ public class GuruDetailsFragment extends Fragment {
                 if(lngUserId>0) {
                     SignupActivity.longUserId=lngUserId;
                     CustomViewPager.setPagingEnabled(true);
-                    libs.toast(1,1,"Your Details Saved");
+                    Libs.toast(1, 1, "Your Details Saved");
                     SignupActivity._mViewPager.setCurrentItem(1);
                 }else{
-                    libs.toast(1,1,"Email Id Already Exists!!!"+String.valueOf(lngUserId));
+                    Libs.toast(1, 1, "Email Id Already Exists!!!" + String.valueOf(lngUserId));
                 }
 
             }catch (Exception e){

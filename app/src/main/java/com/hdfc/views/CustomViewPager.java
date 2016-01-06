@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 /**
- * Created by user on 02-01-2016.
+ * Created by balamurugan@adstringo.in on 02-01-2016.
  */
 public class CustomViewPager extends ViewPager {
 
@@ -16,9 +16,13 @@ public class CustomViewPager extends ViewPager {
         super(context, attrs);
     }
 
+    public static void setPagingEnabled(boolean enabled) {
+        _enabled = enabled;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (this._enabled) {
+        if (_enabled) {
             return super.onTouchEvent(event);
         }
 
@@ -27,14 +31,10 @@ public class CustomViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (this._enabled) {
+        if (_enabled) {
             return super.onInterceptTouchEvent(event);
         }
 
         return false;
-    }
-
-    public static void setPagingEnabled(boolean enabled) {
-        _enabled = enabled;
     }
 }

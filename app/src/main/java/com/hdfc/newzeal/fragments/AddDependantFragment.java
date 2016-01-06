@@ -1,24 +1,19 @@
-package com.hdfc.newzeal;
+package com.hdfc.newzeal.fragments;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hdfc.adapters.DependantViewAdapter;
+import com.hdfc.config.NewZeal;
 import com.hdfc.model.DependantModel;
+import com.hdfc.newzeal.R;
+import com.hdfc.newzeal.SignupActivity;
 
 import java.util.ArrayList;
 
@@ -28,17 +23,21 @@ public class AddDependantFragment extends Fragment {
     public ListView list;
     public DependantViewAdapter adapter;
 
-    public AddDependantFragment() {
-    }
+    private Button buttonContinue;
 
-    public void setListData()
-    {
-        NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
+    public AddDependantFragment() {
     }
 
     public static AddDependantFragment newInstance() {
         AddDependantFragment fragment = new AddDependantFragment();
         return fragment;
+    }
+
+    public void setListData() {
+        int intCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
+
+        if (intCount > 0)
+            buttonContinue.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -55,6 +54,7 @@ public class AddDependantFragment extends Fragment {
         View addFragment = inflater.inflate(R.layout.fragment_add_dependant, container, false);
 
         list = ( ListView )addFragment.findViewById( R.id.listViewDpndnts);
+        buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
         return addFragment;
     }
 

@@ -7,19 +7,18 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.hdfc.model.DependantModel;
-import com.hdfc.newzeal.AddDependantFragment;
+import com.hdfc.newzeal.fragments.AddDependantFragment;
 
 import net.sqlcipher.Cursor;
 
 public class DbCon {
 
-    private Context context;
     private static DbHelper dbHelper;
     private static boolean isDbOpened=false;
     private static DbCon dbConInstance = null;
-
     private static Thread dbOpenThread;
     private static Handler dbOpenHandler;
+    private Context context;
 
     public DbCon(Context context) {
         this.context = context;
@@ -44,30 +43,10 @@ public class DbCon {
         return this;
     }
 
-    public class DbOpenThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                dbHelper = DbHelper.getInstance(context);
-                dbHelper.open();
-                dbOpenHandler.sendEmptyMessage(0);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-    //
-
-    public class DbOpenHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            isDbOpened=true;
-        }
-    }
-
     public void close() {
         dbHelper.close();
     }
+    //
 
     public long insertUser(String strName, String strEmail, String strPassword, String strContactNo, long longUserId){
 
@@ -224,11 +203,13 @@ public class DbCon {
         }
     }
 
-    public void retrieveDependants(long longUserId){
+    public int retrieveDependants(long longUserId) {
 
         DependantModel dpndntModel = null;
 
         AddDependantFragment.CustomListViewValuesArr.clear();
+
+        int count = 0;
 
         if(isDbOpened) {
             Cursor cur = null;
@@ -251,6 +232,8 @@ public class DbCon {
 
                         cur.moveToNext();
                     }
+
+                    count = cur.getCount();
                 }
 
                 dbHelper.closeCursor(cur);
@@ -265,5 +248,27 @@ public class DbCon {
         dpndntModel.setStrImg("");
 
         AddDependantFragment.CustomListViewValuesArr.add(dpndntModel);
+
+        return count;
+    }
+
+    public class DbOpenThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                dbHelper = DbHelper.getInstance(context);
+                dbHelper.open();
+                dbOpenHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class DbOpenHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            isDbOpened = true;
+        }
     }
 }

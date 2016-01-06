@@ -3,40 +3,35 @@ package com.hdfc.newzeal;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ViewPagerAdapter;
 import com.hdfc.config.Config;
+import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
+import com.hdfc.newzeal.fragments.GuruDetailsFragment;
 import com.hdfc.views.CustomViewPager;
 
 import java.io.IOException;
-import java.util.Date;
 
 public class SignupActivity extends FragmentActivity{
 
     public static ViewPager _mViewPager;
+    public static long longUserId;
     private ViewPagerAdapter _adapter;
     private Button _btn1,_btn2,_btn3;
-
     private TextView texViewHeader;
-
-    public static long longUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

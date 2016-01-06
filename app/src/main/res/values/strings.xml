@@ -2,9 +2,6 @@
     <string name="app_name">NewZeal</string>
     <string name="back">Back</string>
     <string name="error_field_required">This Field is Required</string>
-
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
     <string name="account_success_header">Account Successfully Created</string>
     <string name="add_dependant">Add a Dependant</string>

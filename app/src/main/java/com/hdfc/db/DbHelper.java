@@ -19,22 +19,16 @@ import java.util.Date;
 
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static DbHelper dbInstance = null;
-
     private static final int DATABASE_VERSION = 1;
-
     private static final String DATABASE_NAME = "newzeal";
-
+    private static DbHelper dbInstance = null;
+    private static SQLiteDatabase db;
     public String Create_User_Tbl = "CREATE TABLE user ( user_id integer primary key autoincrement," +
             " name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(100), contact_no VARCHAR(15)," +
             " status integer)";
-
     public String Create_Dependant_Tbl = "CREATE TABLE dependant ( dependant_id integer primary key autoincrement," +
             " name VARCHAR(100) unique, contact_no VARCHAR(15), address VARCHAR(300), relationship VARCHAR(20)," +
             " age integer, diseases VARCHAR(200), notes VARCHAR(500), user_id integer, image_name varchar(100), status integer)";
-
-    private static SQLiteDatabase db;
-
     private Context _ctxt;
 
     private  File originalFile = null;
@@ -89,18 +83,10 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        if(newVersion!=6){
-            dropDb(db);
-            onCreate(db);
-        }
-        if(newVersion==6){
-            if(backupDatabase()){
-                try {
-                    encrypt(false);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
+        try {
+            encrypt(false);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -246,7 +232,7 @@ public class DbHelper extends SQLiteOpenHelper {
             newFile.renameTo(originalFile);
 
             if(isToOpen) {
-                this.db = SQLiteDatabase.openDatabase(dbPath,
+                DbHelper.db = SQLiteDatabase.openDatabase(dbPath,
                         Config.dbPass, null,
                         SQLiteDatabase.OPEN_READWRITE);
             }

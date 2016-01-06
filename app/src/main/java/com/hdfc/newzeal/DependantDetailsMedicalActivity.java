@@ -9,21 +9,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
 
 public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
-    private Libs libs;
-
-    private EditText editAge, editDiseases, editNotes;
-
-    private Button buttonContinue;
-
     private static SharedPreferences sPre;
-
     private static long longUserId;
-
     private static String strDependantName;
+    private Libs libs;
+    private EditText editAge, editDiseases, editNotes;
+    private Button buttonContinue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,11 +95,11 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
                 boolean  isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
                 if(isUpdated) {
 
-                    libs.toast(1,1,"Dependant Medical Details Saved");
+                    Libs.toast(1, 1, "Dependant Medical Details Saved");
                     Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
                     startActivity(selection);
-                }else libs.toast(1,1,"Error. Try Again!!!");
+                } else Libs.toast(1, 1, "Error. Try Again!!!");
 
             }catch (Exception e){
 

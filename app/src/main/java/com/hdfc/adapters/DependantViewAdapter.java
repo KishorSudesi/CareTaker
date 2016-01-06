@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
@@ -25,20 +24,18 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by user on 01-01-2016.
+ * Created by balamurugan@adstringo.in on 01-01-2016.
  */
 public class DependantViewAdapter extends BaseAdapter{
 
+    private static LayoutInflater inflater=null;
+    private static Libs libs;
+    public Resources res;
     private Context _ctxt;
     private ArrayList data;
-    private static LayoutInflater inflater=null;
-    public Resources res;
-    DependantModel tempValues=null;
-    int i=0;
+    private DependantModel tempValues=null;
     private Bitmap imageBitmap = null;
     private RoundedBitmapDrawable roundedBitmapDrawable = null;
-
-    private static Libs libs;
 
     public DependantViewAdapter(Context ctxt, ArrayList d,Resources resLocal) {
         _ctxt = ctxt;
@@ -58,12 +55,6 @@ public class DependantViewAdapter extends BaseAdapter{
 
     public long getItemId(int position) {
         return position;
-    }
-
-    public static class ViewHolder{
-        public TextView textName;
-        public TextView textRelation;
-        public ImageView image;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -108,7 +99,6 @@ public class DependantViewAdapter extends BaseAdapter{
             }
 
             try {
-                //get bitmap of the image
                 roundedBitmapDrawable.setCornerRadius(40.0f);
                 roundedBitmapDrawable.setAntiAlias(true);
                 holder.image.setImageDrawable(roundedBitmapDrawable);
@@ -140,6 +130,12 @@ public class DependantViewAdapter extends BaseAdapter{
         }
 
         return vi;
+    }
+
+    public static class ViewHolder{
+        public TextView textName;
+        public TextView textRelation;
+        public ImageView image;
     }
 
 }

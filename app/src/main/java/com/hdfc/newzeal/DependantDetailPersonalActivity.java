@@ -1,6 +1,5 @@
 package com.hdfc.newzeal;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
@@ -22,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.SearchView;
 
 import com.hdfc.config.Config;
+import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
 
 import java.io.File;
@@ -31,20 +31,13 @@ import java.util.Date;
 public class DependantDetailPersonalActivity extends AppCompatActivity {
 
     public static Uri fileUri;
-
-    private Libs libs;
-
-    private EditText editName, editContactNo, editAddress, editRelation;
-
-    private Button buttonContinue;
-
     public static ImageButton imgButtonCamera;
-
-    public static String dependantImgName="";
-
+    public static String dependantImgName = "";
+    public static String strDependantName = "";
     private static long longUserId;
-
-    public static String strDependantName="";
+    private Libs libs;
+    private EditText editName, editContactNo, editAddress, editRelation;
+    private Button buttonContinue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +68,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
         Log.e(" 2 ", tempDate);
 
-        dependantImgName=libs.sha512(tempDate);
+        dependantImgName = Libs.sha512(tempDate);
 
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,12 +187,12 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             try {
                 long lngDependantId = NewZeal.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, longUserId );
                 if(lngDependantId>0) {
-                    libs.toast(1,1,"Dependant Details Saved");
+                    Libs.toast(1, 1, "Dependant Details Saved");
 
                     Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
                     startActivity(selection);
                 }else{
-                    libs.toast(1,1,"Dependant Not Saved. Check Name"+String.valueOf(lngDependantId));
+                    Libs.toast(1, 1, "Dependant Not Saved. Check Name" + String.valueOf(lngDependantId));
                 }
 
             }catch (Exception e){

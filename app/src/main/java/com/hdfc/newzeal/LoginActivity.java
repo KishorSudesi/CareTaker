@@ -1,23 +1,19 @@
 package com.hdfc.newzeal;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.hdfc.config.NewZeal;
 import com.hdfc.db.DbCon;
-import com.hdfc.db.DbHelper;
 import com.hdfc.libs.Libs;
 
 public class LoginActivity extends AppCompatActivity {
@@ -142,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             if (cancel) {
                 focusView.requestFocus();
             } else {
-                libs.toast(1, 1, "Coming Soon...");
+                Libs.toast(1, 1, "Coming Soon...");
             }
         }
     }

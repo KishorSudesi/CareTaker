@@ -1,7 +1,5 @@
 package com.hdfc.config;
 
-import android.os.Environment;
-
 /**
  * Created by balamurugan@adstringo.in on 23-12-2015.
  */
@@ -20,6 +18,5 @@ public class Config {
     public static final String key = "HDfc@12#";
 
     public final static int START_CAMERA_REQUEST_CODE = 1;
-    public final static int OPEN_CAMERA = 4;
 
 }

@@ -5,10 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.hdfc.newzeal.AddDependantFragment;
-import com.hdfc.newzeal.GuruDetailsFragment;
-import com.hdfc.newzeal.ConfirmFragment;
-import com.hdfc.newzeal.SignupActivity;
+import com.hdfc.newzeal.fragments.AddDependantFragment;
+import com.hdfc.newzeal.fragments.ConfirmFragment;
+import com.hdfc.newzeal.fragments.GuruDetailsFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     public static int totalPage=3;

@@ -11,7 +11,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.v7.app.NotificationCompat;
 
 import com.hdfc.newzeal.R;
 
@@ -29,11 +28,11 @@ import java.util.Random;
 @SuppressWarnings("deprecation")
 public class CrashLogger implements Thread.UncaughtExceptionHandler
 {
-    public static final String CRASH_LOG_MAIL_SUBJECT = " crash log";
-    public static final String CRASH_LOG_MAIL_BODY = "Following is the crash log info of the application.";
-
-	private String 
-		VersionName, 
+	public static final String CRASH_LOG_MAIL_SUBJECT = "Creash Log";
+	public static final String CRASH_LOG_MAIL_BODY = "Crash Log info of the application.";
+	private static CrashLogger mCrashLogger;
+	private String
+			VersionName,
 		PackageName,
 		FilePath,
 		PhoneModel,
@@ -44,20 +43,17 @@ public class CrashLogger implements Thread.UncaughtExceptionHandler
 		Device,
 		Display,
 		FingerPrint,
-		Host, 
+			Host,
 		ID,
 		Manufacturer,
 		Model,
 		Product,
 		Tags,
 		Type,
-		User;	 
+			User;
 	private long Time;
-
 	private Thread.UncaughtExceptionHandler defaultHandler;
 	private Context context;
-
-	private static CrashLogger mCrashLogger;
 
 	public static CrashLogger getInstance() {
 		if ( mCrashLogger == null ) {
