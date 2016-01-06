@@ -1,0 +1,46 @@
+package com.hdfc.newzeal;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.hdfc.db.DbCon;
+import com.hdfc.libs.Libs;
+
+public class CareSelectionActivity extends AppCompatActivity {
+
+    private Libs libs;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_care_selection);
+
+        libs = new Libs(CareSelectionActivity.this);
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int screenHeight = displaymetrics.heightPixels;
+        int screenWidth = displaymetrics.widthPixels;
+
+        try {
+            ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
+            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.ppl_bg, screenWidth, screenHeight));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void selectedMyself(View v){
+        libs.toast(1, 1, "Coming Soon...");
+    }
+
+    public void selectedLovedOne(View v){
+        Intent selection = new Intent(CareSelectionActivity.this, SignupActivity.class);
+        startActivity(selection);
+    }
+}
