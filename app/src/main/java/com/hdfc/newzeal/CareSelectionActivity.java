@@ -35,7 +35,7 @@ public class CareSelectionActivity extends AppCompatActivity {
     }
 
     public void selectedMyself(View v){
-        Libs.toast(1, 1, "Coming Soon...");
+        Libs.toast(1, 1, getString(R.string.coming_soon));
     }
 
     public void selectedLovedOne(View v){

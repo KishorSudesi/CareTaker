@@ -37,7 +37,7 @@
         android:layout_marginRight="7dp"
         android:background="@drawable/button_white"
         android:onClick="selectedLovedOne"
-        android:text="A Loved One"
+        android:text="@string/loved_one"
         android:textAllCaps="false" />
 
     <TextView
@@ -46,11 +46,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonLovedOne"
         android:layout_centerHorizontal="true"
-        android:text="Who Needs Care ?"
+        android:text="@string/who_needs_care"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonMyself"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -62,7 +62,7 @@
         android:background="@drawable/button_white"
         android:onClick="selectedMyself"
         android:padding="4dp"
-        android:text="My Self"
+        android:text="@string/myself"
         android:textAllCaps="false" />
 
 

@@ -15,102 +15,102 @@
             android:orientation="vertical">
 
             <ImageButton
+                android:id="@+id/imageButtonCamera"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
                 android:background="@drawable/rounded_image_view"
-                android:src="@mipmap/camera_icon"
-                android:id="@+id/imageButtonCamera"
-                android:layout_gravity="center_horizontal" />
+                android:src="@mipmap/camera_icon" />
 
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="40dp"
-                android:drawableLeft="@mipmap/person_icon_32"
-                android:inputType="textPersonName"
-                android:hint="Mr. Gurunathan"
                 android:id="@+id/editName"
-                android:drawablePadding="10dp"
-                android:padding="10dp"
-                android:background="@drawable/edit_text"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_centerHorizontal="true"/>
-
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginTop="25dp"
-                android:drawableLeft="@mipmap/mail_icon_32"
-                android:inputType="textEmailAddress"
-                android:hint="xyz@abc.com"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/person_icon_32"
+                android:drawablePadding="10dp"
+                android:hint="@string/gurunathan"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
+
+            <EditText
                 android:id="@+id/editEmail"
-                android:drawablePadding="10dp"
-                android:padding="10dp"
-                android:background="@drawable/edit_text"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_centerHorizontal="true"/>
-
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="25dp"
-                android:drawableLeft="@mipmap/pass_icon_32"
-                android:inputType="textPassword"
-                android:hint="*****"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/mail_icon_32"
+                android:drawablePadding="10dp"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:padding="10dp" />
+
+            <EditText
                 android:id="@+id/editPassword"
-                android:drawablePadding="10dp"
-                android:padding="10dp"
-                android:background="@drawable/edit_text"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_centerHorizontal="true"/>
-
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="25dp"
+                android:background="@drawable/edit_text"
                 android:drawableLeft="@mipmap/pass_icon_32"
-                android:inputType="textPassword"
-                android:hint="*****"
-                android:id="@+id/editConfirmPassword"
                 android:drawablePadding="10dp"
-                android:padding="10dp"
-                android:background="@drawable/edit_text"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_centerHorizontal="true"/>
+                android:hint="*****"
+                android:inputType="textPassword"
+                android:padding="10dp" />
 
             <EditText
+                android:id="@+id/editConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginTop="25dp"
-                android:drawableLeft="@mipmap/receiver_icon_32"
-                android:inputType="number"
-                android:hint="1234567890"
-                android:id="@+id/editContactNo"
-                android:drawablePadding="10dp"
-                android:padding="10dp"
-                android:background="@drawable/edit_text"
-                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_centerHorizontal="true"/>
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/pass_icon_32"
+                android:drawablePadding="10dp"
+                android:hint="*****"
+                android:inputType="textPassword"
+                android:padding="10dp" />
+
+            <EditText
+                android:id="@+id/editContactNo"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/receiver_icon_32"
+                android:drawablePadding="10dp"
+                android:hint="@string/contact_number"
+                android:inputType="number"
+                android:padding="10dp" />
 
             <Button
+                android:id="@+id/buttonContinue"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Continue"
-                android:layout_marginTop="35dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/button_success"
-                android:id="@+id/buttonContinue"
-                android:onClick="validateUser"
-                android:textAllCaps="false"
-                android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_centerHorizontal="true" />
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/button_success"
+                android:onClick="validateUser"
+                android:text="@string/string_continue"
+                android:textAllCaps="false" />
 
         </LinearLayout>
 

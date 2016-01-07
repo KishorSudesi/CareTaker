@@ -170,10 +170,10 @@ public class GuruDetailsFragment extends Fragment {
                 if(lngUserId>0) {
                     SignupActivity.longUserId=lngUserId;
                     CustomViewPager.setPagingEnabled(true);
-                    Libs.toast(1, 1, "Your Details Saved");
+                    Libs.toast(1, 1, getString(R.string.your_details_saved));
                     SignupActivity._mViewPager.setCurrentItem(1);
                 }else{
-                    Libs.toast(1, 1, "Email Id Already Exists!!!" + String.valueOf(lngUserId));
+                    Libs.toast(1, 1, getString(R.string.email_exists) + String.valueOf(lngUserId));
                 }
 
             }catch (Exception e){

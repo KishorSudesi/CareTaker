@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".SignupActivity">
 
-    <include layout="@layout/header_blue"
-        android:id="@+id/include" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/header_dpndnt_reg" />
 
     <com.hdfc.views.CustomViewPager
         android:id="@+id/viewPager"

@@ -187,12 +187,12 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             try {
                 long lngDependantId = NewZeal.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, longUserId );
                 if(lngDependantId>0) {
-                    Libs.toast(1, 1, "Dependant Details Saved");
+                    Libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
 
                     Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
                     startActivity(selection);
                 }else{
-                    Libs.toast(1, 1, "Dependant Not Saved. Check Name" + String.valueOf(lngDependantId));
+                    Libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved) + String.valueOf(lngDependantId));
                 }
 
             }catch (Exception e){

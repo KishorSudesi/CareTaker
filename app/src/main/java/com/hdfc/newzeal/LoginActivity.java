@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             if (cancel) {
                 focusView.requestFocus();
             } else {
-                Libs.toast(1, 1, "Coming Soon...");
+                Libs.toast(1, 1, getString(R.string.coming_soon));
             }
         }
     }

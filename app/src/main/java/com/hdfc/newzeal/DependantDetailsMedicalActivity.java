@@ -1,7 +1,6 @@
 package com.hdfc.newzeal;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -14,7 +13,6 @@ import com.hdfc.libs.Libs;
 
 public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
-    private static SharedPreferences sPre;
     private static long longUserId;
     private static String strDependantName;
     private Libs libs;
@@ -33,8 +31,6 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         editNotes = (EditText) findViewById(R.id.editNotes);
 
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
-
-        sPre = getSharedPreferences("NEWZEAL", MODE_PRIVATE);
 
         longUserId = SignupActivity.longUserId;
         strDependantName = DependantDetailPersonalActivity.strDependantName;
@@ -95,11 +91,11 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
                 boolean  isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
                 if(isUpdated) {
 
-                    Libs.toast(1, 1, "Dependant Medical Details Saved");
+                    Libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
                     Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
                     startActivity(selection);
-                } else Libs.toast(1, 1, "Error. Try Again!!!");
+                } else Libs.toast(1, 1, getString(R.string.error));
 
             }catch (Exception e){
 

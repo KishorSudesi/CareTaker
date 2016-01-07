@@ -9,4 +9,58 @@
     <string name="error_invalid_email">Invalid Email</string>
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
     <string name="title_activity_dependant_details_medical">DependantDetailsMedicalActivity</string>
+
+    <string name="email">email</string>
+    <string name="take_me_in">Take Me In</string>
+    <string name="am_new_here">I am New Here</string>
+    <string name="password">Password</string>
+    <string name="forgot">Forgot?</string>
+
+    <string name="myself">Myself</string>
+    <string name="loved_one">A Loved One</string>
+    <string name="who_needs_care">Who Needs Care?</string>
+
+    <string name="your_details">Your Details</string>
+    <string name="your_details_saved">Your Details Saved</string>
+    <string name="string_continue">Continue</string>
+    <string name="dependants">Dependants</string>
+
+    <string name="number">9874560123</string>
+
+    <string name="gurunathan">Mr.Gurunathan</string>
+    <string name="string_email">abc@xyz.com</string>
+    <string name="create_password">Create a Password</string>
+    <string name="verify_password">Verify Password</string>
+    <string name="contact_number">Contact Number</string>
+
+    <string name="search_contacts">Search from Contacts</string>
+    <string name="dependant_name">Dependant Name</string>
+    <string name="dependant_details">Dependant Details</string>
+    <string name="address">Address</string>
+    <string name="relation">Relationship</string>
+
+    <string name="age">Age</string>
+    <string name="illness">Any Majot Illness</string>
+    <string name="notes">Notes for Caregivers</string>
+
+    <string name="confirm_details">Confirm Details</string>
+    <string name="submit">Submit</string>
+
+    <string name="view_dashboard">View Dashboard</string>
+    <string name="info_discard">All your Information will not be saved, Ok to Proceed?</string>
+
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_new_activity">Add New Activity</string>
+    <string name="activity">Activity</string>
+    <string name="my_account">My Account</string>
+
+    <string name="coming_soon">Coming Soon</string>
+    <string name="error">Something went wrong. Try Again!!!</string>
+
+    <string name="dpndnt_medical_info_saved">Dependant Medical Details Saved</string>
+    <string name="dpndnt_details_saved">Dependant Details Saved</string>
+    <string name="dpndnt_details_not_saved">Dependant Not Saved. Check Name</string>
+    <string name="email_exists">Email Id Already Exists!!!</string>
+
 </resources>

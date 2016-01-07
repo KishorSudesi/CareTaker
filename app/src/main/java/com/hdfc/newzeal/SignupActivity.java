@@ -77,16 +77,16 @@ public class SignupActivity extends FragmentActivity{
         switch(action){
             case 0:
                 setButton(_btn1);
-                texViewHeader.setText("Your Details");
+                texViewHeader.setText(getString(R.string.your_details));
                 break;
 
             case 1:
                 setButton(_btn2);
-                texViewHeader.setText("Dependants");
+                texViewHeader.setText(getString(R.string.dependants));
                 break;
 
             case 2: setButton(_btn3);
-                texViewHeader.setText("Confirm Details");
+                texViewHeader.setText(getString(R.string.confirm_details));
                 break;
         }
     }
@@ -123,9 +123,9 @@ public class SignupActivity extends FragmentActivity{
     public void backToSelection(View v){
         //delete Temp Users
         final AlertDialog.Builder alertbox = new AlertDialog.Builder(SignupActivity.this);
-        alertbox.setTitle("NewZeal");
-        alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
-        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alertbox.setTitle(getString(R.string.app_name));
+        alertbox.setMessage(getString(R.string.info_discard));//
+        alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 NewZeal.dbCon.deleteTempUsers();
                 Intent selection = new Intent(SignupActivity.this, CareSelectionActivity.class);
@@ -133,7 +133,7 @@ public class SignupActivity extends FragmentActivity{
                 startActivity(selection);
             }
         });
-        alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertbox.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 arg0.dismiss();
             }

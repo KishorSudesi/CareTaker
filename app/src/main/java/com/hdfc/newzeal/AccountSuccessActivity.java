@@ -22,6 +22,6 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
     public void goToDashboard(View v){
         Libs libs = new Libs(AccountSuccessActivity.this);
-        Libs.toast(1, 1, "Dashboard Coming Soon...");
+        Libs.toast(1, 1, getString(R.string.coming_soon));
     }
 }
