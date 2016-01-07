@@ -16,7 +16,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         //do nothing
     }
 

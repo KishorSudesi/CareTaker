@@ -63,7 +63,7 @@ public class DependantViewAdapter extends BaseAdapter{
         ViewHolder holder;
 
         if(convertView==null){
-            vi = inflater.inflate(R.layout.dependant_layout, null);
+            vi = inflater.inflate(R.layout.dependant_list, null);
 
             holder = new ViewHolder();
             holder.textName = (TextView) vi.findViewById(R.id.textViewName);

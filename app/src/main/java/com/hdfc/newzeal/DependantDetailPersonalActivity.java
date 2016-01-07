@@ -77,15 +77,12 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             }
         });
 
-        if(!strDependantName.equalsIgnoreCase(""))
-            NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.longUserId, editName, editContactNo, editAddress, editRelation, strDependantName);
-
         setupSearchView();
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         libs.backToDependantList();
     }
 
@@ -231,5 +228,14 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         String name = phoneCursor.getString(idDisplayName);
         phoneCursor.close();
         return name;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!strDependantName.equalsIgnoreCase(""))
+            NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.longUserId, editName, editContactNo, editAddress, editRelation, strDependantName);
+
     }
 }

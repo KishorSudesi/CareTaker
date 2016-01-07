@@ -54,28 +54,6 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        editEmail.setFocusable(false);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
-            }
-        });
-
-        editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
-            }
-        });
-
-
         editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,10 +82,32 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+       /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
+            }
+        });
+
+        editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
+            }
+        });*/
+
+        editEmail.setFocusable(false);
+    }
+
     public void goToWho(View v){
 
         Intent selection = new Intent(LoginActivity.this, CareSelectionActivity.class);
         startActivity(selection);
+        moveTaskToBack(true);
     }
 
     public void validateLogin(View v){

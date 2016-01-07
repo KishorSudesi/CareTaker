@@ -41,5 +41,12 @@ public class CareSelectionActivity extends AppCompatActivity {
     public void selectedLovedOne(View v){
         Intent selection = new Intent(CareSelectionActivity.this, SignupActivity.class);
         startActivity(selection);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

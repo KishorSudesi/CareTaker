@@ -129,10 +129,10 @@ public class Libs {
     }
 
     //creating scaled bitmap with required width and height
-    public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight, ScalingLogic scalingLogic) {
+    public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
 
-        Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight, scalingLogic);
-        Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight, scalingLogic);
+        Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
+        Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
 
         Bitmap scaledBitmap=null;
 
@@ -213,9 +213,9 @@ public class Libs {
     }
 
     //source and destinatino rectangular regions to decode
-    public static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight, ScalingLogic scalingLogic) {
-        if (scalingLogic == ScalingLogic.CROP) {
-            final float srcAspect = (float)srcWidth / (float)srcHeight;
+    public static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
+        //for crop
+            /*final float srcAspect = (float)srcWidth / (float)srcHeight;
             final float dstAspect = (float)dstWidth / (float)dstHeight;
 
             if (srcAspect > dstAspect) {
@@ -226,14 +226,13 @@ public class Libs {
                 final int srcRectHeight = (int)(srcWidth / dstAspect);
                 final int scrRectTop = (srcHeight - srcRectHeight) / 2;
                 return new Rect(0, scrRectTop, srcWidth, scrRectTop + srcRectHeight);
-            }
-        } else {
+            }*/
+
             return new Rect(0, 0, srcWidth, srcHeight);
-        }
     }
 
-    public static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight, ScalingLogic scalingLogic) {
-        if (scalingLogic == ScalingLogic.FIT) {
+    public static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
+
             final float srcAspect = (float)srcWidth / (float)srcHeight;
             final float dstAspect = (float)dstWidth / (float)dstHeight;
 
@@ -242,10 +241,9 @@ public class Libs {
             } else {
                 return new Rect(0, 0, (int)(dstHeight * srcAspect), dstHeight);
             }
+        //for crop
+        //return new Rect(0, 0, dstWidth, dstHeight);
 
-        } else {
-            return new Rect(0, 0, dstWidth, dstHeight);
-        }
     }
 
     public static boolean externalMemoryAvailable() {
@@ -334,7 +332,7 @@ public class Libs {
         return pathExternals;
     }
 
-    public static final String sha512(final String toEncrypt) {
+    public static String sha512(final String toEncrypt) {
 
         try {
 
@@ -710,28 +708,6 @@ public class Libs {
             editText.setBackground(drw);
     }
 
-    public void backToDependantList(){
-        final AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-        alertbox.setTitle("NewZeal");
-        alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
-        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                //delete temp dependants
-                NewZeal.dbCon.deleteTempDependants();
-                Intent selection = new Intent(_ctxt, SignupActivity.class);
-                selection.putExtra("LIST_DEPENDANT", true);
-                arg0.dismiss();
-                _ctxt.startActivity(selection);
-            }
-        });
-        alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                arg0.dismiss();
-            }
-        });
-        alertbox.show();
-    }
-
     public Bitmap getBitmapFromFile(String strPath){
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
@@ -762,10 +738,6 @@ public class Libs {
         return ret;
     }
 
-    public enum ScalingLogic {
-        CROP, FIT
-    }
-
   /*  public void setWindowColoer(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -773,4 +745,29 @@ public class Libs {
             window.setStatusBarColor(Color.BLUE);
         }
     }*/
+
+    //Application Specig=fic Start
+    public void backToDependantList() {
+        final AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
+        alertbox.setTitle("NewZeal");
+        alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
+        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                //delete temp dependants
+                NewZeal.dbCon.deleteTempDependants();
+                Intent selection = new Intent(_ctxt, SignupActivity.class);
+                selection.putExtra("LIST_DEPENDANT", true);
+                arg0.dismiss();
+                _ctxt.startActivity(selection);
+            }
+        });
+        alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                arg0.dismiss();
+            }
+        });
+        alertbox.show();
+    }
+    //Application Specig=fic End
+
 }

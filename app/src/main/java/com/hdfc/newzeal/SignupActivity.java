@@ -1,29 +1,20 @@
 package com.hdfc.newzeal;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ViewPagerAdapter;
-import com.hdfc.config.Config;
 import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
-import com.hdfc.newzeal.fragments.GuruDetailsFragment;
 import com.hdfc.views.CustomViewPager;
-
-import java.io.IOException;
 
 public class SignupActivity extends FragmentActivity{
 
@@ -50,16 +41,8 @@ public class SignupActivity extends FragmentActivity{
 
         texViewHeader = (TextView) findViewById(R.id.header);
         initButton();
-
-        boolean listDependant = getIntent().getBooleanExtra("LIST_DEPENDANT",false);
-
-        CustomViewPager.setPagingEnabled(listDependant);
-
-        if(listDependant) {
-            _mViewPager.setCurrentItem(1);
-            btnAction(1);
-        }else btnAction(0);
     }
+
     private void setTab(){
         _mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
             @Override
@@ -94,8 +77,6 @@ public class SignupActivity extends FragmentActivity{
         _btn1=(Button)findViewById(R.id.btn1);
         _btn2=(Button)findViewById(R.id.btn2);
         _btn3=(Button)findViewById(R.id.btn3);
-
-        setButton(_btn1);
     }
 
     public void setButton(Button btn){
@@ -116,8 +97,24 @@ public class SignupActivity extends FragmentActivity{
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        super.onBackPressed();
         //do nothing
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setButton(_btn1);
+
+        boolean listDependant = getIntent().getBooleanExtra("LIST_DEPENDANT", false);
+
+        CustomViewPager.setPagingEnabled(listDependant);
+
+        if (listDependant) {
+            _mViewPager.setCurrentItem(1);
+            btnAction(1);
+        } else btnAction(0);
     }
 
     public void backToSelection(View v){
@@ -131,6 +128,7 @@ public class SignupActivity extends FragmentActivity{
                 Intent selection = new Intent(SignupActivity.this, CareSelectionActivity.class);
                 arg0.dismiss();
                 startActivity(selection);
+                finish();
             }
         });
         alertbox.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -139,48 +137,5 @@ public class SignupActivity extends FragmentActivity{
             }
         });
         alertbox.show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("", "onActivityResult" + resultCode);
-        Bitmap bitmap = null;
-        if (resultCode == Activity.RESULT_OK ) { //&& data != null
-            try {
-                switch (requestCode) {
-                    case Config.START_CAMERA_REQUEST_CODE:
-                        bitmap = getBitmap(GuruDetailsFragment.fileUri);
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (bitmap != null) {
-            postImagePick(bitmap);
-        }
-    }
-
-    protected void postImagePick(Bitmap bitmap) {
-        GuruDetailsFragment.imgButtonCamera.setImageBitmap(bitmap);
-    }
-
-    private Bitmap getBitmap(Uri selectedimg) throws IOException {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
-        Bitmap original =null;
-        try {
-            Log.d(" 2 ", "getBitmap" + selectedimg.getPath());
-            original = BitmapFactory.decodeFile(selectedimg.getPath(), options);
-        }catch (OutOfMemoryError oOm){
-        }catch (Exception e){
-        }
-        return original;
-    }
-
-    public void goToAddDependant(View v){
-        Intent selection = new Intent(SignupActivity.this, DependantDetailPersonalActivity.class);
-        startActivity(selection);
     }
 }
