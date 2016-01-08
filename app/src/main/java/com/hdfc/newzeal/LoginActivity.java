@@ -107,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent selection = new Intent(LoginActivity.this, CareSelectionActivity.class);
         startActivity(selection);
-        moveTaskToBack(true);
     }
 
     public void validateLogin(View v){
@@ -147,5 +146,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+        moveTaskToBack(true);
     }
 }

@@ -42,8 +42,7 @@
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="25dp"
                 android:background="@drawable/edit_text"
-                android:drawableLeft="@mipmap/steth_icon_32"
-                android:drawablePadding="10dp"
+
                 android:gravity="top|left"
                 android:hint="@string/illness"
                 android:inputType="textMultiLine"
@@ -64,8 +63,7 @@
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="25dp"
                 android:background="@drawable/edit_text"
-                android:drawableLeft="@mipmap/notes_icon_32"
-                android:drawablePadding="10dp"
+
                 android:gravity="top|left"
                 android:hint="@string/notes"
                 android:lines="8"

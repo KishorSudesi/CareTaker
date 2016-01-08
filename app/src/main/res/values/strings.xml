@@ -40,7 +40,7 @@
     <string name="relation">Relationship</string>
 
     <string name="age">Age</string>
-    <string name="illness">Any Majot Illness</string>
+    <string name="illness">Any Major Illness</string>
     <string name="notes">Notes for Caregivers</string>
 
     <string name="confirm_details">Confirm Details</string>
@@ -62,5 +62,12 @@
     <string name="dpndnt_details_saved">Dependant Details Saved</string>
     <string name="dpndnt_details_not_saved">Dependant Not Saved. Check Name</string>
     <string name="email_exists">Email Id Already Exists!!!</string>
+
+    <string name="menu_activities">Activities</string>
+    <string name="menu_reports">Reports</string>
+    <string name="menu_seniors">Seniors</string>
+    <string name="menu_notification">Notifications</string>
+    <string name="menu_account">My Account</string>
+
 
 </resources>

@@ -55,6 +55,13 @@ public class AddDependantFragment extends Fragment {
 
         list = ( ListView )addFragment.findViewById( R.id.listViewDpndnts);
         buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
+
+        buttonContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SignupActivity._mViewPager.setCurrentItem(2);
+            }
+        });
         return addFragment;
     }
 
@@ -65,9 +72,13 @@ public class AddDependantFragment extends Fragment {
     }
 
     public void setListView(){
-        setListData();
-        Resources res =getResources();
-        adapter = new DependantViewAdapter( getContext(), CustomListViewValuesArr, res);
-        list.setAdapter( adapter );
+        try {
+            setListData();
+            Resources res = getResources();
+            adapter = new DependantViewAdapter(getContext(), CustomListViewValuesArr, res);
+            list.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

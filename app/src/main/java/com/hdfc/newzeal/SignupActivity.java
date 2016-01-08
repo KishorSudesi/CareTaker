@@ -1,18 +1,14 @@
 package com.hdfc.newzeal;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ViewPagerAdapter;
-import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
 import com.hdfc.views.CustomViewPager;
 
@@ -97,7 +93,7 @@ public class SignupActivity extends FragmentActivity{
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        // super.onBackPressed();
         //do nothing
     }
 
@@ -109,7 +105,7 @@ public class SignupActivity extends FragmentActivity{
 
         boolean listDependant = getIntent().getBooleanExtra("LIST_DEPENDANT", false);
 
-        CustomViewPager.setPagingEnabled(listDependant);
+        CustomViewPager.setPagingEnabled(true); //listDependant
 
         if (listDependant) {
             _mViewPager.setCurrentItem(1);
@@ -119,7 +115,7 @@ public class SignupActivity extends FragmentActivity{
 
     public void backToSelection(View v){
         //delete Temp Users
-        final AlertDialog.Builder alertbox = new AlertDialog.Builder(SignupActivity.this);
+        /*final AlertDialog.Builder alertbox = new AlertDialog.Builder(SignupActivity.this);
         alertbox.setTitle(getString(R.string.app_name));
         alertbox.setMessage(getString(R.string.info_discard));//
         alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
@@ -136,6 +132,6 @@ public class SignupActivity extends FragmentActivity{
                 arg0.dismiss();
             }
         });
-        alertbox.show();
+        alertbox.show();*/
     }
 }

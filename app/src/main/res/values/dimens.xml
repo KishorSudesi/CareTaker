@@ -11,4 +11,7 @@
     <dimen name="padding_general">5dp</dimen>
     <dimen name="margin_general">5dp</dimen>
 
+    <dimen name="menu_margin">2dp</dimen>
+    <dimen name="menu_padding">2dp</dimen>
+
 </resources>

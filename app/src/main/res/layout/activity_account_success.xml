@@ -4,11 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hdfc.newzeal.AccountSuccessActivity">
+
+    <ImageView
+        android:id="@+id/imageBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
 
     <Button
         android:id="@+id/button2"
@@ -16,6 +22,8 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/margin_general"
+        android:layout_marginRight="@dimen/margin_general"
         android:background="@drawable/button_white"
         android:onClick="goToDashboard"
         android:text="@string/view_dashboard"
@@ -39,6 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/textViewMess"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:padding="10dp"
         android:text="@string/account_success_header"
         android:textAlignment="center"

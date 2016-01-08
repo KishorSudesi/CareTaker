@@ -110,7 +110,6 @@ android:orientation="vertical">
             android:layout_marginRight="@dimen/edit_text_margin"
             android:layout_marginTop="35dp"
             android:background="@drawable/button_success"
-            android:onClick="goToDependantMedicalData"
             android:text="@string/string_continue"
             android:textAllCaps="false" />
 

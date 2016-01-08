@@ -209,9 +209,9 @@ public class DbCon {
 
         AddDependantFragment.CustomListViewValuesArr.clear();
 
-        int count = 0;
+        int count = 2;
 
-        if(isDbOpened) {
+        /*if(isDbOpened) {
             Cursor cur = null;
 
             try {
@@ -240,7 +240,21 @@ public class DbCon {
             }catch (Exception e){
                 dbHelper.closeCursor(cur);
             }
-        }
+        }*/
+
+        dpndntModel = new DependantModel();
+        dpndntModel.setStrName("Mr Hungal");
+        dpndntModel.setStrRelation("Father");
+        dpndntModel.setStrImg("");
+
+        AddDependantFragment.CustomListViewValuesArr.add(dpndntModel);
+
+        dpndntModel = new DependantModel();
+        dpndntModel.setStrName("Mrs Hungal");
+        dpndntModel.setStrRelation("Mother");
+        dpndntModel.setStrImg("");
+
+        AddDependantFragment.CustomListViewValuesArr.add(dpndntModel);
 
         dpndntModel = new DependantModel();
         dpndntModel.setStrName("Add Dependant");

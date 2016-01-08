@@ -20,7 +20,6 @@ import com.hdfc.model.DependantModel;
 import com.hdfc.newzeal.DependantDetailPersonalActivity;
 import com.hdfc.newzeal.R;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -68,7 +67,7 @@ public class DependantViewAdapter extends BaseAdapter{
             holder = new ViewHolder();
             holder.textName = (TextView) vi.findViewById(R.id.textViewName);
             holder.textRelation=(TextView)vi.findViewById(R.id.textViewRealtion);
-            holder.image=(ImageView)vi.findViewById(R.id.image);
+            holder.image = (ImageView) vi.findViewById(R.id.imageViewDpndt);
 
             vi.setTag( holder );
         }
@@ -77,28 +76,33 @@ public class DependantViewAdapter extends BaseAdapter{
 
         if(data.size()>0){
 
-            tempValues=null;
-            tempValues = (DependantModel) data.get( position );
-
-            holder.textName.setText(tempValues.getStrName());
-            holder.textRelation.setText(tempValues.getStrRelation());
-
-            Log.e(this.getClass().getName(), tempValues.getStrName()+" ~ "+tempValues.getStrRelation());
-
-            if(!tempValues.getStrName().equalsIgnoreCase("Add Dependant")&&!tempValues.getStrRelation().equalsIgnoreCase("")) {
-
-                imageBitmap = libs.getBitmapFromFile(_ctxt.getFilesDir()+ File.pathSeparator + tempValues.getStrImg() );
-                roundedBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
-
-            }else {
-                imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.mipmap.plus_icon);
-                roundedBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
-
-            }
-
             try {
+
+                tempValues = null;
+                tempValues = (DependantModel) data.get(position);
+
+                holder.textName.setText(tempValues.getStrName());
+                holder.textRelation.setText(tempValues.getStrRelation());
+
+                Log.e(this.getClass().getName(), tempValues.getStrName() + " ~ " + tempValues.getStrRelation());
+
+                if (!tempValues.getStrName().equalsIgnoreCase("Add Dependant") && !tempValues.getStrRelation().equalsIgnoreCase("")) {
+
+                /*imageBitmap = libs.getBitmapFromFile(_ctxt.getFilesDir()+ File.pathSeparator + tempValues.getStrImg() );
+                roundedBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);*/
+
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.user1);
+                    roundedBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
+
+                } else {
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.mipmap.add_icon);
+                    roundedBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
+
+                }
+
                 roundedBitmapDrawable.setCornerRadius(40.0f);
                 roundedBitmapDrawable.setAntiAlias(true);
                 holder.image.setImageDrawable(roundedBitmapDrawable);

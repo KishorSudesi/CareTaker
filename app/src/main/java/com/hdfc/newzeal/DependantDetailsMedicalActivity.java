@@ -1,10 +1,15 @@
 package com.hdfc.newzeal;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -19,6 +24,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
     private EditText editAge, editDiseases, editNotes;
     private Button buttonContinue;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,9 +44,21 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateDependantMedicalData();
+                //validateDependantMedicalData();
+
+                Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
+                selection.putExtra("LIST_DEPENDANT", true);
+                startActivity(selection);
+                finish();
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.parseColor("#ffffff"));
+        }
 
     }
 

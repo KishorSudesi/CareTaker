@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -25,11 +26,13 @@ public class CareSelectionActivity extends AppCompatActivity {
         int screenHeight = displaymetrics.heightPixels;
         int screenWidth = displaymetrics.widthPixels;
 
+        Log.e("Dimensions", String.valueOf(screenWidth + " X " + screenHeight));
+
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.ppl_bg, screenWidth, screenHeight));
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

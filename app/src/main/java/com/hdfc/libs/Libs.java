@@ -151,18 +151,30 @@ public class Libs {
     //
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bmp = null;
+        try {
+            // First decode with inJustDecodeBounds=true to check dimensions
 
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(res, resId, options);
 
-        // Calculate inSampleSize
-        options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, reqWidth, reqHeight);
+            // Calculate inSampleSize
+            options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, reqWidth, reqHeight);
 
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            options.inDither = false;
+
+            bmp = createScaledBitmap(BitmapFactory.decodeResource(res, resId, options), reqWidth, reqHeight);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError oOe) {
+            oOe.printStackTrace();
+        }
+
+        return bmp;
     }//
 
     //
@@ -748,25 +760,31 @@ public class Libs {
 
     //Application Specig=fic Start
     public void backToDependantList() {
-        final AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-        alertbox.setTitle("NewZeal");
-        alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
-        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                //delete temp dependants
-                NewZeal.dbCon.deleteTempDependants();
-                Intent selection = new Intent(_ctxt, SignupActivity.class);
-                selection.putExtra("LIST_DEPENDANT", true);
-                arg0.dismiss();
-                _ctxt.startActivity(selection);
+
+        try {
+            if (_ctxt != null) {
+                final AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
+                alertbox.setTitle("NewZeal");
+                alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
+                alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        //delete temp dependants
+                        NewZeal.dbCon.deleteTempDependants();
+                        Intent selection = new Intent(_ctxt, SignupActivity.class);
+                        selection.putExtra("LIST_DEPENDANT", true);
+                        arg0.dismiss();
+                        _ctxt.startActivity(selection);
+                    }
+                });
+                alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        arg0.dismiss();
+                    }
+                });
+                alertbox.show();
             }
-        });
-        alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                arg0.dismiss();
-            }
-        });
-        alertbox.show();
+        } catch (Exception e) {
+        }
     }
     //Application Specig=fic End
 

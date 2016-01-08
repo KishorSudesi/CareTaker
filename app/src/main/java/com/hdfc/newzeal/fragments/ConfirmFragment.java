@@ -1,6 +1,8 @@
 package com.hdfc.newzeal.fragments;
 
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.hdfc.adapters.DependantViewAdapter;
-import com.hdfc.config.NewZeal;
-import com.hdfc.model.DependantModel;
+import com.hdfc.adapters.ConfirmListViewAdapter;
+import com.hdfc.model.ConfirmViewModel;
+import com.hdfc.newzeal.AccountSuccessActivity;
 import com.hdfc.newzeal.R;
-import com.hdfc.newzeal.SignupActivity;
 
 import java.util.ArrayList;
 
@@ -22,9 +23,9 @@ import java.util.ArrayList;
  */
 public class ConfirmFragment extends Fragment {
 
-    public static ArrayList<DependantModel> CustomListViewValuesArr = new ArrayList<DependantModel>();
+    public static ArrayList<ConfirmViewModel> CustomListViewValuesArr = new ArrayList<ConfirmViewModel>();
     public ListView list;
-    public DependantViewAdapter adapter;
+    public ConfirmListViewAdapter adapter;
 
     private Button buttonContinue;
 
@@ -39,23 +40,75 @@ public class ConfirmFragment extends Fragment {
         return fragment;
     }
 
-    public void setListData() {
-        int intCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
-
-        if (intCount > 0)
-            buttonContinue.setVisibility(View.VISIBLE);
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View addFragment = inflater.inflate(R.layout.fragment_confirm, container, false);
 
-        list = (ListView) addFragment.findViewById(R.id.listViewDpndnts);
+        //list = (ListView) addFragment.findViewById(R.id.listViewConfirm);
         buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
+
+        buttonContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent selection = new Intent(getActivity(), AccountSuccessActivity.class);
+                startActivity(selection);
+                getActivity().finish();
+            }
+        });
+
         return addFragment;
+    }
+
+    public void setListData() {
+
+        CustomListViewValuesArr.clear();
+
+        ConfirmViewModel confirmModel = new ConfirmViewModel();
+        confirmModel.setStrName("Mr Hungal");
+        confirmModel.setStrDesc("70yrs, diabetic with high BP, Loves morning walk with dog.");
+        confirmModel.setStrImg("");
+        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
+        confirmModel.setStrEmail("xyz@abc.com");
+        confirmModel.setStrContacts("1234569870");
+        CustomListViewValuesArr.add(confirmModel);
+
+        ConfirmViewModel confirmModel0 = new ConfirmViewModel();
+        confirmModel.setStrName("Mrs Hungal");
+        confirmModel.setStrDesc("60yrs, diabetic with high BP, Loves morning walk with dog.");
+        confirmModel.setStrImg("");
+        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
+        confirmModel.setStrEmail("xyzz@abc.com");
+        confirmModel.setStrContacts("1234569873");
+        CustomListViewValuesArr.add(confirmModel);
+
+        ConfirmViewModel confirmModel1 = new ConfirmViewModel();
+        confirmModel.setStrName("Mr Gurunathan");
+        confirmModel.setStrDesc("");
+        confirmModel.setStrImg("");
+        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
+        confirmModel.setStrEmail("xyzo@abc.com");
+        confirmModel.setStrContacts("1234569875");
+        CustomListViewValuesArr.add(confirmModel);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //setListView();
+    }
+
+    public void setListView() {
+        try {
+            setListData();
+            Resources res = getResources();
+            adapter = new ConfirmListViewAdapter(getContext(), CustomListViewValuesArr, res);
+            list.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -15,7 +15,7 @@
         android:layout_centerVertical="true"
         android:layout_weight="1"
         android:background="@drawable/button_back_trans"
-        android:onClick="backToSelection"
+
         android:text="@string/back"
         android:textAllCaps="false"
         android:textAppearance="?android:attr/textAppearanceSmall" />

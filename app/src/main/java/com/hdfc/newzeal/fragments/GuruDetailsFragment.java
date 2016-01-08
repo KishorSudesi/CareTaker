@@ -73,6 +73,8 @@ public class GuruDetailsFragment extends Fragment {
         editContactNo = (EditText) rootView.findViewById(R.id.editContactNo);
         buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
 
+        CustomViewPager.setPagingEnabled(true);
+
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +85,8 @@ public class GuruDetailsFragment extends Fragment {
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateUser();
+                //validateUser();
+                SignupActivity._mViewPager.setCurrentItem(1);
             }
         });
 

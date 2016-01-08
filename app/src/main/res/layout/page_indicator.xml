@@ -2,32 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="1dp"
-    android:background="@color/colorPrimary"
     android:layout_gravity="top"
-    android:orientation="vertical" >
+    android:background="@null"
+    android:orientation="vertical"
+    android:padding="1dp">
 
-    <Button android:layout_height="30dp"
-        android:layout_width="30dp"
+    <Button
         android:id="@+id/btn1"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_margin="1dp"
         android:background="@drawable/rounded_cell_blue" />
 
-    <Button android:layout_height="30dp"
-        android:layout_width="30dp"
+    <Button
         android:id="@+id/btn2"
-        android:layout_margin="1dp"
-        android:background="@drawable/rounded_cell"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button android:layout_height="30dp"
-        android:layout_width="30dp"
-        android:id="@+id/btn3"
         android:layout_margin="1dp"
-        android:background="@drawable/rounded_cell_blue"
-        android:layout_alignParentTop="true"
+        android:background="@drawable/rounded_cell" />
+
+    <Button
+        android:id="@+id/btn3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:layout_margin="1dp"
+        android:background="@drawable/rounded_cell_blue" />
 
 </RelativeLayout>
