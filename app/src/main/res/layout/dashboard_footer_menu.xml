@@ -2,12 +2,12 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="85dp"
     android:orientation="vertical">
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="85dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/notification_icon" />
+                android:src="@mipmap/notifications_icon" />
 
             <ImageButton
                 android:id="@+id/buttonCancel"
@@ -67,7 +67,7 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="30dp">
+            android:layout_height="15dp">
 
             <TextView
                 android:id="@+id/textViewActivity"

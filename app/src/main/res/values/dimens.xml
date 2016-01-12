@@ -14,4 +14,7 @@
     <dimen name="menu_margin">2dp</dimen>
     <dimen name="menu_padding">2dp</dimen>
 
+    <dimen name="polygonViewCircleWidth">32dp</dimen>
+    <dimen name="polygonViewStrokeWidth">2dp</dimen>
+
 </resources>

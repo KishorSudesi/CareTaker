@@ -306,6 +306,7 @@ public class Libs {
         View view = toast.getView();
         view.setBackgroundColor(Color.parseColor(color));
         toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.setMargin(30.0f, 30.0f);
         toast.show();
     }
     //

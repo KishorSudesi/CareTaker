@@ -22,7 +22,7 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/margin_general"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="@dimen/margin_general"
         android:background="@drawable/button_white"
         android:onClick="goToDashboard"
