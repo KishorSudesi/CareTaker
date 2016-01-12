@@ -97,7 +97,7 @@ public class DependantViewAdapter extends BaseAdapter{
                             RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
 
                 } else {
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.mipmap.address_icon_32);
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.mipmap.add_icon);
                     roundedBitmapDrawable =
                             RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
 

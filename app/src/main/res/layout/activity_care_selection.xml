@@ -11,7 +11,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        android:src="@drawable/ppl_bg" />
 
     <RelativeLayout
         android:layout_width="match_parent"

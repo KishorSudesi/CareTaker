@@ -302,11 +302,13 @@ public class Libs {
         if(type==2)
             color="#666666";
 
+        color = "#cccccc";
+
         Toast toast = Toast.makeText(_ctxt, message, time);
         View view = toast.getView();
         view.setBackgroundColor(Color.parseColor(color));
         toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.setMargin(30.0f, 30.0f);
+        //toast.setMargin(30.0f, 30.0f);
         toast.show();
     }
     //
