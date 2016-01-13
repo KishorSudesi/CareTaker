@@ -12,12 +12,12 @@ import com.hdfc.adapters.ViewPagerAdapter;
 import com.hdfc.libs.Libs;
 import com.hdfc.views.CustomViewPager;
 
-public class SignupActivity extends FragmentActivity{
+public class SignupActivity extends FragmentActivity {
 
     public static ViewPager _mViewPager;
     public static long longUserId;
     private ViewPagerAdapter _adapter;
-    private Button _btn1,_btn2,_btn3;
+    private Button _btn1, _btn2, _btn3;
     private TextView texViewHeader;
 
     @Override
@@ -29,9 +29,9 @@ public class SignupActivity extends FragmentActivity{
         setTab();
     }
 
-    private void setUpView(){
+    private void setUpView() {
         _mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        _adapter = new ViewPagerAdapter(getApplicationContext(),getSupportFragmentManager());
+        _adapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
         _mViewPager.setAdapter(_adapter);
         _mViewPager.setCurrentItem(0);
 
@@ -39,21 +39,25 @@ public class SignupActivity extends FragmentActivity{
         initButton();
     }
 
-    private void setTab(){
-        _mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+    private void setTab() {
+        _mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrollStateChanged(int position) {}
+            public void onPageScrollStateChanged(int position) {
+            }
+
             @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {}
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
             @Override
             public void onPageSelected(int position) {
-                    btnAction(position);
+                btnAction(position);
             }
         });
     }
 
-    private void btnAction(int action){
-        switch(action){
+    private void btnAction(int action) {
+        switch (action) {
             case 0:
                 setButton(_btn1);
                 texViewHeader.setText(getString(R.string.your_details));
@@ -64,30 +68,32 @@ public class SignupActivity extends FragmentActivity{
                 texViewHeader.setText(getString(R.string.dependants));
                 break;
 
-            case 2: setButton(_btn3);
+            case 2:
+                setButton(_btn3);
                 texViewHeader.setText(getString(R.string.confirm_details));
                 break;
         }
     }
-    private void initButton(){
-        _btn1=(Button)findViewById(R.id.btn1);
-        _btn2=(Button)findViewById(R.id.btn2);
-        _btn3=(Button)findViewById(R.id.btn3);
+
+    private void initButton() {
+        _btn1 = (Button) findViewById(R.id.btn1);
+        _btn2 = (Button) findViewById(R.id.btn2);
+        _btn3 = (Button) findViewById(R.id.btn3);
     }
 
-    public void setButton(Button btn){
+    public void setButton(Button btn) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Libs.setBtnDrawable(_btn1,getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn2,getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn3,getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setBtnDrawable(_btn1, getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setBtnDrawable(_btn2, getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setBtnDrawable(_btn3, getDrawable(R.drawable.rounded_cell_blue));
 
-            Libs.setBtnDrawable(btn,getDrawable(R.drawable.rounded_cell));
-        }else{
+            Libs.setBtnDrawable(btn, getDrawable(R.drawable.rounded_cell));
+        } else {
             Libs.setBtnDrawable(_btn1, getResources().getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn2,getResources().getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn3,getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setBtnDrawable(_btn2, getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setBtnDrawable(_btn3, getResources().getDrawable(R.drawable.rounded_cell_blue));
 
-            Libs.setBtnDrawable(btn,getResources().getDrawable(R.drawable.rounded_cell));
+            Libs.setBtnDrawable(btn, getResources().getDrawable(R.drawable.rounded_cell));
         }
     }
 
@@ -113,7 +119,7 @@ public class SignupActivity extends FragmentActivity{
         } else btnAction(0);
     }
 
-    public void backToSelection(View v){
+    public void backToSelection(View v) {
         //delete Temp Users
         /*final AlertDialog.Builder alertbox = new AlertDialog.Builder(SignupActivity.this);
         alertbox.setTitle(getString(R.string.app_name));

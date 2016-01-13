@@ -34,10 +34,11 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/header"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/buttonBack"
-        android:layout_marginRight="@dimen/margin_general"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         android:background="@color/colorWhite"
         android:src="@mipmap/gift_icon" />
 

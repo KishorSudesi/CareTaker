@@ -97,7 +97,7 @@ public class GuruDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if(SignupActivity.longUserId>0)
+        if (SignupActivity.longUserId > 0)
             NewZeal.dbCon.retrieveUser(SignupActivity.longUserId, editName, editEmail, editContactNo);
     }
 
@@ -122,15 +122,15 @@ public class GuruDetailsFragment extends Fragment {
             editContactNo.setError(getString(R.string.error_field_required));
             focusView = editContactNo;
             cancel = true;
-        } else if (strContactNo.length()!=10) {
+        } else if (strContactNo.length() != 10) {
             editContactNo.setError(getString(R.string.error_invalid_contact_no));
             focusView = editContactNo;
             cancel = true;
         }
 
-        if (!TextUtils.isEmpty(strPass)&&libs.isPasswordValid(strPass)&&!TextUtils.isEmpty(strConfirmPass)&&libs.isPasswordValid(strConfirmPass)) {
+        if (!TextUtils.isEmpty(strPass) && libs.isPasswordValid(strPass) && !TextUtils.isEmpty(strConfirmPass) && libs.isPasswordValid(strConfirmPass)) {
 
-            if(!strPass.trim().equalsIgnoreCase(strConfirmPass.trim())) {
+            if (!strPass.trim().equalsIgnoreCase(strConfirmPass.trim())) {
                 editConfirmPass.setError(getString(R.string.error_confirm_password));
                 focusView = editConfirmPass;
                 cancel = true;
@@ -153,7 +153,7 @@ public class GuruDetailsFragment extends Fragment {
             editEmail.setError(getString(R.string.error_field_required));
             focusView = editEmail;
             cancel = true;
-        }else if(!libs.isEmailValid(strEmail)){
+        } else if (!libs.isEmailValid(strEmail)) {
             editEmail.setError(getString(R.string.error_invalid_email));
             focusView = editEmail;
             cancel = true;
@@ -170,16 +170,16 @@ public class GuruDetailsFragment extends Fragment {
         } else {
             try {
                 long lngUserId = NewZeal.dbCon.insertUser(strName, strEmail, strConfirmPass, strContactNo, SignupActivity.longUserId);
-                if(lngUserId>0) {
-                    SignupActivity.longUserId=lngUserId;
+                if (lngUserId > 0) {
+                    SignupActivity.longUserId = lngUserId;
                     CustomViewPager.setPagingEnabled(true);
                     Libs.toast(1, 1, getString(R.string.your_details_saved));
                     SignupActivity._mViewPager.setCurrentItem(1);
-                }else{
+                } else {
                     Libs.toast(1, 1, getString(R.string.email_exists) + String.valueOf(lngUserId));
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -202,7 +202,7 @@ public class GuruDetailsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("", "onActivityResult" + resultCode);
         Bitmap bitmap = null;
-        if (resultCode == Activity.RESULT_OK ) { //&& data != null
+        if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
@@ -225,12 +225,12 @@ public class GuruDetailsFragment extends Fragment {
     private Bitmap getBitmap(Uri selectedimg) throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
-        Bitmap original =null;
+        Bitmap original = null;
         try {
             Log.d(" 2 ", "getBitmap" + selectedimg.getPath());
             original = BitmapFactory.decodeFile(selectedimg.getPath(), options);
-        }catch (OutOfMemoryError oOm){
-        }catch (Exception e){
+        } catch (OutOfMemoryError oOm) {
+        } catch (Exception e) {
         }
         return original;
     }

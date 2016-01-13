@@ -51,8 +51,7 @@
                 android:minLines="4"
                 android:padding="10dp"
                 android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
             <EditText
                 android:id="@+id/editNotes"
@@ -71,8 +70,7 @@
                 android:minLines="4"
                 android:padding="10dp"
                 android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                />
+                android:scrollbars="vertical" />
 
             <Button
                 android:id="@+id/buttonContinue"

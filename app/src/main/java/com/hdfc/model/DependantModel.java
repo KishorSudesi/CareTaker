@@ -5,9 +5,9 @@ package com.hdfc.model;
  */
 public class DependantModel {
 
-    private String strName="";
-    private String strRelation="";
-    private String strImg="";
+    private String strName = "";
+    private String strRelation = "";
+    private String strImg = "";
 
     public String getStrName() {
         return strName;

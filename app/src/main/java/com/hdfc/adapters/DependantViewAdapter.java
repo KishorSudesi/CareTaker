@@ -25,22 +25,22 @@ import java.util.ArrayList;
 /**
  * Created by balamurugan@adstringo.in on 01-01-2016.
  */
-public class DependantViewAdapter extends BaseAdapter{
+public class DependantViewAdapter extends BaseAdapter {
 
-    private static LayoutInflater inflater=null;
+    private static LayoutInflater inflater = null;
     private static Libs libs;
     public Resources res;
     private Context _ctxt;
     private ArrayList data;
-    private DependantModel tempValues=null;
+    private DependantModel tempValues = null;
     private Bitmap imageBitmap = null;
     private RoundedBitmapDrawable roundedBitmapDrawable = null;
 
-    public DependantViewAdapter(Context ctxt, ArrayList d,Resources resLocal) {
+    public DependantViewAdapter(Context ctxt, ArrayList d, Resources resLocal) {
         _ctxt = ctxt;
-        data=d;
+        data = d;
         res = resLocal;
-        inflater = ( LayoutInflater )_ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         libs = new Libs(_ctxt);
     }
 
@@ -61,20 +61,19 @@ public class DependantViewAdapter extends BaseAdapter{
         View vi = convertView;
         ViewHolder holder;
 
-        if(convertView==null){
+        if (convertView == null) {
             vi = inflater.inflate(R.layout.dependant_list, null);
 
             holder = new ViewHolder();
             holder.textName = (TextView) vi.findViewById(R.id.textViewName);
-            holder.textRelation=(TextView)vi.findViewById(R.id.textViewRealtion);
+            holder.textRelation = (TextView) vi.findViewById(R.id.textViewRealtion);
             holder.image = (ImageView) vi.findViewById(R.id.imageViewDpndt);
 
-            vi.setTag( holder );
-        }
-        else
-            holder=(ViewHolder)vi.getTag();
+            vi.setTag(holder);
+        } else
+            holder = (ViewHolder) vi.getTag();
 
-        if(data.size()>0){
+        if (data.size() > 0) {
 
             try {
 
@@ -116,14 +115,14 @@ public class DependantViewAdapter extends BaseAdapter{
                 public void onClick(View v) {
 
                     try {
-                        String strName = ((TextView)v.findViewById(R.id.textViewName)).getText().toString();
-                        String strRelation = ((TextView)v.findViewById(R.id.textViewRealtion)).getText().toString();
+                        String strName = ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
+                        String strRelation = ((TextView) v.findViewById(R.id.textViewRealtion)).getText().toString();
 
-                        if (strName.equalsIgnoreCase("Add Dependant")&&strRelation.equalsIgnoreCase("")) {
+                        if (strName.equalsIgnoreCase("Add Dependant") && strRelation.equalsIgnoreCase("")) {
                             Intent selection = new Intent(_ctxt, DependantDetailPersonalActivity.class);
                             _ctxt.startActivity(selection);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -136,7 +135,7 @@ public class DependantViewAdapter extends BaseAdapter{
         return vi;
     }
 
-    public static class ViewHolder{
+    public static class ViewHolder {
         public TextView textName;
         public TextView textRelation;
         public ImageView image;

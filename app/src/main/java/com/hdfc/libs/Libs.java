@@ -70,7 +70,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Libs {
 
-    private static  Context _ctxt;
+    private static Context _ctxt;
     private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
     private static ArrayList<String> pathExternals;
 
@@ -123,7 +123,9 @@ public class Libs {
                 }
             }
 
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }
@@ -134,11 +136,11 @@ public class Libs {
         Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
         Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
 
-        Bitmap scaledBitmap=null;
+        Bitmap scaledBitmap = null;
 
         try {
             scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(), Bitmap.Config.ARGB_8888);
-        }catch (OutOfMemoryError oom){
+        } catch (OutOfMemoryError oom) {
             oom.printStackTrace();
         }
 
@@ -240,19 +242,19 @@ public class Libs {
                 return new Rect(0, scrRectTop, srcWidth, scrRectTop + srcRectHeight);
             }*/
 
-            return new Rect(0, 0, srcWidth, srcHeight);
+        return new Rect(0, 0, srcWidth, srcHeight);
     }
 
     public static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
 
-            final float srcAspect = (float)srcWidth / (float)srcHeight;
-            final float dstAspect = (float)dstWidth / (float)dstHeight;
+        final float srcAspect = (float) srcWidth / (float) srcHeight;
+        final float dstAspect = (float) dstWidth / (float) dstHeight;
 
-            if (srcAspect > dstAspect) {
-                return new Rect(0, 0, dstWidth, (int)(dstWidth / srcAspect));
-            } else {
-                return new Rect(0, 0, (int)(dstHeight * srcAspect), dstHeight);
-            }
+        if (srcAspect > dstAspect) {
+            return new Rect(0, 0, dstWidth, (int) (dstWidth / srcAspect));
+        } else {
+            return new Rect(0, 0, (int) (dstHeight * srcAspect), dstHeight);
+        }
         //for crop
         //return new Rect(0, 0, dstWidth, dstHeight);
 
@@ -269,8 +271,8 @@ public class Libs {
             StatFs stat = new StatFs(path.getPath());
             long blockSize = stat.getBlockSize();
             long availableBlocks = stat.getAvailableBlocks();
-            return (availableBlocks * blockSize)/1024;
-        }else{
+            return (availableBlocks * blockSize) / 1024;
+        } else {
             return 0;
         }
     }
@@ -281,26 +283,25 @@ public class Libs {
             StatFs stat = new StatFs(path.getPath());
             long blockSize = stat.getBlockSize();
             long totalBlocks = stat.getBlockCount();
-            return (totalBlocks * blockSize)/1024;
+            return (totalBlocks * blockSize) / 1024;
         } else {
             return 0;
         }
     }
 
-    public static void toast(int type, int duration, String message)
-    {
-        String color="#000000";
+    public static void toast(int type, int duration, String message) {
+        String color = "#000000";
 
         int time = Toast.LENGTH_LONG;
 
-        if(duration==1)
+        if (duration == 1)
             time = Toast.LENGTH_SHORT;
 
-        if(type==2)
-            color="#cccccc";
+        if (type == 2)
+            color = "#cccccc";
 
-        if(type==2)
-            color="#666666";
+        if (type == 2)
+            color = "#666666";
 
         //color = "#cccccc";
 
@@ -313,7 +314,7 @@ public class Libs {
     }
     //
 
-    public static ArrayList<String> getExternals(){
+    public static ArrayList<String> getExternals() {
 
         try {
 
@@ -340,7 +341,7 @@ public class Libs {
                 }
             } else pathExternals = pathExternals = null;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -356,7 +357,7 @@ public class Libs {
             final byte[] bytes = digest.digest();
             final StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < bytes.length; i++)  {
+            for (int i = 0; i < bytes.length; i++) {
                 sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
             }
             return sb.toString().toLowerCase();
@@ -366,7 +367,7 @@ public class Libs {
         }
     }
 
-    public static void recordAudio(String fileName){
+    public static void recordAudio(String fileName) {
 
         MediaRecorder mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -383,16 +384,16 @@ public class Libs {
         mRecorder.start();
     }
 
-    public static String encrypt(String Data){
+    public static String encrypt(String Data) {
 
-        String encryptedValue =null;
+        String encryptedValue = null;
         Cipher c = null;
         try {
             Key key = generateKey();
             c = Cipher.getInstance(Config.mode);
             c.init(Cipher.ENCRYPT_MODE, key);
             byte[] encVal = c.doFinal(Data.getBytes());
-            encryptedValue = Base64.encodeToString(encVal,Base64.DEFAULT);
+            encryptedValue = Base64.encodeToString(encVal, Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
@@ -411,14 +412,14 @@ public class Libs {
     }
 
     public static String decrypt(String encryptedData) {
-        String decryptedValue=null;
+        String decryptedValue = null;
         Cipher c = null;
 
         try {
             Key key = generateKey();
             c = Cipher.getInstance(Config.mode);
             c.init(Cipher.DECRYPT_MODE, key);
-            byte[] decordedValue = Base64.decode(encryptedData,Base64.DEFAULT);
+            byte[] decordedValue = Base64.decode(encryptedData, Base64.DEFAULT);
             byte[] decValue = c.doFinal(decordedValue);
             decryptedValue = new String(decValue);
         } catch (NoSuchAlgorithmException e) {
@@ -612,7 +613,7 @@ public class Libs {
     @SuppressWarnings("deprecation")
     public void showAlertDialog(Context context, String title, String message,
                                 Boolean status) {
-        try{
+        try {
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             // Setting Dialog Title
             alertDialog.setTitle(title);
@@ -627,8 +628,7 @@ public class Libs {
             });*/
             // Showing Alert Message
             alertDialog.show();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -636,7 +636,7 @@ public class Libs {
     @SuppressWarnings("deprecation")
     public void showAlertDialog(Context context, String title, String message,
                                 Boolean status, DialogInterface.OnClickListener listener) {
-        try{
+        try {
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
             // Setting Dialog Title
@@ -649,15 +649,14 @@ public class Libs {
             //alertDialog.setButton("OK", listener);
             // Showing Alert Message
             alertDialog.show();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void setupUI(View view) {
         //Set up touch listener for non-text box views to hide keyboard.
-        if(!(view instanceof EditText)) {
+        if (!(view instanceof EditText)) {
             view.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -678,7 +677,7 @@ public class Libs {
 
     public File createFileInternal(String strFileName) {
 
-        File file=null;
+        File file = null;
         try {
             file = new File(_ctxt.getFilesDir(), strFileName);
             file.getParentFile().mkdirs();
@@ -689,26 +688,20 @@ public class Libs {
         return file;
     }
 
-    public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current, EditText editCurrent)
-    {
+    public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current, EditText editCurrent) {
         EditText invalid = null;
-        for (int i = 0; i < v.getChildCount(); i++)
-        {
+        for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
-            if (child instanceof EditText)
-            {
-                EditText e = (EditText)child;
+            if (child instanceof EditText) {
+                EditText e = (EditText) child;
 
-                if(e.getId()==editCurrent.getId())
+                if (e.getId() == editCurrent.getId())
                     setEditTextDrawable(e, current);
                 else
                     setEditTextDrawable(e, all);
-            }
-            else if(child instanceof ViewGroup)
-            {
-                invalid = traverseEditTexts((ViewGroup)child, all, current, editCurrent);  // Recursive call.
-                if(invalid != null)
-                {
+            } else if (child instanceof ViewGroup) {
+                invalid = traverseEditTexts((ViewGroup) child, all, current, editCurrent);  // Recursive call.
+                if (invalid != null) {
                     break;
                 }
             }
@@ -716,18 +709,18 @@ public class Libs {
         return invalid;
     }
 
-    public void setEditTextDrawable(EditText editText, Drawable drw){
+    public void setEditTextDrawable(EditText editText, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
             editText.setBackgroundDrawable(drw);
         else
             editText.setBackground(drw);
     }
 
-    public Bitmap getBitmapFromFile(String strPath){
+    public Bitmap getBitmapFromFile(String strPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
-        Bitmap original =null;
-        if(!strPath.equalsIgnoreCase("")) {
+        Bitmap original = null;
+        if (!strPath.equalsIgnoreCase("")) {
             try {
                 Log.d(" 3 ", "getBitmap" + strPath);
                 original = BitmapFactory.decodeFile(strPath, options);
@@ -740,15 +733,15 @@ public class Libs {
 
     public String getPhoneNumber(String name) {
         String ret = null;
-        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + name +"%'";
-        String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
+        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like'%" + name + "%'";
+        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
         Cursor c = _ctxt.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 projection, selection, null, null);
         if (c.moveToFirst()) {
             ret = c.getString(0);
         }
         c.close();
-        if(ret==null)
+        if (ret == null)
             ret = "Unsaved";
         return ret;
     }

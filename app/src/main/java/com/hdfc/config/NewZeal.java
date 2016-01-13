@@ -9,6 +9,6 @@ import com.hdfc.db.DbCon;
  */
 public class NewZeal extends Application {
 
-    public static DbCon dbCon=null;
+    public static DbCon dbCon = null;
 
 }

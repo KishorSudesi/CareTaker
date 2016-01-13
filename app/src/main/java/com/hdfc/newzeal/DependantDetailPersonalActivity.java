@@ -72,7 +72,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             }
         });
 
-        String tempDate = String.valueOf(new Date().getDate()+""+new Date().getTime());
+        String tempDate = String.valueOf(new Date().getDate() + "" + new Date().getTime());
 
         Log.e(" 2 ", tempDate);
 
@@ -103,7 +103,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     }
 
     public void openCamera(String strFileName) {
-        strFileName="image.jpeg";
+        strFileName = "image.jpeg";
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         File file = libs.createFileInternal(strFileName);
         fileUri = Uri.fromFile(file);
@@ -119,16 +119,16 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("", "onActivityResult" + resultCode);
         Bitmap bitmap = null;
-       // if (resultCode == RESULT_OK ) { //&& data != null
-            try {
-                switch (requestCode) {
-                    case Config.START_CAMERA_REQUEST_CODE:
-                        bitmap = getBitmap(fileUri);
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        // if (resultCode == RESULT_OK ) { //&& data != null
+        try {
+            switch (requestCode) {
+                case Config.START_CAMERA_REQUEST_CODE:
+                    bitmap = getBitmap(fileUri);
+                    break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //}
         if (bitmap != null) {
             postImagePick(bitmap);
@@ -142,12 +142,12 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     private Bitmap getBitmap(Uri selectedimg) throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
-        Bitmap original =null;
+        Bitmap original = null;
         try {
             Log.d(" 2 ", "getBitmap" + selectedimg.getPath());
             original = BitmapFactory.decodeFile(selectedimg.getPath(), options);
-        }catch (OutOfMemoryError oOm){
-        }catch (Exception e){
+        } catch (OutOfMemoryError oOm) {
+        } catch (Exception e) {
         }
         return original;
     }
@@ -182,7 +182,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             editContactNo.setError(getString(R.string.error_field_required));
             focusView = editContactNo;
             cancel = true;
-        }else if(strContactNo.length()!=10){
+        } else if (strContactNo.length() != 10) {
             editContactNo.setError(getString(R.string.error_invalid_contact_no));
             focusView = editContactNo;
             cancel = true;
@@ -198,17 +198,17 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             try {
-                long lngDependantId = NewZeal.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, longUserId );
-                if(lngDependantId>0) {
+                long lngDependantId = NewZeal.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, longUserId);
+                if (lngDependantId > 0) {
                     Libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
 
                     Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
                     startActivity(selection);
-                }else{
+                } else {
                     Libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved) + String.valueOf(lngDependantId));
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -223,7 +223,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.e("wer", intent.getAction().toString() );
+        Log.e("wer", intent.getAction().toString());
         if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
             //handles suggestion clicked query
             String displayName = getDisplayNameForContact(intent);
@@ -236,7 +236,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     }
 
     private String getDisplayNameForContact(Intent intent) {
-        Log.e( " wer ", intent.getData().toString());
+        Log.e(" wer ", intent.getData().toString());
 
         Cursor phoneCursor = getContentResolver().query(intent.getData(), null, null, null, null);
         phoneCursor.moveToFirst();

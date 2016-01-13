@@ -40,7 +40,7 @@
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
-        android:padding="10dp"/>
+        android:padding="10dp" />
 
     <RelativeLayout
         android:id="@+id/relativePass"
@@ -52,10 +52,10 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:gravity="center_horizontal"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
-        <EditText android:id="@+id/editPassword"
+        <EditText
+            android:id="@+id/editPassword"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
@@ -69,10 +69,10 @@
             android:inputType="textPassword"
             android:padding="5dp"
             android:paddingRight="40dp"
-            android:singleLine="true"
-            />
+            android:singleLine="true" />
 
-        <TextView android:id="@+id/id_search_button1"
+        <TextView
+            android:id="@+id/id_search_button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/editPassword"
@@ -82,8 +82,7 @@
             android:layout_marginRight="4dp"
             android:gravity=""
             android:padding="5dp"
-            android:text="@string/forgot"
-            />
+            android:text="@string/forgot" />
 
     </RelativeLayout>
 

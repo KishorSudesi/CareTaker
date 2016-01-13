@@ -1,120 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/include"
         layout="@layout/header_white" />
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <SearchView
-            android:id="@+id/searchView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/edit_text_margin"
-            android:layout_marginRight="@dimen/edit_text_margin"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/edit_text"
-            android:queryHint="@string/search_contacts"
-            />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/edit_text"
+                android:queryHint="@string/search_contacts" />
 
 
-        <ImageButton
-            android:id="@+id/imageButtonCamera"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/rounded_image_view"
-            android:src="@mipmap/camera_icon" />
+            <ImageButton
+                android:id="@+id/imageButtonCamera"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/rounded_image_view"
+                android:src="@mipmap/camera_icon" />
 
-        <EditText
-            android:id="@+id/editDependantName"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/edit_text_margin"
-            android:layout_marginRight="@dimen/edit_text_margin"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/person_icon"
-            android:drawablePadding="10dp"
-            android:hint="@string/dependant_name"
-            android:inputType="textPersonName"
-            android:padding="10dp" />
+            <EditText
+                android:id="@+id/editDependantName"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/person_icon"
+                android:drawablePadding="10dp"
+                android:hint="@string/dependant_name"
+                android:inputType="textPersonName"
+                android:padding="10dp" />
 
-        <EditText
-            android:id="@+id/editContactNo"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/edit_text_margin"
-            android:layout_marginRight="@dimen/edit_text_margin"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/receiver_icon"
-            android:drawablePadding="10dp"
-            android:hint="@string/number"
-            android:inputType="number"
-            android:padding="10dp" />
+            <EditText
+                android:id="@+id/editContactNo"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/receiver_icon"
+                android:drawablePadding="10dp"
+                android:hint="@string/number"
+                android:inputType="number"
+                android:padding="10dp" />
 
-        <EditText
-            android:id="@+id/editAddress"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/edit_text_margin"
-            android:layout_marginRight="@dimen/edit_text_margin"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/address_icon"
-            android:drawablePadding="10dp"
-            android:hint="@string/address"
-            android:inputType="textPostalAddress"
-            android:padding="10dp" />
+            <EditText
+                android:id="@+id/editAddress"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/address_icon"
+                android:drawablePadding="10dp"
+                android:hint="@string/address"
+                android:inputType="textPostalAddress"
+                android:padding="10dp" />
 
-        <EditText
-            android:id="@+id/editRelation"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/edit_text_margin"
-            android:layout_marginRight="@dimen/edit_text_margin"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/heart_icon"
-            android:drawablePadding="10dp"
-            android:hint="@string/relation"
-            android:inputType="text"
-            android:padding="10dp" />
+            <EditText
+                android:id="@+id/editRelation"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@mipmap/heart_icon"
+                android:drawablePadding="10dp"
+                android:hint="@string/relation"
+                android:inputType="text"
+                android:padding="10dp" />
 
-        <Button
-            android:id="@+id/buttonContinue"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="@dimen/edit_text_margin"
-            android:layout_marginRight="@dimen/edit_text_margin"
-            android:layout_marginTop="35dp"
-            android:background="@drawable/button_success"
-            android:text="@string/string_continue"
-            android:textAllCaps="false" />
+            <Button
+                android:id="@+id/buttonContinue"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/button_success"
+                android:text="@string/string_continue"
+                android:textAllCaps="false" />
 
-    </LinearLayout>
+        </LinearLayout>
 
-</ScrollView>
+    </ScrollView>
 
 </LinearLayout>

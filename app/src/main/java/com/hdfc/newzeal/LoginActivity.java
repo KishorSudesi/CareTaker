@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         editEmail = (EditText) findViewById(R.id.editEmail);
         editPassword = (EditText) findViewById(R.id.editPassword);
 
-        libs =new Libs(LoginActivity.this);
+        libs = new Libs(LoginActivity.this);
 
         //libs.setupUI();
 
@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, screenWidth, screenHeight));
 
             NewZeal.dbCon = DbCon.getInstance(LoginActivity.this);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(relLayout.getVisibility()==View.GONE) {
+                if (relLayout.getVisibility() == View.GONE) {
 
                     relLayout.setVisibility(View.VISIBLE);
                     try {
@@ -103,15 +103,15 @@ public class LoginActivity extends AppCompatActivity {
         editEmail.setFocusable(false);
     }
 
-    public void goToWho(View v){
+    public void goToWho(View v) {
 
         Intent selection = new Intent(LoginActivity.this, CareSelectionActivity.class);
         startActivity(selection);
     }
 
-    public void validateLogin(View v){
+    public void validateLogin(View v) {
 
-        if(relLayout.getVisibility()==View.VISIBLE) {
+        if (relLayout.getVisibility() == View.VISIBLE) {
 
             editEmail.setError(null);
             editPassword.setError(null);

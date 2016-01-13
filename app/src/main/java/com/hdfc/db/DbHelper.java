@@ -31,7 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
             " age integer, diseases VARCHAR(200), notes VARCHAR(500), user_id integer, image_name varchar(100), status integer)";
     private Context _ctxt;
 
-    private  File originalFile = null;
+    private File originalFile = null;
 
     private DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,12 +52,12 @@ public class DbHelper extends SQLiteOpenHelper {
         try {
             SQLiteDatabase.loadLibs(_ctxt);
             db = this.getWritableDatabase(Config.dbPass);
-        }catch (Exception e1){
+        } catch (Exception e1) {
             try {
-                if(originalFile.exists())
+                if (originalFile.exists())
                     encrypt(true);
                 e1.printStackTrace();
-            }catch (Exception e2){
+            } catch (Exception e2) {
                 e2.printStackTrace();
             }
         }
@@ -68,7 +68,7 @@ public class DbHelper extends SQLiteOpenHelper {
         try {
             if (db != null && db.isOpen())
                 db.close();
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         Log.i("DB", "close");
     }
@@ -90,13 +90,13 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void dropDb(SQLiteDatabase db){
+    public void dropDb(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS user");
         db.execSQL("DROP TABLE IF EXISTS dependant");
     }
 
-    public void closeCursor(Cursor cursor){
-        if(cursor!=null&&!cursor.isClosed())
+    public void closeCursor(Cursor cursor) {
+        if (cursor != null && !cursor.isClosed())
             cursor.close();
     }
 
@@ -112,14 +112,14 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public long insert(String values[], String names[], String tbl) {
 
-        if(!db.isOpen())
+        if (!db.isOpen())
             open();
 
         ContentValues initialValues = createContentValues(values, names);
-        long inserted =  0;
+        long inserted = 0;
         try {
             inserted = db.insert(tbl, null, initialValues);
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         return inserted;
     }
@@ -127,63 +127,63 @@ public class DbHelper extends SQLiteOpenHelper {
     @SuppressWarnings("DatabaseObjectNotClosedException")
     public Cursor fetch(String tbl, String names[], String where, String args[], String order, String limit, boolean isDistinct, String groupBy, String having) {
 
-        if(!db.isOpen())
+        if (!db.isOpen())
             open();
 
         Cursor cur = null;
-        try{
+        try {
             cur = db.query(isDistinct, tbl, names, where, args, groupBy, having, order, limit);
-        }catch (DatabaseObjectNotClosedException e){
-        }catch(Exception e){
+        } catch (DatabaseObjectNotClosedException e) {
+        } catch (Exception e) {
         }
 
-        return  cur;
+        return cur;
     }
 
     public boolean delete(String tbl, String where, String args[]) {
 
-        if(!db.isOpen())
+        if (!db.isOpen())
             open();
 
         boolean isDeleted = false;
-        try{
+        try {
             isDeleted = db.delete(tbl, where, args) > 0;
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         return isDeleted;
     }
 
     public boolean update(String where, String values[], String names[], String tbl, String args[]) {
 
-        if(!db.isOpen())
+        if (!db.isOpen())
             open();
 
         ContentValues updateValues = createContentValues(values, names);
 
         boolean isUpdated = false;
-        try{
+        try {
             isUpdated = db.update(tbl, updateValues, where, args) > 0;
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         return isUpdated;
     }
 
 
-    public boolean backupDatabase(){
+    public boolean backupDatabase() {
 
-        boolean isSuccess=false;
+        boolean isSuccess = false;
 
         try {
             File databaseFile = _ctxt.getDatabasePath(DATABASE_NAME);
             FileInputStream fIs = new FileInputStream(databaseFile);
 
             Date now = new Date();
-            FileOutputStream fOs = _ctxt.openFileOutput(DATABASE_NAME+"_bkp_"+now.getTime(), Context.MODE_PRIVATE);
+            FileOutputStream fOs = _ctxt.openFileOutput(DATABASE_NAME + "_bkp_" + now.getTime(), Context.MODE_PRIVATE);
             byte[] buffer = new byte[1024];
             int length;
 
             try {
-                while ((length = fIs.read(buffer))>0){
+                while ((length = fIs.read(buffer)) > 0) {
                     fOs.write(buffer, 0, length);
                 }
                 fOs.flush();
@@ -194,7 +194,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 fOs.close();
                 fIs.close();
             }
-            isSuccess=true;
+            isSuccess = true;
         } catch (Exception e) {
         }
 
@@ -217,8 +217,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
             int version = db.getVersion();
 
-            if(version<DATABASE_VERSION)
-                version=DATABASE_VERSION;
+            if (version < DATABASE_VERSION)
+                version = DATABASE_VERSION;
 
             db.close();
 
@@ -231,7 +231,7 @@ public class DbHelper extends SQLiteOpenHelper {
             originalFile.delete();
             newFile.renameTo(originalFile);
 
-            if(isToOpen) {
+            if (isToOpen) {
                 DbHelper.db = SQLiteDatabase.openDatabase(dbPath,
                         Config.dbPass, null,
                         SQLiteDatabase.OPEN_READWRITE);

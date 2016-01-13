@@ -53,7 +53,7 @@ public class AddDependantFragment extends Fragment {
 
         View addFragment = inflater.inflate(R.layout.fragment_add_dependant, container, false);
 
-        list = ( ListView )addFragment.findViewById( R.id.listViewDpndnts);
+        list = (ListView) addFragment.findViewById(R.id.listViewDpndnts);
         buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +71,7 @@ public class AddDependantFragment extends Fragment {
         setListView();
     }
 
-    public void setListView(){
+    public void setListView() {
         try {
             setListData();
             Resources res = getResources();

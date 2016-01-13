@@ -39,7 +39,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
         //do nothing
     }
 
-    public void goToDashboard(View v){
+    public void goToDashboard(View v) {
         //Libs libs = new Libs(AccountSuccessActivity.this);
         //libs.toast(1, 1, getString(R.string.coming_soon));
 

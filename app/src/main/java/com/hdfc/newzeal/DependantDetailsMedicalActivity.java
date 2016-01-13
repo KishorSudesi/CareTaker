@@ -68,7 +68,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         //do nothing
     }
 
-    public void gotoSignupListDependants(){
+    public void gotoSignupListDependants() {
 
     }
 
@@ -106,8 +106,8 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             try {
-                boolean  isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
-                if(isUpdated) {
+                boolean isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
+                if (isUpdated) {
 
                     Libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
                     Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
@@ -115,7 +115,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
                     startActivity(selection);
                 } else Libs.toast(1, 1, getString(R.string.error));
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }

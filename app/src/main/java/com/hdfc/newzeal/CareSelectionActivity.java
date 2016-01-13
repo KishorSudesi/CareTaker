@@ -34,11 +34,11 @@ public class CareSelectionActivity extends AppCompatActivity {
         }*/
     }
 
-    public void selectedMyself(View v){
+    public void selectedMyself(View v) {
         Libs.toast(1, 1, getString(R.string.coming_soon));
     }
 
-    public void selectedLovedOne(View v){
+    public void selectedLovedOne(View v) {
         Intent selection = new Intent(CareSelectionActivity.this, SignupActivity.class);
         startActivity(selection);
         finish();
