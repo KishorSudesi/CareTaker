@@ -302,7 +302,7 @@ public class Libs {
         if(type==2)
             color="#666666";
 
-        color = "#cccccc";
+        //color = "#cccccc";
 
         Toast toast = Toast.makeText(_ctxt, message, time);
         View view = toast.getView();

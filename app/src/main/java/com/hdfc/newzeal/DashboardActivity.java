@@ -2,6 +2,7 @@ package com.hdfc.newzeal;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.libs.Libs;
+import com.hdfc.newzeal.fragments.DashboardActivityFragment;
 
 /**
  * Created by user on 08-01-2016.
@@ -74,6 +76,17 @@ public class DashboardActivity extends AppCompatActivity {
                 goToActivity();
             }
         });
+
+        DashboardActivityFragment newFragment = new DashboardActivityFragment();
+        Bundle args = new Bundle();
+        //args.putInt(ArticleFragment.ARG_POSITION, position);
+        newFragment.setArguments(args);
+
+        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_dashboard, newFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
 
     }
 

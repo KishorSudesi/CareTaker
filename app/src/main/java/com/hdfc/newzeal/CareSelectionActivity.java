@@ -9,14 +9,14 @@ import com.hdfc.libs.Libs;
 
 public class CareSelectionActivity extends AppCompatActivity {
 
-    private Libs libs;
+    // private Libs libs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_care_selection);
 
-        libs = new Libs(CareSelectionActivity.this);
+        ///libs = new Libs(CareSelectionActivity.this);
 
         /*DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
