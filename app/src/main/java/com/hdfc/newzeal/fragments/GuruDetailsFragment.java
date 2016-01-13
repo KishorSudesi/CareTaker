@@ -78,7 +78,7 @@ public class GuruDetailsFragment extends Fragment {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera(Libs.sha512(SignupActivity.longUserId + ""));
+                //openCamera(Libs.sha512(SignupActivity.longUserId + ""));
             }
         });
 

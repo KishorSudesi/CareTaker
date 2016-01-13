@@ -60,7 +60,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Set margin for pages as a negative number, so a part of next and
         // previous pages will be showed
-        pager.setPageMargin(-330); //-200
+        pager.setPageMargin(-30); //-200
         //
 
         txtViewActivity.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +91,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void goToActivity() {
-        Intent selection = new Intent(DashboardActivity.this, ActivityListActivity.class);
+        Intent selection = new Intent(DashboardActivity.this, ActivityMonthActivity.class);
         startActivity(selection);
         finish();
     }

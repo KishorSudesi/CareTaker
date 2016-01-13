@@ -6,26 +6,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-public class BasePackageActivity extends AppCompatActivity {
+public class PackageBuyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_package);
+        setContentView(R.layout.activity_package_buy);
 
         Button backButton = (Button) findViewById(R.id.buttonBack);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(BasePackageActivity.this, PackageBuyActivity.class);
+                Intent newIntent = new Intent(PackageBuyActivity.this, DashboardActivity.class);
                 startActivity(newIntent);
             }
         });
     }
 
-    public void goToAdditionalPacakage(View V) {
-        Intent newIntent = new Intent(BasePackageActivity.this, AdditionalServicesActivity.class);
+    public void goToBasePacakage(View v) {
+        Intent newIntent = new Intent(PackageBuyActivity.this, BasePackageActivity.class);
         startActivity(newIntent);
     }
 }

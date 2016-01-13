@@ -81,7 +81,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera(dependantImgName);
+                //openCamera(dependantImgName);
             }
         });
 
@@ -96,6 +96,11 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         }
     }
 
+    public void backToSelection(View v) {
+        Intent selection = new Intent(DependantDetailPersonalActivity.this, SignupActivity.class);
+        selection.putExtra("LIST_DEPENDANT", true);
+        startActivity(selection);
+    }
     @Override
     public void onBackPressed() {
         //super.onBackPressed();

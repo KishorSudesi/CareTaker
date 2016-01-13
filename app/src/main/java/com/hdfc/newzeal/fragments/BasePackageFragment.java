@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.hdfc.newzeal.BasePackageActivity;
+import com.hdfc.newzeal.PackageBuyActivity;
 import com.hdfc.newzeal.R;
 
 public class BasePackageFragment extends Fragment {
@@ -40,7 +40,7 @@ public class BasePackageFragment extends Fragment {
         btnbuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(getActivity(), BasePackageActivity.class);
+                Intent newIntent = new Intent(getActivity(), PackageBuyActivity.class);
                 getActivity().startActivity(newIntent);
             }
         });

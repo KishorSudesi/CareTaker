@@ -121,4 +121,10 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         }
     }
 
+    public void backToSelection(View v) {
+        Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
+        selection.putExtra("LIST_DEPENDANT", true);
+        startActivity(selection);
+    }
+
 }

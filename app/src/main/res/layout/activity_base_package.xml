@@ -84,6 +84,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_general"
                             android:text="BP, Heart Rate, Blood Suger and Temperature" />
                     </LinearLayout>
 
@@ -129,6 +130,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_general"
                             android:text="Telephone, Electricity, Society, Cable, Internet and Newspaper" />
                     </LinearLayout>
 
@@ -159,7 +161,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="20dp"
                         android:orientation="vertical">
@@ -175,6 +177,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_general"
                             android:text="Creation of checklist of household equipments, arranging for repairs(if any)" />
                     </LinearLayout>
 
@@ -220,6 +223,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_general"
                             android:text="Updates on doctor visits,medical records" />
                     </LinearLayout>
 
@@ -228,8 +232,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="30dp"
                     android:orientation="horizontal">
 
@@ -242,7 +244,8 @@
                         android:layout_marginLeft="@dimen/edit_text_margin"
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:background="@drawable/button_success"
-                        android:text="Buy"
+                        android:onClick="goToAdditionalPacakage"
+                        android:text="Buy Package for Rs.3500"
                         android:textAllCaps="false" />
 
 

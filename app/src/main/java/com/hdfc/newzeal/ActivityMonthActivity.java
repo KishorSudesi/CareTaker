@@ -1,9 +1,14 @@
 package com.hdfc.newzeal;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hdfc.adapters.CalendarAdapter;
 
@@ -30,7 +35,26 @@ public class ActivityMonthActivity extends AppCompatActivity {
 
         //
         Button btnMonthly = (Button) findViewById(R.id.buttonMonthly);
-        btnMonthly.setText("List");
+
+        btnMonthly.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent newIntent = new Intent(ActivityMonthActivity.this, ActivityListActivity.class);
+                startActivity(newIntent);
+            }
+        });
+
+        ImageView addActivity = (ImageView) findViewById(R.id.addActivity);
+
+        addActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent newIntent = new Intent(ActivityMonthActivity.this, AddNewActivityActivity.class);
+                startActivity(newIntent);
+            }
+        });
 
 
         _calendar = Calendar.getInstance(Locale.getDefault());
@@ -55,6 +79,26 @@ public class ActivityMonthActivity extends AppCompatActivity {
         adapter = new CalendarAdapter(ActivityMonthActivity.this, month, year);
         adapter.notifyDataSetChanged();
         calendarView.setAdapter(adapter);
+
+        ImageButton buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
+        buttonSeniors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent newIntent = new Intent(ActivityMonthActivity.this, DashboardActivity.class);
+                startActivity(newIntent);
+            }
+        });
+
+        TextView textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
+        textViewSeniors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent newIntent = new Intent(ActivityMonthActivity.this, DashboardActivity.class);
+                startActivity(newIntent);
+            }
+        });
         //
     }
 
@@ -88,4 +132,9 @@ public class ActivityMonthActivity extends AppCompatActivity {
         }
 
     }*/
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }
