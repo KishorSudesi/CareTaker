@@ -28,6 +28,9 @@ public class ActivityMonthActivity extends AppCompatActivity {
     private Calendar _calendar;
     private int month, year;
 
+    private ImageButton buttonAccount;
+    private TextView textViewAccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +102,23 @@ public class ActivityMonthActivity extends AppCompatActivity {
                 startActivity(newIntent);
             }
         });
+
+        buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
+        textViewAccount = (TextView) findViewById(R.id.textViewAccount);
+
+        buttonAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAccount();
+            }
+        });
+
+        textViewAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAccount();
+            }
+        });
         //
     }
 
@@ -136,5 +156,11 @@ public class ActivityMonthActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public void goToAccount() {
+        Intent selection = new Intent(ActivityMonthActivity.this, AccountEditActivity.class);
+        startActivity(selection);
+        finish();
     }
 }

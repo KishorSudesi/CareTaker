@@ -2,94 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="2">
+    android:orientation="vertical">
 
     <include layout="@layout/header_back"></include>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:background="@drawable/farmer">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="44dp"
-            android:text="Languge Known: Hindi,English"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorWhite" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/textView7"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:text="Name : Raghu"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorWhite" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/edit_text"
-            android:drawablePadding="20dp"
-            android:drawableRight="@mipmap/activity_icon"
-            android:hint="21-Dec-15 at 6:00pm"
-            android:paddingLeft="20dp"
-
-            />
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_below="@id/editText"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_weight="0.48"
-            android:background="@drawable/edit_text"
-            android:gravity="top"
-            android:hint="Add a Message"
-            android:padding="15dp" />
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/margin_general"
-            android:layout_marginRight="@dimen/margin_general"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/button_success"
-            android:onClick="goToActivityList"
-            android:text="Submit"
-            android:textAllCaps="false" />
-
-    </LinearLayout>
+    <include layout="@layout/activity_new_activity_step2_include"></include>
 
 </LinearLayout>

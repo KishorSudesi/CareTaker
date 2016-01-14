@@ -46,7 +46,7 @@ public class ConfirmFragment extends Fragment {
         // Inflate the layout for this fragment
         View addFragment = inflater.inflate(R.layout.fragment_confirm, container, false);
 
-        //list = (ListView) addFragment.findViewById(R.id.listViewConfirm);
+        list = (ListView) addFragment.findViewById(R.id.listViewConfirm);
         buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +97,7 @@ public class ConfirmFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //setListView();
+        setListView();
     }
 
     public void setListView() {

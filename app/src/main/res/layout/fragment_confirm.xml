@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AddDependantFragment">
 
-    <!--<ListView
+    <ListView
         android:id="@+id/listViewConfirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonContinue"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/buttonContinue" />-->
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:layout_width="match_parent"

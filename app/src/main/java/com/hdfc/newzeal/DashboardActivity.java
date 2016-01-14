@@ -29,8 +29,8 @@ public class DashboardActivity extends AppCompatActivity {
     public static ViewPager pager;
     public CarouselPagerAdapter adapter;
     private Libs libs;
-    private ImageButton buttonActivity;
-    private TextView txtViewActivity;
+    private ImageButton buttonActivity, buttonNotifications, buttonAccount;
+    private TextView txtViewActivity, textViewNotifications, textViewAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,12 @@ public class DashboardActivity extends AppCompatActivity {
 
         buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
         txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
+
+        buttonNotifications = (ImageButton) findViewById(R.id.buttonNotifications);
+        textViewNotifications = (TextView) findViewById(R.id.textViewNotifications);
+
+        buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
+        textViewAccount = (TextView) findViewById(R.id.textViewAccount);
 
         adapter = new CarouselPagerAdapter(this, this.getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -77,6 +83,35 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
+        textViewNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToNotifications();
+            }
+        });
+
+        buttonNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToNotifications();
+            }
+        });
+
+        buttonAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAccount();
+            }
+        });
+
+        textViewAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAccount();
+            }
+        });
+
+
         DashboardActivityFragment newFragment = new DashboardActivityFragment();
         Bundle args = new Bundle();
         //args.putInt(ArticleFragment.ARG_POSITION, position);
@@ -92,6 +127,18 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void goToActivity() {
         Intent selection = new Intent(DashboardActivity.this, ActivityMonthActivity.class);
+        startActivity(selection);
+        finish();
+    }
+
+    public void goToNotifications() {
+        Intent selection = new Intent(DashboardActivity.this, NotificationsActivity.class);
+        startActivity(selection);
+        finish();
+    }
+
+    public void goToAccount() {
+        Intent selection = new Intent(DashboardActivity.this, AccountEditActivity.class);
         startActivity(selection);
         finish();
     }

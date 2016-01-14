@@ -23,7 +23,7 @@ public class UpcomingActivityActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent dashboardIntent = new Intent(UpcomingActivityActivity.this, DashboardActivity.class);
+                Intent dashboardIntent = new Intent(UpcomingActivityActivity.this, ActivityListActivity.class);
                 startActivity(dashboardIntent);
                 finish();
             }

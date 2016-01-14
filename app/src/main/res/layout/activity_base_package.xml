@@ -84,7 +84,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_general"
+
                             android:text="BP, Heart Rate, Blood Suger and Temperature" />
                     </LinearLayout>
 
@@ -130,7 +130,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_general"
+
                             android:text="Telephone, Electricity, Society, Cable, Internet and Newspaper" />
                     </LinearLayout>
 
@@ -177,7 +177,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_general"
+
                             android:text="Creation of checklist of household equipments, arranging for repairs(if any)" />
                     </LinearLayout>
 
@@ -223,7 +223,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_general"
+
                             android:text="Updates on doctor visits,medical records" />
                     </LinearLayout>
 

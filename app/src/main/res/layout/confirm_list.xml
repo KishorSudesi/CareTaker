@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:layout_marginTop="30dp"
+    android:layout_marginTop="0dp"
     android:background="@drawable/rounded_cell"
     android:orientation="vertical">
 
@@ -16,12 +16,13 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/rounded_image_view"
         android:src="@drawable/user2" />
-
+    -
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
+        -
 
         <TableRow android:background="@drawable/one_side_border">
 
@@ -35,8 +36,8 @@
                 android:text="Gurunathan M."
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
         </TableRow>
+        -
 
         <TableRow android:background="@drawable/one_side_border">
 
@@ -50,8 +51,8 @@
                 android:text="Description"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
         </TableRow>
+        -
 
         <TableRow>
 
@@ -66,8 +67,8 @@
                 android:text="Whitefields, Bangalore"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
         </TableRow>
+        -
 
         <TableRow android:background="@drawable/one_side_border">
 
@@ -101,8 +102,8 @@
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        </TableRow>
 
+        </TableRow>
     </TableLayout>
 
 </LinearLayout>
