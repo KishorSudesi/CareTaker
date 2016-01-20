@@ -177,6 +177,33 @@ public class DbCon {
         }
     }
 
+    public void retrieveDependantMedical(long longUserId, EditText editAge, EditText editDiseases, EditText editNotes, String strName) {
+
+        if (isDbOpened) {
+            Cursor cur = null;
+
+            try {
+
+                cur = dbHelper.fetch("user", new String[]{"age", "diseases", "notes"}, "user_id=? and name=?", new String[]{String.valueOf(longUserId), strName}, "name DESC", "0,1", true, null, null);
+
+                if (cur.getCount() > 0) {
+                    cur.moveToFirst();
+                    while (cur.isAfterLast() == false) {
+                        Log.d("TAG 2", cur.getString(0));
+                        editAge.setText(cur.getString(0));
+                        editDiseases.setText(cur.getString(1));
+                        editNotes.setText(cur.getString(2));
+                        cur.moveToNext();
+                    }
+                }
+
+                dbHelper.closeCursor(cur);
+            } catch (Exception e) {
+                dbHelper.closeCursor(cur);
+            }
+        }
+    }
+
     public boolean updateDependantMedicalDetails(String strName, String strAge, String strDiseases, String strNotes, long longUserId) {
 
         boolean isUpdated = false;
@@ -245,14 +272,14 @@ public class DbCon {
         dpndntModel = new DependantModel();
         dpndntModel.setStrName("Mr Hungal");
         dpndntModel.setStrRelation("Father");
-        dpndntModel.setStrImg("");
+        dpndntModel.setStrImg("1");
 
         AddDependantFragment.CustomListViewValuesArr.add(dpndntModel);
 
         dpndntModel = new DependantModel();
         dpndntModel.setStrName("Mrs Hungal");
         dpndntModel.setStrRelation("Mother");
-        dpndntModel.setStrImg("");
+        dpndntModel.setStrImg("2");
 
         AddDependantFragment.CustomListViewValuesArr.add(dpndntModel);
 

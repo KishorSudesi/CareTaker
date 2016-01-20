@@ -3,6 +3,7 @@ package com.hdfc.newzeal;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -61,14 +63,23 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
         longUserId = SignupActivity.longUserId;
 
+        Button buttonBack = (Button) findViewById(R.id.buttonBack);
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backToSelection();
+            }
+        });
+
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //validateDependant();
+                validateDependant();
 
-                Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
+                /*Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
                 startActivity(selection);
-                finish();
+                finish();*/
             }
         });
 
@@ -81,7 +92,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //openCamera(dependantImgName);
+                openCamera(dependantImgName);
             }
         });
 
@@ -96,10 +107,30 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         }
     }
 
-    public void backToSelection(View v) {
-        Intent selection = new Intent(DependantDetailPersonalActivity.this, SignupActivity.class);
-        selection.putExtra("LIST_DEPENDANT", true);
-        startActivity(selection);
+    public void backToSelection() {
+        final AlertDialog.Builder alertbox = new AlertDialog.Builder(DependantDetailPersonalActivity.this);
+        alertbox.setTitle("NewZeal");
+        alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
+        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                //delete temp dependants
+                try {
+                    NewZeal.dbCon.deleteTempDependants();
+                    Intent selection = new Intent(DependantDetailPersonalActivity.this, SignupActivity.class);
+                    selection.putExtra("LIST_DEPENDANT", true);
+                    arg0.dismiss();
+                    startActivity(selection);
+                    finish();
+                } catch (Exception e) {
+                }
+            }
+        });
+        alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                arg0.dismiss();
+            }
+        });
+        alertbox.show();
     }
     @Override
     public void onBackPressed() {
@@ -209,6 +240,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
                     Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
                     startActivity(selection);
+                    finish();
                 } else {
                     Libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved) + String.valueOf(lngDependantId));
                 }

@@ -66,30 +66,31 @@ public class ConfirmFragment extends Fragment {
         CustomListViewValuesArr.clear();
 
         ConfirmViewModel confirmModel = new ConfirmViewModel();
+
+        confirmModel.setStrName("Mr Gurunathan");
+        confirmModel.setStrDesc("");
+        confirmModel.setStrImg("1");
+        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
+        confirmModel.setStrEmail("xyzo@abc.com");
+        confirmModel.setStrContacts("1234569875");
+        CustomListViewValuesArr.add(confirmModel);
+
+        confirmModel = new ConfirmViewModel();
         confirmModel.setStrName("Mr Hungal");
         confirmModel.setStrDesc("70yrs, diabetic with high BP, Loves morning walk with dog.");
-        confirmModel.setStrImg("");
+        confirmModel.setStrImg("2");
         confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
         confirmModel.setStrEmail("xyz@abc.com");
         confirmModel.setStrContacts("1234569870");
         CustomListViewValuesArr.add(confirmModel);
 
-        ConfirmViewModel confirmModel0 = new ConfirmViewModel();
+        confirmModel = new ConfirmViewModel();
         confirmModel.setStrName("Mrs Hungal");
         confirmModel.setStrDesc("60yrs, diabetic with high BP, Loves morning walk with dog.");
-        confirmModel.setStrImg("");
+        confirmModel.setStrImg("3");
         confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
         confirmModel.setStrEmail("xyzz@abc.com");
         confirmModel.setStrContacts("1234569873");
-        CustomListViewValuesArr.add(confirmModel);
-
-        ConfirmViewModel confirmModel1 = new ConfirmViewModel();
-        confirmModel.setStrName("Mr Gurunathan");
-        confirmModel.setStrDesc("");
-        confirmModel.setStrImg("");
-        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
-        confirmModel.setStrEmail("xyzo@abc.com");
-        confirmModel.setStrContacts("1234569875");
         CustomListViewValuesArr.add(confirmModel);
 
     }

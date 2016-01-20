@@ -6,11 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.hdfc.adapters.CalendarAdapter;
+import com.hdfc.libs.Libs;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -28,14 +27,13 @@ public class ActivityMonthActivity extends AppCompatActivity {
     private Calendar _calendar;
     private int month, year;
 
-    private ImageButton buttonAccount;
-    private TextView textViewAccount;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_month);
 
+        Libs libs = new Libs(ActivityMonthActivity.this);
+        libs.dashboarMenuNavigation();
         //
         Button btnMonthly = (Button) findViewById(R.id.buttonMonthly);
 
@@ -83,42 +81,6 @@ public class ActivityMonthActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         calendarView.setAdapter(adapter);
 
-        ImageButton buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
-        buttonSeniors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent newIntent = new Intent(ActivityMonthActivity.this, DashboardActivity.class);
-                startActivity(newIntent);
-            }
-        });
-
-        TextView textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
-        textViewSeniors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent newIntent = new Intent(ActivityMonthActivity.this, DashboardActivity.class);
-                startActivity(newIntent);
-            }
-        });
-
-        buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
-        textViewAccount = (TextView) findViewById(R.id.textViewAccount);
-
-        buttonAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
-
-        textViewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
         //
     }
 
@@ -155,12 +117,7 @@ public class ActivityMonthActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
     }
 
-    public void goToAccount() {
-        Intent selection = new Intent(ActivityMonthActivity.this, AccountEditActivity.class);
-        startActivity(selection);
-        finish();
-    }
 }

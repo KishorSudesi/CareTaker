@@ -85,8 +85,8 @@ public class GuruDetailsFragment extends Fragment {
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //validateUser();
-                SignupActivity._mViewPager.setCurrentItem(1);
+                validateUser();
+                //SignupActivity._mViewPager.setCurrentItem(1);
             }
         });
 
@@ -122,7 +122,7 @@ public class GuruDetailsFragment extends Fragment {
             editContactNo.setError(getString(R.string.error_field_required));
             focusView = editContactNo;
             cancel = true;
-        } else if (strContactNo.length() != 10) {
+        } else if (libs.validCellPhone(strContactNo)) {
             editContactNo.setError(getString(R.string.error_invalid_contact_no));
             focusView = editContactNo;
             cancel = true;

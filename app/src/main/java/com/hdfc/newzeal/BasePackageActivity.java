@@ -28,4 +28,9 @@ public class BasePackageActivity extends AppCompatActivity {
         Intent newIntent = new Intent(BasePackageActivity.this, AdditionalServicesActivity.class);
         startActivity(newIntent);
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

@@ -38,8 +38,6 @@ public class LoginActivity extends AppCompatActivity {
 
         libs = new Libs(LoginActivity.this);
 
-        //libs.setupUI();
-
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
@@ -80,13 +78,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-       /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
@@ -98,9 +91,18 @@ public class LoginActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
             }
-        });*/
+        });
+    }
 
-        editEmail.setFocusable(false);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //editEmail.setFocusable(false);
+
+        View view = findViewById(R.id.layoutLogin);
+
+        libs.setupUI(view);
     }
 
     public void goToWho(View v) {
@@ -144,8 +146,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        //super.onBackPressed();
         moveTaskToBack(true);
+        finish();
     }
 }

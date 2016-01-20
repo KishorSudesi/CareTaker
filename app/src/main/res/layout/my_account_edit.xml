@@ -5,14 +5,22 @@
     android:layout_rowWeight="5"
     android:orientation="vertical">
 
-    <ImageView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
         android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:padding="5dp"
-        android:src="@drawable/user" />
+                android:src="@drawable/guru_circle" />
 
     <TextView
         android:id="@+id/textView18"
@@ -108,9 +116,13 @@
             android:layout_weight="0.55"
             android:background="@drawable/button_success"
             android:text="Save Settings"
-            android:textSize="20sp" />
+            android:textAllCaps="false" />
 
 
     </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

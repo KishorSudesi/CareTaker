@@ -1,6 +1,7 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -59,6 +60,11 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
             if (position < DashboardActivity.PAGES - 1) {
                 next = getRootView(position + 1);
                 next.setScaleBoth(DashboardActivity.SMALL_SCALE + DashboardActivity.DIFF_SCALE * positionOffset);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    next.setBackground(context.getResources().getDrawable(R.drawable.rounded_image_view));
+                } else
+                    next.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_image_view));
             }
         }
     }

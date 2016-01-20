@@ -8,11 +8,13 @@ import android.graphics.BitmapFactory;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
@@ -81,24 +83,50 @@ public class DependantViewAdapter extends BaseAdapter {
                 tempValues = (DependantModel) data.get(position);
 
                 holder.textName.setText(tempValues.getStrName());
-                holder.textRelation.setText(tempValues.getStrRelation());
 
                 Log.e(this.getClass().getName(), tempValues.getStrName() + " ~ " + tempValues.getStrRelation());
 
                 if (!tempValues.getStrName().equalsIgnoreCase("Add Dependant") && !tempValues.getStrRelation().equalsIgnoreCase("")) {
+                    holder.textRelation.setVisibility(View.VISIBLE);
+                    holder.textRelation.setText(tempValues.getStrRelation());
 
                 /*imageBitmap = libs.getBitmapFromFile(_ctxt.getFilesDir()+ File.pathSeparator + tempValues.getStrImg() );
                 roundedBitmapDrawable =
                         RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);*/
 
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.user1);
+                    if (tempValues.getStrImg().equalsIgnoreCase("1"))
+                        imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.hungal_circle);
+
+                    if (tempValues.getStrImg().equalsIgnoreCase("2"))
+                        imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.mrs_hungal_circle);
+
                     roundedBitmapDrawable =
                             RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
 
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, 400);
+                    //params.weight = 1.0f;
+                    params.topMargin = 50;
+                    params.gravity = Gravity.CENTER_HORIZONTAL;
+                    //params.
+
+                    holder.image.setLayoutParams(params);
+
+
                 } else {
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.mipmap.add_icon);
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.add_icon);
                     roundedBitmapDrawable =
                             RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
+
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
+                    //params.weight = 1.0f;
+                    params.topMargin = 50;
+                    params.bottomMargin = 80;
+                    params.gravity = Gravity.CENTER_HORIZONTAL;
+                    //params.
+
+                    holder.image.setLayoutParams(params);
+
+                    holder.textRelation.setVisibility(View.GONE);
 
                 }
 
@@ -116,9 +144,8 @@ public class DependantViewAdapter extends BaseAdapter {
 
                     try {
                         String strName = ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
-                        String strRelation = ((TextView) v.findViewById(R.id.textViewRealtion)).getText().toString();
-
-                        if (strName.equalsIgnoreCase("Add Dependant") && strRelation.equalsIgnoreCase("")) {
+                        Log.e("E", strName + " ~ ");
+                        if (strName.equalsIgnoreCase("Add Dependant")) {
                             Intent selection = new Intent(_ctxt, DependantDetailPersonalActivity.class);
                             _ctxt.startActivity(selection);
                         }

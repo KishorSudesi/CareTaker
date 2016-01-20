@@ -27,5 +27,11 @@ public class PackageBuyActivity extends AppCompatActivity {
     public void goToBasePacakage(View v) {
         Intent newIntent = new Intent(PackageBuyActivity.this, BasePackageActivity.class);
         startActivity(newIntent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
     }
 }

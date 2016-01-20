@@ -35,7 +35,7 @@
         android:layout_marginLeft="@dimen/edit_text_margin"
         android:layout_marginRight="@dimen/edit_text_margin"
         android:background="@drawable/edit_text"
-        android:drawableLeft="@mipmap/mail_icon"
+        android:drawableLeft="@drawable/mail_icon"
         android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/email"

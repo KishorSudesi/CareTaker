@@ -15,7 +15,7 @@
 
     <include
         android:id="@+id/includeDashboardList"
-        layout="@layout/my_account_edit"
+        layout="@layout/my_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
@@ -24,7 +24,7 @@
         android:id="@+id/includeFooterMenu"
         layout="@layout/dashboard_footer_menu"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:layout_weight="0" />
 

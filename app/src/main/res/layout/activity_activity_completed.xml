@@ -8,12 +8,12 @@
 
     <include layout="@layout/header_completed_activity"></include>
 
-    <ScrollView
+    <FrameLayout
+        android:id="@+id/fragment_completed_activity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="3"></FrameLayout>
 
-        <include layout="@layout/upcoming_activity_include"></include>
-
-    </ScrollView>
+    <include layout="@layout/dashboard_footer_menu"></include>
 
 </LinearLayout>

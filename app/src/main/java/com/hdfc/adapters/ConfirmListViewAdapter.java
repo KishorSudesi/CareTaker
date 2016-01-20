@@ -3,12 +3,15 @@ package com.hdfc.adapters;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
@@ -67,6 +70,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             holder.textAddress = (TextView) vi.findViewById(R.id.textAddress);
             holder.textContact = (TextView) vi.findViewById(R.id.textContacNo);
             holder.textEmail = (TextView) vi.findViewById(R.id.textEmail);
+            holder.tableRow = (TableRow) vi.findViewById(R.id.tableDesc);
 
             holder.image = (ImageView) vi.findViewById(R.id.imageView);
 
@@ -88,14 +92,24 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
 
                 holder.textDesc.setText(tempValues.getStrDesc());
-                holder.textDesc.setVisibility(View.VISIBLE);
+                //holder.textDesc.setVisibility(View.VISIBLE);
+                holder.tableRow.setVisibility(View.VISIBLE);
 
             } else {
-                holder.textDesc.setVisibility(View.INVISIBLE);
+                holder.tableRow.setVisibility(View.GONE);
+                //holder.tableRow.setVisibility(View.GONE);
             }
 
-           /* try {
-                imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.profile);
+            try {
+                if (tempValues.getStrImg().equalsIgnoreCase("1"))
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.guru_circle);
+
+                if (tempValues.getStrImg().equalsIgnoreCase("2"))
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.hungal_circle);
+
+                if (tempValues.getStrImg().equalsIgnoreCase("3"))
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.mrs_hungal_circle);
+
                 roundedBitmapDrawable =
                         RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
 
@@ -104,7 +118,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
                 holder.image.setImageDrawable(roundedBitmapDrawable);
             } catch (OutOfMemoryError oOm) {
             } catch (Exception e) {
-            }*/
+            }
 
             //vi.setOnClickListener(makeListener);
         }
@@ -119,6 +133,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
         public TextView textContact;
         public TextView textEmail;
         public ImageView image;
+        public TableRow tableRow;
     }
 
 }

@@ -15,7 +15,7 @@
             android:layout_height="wrap_content">
 
             <ImageButton
-                android:id="@+id/buttonBack"
+                android:id="@+id/imageButtonDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
@@ -26,7 +26,7 @@
                 android:src="@mipmap/person_icon" />
 
             <ImageButton
-                android:id="@+id/buttonVideo"
+                android:id="@+id/imageButtonVideo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
@@ -37,7 +37,7 @@
                 android:src="@mipmap/video_icon" />
 
             <ImageButton
-                android:id="@+id/buttonCall"
+                android:id="@+id/imageButtonImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
@@ -47,7 +47,7 @@
                 android:src="@mipmap/img_icon" />
 
             <ImageButton
-                android:id="@+id/buttonSmiley"
+                android:id="@+id/imageButtonRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
@@ -57,7 +57,7 @@
                 android:src="@mipmap/smiley_icon" />
 
             <ImageButton
-                android:id="@+id/buttonCancel"
+                android:id="@+id/imageButtonAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"

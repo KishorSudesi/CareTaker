@@ -10,7 +10,7 @@
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
     <string name="title_activity_dependant_details_medical">DependantDetailsMedicalActivity</string>
 
-    <string name="email">email</string>
+    <string name="email">Email</string>
     <string name="take_me_in">Take Me In</string>
     <string name="am_new_here">I am New Here</string>
     <string name="password">Password</string>
@@ -55,7 +55,7 @@
     <string name="activity">Activity</string>
     <string name="my_account">My Account</string>
 
-    <string name="coming_soon">Coming Soon</string>
+    <string name="coming_soon"> Coming Soon </string>
     <string name="error">Something went wrong. Try Again!!!</string>
 
     <string name="dpndnt_medical_info_saved">Dependant Medical Details Saved</string>
@@ -68,5 +68,8 @@
     <string name="menu_seniors">Seniors</string>
     <string name="menu_notification">Notifications</string>
     <string name="menu_account">My Account</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

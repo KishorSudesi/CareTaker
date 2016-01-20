@@ -36,11 +36,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hdfc.config.Config;
-import com.hdfc.config.NewZeal;
-import com.hdfc.newzeal.SignupActivity;
+import com.hdfc.newzeal.ActivityMonthActivity;
+import com.hdfc.newzeal.DashboardActivity;
+import com.hdfc.newzeal.MyAccountActivity;
+import com.hdfc.newzeal.NotificationsActivity;
+import com.hdfc.newzeal.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -654,6 +659,10 @@ public class Libs {
         }
     }
 
+    public boolean validCellPhone(String number) {
+        return android.util.Patterns.PHONE.matcher(number).matches();
+    }
+
     public void setupUI(View view) {
         //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
@@ -754,34 +763,106 @@ public class Libs {
         }
     }*/
 
-    //Application Specig=fic Start
-    public void backToDependantList() {
+    //Application Specigfic Start
 
-        try {
-            if (_ctxt != null) {
-                final AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-                alertbox.setTitle("NewZeal");
-                alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
-                alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        //delete temp dependants
-                        NewZeal.dbCon.deleteTempDependants();
-                        Intent selection = new Intent(_ctxt, SignupActivity.class);
-                        selection.putExtra("LIST_DEPENDANT", true);
-                        arg0.dismiss();
-                        _ctxt.startActivity(selection);
-                    }
-                });
-                alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        arg0.dismiss();
-                    }
-                });
-                alertbox.show();
+
+    public void dashboarMenuNavigation() {
+        ImageButton buttonActivity = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonCallActivity);
+        TextView txtViewActivity = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewActivity);
+
+        ImageButton buttonNotifications = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonNotifications);
+        TextView textViewNotifications = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewNotifications);
+
+        ImageButton buttonAccount = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonAccount);
+        TextView textViewAccount = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewAccount);
+
+        ImageButton buttonSeniors = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonSeniors);
+        TextView textViewSeniors = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewSeniors);
+
+        //txtViewActivity.setBackground();
+
+        txtViewActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToActivity();
             }
-        } catch (Exception e) {
-        }
+        });
+
+        buttonActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToActivity();
+            }
+        });
+
+        textViewNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToNotifications();
+            }
+        });
+
+        buttonNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToNotifications();
+            }
+        });
+
+        buttonAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAccount();
+            }
+        });
+
+        textViewAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAccount();
+            }
+        });
+
+
+        buttonSeniors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToDashboard();
+            }
+        });
+
+
+        textViewSeniors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToDashboard();
+            }
+        });
+    }
+
+    public void goToNotifications() {
+        Intent selection = new Intent(_ctxt, NotificationsActivity.class);
+        _ctxt.startActivity(selection);
+        ((Activity) _ctxt).finish();
+    }
+
+    public void goToAccount() {
+        Intent selection = new Intent(_ctxt, MyAccountActivity.class);
+        _ctxt.startActivity(selection);
+        ((Activity) _ctxt).finish();
+    }
+
+    public void goToActivity() {
+        Intent selection = new Intent(_ctxt, ActivityMonthActivity.class);
+        _ctxt.startActivity(selection);
+        ((Activity) _ctxt).finish();
+    }
+
+    public void goToDashboard() {
+
+        Intent newIntent = new Intent(_ctxt, DashboardActivity.class);
+        _ctxt.startActivity(newIntent);
+        ((Activity) _ctxt).finish();
     }
     //Application Specig=fic End
-
 }

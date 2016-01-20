@@ -22,7 +22,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
     private static String strDependantName;
     private Libs libs;
     private EditText editAge, editDiseases, editNotes;
-    private Button buttonContinue;
+    private Button buttonContinue, buttonBack;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -37,6 +37,14 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         editNotes = (EditText) findViewById(R.id.editNotes);
 
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        buttonBack = (Button) findViewById(R.id.buttonBack);
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backToSelection();
+            }
+        });
 
         longUserId = SignupActivity.longUserId;
         strDependantName = DependantDetailPersonalActivity.strDependantName;
@@ -44,12 +52,12 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //validateDependantMedicalData();
+                validateDependantMedicalData();
 
-                Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
+               /* Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
                 selection.putExtra("LIST_DEPENDANT", true);
                 startActivity(selection);
-                finish();
+                finish();*/
             }
         });
 
@@ -64,12 +72,8 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         //do nothing
-    }
-
-    public void gotoSignupListDependants() {
-
     }
 
     private void validateDependantMedicalData() {
@@ -113,6 +117,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
                     Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
                     startActivity(selection);
+                    finish();
                 } else Libs.toast(1, 1, getString(R.string.error));
 
             } catch (Exception e) {
@@ -121,10 +126,20 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         }
     }
 
-    public void backToSelection(View v) {
-        Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
-        selection.putExtra("LIST_DEPENDANT", true);
+    public void backToSelection() {
+        Intent selection = new Intent(DependantDetailsMedicalActivity.this, DependantDetailPersonalActivity.class);
+        //selection.putExtra("LIST_DEPENDANT", true);
         startActivity(selection);
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!strDependantName.equalsIgnoreCase(""))
+            NewZeal.dbCon.retrieveDependantMedical(SignupActivity.longUserId, editAge, editDiseases, editNotes, strDependantName);
+
     }
 
 }

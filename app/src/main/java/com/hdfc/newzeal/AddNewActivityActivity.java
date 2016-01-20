@@ -27,4 +27,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
         Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
         startActivity(newIntent);
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }

@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.libs.Libs;
@@ -18,7 +16,7 @@ import com.hdfc.newzeal.fragments.DashboardActivityFragment;
  */
 public class DashboardActivity extends AppCompatActivity {
 
-    public final static int PAGES = 5;
+    public final static int PAGES = 3;
     // You can choose a bigger number for LOOPS, but you know, nobody will fling
     // more than 1000 times just in order to test your "infinite" ViewPager :D
     public final static int LOOPS = 1000;
@@ -29,8 +27,7 @@ public class DashboardActivity extends AppCompatActivity {
     public static ViewPager pager;
     public CarouselPagerAdapter adapter;
     private Libs libs;
-    private ImageButton buttonActivity, buttonNotifications, buttonAccount;
-    private TextView txtViewActivity, textViewNotifications, textViewAccount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +37,10 @@ public class DashboardActivity extends AppCompatActivity {
         libs = new Libs(DashboardActivity.this);
 
         //
+
+        libs.dashboarMenuNavigation();
+
         pager = (ViewPager) findViewById(R.id.dpndntCarousel);
-
-        buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
-        txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
-
-        buttonNotifications = (ImageButton) findViewById(R.id.buttonNotifications);
-        textViewNotifications = (TextView) findViewById(R.id.textViewNotifications);
-
-        buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
-        textViewAccount = (TextView) findViewById(R.id.textViewAccount);
 
         adapter = new CarouselPagerAdapter(this, this.getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -62,54 +53,12 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Necessary or the pager will only have one extra page to show
         // make this at least however many pages you can see
-        pager.setOffscreenPageLimit(1);
+        pager.setOffscreenPageLimit(3); //1
 
         // Set margin for pages as a negative number, so a part of next and
         // previous pages will be showed
-        pager.setPageMargin(-30); //-200
+        pager.setPageMargin(-210); //-200
         //
-
-        txtViewActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToActivity();
-            }
-        });
-
-        buttonActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToActivity();
-            }
-        });
-
-        textViewNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
-
-        buttonNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
-
-        buttonAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
-
-        textViewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
 
 
         DashboardActivityFragment newFragment = new DashboardActivityFragment();
@@ -125,24 +74,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
-    public void goToActivity() {
-        Intent selection = new Intent(DashboardActivity.this, ActivityMonthActivity.class);
-        startActivity(selection);
-        finish();
-    }
-
-    public void goToNotifications() {
-        Intent selection = new Intent(DashboardActivity.this, NotificationsActivity.class);
-        startActivity(selection);
-        finish();
-    }
-
-    public void goToAccount() {
-        Intent selection = new Intent(DashboardActivity.this, AccountEditActivity.class);
-        startActivity(selection);
-        finish();
-    }
-
     public void selectedLovedOne(View v) {
         Intent selection = new Intent(DashboardActivity.this, SignupActivity.class);
         startActivity(selection);
@@ -151,9 +82,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        //super.onBackPressed();
         moveTaskToBack(true);
+        finish();
+
     }
 
 }

@@ -7,8 +7,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.hdfc.config.NewZeal;
-import com.hdfc.db.DbCon;
 import com.hdfc.libs.Libs;
 
 public class AccountSuccessActivity extends AppCompatActivity {
@@ -27,7 +25,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, screenWidth, screenHeight));
 
-            NewZeal.dbCon = DbCon.getInstance(AccountSuccessActivity.this);
+            //NewZeal.dbCon = DbCon.getInstance(AccountSuccessActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
         }

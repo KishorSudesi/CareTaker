@@ -27,7 +27,7 @@
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="40dp"
                 android:background="@drawable/edit_text"
-                android:drawableLeft="@mipmap/person_icon"
+                android:drawableLeft="@drawable/person_icon"
                 android:drawablePadding="10dp"
                 android:hint="@string/age"
                 android:inputType="number"

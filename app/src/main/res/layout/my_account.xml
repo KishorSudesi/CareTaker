@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_rowWeight="5"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/relLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/header_gradient"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="editProfile"
+                    android:padding="5dp"
+                    android:src="@drawable/guru_circle" />
+
+                <ImageView
+                    android:id="@+id/imageView51"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="-50dp"
+                    android:alpha="0.6"
+                    android:padding="5dp"
+                    android:src="@drawable/hungal_circle" />
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageView5"
+                    android:layout_centerHorizontal="true"
+                    android:text="Gurunathan M"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/colorWhite" />
+
+                <TextView
+                    android:id="@+id/textView181"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageView5"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
+                    android:text="abc@xyz.com"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorWhite" />
+
+                <TextView
+                    android:id="@+id/textView182"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/imageView51"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignRight="@+id/imageView51"
+                    android:layout_marginRight="40dp"
+                    android:alpha="0.6"
+                    android:padding="@dimen/padding_general"
+                    android:text="Edit"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorWhite" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/relLayout1"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                android:weightSum="6">
+
+                <TextView
+                    android:id="@+id/editText3"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/one_side_border"
+                    android:drawableLeft="@mipmap/receiver"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="9876543210"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/editText31"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/one_side_border"
+                    android:drawableLeft="@mipmap/address_icon"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="Whitefields,Bangalore"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/editText32"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/one_side_border"
+                    android:drawableLeft="@mipmap/pass_icon"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="*******"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/editText34"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/one_side_border"
+                    android:drawableLeft="@mipmap/wallet_icon"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="paytm"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/editText33"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/one_side_border"
+                    android:drawableLeft="@mipmap/logout_icon"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="Logout"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

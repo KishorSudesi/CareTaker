@@ -10,35 +10,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ActivityListActivity extends AppCompatActivity {
+import com.hdfc.libs.Libs;
 
-    private ImageButton buttonNotifications, buttonAccount;
-    private TextView textViewNotifications, textViewAccount;
+public class ActivityListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_list);
 
+        Libs libs = new Libs(ActivityListActivity.this);
+        libs.dashboarMenuNavigation();
+
         Button btnMonthly = (Button) findViewById(R.id.buttonMonthly);
         ImageView addActivity = (ImageView) findViewById(R.id.addActivity);
-
-        buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
-        textViewAccount = (TextView) findViewById(R.id.textViewAccount);
-
-        buttonAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
-
-        textViewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
 
         ImageButton buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
         buttonSeniors.setOnClickListener(new View.OnClickListener() {
@@ -60,14 +45,14 @@ public class ActivityListActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayout lin1, lin2, lin3;
+        LinearLayout lin1, lin2, lin3, lin4, lin5;
 
         lin1 = (LinearLayout) findViewById(R.id.listView1);
         lin2 = (LinearLayout) findViewById(R.id.listView2);
         lin3 = (LinearLayout) findViewById(R.id.listView3);
 
-        buttonNotifications = (ImageButton) findViewById(R.id.buttonNotifications);
-        textViewNotifications = (TextView) findViewById(R.id.textViewNotifications);
+        lin4 = (LinearLayout) findViewById(R.id.completedActivity1);
+        lin5 = (LinearLayout) findViewById(R.id.completedActivity2);
 
         btnMonthly.setText("Monthly");
 
@@ -84,7 +69,6 @@ public class ActivityListActivity extends AppCompatActivity {
         addActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent newIntent = new Intent(ActivityListActivity.this, AddNewActivityActivity.class);
                 startActivity(newIntent);
             }
@@ -93,60 +77,51 @@ public class ActivityListActivity extends AppCompatActivity {
         lin1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent newIntent = new Intent(ActivityListActivity.this, UpcomingActivityActivity.class);
-                startActivity(newIntent);
+                goToUpcomingActivity();
             }
         });
 
         lin2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent newIntent = new Intent(ActivityListActivity.this, UpcomingActivityActivity.class);
-                startActivity(newIntent);
+                goToUpcomingActivity();
             }
         });
 
         lin3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent newIntent = new Intent(ActivityListActivity.this, UpcomingActivityActivity.class);
-                startActivity(newIntent);
+                goToUpcomingActivity();
             }
         });
 
-        textViewNotifications.setOnClickListener(new View.OnClickListener() {
+        lin4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToNotifications();
+                goToCompletedActivity();
             }
         });
 
-        buttonNotifications.setOnClickListener(new View.OnClickListener() {
+        lin5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToNotifications();
+                goToCompletedActivity();
             }
         });
-
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
     }
 
-    public void goToNotifications() {
-        Intent selection = new Intent(ActivityListActivity.this, NotificationsActivity.class);
-        startActivity(selection);
-        finish();
+    public void goToUpcomingActivity() {
+        Intent newIntent = new Intent(ActivityListActivity.this, UpcomingActivityActivity.class);
+        startActivity(newIntent);
     }
 
-    public void goToAccount() {
-        Intent selection = new Intent(ActivityListActivity.this, AccountEditActivity.class);
-        startActivity(selection);
-        finish();
+    public void goToCompletedActivity() {
+        Intent newIntent = new Intent(ActivityListActivity.this, ActivityCompletedActivity.class);
+        startActivity(newIntent);
     }
 }
