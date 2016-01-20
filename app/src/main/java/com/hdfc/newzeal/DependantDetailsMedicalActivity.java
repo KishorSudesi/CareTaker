@@ -64,7 +64,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         //do nothing
     }
 

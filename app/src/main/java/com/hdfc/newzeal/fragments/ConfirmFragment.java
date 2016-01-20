@@ -74,7 +74,7 @@ public class ConfirmFragment extends Fragment {
         confirmModel.setStrContacts("1234569870");
         CustomListViewValuesArr.add(confirmModel);
 
-        ConfirmViewModel confirmModel0 = new ConfirmViewModel();
+        confirmModel = new ConfirmViewModel();
         confirmModel.setStrName("Mrs Hungal");
         confirmModel.setStrDesc("60yrs, diabetic with high BP, Loves morning walk with dog.");
         confirmModel.setStrImg("");
@@ -83,7 +83,7 @@ public class ConfirmFragment extends Fragment {
         confirmModel.setStrContacts("1234569873");
         CustomListViewValuesArr.add(confirmModel);
 
-        ConfirmViewModel confirmModel1 = new ConfirmViewModel();
+        confirmModel = new ConfirmViewModel();
         confirmModel.setStrName("Mr Gurunathan");
         confirmModel.setStrDesc("");
         confirmModel.setStrImg("");

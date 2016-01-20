@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
@@ -67,6 +68,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             holder.textAddress = (TextView) vi.findViewById(R.id.textAddress);
             holder.textContact = (TextView) vi.findViewById(R.id.textContacNo);
             holder.textEmail = (TextView) vi.findViewById(R.id.textEmail);
+            holder.tableRow = (TableRow) vi.findViewById(R.id.tableDesc);
 
             holder.image = (ImageView) vi.findViewById(R.id.imageView);
 
@@ -88,10 +90,12 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
 
                 holder.textDesc.setText(tempValues.getStrDesc());
-                holder.textDesc.setVisibility(View.VISIBLE);
+                //holder.textDesc.setVisibility(View.VISIBLE);
+                holder.tableRow.setVisibility(View.VISIBLE);
 
             } else {
-                holder.textDesc.setVisibility(View.INVISIBLE);
+                holder.tableRow.setVisibility(View.GONE);
+                //holder.tableRow.setVisibility(View.GONE);
             }
 
            /* try {
@@ -119,6 +123,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
         public TextView textContact;
         public TextView textEmail;
         public ImageView image;
+        public TableRow tableRow;
     }
 
 }

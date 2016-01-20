@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.libs.Libs;
@@ -29,8 +27,7 @@ public class DashboardActivity extends AppCompatActivity {
     public static ViewPager pager;
     public CarouselPagerAdapter adapter;
     private Libs libs;
-    private ImageButton buttonActivity, buttonNotifications, buttonAccount;
-    private TextView txtViewActivity, textViewNotifications, textViewAccount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +37,10 @@ public class DashboardActivity extends AppCompatActivity {
         libs = new Libs(DashboardActivity.this);
 
         //
+
+        libs.dashboarMenuNavigation();
+
         pager = (ViewPager) findViewById(R.id.dpndntCarousel);
-
-        buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
-        txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
-
-        buttonNotifications = (ImageButton) findViewById(R.id.buttonNotifications);
-        textViewNotifications = (TextView) findViewById(R.id.textViewNotifications);
-
-        buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
-        textViewAccount = (TextView) findViewById(R.id.textViewAccount);
 
         adapter = new CarouselPagerAdapter(this, this.getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -69,48 +60,6 @@ public class DashboardActivity extends AppCompatActivity {
         pager.setPageMargin(-30); //-200
         //
 
-        txtViewActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToActivity();
-            }
-        });
-
-        buttonActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToActivity();
-            }
-        });
-
-        textViewNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
-
-        buttonNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
-
-        buttonAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
-
-        textViewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
-
 
         DashboardActivityFragment newFragment = new DashboardActivityFragment();
         Bundle args = new Bundle();
@@ -125,24 +74,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
-    public void goToActivity() {
-        Intent selection = new Intent(DashboardActivity.this, ActivityMonthActivity.class);
-        startActivity(selection);
-        finish();
-    }
-
-    public void goToNotifications() {
-        Intent selection = new Intent(DashboardActivity.this, NotificationsActivity.class);
-        startActivity(selection);
-        finish();
-    }
-
-    public void goToAccount() {
-        Intent selection = new Intent(DashboardActivity.this, AccountEditActivity.class);
-        startActivity(selection);
-        finish();
-    }
-
     public void selectedLovedOne(View v) {
         Intent selection = new Intent(DashboardActivity.this, SignupActivity.class);
         startActivity(selection);
@@ -151,9 +82,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        //super.onBackPressed();
         moveTaskToBack(true);
+        finish();
+
     }
 
 }

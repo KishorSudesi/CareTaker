@@ -7,12 +7,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hdfc.libs.Libs;
+
 public class UpcomingActivityActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upcoming_activity_activity);
+
+        Libs libs = new Libs(UpcomingActivityActivity.this);
+        libs.dashboarMenuNavigation();
+
 
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
         TextView txtViewHeader = (TextView) findViewById(R.id.header);
@@ -28,5 +34,10 @@ public class UpcomingActivityActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
     }
 }

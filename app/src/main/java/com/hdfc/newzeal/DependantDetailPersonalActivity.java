@@ -100,6 +100,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         Intent selection = new Intent(DependantDetailPersonalActivity.this, SignupActivity.class);
         selection.putExtra("LIST_DEPENDANT", true);
         startActivity(selection);
+        finish();
     }
     @Override
     public void onBackPressed() {
