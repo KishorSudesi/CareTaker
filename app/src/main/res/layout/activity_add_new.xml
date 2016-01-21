@@ -43,11 +43,11 @@
                     android:layout_marginTop="20dp">
 
                     <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/rounded_image_view"
-                        android:src="@mipmap/ok" />
+                        android:src="@drawable/ok" />
                 </LinearLayout>
 
 
@@ -88,11 +88,11 @@
                     android:layout_marginTop="20dp">
 
                     <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/rounded_image_view"
-                        android:src="@mipmap/ok" />
+                        android:src="@drawable/ok" />
                 </LinearLayout>
 
 
@@ -133,11 +133,11 @@
                     android:layout_marginTop="20dp">
 
                     <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/rounded_cell_blue"
-                        android:src="@mipmap/ok" />
+                        android:src="@drawable/ok" />
                 </LinearLayout>
 
 
@@ -179,11 +179,11 @@
                     android:layout_marginTop="20dp">
 
                     <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/rounded_image_view"
-                        android:src="@mipmap/ok" />
+                        android:src="@drawable/ok" />
                 </LinearLayout>
 
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,11 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.hdfc.adapters.ConfirmListViewAdapter;
+import com.hdfc.config.NewZeal;
 import com.hdfc.model.ConfirmViewModel;
 import com.hdfc.newzeal.AccountSuccessActivity;
 import com.hdfc.newzeal.R;
+import com.hdfc.newzeal.SignupActivity;
 
 import java.util.ArrayList;
 
@@ -24,19 +27,21 @@ import java.util.ArrayList;
 public class ConfirmFragment extends Fragment {
 
     public static ArrayList<ConfirmViewModel> CustomListViewValuesArr = new ArrayList<ConfirmViewModel>();
-    public ListView list;
-    public ConfirmListViewAdapter adapter;
+    public static ListView list;
+    public static ConfirmListViewAdapter adapter;
 
-    private Button buttonContinue;
+    public static Button buttonContinue;
 
     public ConfirmFragment() {
         // Required empty public constructor
+        Log.e("ConfirmFragment", "ConfirmFragment");
     }
 
     public static ConfirmFragment newInstance() {
         ConfirmFragment fragment = new ConfirmFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        Log.e("ConfirmFragment", "newInstance");
         return fragment;
     }
 
@@ -57,48 +62,28 @@ public class ConfirmFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
+        Log.e("ConfirmFragment", "onCreateView");
+        setListView();
         return addFragment;
     }
 
     public void setListData() {
 
-        CustomListViewValuesArr.clear();
+        int intCount = 0;
 
-        ConfirmViewModel confirmModel = new ConfirmViewModel();
+        if (SignupActivity.longUserId > 0)
+            intCount = NewZeal.dbCon.retrieveConfirmDependants(SignupActivity.longUserId);
 
-        confirmModel.setStrName("Mr Gurunathan");
-        confirmModel.setStrDesc("");
-        confirmModel.setStrImg("1");
-        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
-        confirmModel.setStrEmail("xyzo@abc.com");
-        confirmModel.setStrContacts("1234569875");
-        CustomListViewValuesArr.add(confirmModel);
-
-        confirmModel = new ConfirmViewModel();
-        confirmModel.setStrName("Mr Hungal");
-        confirmModel.setStrDesc("70yrs, diabetic with high BP, Loves morning walk with dog.");
-        confirmModel.setStrImg("2");
-        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
-        confirmModel.setStrEmail("xyz@abc.com");
-        confirmModel.setStrContacts("1234569870");
-        CustomListViewValuesArr.add(confirmModel);
-
-        confirmModel = new ConfirmViewModel();
-        confirmModel.setStrName("Mrs Hungal");
-        confirmModel.setStrDesc("60yrs, diabetic with high BP, Loves morning walk with dog.");
-        confirmModel.setStrImg("3");
-        confirmModel.setStrAddress("H.No:34-3243-32, Tamaka Secunderabad");
-        confirmModel.setStrEmail("xyzz@abc.com");
-        confirmModel.setStrContacts("1234569873");
-        CustomListViewValuesArr.add(confirmModel);
+        if (intCount > 1)
+            buttonContinue.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        setListView();
+        //setListView();
+        Log.e("ConfirmFragment", "onResume");
     }
 
     public void setListView() {

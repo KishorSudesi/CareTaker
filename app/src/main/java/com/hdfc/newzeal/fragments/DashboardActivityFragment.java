@@ -39,14 +39,14 @@ public class DashboardActivityFragment extends Fragment {
         listActivity1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToBasePackage();
+                // goToBasePackage();
             }
         });
 
         listActivity2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToBasePackage();
+                //goToBasePackage();
             }
         });
 

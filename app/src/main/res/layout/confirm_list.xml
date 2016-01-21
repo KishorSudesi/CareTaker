@@ -3,19 +3,18 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
-    android:layout_marginTop="30dp"
-    android:background="@drawable/rounded_cell"
+    android:layout_marginTop="130dp"
+    android:background="@drawable/rounded_cell_confirm_view"
     android:orientation="vertical">
 
-    <ImageView
+    <com.hdfc.views.RoundedImageView
         android:id="@+id/imageView"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_image_view" />
-    -
+        android:layout_marginTop="20dp" />
+
 
     <TableLayout
         android:layout_width="match_parent"
@@ -23,7 +22,7 @@
         android:layout_marginTop="10dp">
         -
 
-        <TableRow android:background="@drawable/one_side_border">
+        <TableRow android:background="@drawable/bottom_border_grey">
 
             <TextView
                 android:id="@+id/textName"
@@ -40,7 +39,7 @@
 
         <TableRow
             android:id="@+id/tableDesc"
-            android:background="@drawable/one_side_border">
+            android:background="@drawable/bottom_border_grey">
 
             <TextView
                 android:id="@+id/textDesc"
@@ -51,7 +50,7 @@
                 android:padding="@dimen/padding_general"
                 android:text="Description"
                 android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
         -
 
@@ -63,12 +62,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
                 android:layout_weight="1"
-                android:background="@drawable/one_side_border"
+                android:background="@drawable/bottom_border_grey"
                 android:drawableLeft="@drawable/address_icon"
                 android:drawablePadding="10dp"
+                android:gravity="left"
                 android:padding="@dimen/padding_general"
                 android:text="Whitefields, Bangalore"
-                android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
 

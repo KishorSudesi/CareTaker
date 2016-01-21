@@ -24,11 +24,12 @@ public class DbHelper extends SQLiteOpenHelper {
     private static DbHelper dbInstance = null;
     private static SQLiteDatabase db;
     public String Create_User_Tbl = "CREATE TABLE user ( user_id integer primary key autoincrement," +
-            " name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(100), contact_no VARCHAR(15)," +
-            " status integer)";
+            " name VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(100),  contact_no VARCHAR(15), address VARCHAR(300)" +
+            ", image_path varchar(100), status integer)";
     public String Create_Dependant_Tbl = "CREATE TABLE dependant ( dependant_id integer primary key autoincrement," +
             " name VARCHAR(100) unique, contact_no VARCHAR(15), address VARCHAR(300), relationship VARCHAR(20)," +
-            " age integer, diseases VARCHAR(200), notes VARCHAR(500), user_id integer, image_name varchar(100), status integer)";
+            " age integer, diseases VARCHAR(200), notes VARCHAR(500), user_id integer, image_path varchar(100), email VARCHAR(100), status integer)";
+
     private Context _ctxt;
 
     private File originalFile = null;

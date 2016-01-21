@@ -5,22 +5,17 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
 import com.hdfc.model.DependantModel;
 import com.hdfc.newzeal.DependantDetailPersonalActivity;
 import com.hdfc.newzeal.R;
+import com.hdfc.views.RoundedImageView;
 
 import java.util.ArrayList;
 
@@ -36,7 +31,7 @@ public class DependantViewAdapter extends BaseAdapter {
     private ArrayList data;
     private DependantModel tempValues = null;
     private Bitmap imageBitmap = null;
-    private RoundedBitmapDrawable roundedBitmapDrawable = null;
+    //private RoundedBitmapDrawable roundedBitmapDrawable = null;
 
     public DependantViewAdapter(Context ctxt, ArrayList d, Resources resLocal) {
         _ctxt = ctxt;
@@ -69,7 +64,7 @@ public class DependantViewAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.textName = (TextView) vi.findViewById(R.id.textViewName);
             holder.textRelation = (TextView) vi.findViewById(R.id.textViewRealtion);
-            holder.image = (ImageView) vi.findViewById(R.id.imageViewDpndt);
+            holder.image = (RoundedImageView) vi.findViewById(R.id.imageViewDpndt);
 
             vi.setTag(holder);
         } else
@@ -84,55 +79,54 @@ public class DependantViewAdapter extends BaseAdapter {
 
                 holder.textName.setText(tempValues.getStrName());
 
-                Log.e(this.getClass().getName(), tempValues.getStrName() + " ~ " + tempValues.getStrRelation());
-
                 if (!tempValues.getStrName().equalsIgnoreCase("Add Dependant") && !tempValues.getStrRelation().equalsIgnoreCase("")) {
                     holder.textRelation.setVisibility(View.VISIBLE);
                     holder.textRelation.setText(tempValues.getStrRelation());
 
-                /*imageBitmap = libs.getBitmapFromFile(_ctxt.getFilesDir()+ File.pathSeparator + tempValues.getStrImg() );
-                roundedBitmapDrawable =
+                    if (!tempValues.getStrImg().equalsIgnoreCase(""))
+                        imageBitmap = libs.getBitmapFromFile(tempValues.getStrImg(), 300, 300);
+                /*roundedBitmapDrawable =
                         RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);*/
 
-                    if (tempValues.getStrImg().equalsIgnoreCase("1"))
+                  /*  if (tempValues.getStrImg().equalsIgnoreCase("1"))
                         imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.hungal_circle);
 
                     if (tempValues.getStrImg().equalsIgnoreCase("2"))
                         imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.mrs_hungal_circle);
 
                     roundedBitmapDrawable =
-                            RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
+                            RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);*/
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, 400);
+                   /* LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
                     //params.weight = 1.0f;
                     params.topMargin = 50;
                     params.gravity = Gravity.CENTER_HORIZONTAL;
                     //params.
 
-                    holder.image.setLayoutParams(params);
+                    holder.image.setLayoutParams(params);*/
 
 
                 } else {
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.add_icon);
-                    roundedBitmapDrawable =
-                            RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.plus_icon);
+                    //roundedBitmapDrawable =
+                    //RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
+                   /* LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(140, 140);
                     //params.weight = 1.0f;
                     params.topMargin = 50;
-                    params.bottomMargin = 80;
+                    params.bottomMargin = 60;
                     params.gravity = Gravity.CENTER_HORIZONTAL;
                     //params.
 
-                    holder.image.setLayoutParams(params);
+                    holder.image.setLayoutParams(params);*/
 
                     holder.textRelation.setVisibility(View.GONE);
 
                 }
 
-                roundedBitmapDrawable.setCornerRadius(40.0f);
-                roundedBitmapDrawable.setAntiAlias(true);
-                holder.image.setImageDrawable(roundedBitmapDrawable);
+                //roundedBitmapDrawable.setCornerRadius(40.0f);
+                //roundedBitmapDrawable.setAntiAlias(true);
+                holder.image.setImageBitmap(imageBitmap);
             } catch (OutOfMemoryError oOm) {
             } catch (Exception e) {
             }
@@ -144,7 +138,6 @@ public class DependantViewAdapter extends BaseAdapter {
 
                     try {
                         String strName = ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
-                        Log.e("E", strName + " ~ ");
                         if (strName.equalsIgnoreCase("Add Dependant")) {
                             Intent selection = new Intent(_ctxt, DependantDetailPersonalActivity.class);
                             _ctxt.startActivity(selection);
@@ -165,7 +158,7 @@ public class DependantViewAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView textName;
         public TextView textRelation;
-        public ImageView image;
+        public RoundedImageView image;
     }
 
 }

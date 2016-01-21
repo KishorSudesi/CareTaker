@@ -34,6 +34,13 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return f;
     }
 
+    //@Override
+    //chk this
+    //chk this
+    /*public int getItemPosition(Object object) {
+        return super.getItemPosition(POSITION_NONE );
+    }*/
+
     @Override
     public int getCount() {
         return totalPage;

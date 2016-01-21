@@ -47,7 +47,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/person_icon"
+            android:drawableLeft="@drawable/person_icon"
             android:drawablePadding="15dp"
             android:hint="Gurunathan H."
             android:paddingLeft="10dp" />
@@ -61,7 +61,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/mail_icon"
+            android:drawableLeft="@drawable/mail_icon"
             android:drawablePadding="15dp"
             android:hint="guru@gmail.com" />
 
@@ -74,7 +74,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/pass_icon"
+            android:drawableLeft="@drawable/pass_icon"
             android:drawablePadding="15dp"
             android:hint="*******"
             android:textSize="30sp" />
@@ -88,7 +88,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/address_icon"
+            android:drawableLeft="@drawable/address_icon"
             android:drawablePadding="15dip"
             android:hint="Whitefields, Bangalore" />
 
@@ -101,7 +101,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/receiver_icon"
+            android:drawableLeft="@drawable/receiver_icon"
             android:drawablePadding="15dp"
             android:hint="7703455592" />
 
@@ -115,6 +115,7 @@
             android:layout_marginTop="20dp"
             android:layout_weight="0.55"
             android:background="@drawable/button_success"
+            android:onClick="goToDashboard"
             android:text="Save Settings"
             android:textAllCaps="false" />
 

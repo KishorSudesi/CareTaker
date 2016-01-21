@@ -16,6 +16,7 @@ import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
 import com.hdfc.views.CustomViewPager;
 
+
 public class SignupActivity extends FragmentActivity {
 
     public static ViewPager _mViewPager;
@@ -115,10 +116,12 @@ public class SignupActivity extends FragmentActivity {
 
         boolean listDependant = getIntent().getBooleanExtra("LIST_DEPENDANT", false);
 
-        CustomViewPager.setPagingEnabled(true); //listDependant
+        CustomViewPager.setPagingEnabled(listDependant); //listDependant
 
         if (listDependant) {
+
             _mViewPager.setCurrentItem(1);
+
             btnAction(1);
         } else btnAction(0);
     }
@@ -146,5 +149,10 @@ public class SignupActivity extends FragmentActivity {
             }
         });
         alertbox.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

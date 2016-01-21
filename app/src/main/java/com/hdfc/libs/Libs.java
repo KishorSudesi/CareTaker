@@ -20,6 +20,7 @@ import android.media.ExifInterface;
 import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
@@ -46,6 +47,7 @@ import com.hdfc.newzeal.DashboardActivity;
 import com.hdfc.newzeal.MyAccountActivity;
 import com.hdfc.newzeal.NotificationsActivity;
 import com.hdfc.newzeal.R;
+import com.hdfc.views.RoundedImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -660,7 +662,14 @@ public class Libs {
     }
 
     public boolean validCellPhone(String number) {
-        return android.util.Patterns.PHONE.matcher(number).matches();
+        //return android.util.Patterns.PHONE.matcher(number).matches();
+
+        boolean isValid = false;
+
+        if (number.length() >= 10 && number.length() <= 20)
+            isValid = true;
+
+        return isValid;
     }
 
     public void setupUI(View view) {
@@ -688,7 +697,7 @@ public class Libs {
 
         File file = null;
         try {
-            file = new File(_ctxt.getFilesDir(), strFileName);
+            file = new File(_ctxt.getExternalFilesDir(Environment.DIRECTORY_PICTURES), strFileName);
             file.getParentFile().mkdirs();
         } catch (Exception e) {
             e.printStackTrace();
@@ -725,13 +734,19 @@ public class Libs {
             editText.setBackground(drw);
     }
 
-    public Bitmap getBitmapFromFile(String strPath) {
+    public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
         Bitmap original = null;
         if (!strPath.equalsIgnoreCase("")) {
             try {
-                Log.d(" 3 ", "getBitmap" + strPath);
+                //
+                options.inJustDecodeBounds = true;
+                original = BitmapFactory.decodeFile(strPath, options);
+                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
+                options.inJustDecodeBounds = false;
+                original = BitmapFactory.decodeFile(strPath, options);
+                //
+                //Log.d(" 3 ", "getBitmap" + strPath);
                 original = BitmapFactory.decodeFile(strPath, options);
             } catch (OutOfMemoryError oOm) {
             } catch (Exception e) {
@@ -753,6 +768,40 @@ public class Libs {
         if (ret == null)
             ret = "Unsaved";
         return ret;
+    }
+
+    public void postImagePick(Bitmap bitmap, RoundedImageView imgButtonCamera) {
+        try {
+            /*if (Build.VERSION.SDK_INT <= 16)
+                imgButtonCamera.setBackgroundDrawable(null);
+            else
+                imgButtonCamera.setBackground(null);*/
+
+            imgButtonCamera.setImageBitmap(bitmap);
+        } catch (Exception e) {
+
+        } catch (OutOfMemoryError oOm) {
+
+        }
+    }
+
+    public Bitmap getBitmap(Uri selectedimg, int intWidth, int intHeight) throws IOException {
+
+        Bitmap original = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        try {
+            options.inJustDecodeBounds = true;
+            original = BitmapFactory.decodeFile(selectedimg.getPath(), options);
+            options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
+            options.inJustDecodeBounds = false;
+            original = BitmapFactory.decodeFile(selectedimg.getPath(), options);
+        } catch (OutOfMemoryError oOm) {
+            oOm.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return original;
     }
 
   /*  public void setWindowColoer(){

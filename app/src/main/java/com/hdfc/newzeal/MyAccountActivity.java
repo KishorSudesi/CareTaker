@@ -24,6 +24,12 @@ public class MyAccountActivity extends AppCompatActivity {
         finish();
     }
 
+    public void goToBuyServices(View v) {
+        Intent selection = new Intent(MyAccountActivity.this, AdditionalServicesActivity.class);
+        startActivity(selection);
+        finish();
+    }
+
     @Override
     public void onBackPressed() {
         //super.onBackPressed();

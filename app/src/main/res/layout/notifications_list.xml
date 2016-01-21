@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_general"
+    android:background="@color/colorWhite"
     android:orientation="vertical"
     android:padding="@dimen/padding_general"
     android:weightSum="2">
@@ -52,6 +53,7 @@
                         android:layout_marginTop="10dp"
                         android:paddingLeft="13dp"
                         android:text="Scheduled visit to Dr.Ankit from Rainbow hospitals.hyd"
+                        android:textColor="#000000"
                         android:textSize="18sp" />
 
                     <LinearLayout
@@ -64,7 +66,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="13dp"
-                            android:text="Mr.Hungat"
+                            android:text="Carla"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="18sp" />
 
@@ -82,6 +84,13 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@android:color/darker_gray" />
 
 
             <LinearLayout
@@ -119,6 +128,7 @@
                         android:layout_marginTop="10dp"
                         android:paddingLeft="13dp"
                         android:text="Scheduled visit to Dr.Ankit from Rainbow hospitals.hyd"
+                        android:textColor="#000000"
                         android:textSize="18sp" />
 
                     <LinearLayout
@@ -131,7 +141,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="13dp"
-                            android:text="Mr.Hungat"
+                            android:text="Mr.Hungal"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="18sp" />
 
@@ -153,7 +163,7 @@
 
             <View
                 android:layout_width="wrap_content"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:background="@android:color/darker_gray" />
@@ -193,6 +203,7 @@
                         android:layout_marginTop="10dp"
                         android:paddingLeft="13dp"
                         android:text="Scheduled visit to Dr.Ankit from Rainbow hospitals.hyd"
+                        android:textColor="#000000"
                         android:textSize="18sp" />
 
                     <LinearLayout
@@ -205,7 +216,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="13dp"
-                            android:text="Mr.Hungat"
+                            android:text="Mrs.Hungal"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="18sp" />
 
@@ -273,13 +284,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="13dp"
-                        android:text="Mr.Hungat 06:00pm 01 jan 2016"
+                        android:text="Carla 06:00pm 01 jan 2016"
                         android:textSize="12sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@android:color/darker_gray" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -323,7 +340,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="13dp"
-                        android:text="Mr.Hungat 06:00pm 01 jan 2016"
+                        android:text="Carla 06:00pm 01 jan 2016"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -332,7 +349,7 @@
 
             <View
                 android:layout_width="wrap_content"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:background="@android:color/darker_gray" />

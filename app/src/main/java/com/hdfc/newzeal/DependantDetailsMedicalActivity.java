@@ -24,6 +24,16 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
     private EditText editAge, editDiseases, editNotes;
     private Button buttonContinue, buttonBack;
 
+    private String strAge, strDiseases, strNotes;
+    //private static Thread backgroundThread;
+    //private static Handler myHandler;
+
+    //private ProgressDialog mProgress=null;
+
+    private boolean isUpdated;
+
+    private int intDpndtCount = 0;
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +58,9 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
         longUserId = SignupActivity.longUserId;
         strDependantName = DependantDetailPersonalActivity.strDependantName;
+
+       /* mProgress = new ProgressDialog(this);
+        myHandler = new MyHandler();*/
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,9 +94,11 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         editDiseases.setError(null);
         editNotes.setError(null);
 
-        String strAge = editAge.getText().toString();
-        String strDiseases = editDiseases.getText().toString();
-        String strNotes = editNotes.getText().toString();
+        strAge = editAge.getText().toString();
+        strDiseases = editDiseases.getText().toString();
+        strNotes = editNotes.getText().toString();
+
+        int tempIntAge = 0;
 
         boolean cancel = false;
         View focusView = null;
@@ -92,6 +107,14 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
             editAge.setError(getString(R.string.error_field_required));
             focusView = editAge;
             cancel = true;
+        } else {
+            tempIntAge = Integer.parseInt(strAge);
+
+            if (tempIntAge < 0 || tempIntAge > 150) {
+                editAge.setError(getString(R.string.error_invalid_age));
+                focusView = editAge;
+                cancel = true;
+            }
         }
 
         if (TextUtils.isEmpty(strDiseases)) {
@@ -110,14 +133,38 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             try {
-                boolean isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
+
+                /*backgroundThread = new BackgroundThread();
+                backgroundThread.start();
+                mProgress.setMessage("Creating...");
+                mProgress.show();*/
+
+                isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
+
+                //Log.e("ERROR", String.valueOf(isUpdated));
                 if (isUpdated) {
 
-                    Libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
+                    // intDpndtCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
+
                     Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
+                    DependantDetailPersonalActivity.strDependantName = "";
+                    DependantDetailPersonalActivity.longDependantId = 0;
+
                     startActivity(selection);
                     finish();
+
+                   /* AddDependantFragment.adapter.notifyDataSetChanged();
+                    if (intDpndtCount > 1)
+                        AddDependantFragment.buttonContinue.setVisibility(View.VISIBLE);*/
+
+                    /*int intCountConfirm = NewZeal.dbCon.retrieveConfirmDependants(SignupActivity.longUserId);
+
+                    if (intCountConfirm > 1)
+                        ConfirmFragment.buttonContinue.setVisibility(View.VISIBLE);
+
+                    //Resources res = getResources();
+                    ConfirmFragment.adapter.notifyDataSetChanged();*/
                 } else Libs.toast(1, 1, getString(R.string.error));
 
             } catch (Exception e) {
@@ -130,16 +177,40 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         Intent selection = new Intent(DependantDetailsMedicalActivity.this, DependantDetailPersonalActivity.class);
         //selection.putExtra("LIST_DEPENDANT", true);
         startActivity(selection);
-        finish();
+        //finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (!strDependantName.equalsIgnoreCase(""))
-            NewZeal.dbCon.retrieveDependantMedical(SignupActivity.longUserId, editAge, editDiseases, editNotes, strDependantName);
+        /*if (!strDependantName.equalsIgnoreCase(""))
+            NewZeal.dbCon.retrieveDependantMedical(SignupActivity.longUserId, editAge, editDiseases, editNotes, strDependantName);*/
 
     }
+
+    /*public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+
+                myHandler.sendEmptyMessage(0);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }*/
+    //
+
+   /* public class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            sendResult();
+        }
+    }
+
+    public void sendResult() {
+        mProgress.dismiss();
+    }*/
 
 }

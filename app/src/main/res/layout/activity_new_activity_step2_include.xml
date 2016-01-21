@@ -51,7 +51,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/edit_text"
             android:drawablePadding="20dp"
-            android:drawableRight="@mipmap/activity_icon"
+            android:drawableRight="@drawable/activity_icon_32"
             android:hint="21-Dec-15 at 6:00pm"
             android:paddingLeft="20dp"
 

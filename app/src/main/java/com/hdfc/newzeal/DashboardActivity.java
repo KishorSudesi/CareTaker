@@ -53,11 +53,11 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Necessary or the pager will only have one extra page to show
         // make this at least however many pages you can see
-        pager.setOffscreenPageLimit(3); //1
+        pager.setOffscreenPageLimit(1); //1
 
         // Set margin for pages as a negative number, so a part of next and
         // previous pages will be showed
-        pager.setPageMargin(-210); //-200
+        pager.setPageMargin(-70); //-200
         //
 
 

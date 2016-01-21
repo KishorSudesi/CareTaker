@@ -15,9 +15,14 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontwarn android.support.v7.**
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.** { *; }
+-dontwarn android.support.v4.**
+
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
+-dontwarn android.support.v7.**
+
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
@@ -25,7 +30,11 @@
 
 #sql cipher
 -dontwarn net.sqlcipher.**
-
 -keep class net.sqlcipher.** { *; }
+-keep interface net.sqlcipher.** { *; }
+
+-keep class com.shephertz.app42.** { *; }
+-keep interface com.shephertz.app42.** { *; }
+-dontwarn com.shephertz.app42.**
 
 #-keepattributes *Annotation*

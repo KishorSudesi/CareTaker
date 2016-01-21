@@ -31,7 +31,8 @@
         android:layout_marginBottom="15dp"
         android:background="@drawable/button_success"
         android:text="@string/submit"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

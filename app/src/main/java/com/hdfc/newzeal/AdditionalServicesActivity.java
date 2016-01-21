@@ -17,7 +17,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(AdditionalServicesActivity.this, DashboardActivity.class);
+                Intent newIntent = new Intent(AdditionalServicesActivity.this, MyAccountActivity.class);
                 startActivity(newIntent);
             }
         });
@@ -27,7 +27,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(AdditionalServicesActivity.this, BasePackageActivity.class);
+                Intent newIntent = new Intent(AdditionalServicesActivity.this, MyAccountActivity.class);
                 startActivity(newIntent);
             }
         });

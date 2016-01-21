@@ -26,7 +26,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:src="@drawable/oldlady" />
+                    android:src="@drawable/image_1" />
 
             </LinearLayout>
 
@@ -35,66 +35,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
                 <ImageButton
                     android:id="@+id/imageButton4"
-                    android:layout_width="wrap_content"
+                    android:layout_width="128dp"
                     android:layout_height="128dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/vegsmallsize" />
+                    android:background="@drawable/image_1" />
 
                 <ImageButton
                     android:id="@+id/imageButton5"
-                    android:layout_width="wrap_content"
+                    android:layout_width="128dp"
                     android:layout_height="128dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/od" />
+                    android:background="@drawable/image_2" />
 
                 <ImageButton
                     android:id="@+id/imageButton6"
-                    android:layout_width="wrap_content"
+                    android:layout_width="128dp"
                     android:layout_height="128dp"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/lady" />
+                    android:background="@drawable/image_3" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <ImageButton
-                    android:id="@+id/imageButton8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="128dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/salad" />
-
-                <ImageButton
-                    android:id="@+id/imageButton9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="128dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/paper" />
-
-                <ImageButton
-                    android:id="@+id/imageButton7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="128dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/handwork" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

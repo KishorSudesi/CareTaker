@@ -20,7 +20,7 @@
                 android:padding="@dimen/padding_general"
                 android:text="Activities on 13 Jan 2016"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#040404"
+                android:textColor="#999999"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -39,7 +39,7 @@
                         android:layout_height="70dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="@dimen/margin_general"
-                        android:background="@drawable/user2"
+                        android:background="@drawable/hungal_circle"
                         android:padding="@dimen/padding_general" />
                 </LinearLayout>
 

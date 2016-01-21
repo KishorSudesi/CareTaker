@@ -39,6 +39,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="@drawable/rounded_cell_blue"
                         android:src="@mipmap/smiley_icon" />
 
                     <ImageView
@@ -80,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:drawableLeft="@mipmap/ok"
+                    android:drawableLeft="@drawable/ok"
                     android:drawablePadding="15dp"
                     android:gravity="center_vertical"
                     android:padding="@dimen/padding_general"

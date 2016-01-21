@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <com.hdfc.views.RoundedImageView
         android:id="@+id/imageViewDpndt"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_image_view" />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:id="@+id/textViewRealtion"

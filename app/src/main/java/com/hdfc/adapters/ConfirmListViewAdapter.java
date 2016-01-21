@@ -3,20 +3,17 @@ package com.hdfc.adapters;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
 import com.hdfc.model.ConfirmViewModel;
 import com.hdfc.newzeal.R;
+import com.hdfc.views.RoundedImageView;
 
 import java.util.ArrayList;
 
@@ -33,7 +30,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
     private ConfirmViewModel tempValues = null;
 
     private Bitmap imageBitmap = null;
-    private RoundedBitmapDrawable roundedBitmapDrawable = null;
+    //private RoundedBitmapDrawable roundedBitmapDrawable = null;
 
     public ConfirmListViewAdapter(Context ctxt, ArrayList d, Resources resLocal) { //
         _ctxt = ctxt;
@@ -72,7 +69,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             holder.textEmail = (TextView) vi.findViewById(R.id.textEmail);
             holder.tableRow = (TableRow) vi.findViewById(R.id.tableDesc);
 
-            holder.image = (ImageView) vi.findViewById(R.id.imageView);
+            holder.image = (RoundedImageView) vi.findViewById(R.id.imageView);
 
             vi.setTag(holder);
         } else
@@ -101,21 +98,23 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             }
 
             try {
-                if (tempValues.getStrImg().equalsIgnoreCase("1"))
+                /*if (tempValues.getStrImg().equalsIgnoreCase("1"))
                     imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.guru_circle);
 
                 if (tempValues.getStrImg().equalsIgnoreCase("2"))
                     imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.hungal_circle);
 
                 if (tempValues.getStrImg().equalsIgnoreCase("3"))
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.mrs_hungal_circle);
+                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.mrs_hungal_circle);*/
 
-                roundedBitmapDrawable =
+                imageBitmap = libs.getBitmapFromFile(tempValues.getStrImg(), 300, 300);
+
+                /*roundedBitmapDrawable =
                         RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
 
                 roundedBitmapDrawable.setCornerRadius(40.0f);
-                roundedBitmapDrawable.setAntiAlias(true);
-                holder.image.setImageDrawable(roundedBitmapDrawable);
+                roundedBitmapDrawable.setAntiAlias(true);*/
+                holder.image.setImageBitmap(imageBitmap);
             } catch (OutOfMemoryError oOm) {
             } catch (Exception e) {
             }
@@ -132,7 +131,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
         public TextView textAddress;
         public TextView textContact;
         public TextView textEmail;
-        public ImageView image;
+        public RoundedImageView image;
         public TableRow tableRow;
     }
 
