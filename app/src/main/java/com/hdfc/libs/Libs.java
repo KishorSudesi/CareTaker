@@ -25,19 +25,25 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +53,12 @@ import com.hdfc.newzeal.DashboardActivity;
 import com.hdfc.newzeal.MyAccountActivity;
 import com.hdfc.newzeal.NotificationsActivity;
 import com.hdfc.newzeal.R;
-import com.hdfc.views.RoundedImageView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLConnection;
@@ -77,6 +84,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Libs {
 
+    public static Uri customerImageUri;
     private static Context _ctxt;
     private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
     private static ArrayList<String> pathExternals;
@@ -297,26 +305,29 @@ public class Libs {
     }
 
     public static void toast(int type, int duration, String message) {
-        String color = "#000000";
 
-        int time = Toast.LENGTH_LONG;
+        String strColor = "#ffffff";
+
+        if (type == 2)
+            strColor = "#fcc485";
+
+        LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).findViewById(R.id.toast_layout_root));
+
+        TextView text = (TextView) layout.findViewById(R.id.text);
+        text.setText(message);
+        text.setTextColor(Color.parseColor(strColor));
+
+        Toast toast = new Toast(_ctxt);
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 
         if (duration == 1)
-            time = Toast.LENGTH_SHORT;
+            toast.setDuration(Toast.LENGTH_LONG);
 
-        if (type == 2)
-            color = "#cccccc";
+        if (duration == 2)
+            toast.setDuration(Toast.LENGTH_SHORT);
 
-        if (type == 2)
-            color = "#666666";
-
-        //color = "#cccccc";
-
-        Toast toast = Toast.makeText(_ctxt, message, time);
-        View view = toast.getView();
-        view.setBackgroundColor(Color.parseColor(color));
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        //toast.setMargin(30.0f, 30.0f);
+        toast.setView(layout);
         toast.show();
     }
     //
@@ -617,50 +628,6 @@ public class Libs {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    public void showAlertDialog(Context context, String title, String message,
-                                Boolean status) {
-        try {
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            // Setting Dialog Title
-            alertDialog.setTitle(title);
-            // Setting Dialog Message
-            alertDialog.setMessage(message);
-            // Setting Dialog Cancelable
-            alertDialog.setCancelable(false);
-            // Setting OK Button
-            /*alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });*/
-            // Showing Alert Message
-            alertDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    public void showAlertDialog(Context context, String title, String message,
-                                Boolean status, DialogInterface.OnClickListener listener) {
-        try {
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-
-            // Setting Dialog Title
-            alertDialog.setTitle(title);
-            // Setting Dialog Message
-            alertDialog.setMessage(message);
-            // Setting Dialog Cancelable
-            alertDialog.setCancelable(false);
-            // Setting OK Button
-            //alertDialog.setButton("OK", listener);
-            // Showing Alert Message
-            alertDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public boolean validCellPhone(String number) {
         //return android.util.Patterns.PHONE.matcher(number).matches();
 
@@ -706,6 +673,63 @@ public class Libs {
         return file;
     }
 
+    public void selectImage(final String strFileName, final Fragment fragment, final Activity activity) {
+        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(_ctxt);
+        builder.setTitle("Add a Profile Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    openCamera(strFileName, fragment, activity);
+                } else if (items[item].equals("Choose from Library")) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                    if (fragment != null)
+                        fragment.startActivityForResult(Intent.createChooser(intent, "Select a Picture"), Config.START_GALLERY_REQUEST_CODE);
+                    else
+                        activity.startActivityForResult(Intent.createChooser(intent, "Select a Picture"), Config.START_GALLERY_REQUEST_CODE);
+
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    public void openCamera(String strFileName, Fragment fragment, final Activity activity) {
+
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        File file = createFileInternal(strFileName);
+        customerImageUri = Uri.fromFile(file);
+        if (file != null) {
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, customerImageUri);
+
+            if (fragment != null)
+                fragment.startActivityForResult(cameraIntent, Config.START_CAMERA_REQUEST_CODE);
+            else
+                activity.startActivityForResult(cameraIntent, Config.START_CAMERA_REQUEST_CODE);
+        }
+    }
+
+    public void copyInputStreamToFile(InputStream in, File file) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current, EditText editCurrent) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
@@ -734,19 +758,31 @@ public class Libs {
             editText.setBackground(drw);
     }
 
+    public void setEditTextDrawableGeneral(View v, Drawable drw) {
+        if (Build.VERSION.SDK_INT <= 16)
+            v.setBackgroundDrawable(drw);
+        else
+            v.setBackground(drw);
+    }
+
+    public void setStatusBarColor(String strColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = ((Activity) _ctxt).getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.parseColor(strColor));
+        }
+    }
+
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
-        if (!strPath.equalsIgnoreCase("")) {
+        if (strPath != null && !strPath.equalsIgnoreCase("")) {
             try {
-                //
                 options.inJustDecodeBounds = true;
                 original = BitmapFactory.decodeFile(strPath, options);
                 options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
                 options.inJustDecodeBounds = false;
-                original = BitmapFactory.decodeFile(strPath, options);
-                //
-                //Log.d(" 3 ", "getBitmap" + strPath);
                 original = BitmapFactory.decodeFile(strPath, options);
             } catch (OutOfMemoryError oOm) {
             } catch (Exception e) {
@@ -770,47 +806,16 @@ public class Libs {
         return ret;
     }
 
-    public void postImagePick(Bitmap bitmap, RoundedImageView imgButtonCamera) {
-        try {
-            /*if (Build.VERSION.SDK_INT <= 16)
-                imgButtonCamera.setBackgroundDrawable(null);
-            else
-                imgButtonCamera.setBackground(null);*/
+    private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
 
-            imgButtonCamera.setImageBitmap(bitmap);
-        } catch (Exception e) {
+        if (v == null)
+            return;
 
-        } catch (OutOfMemoryError oOm) {
-
-        }
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
     }
-
-    public Bitmap getBitmap(Uri selectedimg, int intWidth, int intHeight) throws IOException {
-
-        Bitmap original = null;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-
-        try {
-            options.inJustDecodeBounds = true;
-            original = BitmapFactory.decodeFile(selectedimg.getPath(), options);
-            options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
-            options.inJustDecodeBounds = false;
-            original = BitmapFactory.decodeFile(selectedimg.getPath(), options);
-        } catch (OutOfMemoryError oOm) {
-            oOm.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return original;
-    }
-
-  /*  public void setWindowColoer(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.BLUE);
-        }
-    }*/
 
     //Application Specigfic Start
 
@@ -913,5 +918,27 @@ public class Libs {
         _ctxt.startActivity(newIntent);
         ((Activity) _ctxt).finish();
     }
+
+    public int getBitmapHeightFromFile(String strPath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap original = null;
+        int intSampleHeight = 0;
+        if (strPath != null && !strPath.equalsIgnoreCase("")) {
+            try {
+                //
+                options.inJustDecodeBounds = true;
+                original = BitmapFactory.decodeFile(strPath, options);
+                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, Config.intWidth, Config.intHeight);
+                options.inJustDecodeBounds = false;
+                intSampleHeight = options.outHeight / options.inSampleSize;
+                original.recycle();
+            } catch (OutOfMemoryError oOm) {
+            } catch (Exception e) {
+            }
+        }
+        return intSampleHeight;
+    }
+
     //Application Specig=fic End
+
 }

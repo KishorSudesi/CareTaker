@@ -1,26 +1,25 @@
 package com.hdfc.newzeal;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -30,19 +29,28 @@ import com.hdfc.libs.Libs;
 import com.hdfc.views.RoundedImageView;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DependantDetailPersonalActivity extends AppCompatActivity {
 
-    public static Uri fileUri;
     public static RoundedImageView imgButtonCamera;
     public static String dependantImgName = "";
     public static String strImageName = "";
     public static String strDependantName = "";
     public static long longDependantId = 0;
+    public static Bitmap bitmap = null;
+    public static Uri uri;
+    private static Thread backgroundThread, backgroundThreadCamera;
+    private static Handler backgroundThreadHandler;
+    private static boolean isCamera = false;
     private Libs libs;
     private EditText editName, editContactNo, editAddress, editRelation, editDependantEmail;
     private Button buttonContinue;
+    private ProgressDialog mProgress = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,8 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         editAddress = (EditText) findViewById(R.id.editAddress);
         editRelation = (EditText) findViewById(R.id.editRelation);
         editDependantEmail = (EditText) findViewById(R.id.editDependantEmail);
+
+        mProgress = new ProgressDialog(DependantDetailPersonalActivity.this);
 
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
 
@@ -74,10 +84,6 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 validateDependant();
-
-                /*Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
-                startActivity(selection);
-                finish();*/
             }
         });
 
@@ -88,19 +94,14 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera(dependantImgName);
+                libs.selectImage(dependantImgName, null, DependantDetailPersonalActivity.this);
+                isCamera = true;
             }
         });
 
         setupSearchView();
 
-        //
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor("#cccccc"));
-        }
+        libs.setStatusBarColor("#cccccc");
     }
 
     public void backToSelection() {
@@ -115,30 +116,6 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
                     Intent selection = new Intent(DependantDetailPersonalActivity.this, SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
 
-                    //
-                    //
-                    /*
-                    int intCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
-
-                    if (intCount > 1)
-                        AddDependantFragment.buttonContinue.setVisibility(View.VISIBLE);
-
-                    //Resources res = getResources();
-                    AddDependantFragment.adapter.notifyDataSetChanged();
-
-                    ///
-
-                    int intCountConfirm = NewZeal.dbCon.retrieveConfirmDependants(SignupActivity.longUserId);
-
-                    if (intCountConfirm > 1)
-                        ConfirmFragment.buttonContinue.setVisibility(View.VISIBLE);
-
-                    //Resources res = getResources();
-                    ConfirmFragment.adapter.notifyDataSetChanged();*/
-
-                    //
-                    //
-
                     arg0.dismiss();
                     startActivity(selection);
                     finish();
@@ -152,40 +129,6 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             }
         });
         alertbox.show();
-    }
-
-    public void openCamera(String strFileName) {
-        //strFileName = strFileName+".jpeg";
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = libs.createFileInternal(strFileName);
-        fileUri = Uri.fromFile(file);
-        if (file != null) {
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-            startActivityForResult(cameraIntent, Config.START_CAMERA_REQUEST_CODE);
-        }
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bitmap = null;
-        if (resultCode == RESULT_OK) { //&& data != null
-            try {
-                switch (requestCode) {
-                    case Config.START_CAMERA_REQUEST_CODE:
-                        bitmap = libs.getBitmap(fileUri, 300, 300);
-                        strImageName = fileUri.getPath();
-                        Log.e("PATH 1", fileUri.getPath().toString());
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (bitmap != null) {
-            libs.postImagePick(bitmap, imgButtonCamera);
-        }
     }
 
     private void validateDependant() {
@@ -271,8 +214,11 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView = (SearchView) findViewById(R.id.searchView);
-        SearchableInfo searchableInfo = searchManager.getSearchableInfo(getComponentName());
+        SearchView searchView = (SearchView) findViewById(R.id.searchView);
+
+        ComponentName cn = new ComponentName(this, DependantDetailPersonalActivity.class);
+
+        SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
         searchView.setSearchableInfo(searchableInfo);
     }
 
@@ -302,10 +248,93 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Log.e("DependantDetail", String.valueOf(strDependantName));
+        String strImgPath = NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.longUserId, editName, editContactNo, editAddress, editRelation, strDependantName, editDependantEmail);
 
-        if (!strDependantName.equalsIgnoreCase(""))
-            NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.longUserId, editName, editContactNo, editAddress, editRelation, strDependantName, imgButtonCamera, editDependantEmail);
+        if (!strDependantName.equalsIgnoreCase("") && isCamera == false) {
+            strImageName = strImgPath;
+            backgroundThreadHandler = new BackgroundThreadHandler();
+            backgroundThreadCamera = new BackgroundThreadCamera();
+            backgroundThreadCamera.start();
+        } else isCamera = false;
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (resultCode == Activity.RESULT_OK) { //&& data != null
+            try {
+                //Libs.toast(1, 1, "Getting Image...");
+                mProgress.setMessage("Loading...");
+                mProgress.show();
+                switch (requestCode) {
+                    case Config.START_CAMERA_REQUEST_CODE:
+                        strImageName = Libs.customerImageUri.getPath().toString();
+                        backgroundThreadHandler = new BackgroundThreadHandler();
+                        backgroundThreadCamera = new BackgroundThreadCamera();
+                        backgroundThreadCamera.start();
+                        break;
+
+                    case Config.START_GALLERY_REQUEST_CODE:
+                        if (intent.getData() != null) {
+                            uri = intent.getData();
+                            backgroundThreadHandler = new BackgroundThreadHandler();
+                            backgroundThread = new BackgroundThread();
+                            backgroundThread.start();
+                        }
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+
+            try {
+                if (uri != null) {
+                    Calendar calendar = new GregorianCalendar();
+                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+                    File galleryFile = libs.createFileInternal(strFileName);
+                    strImageName = galleryFile.getAbsolutePath();
+                    InputStream is = getContentResolver().openInputStream(uri);
+                    libs.copyInputStreamToFile(is, galleryFile);
+                    bitmap = libs.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
+                }
+                backgroundThreadHandler.sendEmptyMessage(0);
+            } catch (IOException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class BackgroundThreadCamera extends Thread {
+        @Override
+        public void run() {
+
+            try {
+                if (strImageName != null && !strImageName.equalsIgnoreCase("")) {
+                    bitmap = libs.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
+                }
+                backgroundThreadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class BackgroundThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            mProgress.dismiss();
+            if (imgButtonCamera != null && bitmap != null)
+                imgButtonCamera.setImageBitmap(bitmap);
+        }
     }
 }

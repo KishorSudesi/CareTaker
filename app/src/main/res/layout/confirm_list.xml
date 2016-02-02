@@ -1,98 +1,106 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginTop="130dp"
-    android:background="@drawable/rounded_cell_confirm_view"
+    android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <com.hdfc.views.RoundedImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp" />
-
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-        -
-
-        <TableRow android:background="@drawable/bottom_border_grey">
-
-            <TextView
-                android:id="@+id/textName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_general"
-                android:layout_weight="1"
-                android:padding="@dimen/padding_general"
-                android:text="Gurunathan M."
-                android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </TableRow>
-
-
-        <TableRow
-            android:id="@+id/tableDesc"
-            android:background="@drawable/bottom_border_grey">
-
-            <TextView
-                android:id="@+id/textDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_general"
-                android:layout_weight="1"
-                android:padding="@dimen/padding_general"
-                android:text="Description"
-                android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </TableRow>
-        -
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/textAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_general"
-                android:layout_weight="1"
-                android:background="@drawable/bottom_border_grey"
-                android:drawableLeft="@drawable/address_icon"
-                android:drawablePadding="10dp"
-                android:gravity="left"
-                android:padding="@dimen/padding_general"
-                android:text="Whitefields, Bangalore"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </TableRow>
-
-    </TableLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_general"
+        android:layout_marginRight="@dimen/margin_general"
+        android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/confirmLayoutRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
+            android:background="@drawable/confirm_view"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp">
+                -
+
+                <TableRow android:background="@drawable/bottom_border_grey">
+
+                    <TextView
+                        android:id="@+id/textName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_general"
+                        android:layout_weight="1"
+                        android:padding="@dimen/padding_general"
+                        android:text="Gurunathan M."
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                </TableRow>
+
+
+                <TableRow
+                    android:id="@+id/tableDesc"
+                    android:background="@drawable/bottom_border_grey">
+
+                    <TextView
+                        android:id="@+id/textDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_general"
+                        android:layout_weight="1"
+                        android:padding="@dimen/padding_general"
+                        android:text="Description"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+
+            </TableLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_general"
+                android:background="@drawable/bottom_border_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_general">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/address_icon" />
+
+                <TextView
+                android:id="@+id/textAddress"
+                    android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                    android:text="E-26, Elizabeth Square, San Fransisco, USA"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
                 android:id="@+id/textContacNo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
                 android:layout_weight="1"
-            android:drawableLeft="@drawable/receiver_icon"
-            android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/receiver_icon"
+                    android:drawablePadding="10dp"
                 android:padding="@dimen/padding_general"
                 android:text="9876543210"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <View
+                <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
@@ -109,16 +117,20 @@
                 android:padding="8dp"
                 android:text="abc@xyz.com"
 
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <com.hdfc.views.RoundedImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/mrs_hungal_circle" />
 
-
-
-
-
-
-
-
+</RelativeLayout>

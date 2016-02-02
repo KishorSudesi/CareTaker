@@ -21,6 +21,10 @@ public class AccountSuccessActivity extends AppCompatActivity {
         int screenHeight = displaymetrics.heightPixels;
         int screenWidth = displaymetrics.widthPixels;
 
+        Libs libs = new Libs(AccountSuccessActivity.this);
+
+        Libs.toast(1, 1, "Registered Successfully");
+
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, screenWidth, screenHeight));
@@ -38,11 +42,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
     }
 
     public void goToDashboard(View v) {
-        //Libs libs = new Libs(AccountSuccessActivity.this);
-        //libs.toast(1, 1, getString(R.string.coming_soon));
-
         Intent dashboardIntent = new Intent(AccountSuccessActivity.this, DashboardActivity.class);
         startActivity(dashboardIntent);
-        finish();
     }
 }

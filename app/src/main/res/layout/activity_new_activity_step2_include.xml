@@ -42,7 +42,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
@@ -61,7 +61,7 @@
             android:id="@+id/editText2"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_below="@id/editText"
+            android:layout_below="@id/editTextDate"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"

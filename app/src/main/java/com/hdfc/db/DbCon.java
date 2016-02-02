@@ -6,14 +6,19 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.hdfc.libs.Libs;
+import com.hdfc.app42service.UploadService;
+import com.hdfc.config.Config;
 import com.hdfc.model.ConfirmViewModel;
 import com.hdfc.model.DependantModel;
+import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.newzeal.fragments.AddDependantFragment;
 import com.hdfc.newzeal.fragments.ConfirmFragment;
-import com.hdfc.views.RoundedImageView;
 
 import net.sqlcipher.Cursor;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DbCon {
 
@@ -64,8 +69,6 @@ public class DbCon {
 
                 cur = dbHelper.fetch("user", new String[]{"user_id"}, "user_id=?", new String[]{String.valueOf(longUserId)}, null, null, false, null, null);
 
-                //Log.e("IMAEG_PAHT", strImagPath);
-
                 if (cur.getCount() <= 0) {
 
                     longInserted = dbHelper.insert(new String[]{strName, strEmail, strPassword, strContactNo, "0", strImagPath, strAddress},
@@ -92,44 +95,6 @@ public class DbCon {
         return longInserted;
     }
 
-    public void retrieveUser(long longUserId, EditText editName, EditText editemail, EditText editContactNo, RoundedImageView roundedImageView, EditText editAddress) {
-
-        if (isDbOpened) {
-            Cursor cur = null;
-
-            try {
-
-                cur = dbHelper.fetch("user", new String[]{"name", "email", "contact_no", "image_path", "address"}, "user_id=?", new String[]{String.valueOf(longUserId)}, "user_id DESC", "0,1", true, null, null);
-                if (cur.getCount() > 0) {
-                    Libs libs = new Libs(context);
-                    cur.moveToFirst();
-                    String strImg = "";
-                    while (cur.isAfterLast() == false) {
-                        editName.setText(cur.getString(0));
-                        editemail.setText(cur.getString(1));
-                        editContactNo.setText(cur.getString(2));
-                        editAddress.setText(cur.getString(4));
-                        strImg = cur.getString(3);
-                        Log.e("Image 1", strImg);
-
-                        try {
-                            if (!strImg.equalsIgnoreCase(""))
-                                roundedImageView.setImageBitmap(libs.getBitmapFromFile(strImg, 300, 300));
-                        } catch (OutOfMemoryError oOm) {
-
-                        }
-                        cur.moveToNext();
-                    }
-                }
-
-                dbHelper.closeCursor(cur);
-            } catch (Exception e) {
-                dbHelper.closeCursor(cur);
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void deleteTempUsers() {
 
         if (isDbOpened) {
@@ -154,8 +119,6 @@ public class DbCon {
 
                 if (cur.getCount() <= 0) {
 
-                    // Log.e("Dependant", strImageName+ "w ");
-
                     longInserted = dbHelper.insert(new String[]{strName, strContactNo, strAddress, strRelation, String.valueOf(longUserId), "0", strImageName, strEmail},
                             new String[]{"name", "contact_no", "address", "relationship", "user_id", "status", "image_path", "email"}, "dependant");
                 } else {
@@ -179,7 +142,9 @@ public class DbCon {
         return longInserted;
     }
 
-    public void retrieveDependantPersonal(long longUserId, EditText editName, EditText editContactNo, EditText editAddress, EditText editRelation, String strName, RoundedImageView imgButtonCamera, EditText editEmail) {
+    public String retrieveDependantPersonal(long longUserId, EditText editName, EditText editContactNo, EditText editAddress, EditText editRelation, String strName, EditText editEmail) {
+
+        String strImg = "";
 
         if (isDbOpened && longUserId > 0) {
             Cursor cur = null;
@@ -189,14 +154,11 @@ public class DbCon {
                 cur = dbHelper.fetch("dependant", new String[]{"name", "contact_no", "address", "relationship", "image_path", "email"}, "user_id=? and name=?", new String[]{String.valueOf(longUserId), strName}, "name DESC", "0,1", true, null, null);
 
                 if (cur.getCount() > 0) {
-                    Libs libs = new Libs(context);
                     cur.moveToFirst();
-                    String strImg = "";
+
                     while (cur.isAfterLast() == false) {
 
                         strImg = cur.getString(4);
-
-                        //Log.d("TAG 2", cur.getString(4));
                         editName.setText(cur.getString(0));
                         editContactNo.setText(cur.getString(1));
                         editAddress.setText(cur.getString(2));
@@ -205,13 +167,6 @@ public class DbCon {
 
                         Log.e("Image 2", strImg);
 
-                        try {
-                            if (!strImg.equalsIgnoreCase(""))
-                                imgButtonCamera.setImageBitmap(libs.getBitmapFromFile(strImg, 300, 300));
-                        } catch (OutOfMemoryError oOm) {
-
-                        }
-
                         cur.moveToNext();
                     }
                 }
@@ -221,33 +176,8 @@ public class DbCon {
                 dbHelper.closeCursor(cur);
             }
         }
+        return strImg;
     }
-
-    /*public void retrieveDependantMedical(long longUserId, EditText editAge, EditText editDiseases, EditText editNotes, String strName) {
-
-        if (isDbOpened) {
-            Cursor cur = null;
-
-            try {
-
-                cur = dbHelper.fetch("user", new String[]{"age", "diseases", "notes"}, "user_id=? and name=?", new String[]{String.valueOf(longUserId), strName}, "name DESC", "0,1", true, null, null);
-
-                if (cur.getCount() > 0) {
-                    cur.moveToFirst();
-                    while (cur.isAfterLast() == false) {
-                        editAge.setText(cur.getString(0));
-                        editDiseases.setText(cur.getString(1));
-                        editNotes.setText(cur.getString(2));
-                        cur.moveToNext();
-                    }
-                }
-
-                dbHelper.closeCursor(cur);
-            } catch (Exception e) {
-                dbHelper.closeCursor(cur);
-            }
-        }
-    }*/
 
     public boolean updateDependantMedicalDetails(String strName, String strAge, String strDiseases, String strNotes, long longUserId) {
 
@@ -278,7 +208,7 @@ public class DbCon {
 
     public int retrieveDependants(long longUserId) {
 
-        DependantModel dpndntModel = null;
+        DependantModel dpndntModel;
 
         AddDependantFragment.CustomListViewValuesArr.clear();
 
@@ -289,7 +219,7 @@ public class DbCon {
 
             try {
 
-                cur = dbHelper.fetch("dependant", new String[]{"name", "image_path", "relationship"}, "user_id=?", new String[]{String.valueOf(longUserId)}, "relationship ASC", null, true, null, null);
+                cur = dbHelper.fetch("dependant", new String[]{"name", "image_path", "relationship", "notes", "address", "contact_no", "email"}, "user_id=?", new String[]{String.valueOf(longUserId)}, "relationship ASC", null, true, null, null);
 
                 if(cur.getCount()>0) {
 
@@ -300,6 +230,10 @@ public class DbCon {
                         dpndntModel.setStrName(cur.getString(0));
                         dpndntModel.setStrRelation(cur.getString(2));
                         dpndntModel.setStrImg(cur.getString(1));
+                        dpndntModel.setStrDesc(cur.getString(3));
+                        dpndntModel.setStrAddress(cur.getString(4));
+                        dpndntModel.setStrContacts(cur.getString(5));
+                        dpndntModel.setStrEmail(cur.getString(6));
 
                         Log.e("Image 3", cur.getString(1));
 
@@ -320,8 +254,14 @@ public class DbCon {
         dpndntModel.setStrName("Add Dependant");
         dpndntModel.setStrRelation("");
         dpndntModel.setStrImg("");
-        count++;
+        dpndntModel.setStrDesc("");
+        dpndntModel.setStrAddress("");
+        dpndntModel.setStrContacts("");
+        dpndntModel.setStrEmail("");
+
         AddDependantFragment.CustomListViewValuesArr.add(dpndntModel);
+
+        count++;
 
         return count;
     }
@@ -334,77 +274,221 @@ public class DbCon {
 
         int count = 0;
 
-        if (isDbOpened && longUserId > 0) {
-            Cursor cur = null;
+        if (longUserId > 0) {
 
             try {
 
-                cur = dbHelper.fetch("user", new String[]{"name", "address", "email", "contact_no", "image_path"}, "user_id=?", new String[]{String.valueOf(longUserId)}, "user_id DESC", "0,1", true, null, null);
+                confirmViewModel = new ConfirmViewModel();
+                confirmViewModel.setStrName(SignupActivity.strCustomerName);
+                confirmViewModel.setStrDesc("");
+                confirmViewModel.setStrAddress(SignupActivity.strCustomerAddress);
+                confirmViewModel.setStrContacts(SignupActivity.strCustomerContactNo);
+                confirmViewModel.setStrEmail(SignupActivity.strCustomerEmail);/////chk this
+                confirmViewModel.setStrImg(SignupActivity.strCustomerImg);
 
-                if (cur.getCount() > 0) {
-                    //Libs libs = new Libs(context);
-                    cur.moveToFirst();
-                    while (cur.isAfterLast() == false) {
+                count++;
 
+                Log.e("Image 4", SignupActivity.strCustomerImg);
+
+                ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
+
+                for (DependantModel dpndntModel : AddDependantFragment.CustomListViewValuesArr) {
+
+                    if (!dpndntModel.getStrName().equalsIgnoreCase("Add Dependant")) {
                         confirmViewModel = new ConfirmViewModel();
-                        confirmViewModel.setStrName(cur.getString(0));
-                        confirmViewModel.setStrDesc("");
-                        confirmViewModel.setStrAddress(cur.getString(1));
-                        confirmViewModel.setStrContacts(cur.getString(3));
-                        confirmViewModel.setStrEmail(cur.getString(2));/////chk this
-                        confirmViewModel.setStrImg(cur.getString(4));
+                        confirmViewModel.setStrName(dpndntModel.getStrName());
+                        confirmViewModel.setStrDesc(dpndntModel.getStrDesc());
+                        confirmViewModel.setStrAddress(dpndntModel.getStrAddress());
+                        confirmViewModel.setStrContacts(dpndntModel.getStrContacts());
+                        confirmViewModel.setStrEmail(dpndntModel.getStrEmail());
+                        confirmViewModel.setStrImg(dpndntModel.getStrImg());
 
-                        Log.e("Image 4", cur.getString(4));
-
-                        ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
-
-                        count++;
-
-                        cur.moveToNext();
-                    }
-                }
-
-                dbHelper.closeCursor(cur);
-
-                //
-                cur = null;
-                cur = dbHelper.fetch("dependant", new String[]{"name", "notes", "address", "contact_no", "email", "image_path"}, "user_id=?", new String[]{String.valueOf(longUserId)}, "relationship ASC", null, true, null, null);
-
-                if (cur.getCount() > 0) {
-
-                    cur.moveToFirst();
-                    while (cur.isAfterLast() == false) {
-
-                        confirmViewModel = new ConfirmViewModel();
-                        confirmViewModel.setStrName(cur.getString(0));
-                        confirmViewModel.setStrDesc(cur.getString(1));
-                        confirmViewModel.setStrAddress(cur.getString(2));
-                        confirmViewModel.setStrContacts(cur.getString(3));
-                        confirmViewModel.setStrEmail(cur.getString(4));
-                        confirmViewModel.setStrImg(cur.getString(5));
+                        Log.e("Image 5", dpndntModel.getStrImg());
 
                         ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
                         count++;
-
-                        Log.e("Image 5", cur.getString(5));
-
-                        cur.moveToNext();
                     }
-                }
+                    }
 
-                dbHelper.closeCursor(cur);
-
-                //
-
-                //
             } catch (Exception e) {
-                dbHelper.closeCursor(cur);
+
             }
         }
 
 
         return count;
     }
+
+    public boolean sendToServer() {
+
+        UploadService uploadService;
+
+        final boolean[] isFormed = {true};
+
+        JSONObject jsonCustomer = new JSONObject();
+
+        JSONArray jsonArrayDependant = new JSONArray();
+
+        uploadService = new UploadService(context);
+
+        Config.jsonServer = null;
+
+        try {
+
+            jsonCustomer.put("Customer_Name", SignupActivity.strCustomerName);
+            jsonCustomer.put("Customer_Address", SignupActivity.strCustomerAddress);
+            jsonCustomer.put("Customer_Contact_No", SignupActivity.strCustomerContactNo);
+            jsonCustomer.put("Customer_Email", SignupActivity.strCustomerEmail);/////chk this
+
+           /* uploadService.uploadImage(SignupActivity.strCustomerImg, SignupActivity.strCustomerName, "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new AsyncApp42ServiceApi.App42UploadServiceListener() {
+                @Override
+                public void onUploadImageSuccess(Upload response, String fileName, String userName) {
+                    isFormed[0] =true;
+                }
+
+                @Override
+                public void onUploadImageFailed(App42Exception ex) {
+                    isFormed[0] =false;
+                }
+
+                @Override
+                public void onGetImageSuccess(Upload response) {
+                    isFormed[0] =true;
+                }
+
+                @Override
+                public void onGetImageFailed(App42Exception ex) {
+                    isFormed[0] =false;
+                }
+
+                @Override
+                public void onSuccess(Upload response) {
+                    isFormed[0] =true;
+                }
+
+                @Override
+                public void onException(App42Exception ex) {
+                    isFormed[0] =false;
+                }
+
+                @Override
+                public void onSuccess(Object o) {
+                    isFormed[0] =true;
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    isFormed[0] =false;
+                }
+            });*/
+
+            if (isDbOpened) {
+
+                Cursor cur = null;
+
+                try {
+
+                    cur = dbHelper.fetch("user", new String[]{"password"}, "email=?", new String[]{SignupActivity.strCustomerEmail}, null, null, false, null, null);
+
+                    if (cur.getCount() > 0) {
+                        cur.moveToFirst();
+                        while (cur.isAfterLast() == false) {
+                            jsonCustomer.put("Customer_Password", cur.getString(0));
+                            cur.moveToNext();
+                        }
+                        dbHelper.closeCursor(cur);
+                    }
+                } catch (Exception e) {
+                    dbHelper.closeCursor(cur);
+                }
+
+                cur = null;
+
+                try {
+
+                    cur = dbHelper.fetch("dependant", new String[]{"name", "email", "contact_no", "address", "relationship", "notes", "age", "diseases", "image_path"}, "user_id=?", new String[]{String.valueOf(SignupActivity.longUserId)}, "relationship ASC", null, true, null, null);
+
+                    if (cur.getCount() > 0) {
+
+                        cur.moveToFirst();
+                        while (cur.isAfterLast() == false) {
+
+                            JSONObject jsonDependant = new JSONObject();
+                            jsonDependant.put("Dependant_Name", cur.getString(0));
+                            jsonDependant.put("Dependant_Email", cur.getString(1));
+                            jsonDependant.put("Dependant_Contact_No", cur.getString(2));
+                            jsonDependant.put("Dependant_Address", cur.getString(3));
+                            jsonDependant.put("Dependant_Relation", cur.getString(4));
+                            jsonDependant.put("Dependant_Notes", cur.getString(5));
+                            jsonDependant.put("Dependant_Age", cur.getString(6));
+                            jsonDependant.put("Dependant_Diseases", cur.getString(7));
+
+                           /* uploadService.uploadImage(cur.getString(8), cur.getString(0), "Profile Picture", cur.getString(1), UploadFileType.IMAGE, new AsyncApp42ServiceApi.App42UploadServiceListener() {
+                                @Override
+                                public void onUploadImageSuccess(Upload response, String fileName, String userName) {
+                                    isFormed[0] =true;
+                                }
+
+                                @Override
+                                public void onUploadImageFailed(App42Exception ex) {
+                                    isFormed[0] =false;
+                                }
+
+                                @Override
+                                public void onGetImageSuccess(Upload response) {
+                                    isFormed[0] =true;
+                                }
+
+                                @Override
+                                public void onGetImageFailed(App42Exception ex) {
+                                    isFormed[0] =false;
+                                }
+
+                                @Override
+                                public void onSuccess(Upload response) {
+                                    isFormed[0] =true;
+                                }
+
+                                @Override
+                                public void onException(App42Exception ex) {
+                                    isFormed[0] =false;
+                                }
+
+                                @Override
+                                public void onSuccess(Object o) {
+                                    isFormed[0] =true;
+                                }
+
+                                @Override
+                                public void onException(Exception e) {
+                                    isFormed[0] =false;
+                                }
+                            });*/
+
+                            jsonArrayDependant.put(jsonDependant);
+                            cur.moveToNext();
+                        }
+
+                        jsonCustomer.put("Dependants", jsonArrayDependant);
+                    }
+
+                    dbHelper.closeCursor(cur);
+                } catch (Exception e) {
+                    dbHelper.closeCursor(cur);
+                }
+            }
+
+            Config.jsonServer = jsonCustomer;
+
+            isFormed[0] = true;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return isFormed[0];
+    }
+
 
     public class DbOpenThread extends Thread {
         @Override

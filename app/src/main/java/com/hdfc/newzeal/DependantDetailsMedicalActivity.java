@@ -25,10 +25,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
     private Button buttonContinue, buttonBack;
 
     private String strAge, strDiseases, strNotes;
-    //private static Thread backgroundThread;
-    //private static Handler myHandler;
 
-    //private ProgressDialog mProgress=null;
 
     private boolean isUpdated;
 
@@ -134,37 +131,19 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         } else {
             try {
 
-                /*backgroundThread = new BackgroundThread();
-                backgroundThread.start();
-                mProgress.setMessage("Creating...");
-                mProgress.show();*/
-
                 isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
 
-                //Log.e("ERROR", String.valueOf(isUpdated));
                 if (isUpdated) {
-
-                    // intDpndtCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
 
                     Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
                     DependantDetailPersonalActivity.strDependantName = "";
+                    DependantDetailPersonalActivity.strImageName = "";
                     DependantDetailPersonalActivity.longDependantId = 0;
 
                     startActivity(selection);
                     finish();
 
-                   /* AddDependantFragment.adapter.notifyDataSetChanged();
-                    if (intDpndtCount > 1)
-                        AddDependantFragment.buttonContinue.setVisibility(View.VISIBLE);*/
-
-                    /*int intCountConfirm = NewZeal.dbCon.retrieveConfirmDependants(SignupActivity.longUserId);
-
-                    if (intCountConfirm > 1)
-                        ConfirmFragment.buttonContinue.setVisibility(View.VISIBLE);
-
-                    //Resources res = getResources();
-                    ConfirmFragment.adapter.notifyDataSetChanged();*/
                 } else Libs.toast(1, 1, getString(R.string.error));
 
             } catch (Exception e) {
@@ -175,42 +154,12 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
     public void backToSelection() {
         Intent selection = new Intent(DependantDetailsMedicalActivity.this, DependantDetailPersonalActivity.class);
-        //selection.putExtra("LIST_DEPENDANT", true);
         startActivity(selection);
-        //finish();
+        finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        /*if (!strDependantName.equalsIgnoreCase(""))
-            NewZeal.dbCon.retrieveDependantMedical(SignupActivity.longUserId, editAge, editDiseases, editNotes, strDependantName);*/
-
     }
-
-    /*public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                myHandler.sendEmptyMessage(0);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-    }*/
-    //
-
-   /* public class MyHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            sendResult();
-        }
-    }
-
-    public void sendResult() {
-        mProgress.dismiss();
-    }*/
-
 }

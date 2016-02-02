@@ -10,15 +10,10 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
 public class RoundedImageView extends ImageView {
-
-    private static Thread backgroundThread;
-    private static Handler backgroundHandler;
 
     public RoundedImageView(Context context) {
         super(context);
@@ -59,37 +54,12 @@ public class RoundedImageView extends ImageView {
 
         Bitmap roundBitmap = getCroppedBitmap(b);
 
-        //
-        backgroundHandler = new BackgroundHandler();
-        backgroundThread = new BackgroundThread();
-        backgroundThread.start();
-        //
-
         super.setImageDrawable(new BitmapDrawable(getResources(), roundBitmap));
     }
 
     @Override
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(getCroppedBitmap(bm));
-    }
-
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                backgroundHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public class BackgroundHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
     }
 
 }

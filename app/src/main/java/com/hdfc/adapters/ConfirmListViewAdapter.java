@@ -1,18 +1,20 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
 import com.hdfc.model.ConfirmViewModel;
 import com.hdfc.newzeal.R;
+import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.views.RoundedImageView;
 
 import java.util.ArrayList;
@@ -23,21 +25,16 @@ import java.util.ArrayList;
 public class ConfirmListViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    private static Libs libs;
-    public Resources res;
     private Context _ctxt;
     private ArrayList data;
     private ConfirmViewModel tempValues = null;
 
     private Bitmap imageBitmap = null;
-    //private RoundedBitmapDrawable roundedBitmapDrawable = null;
 
-    public ConfirmListViewAdapter(Context ctxt, ArrayList d, Resources resLocal) { //
+    public ConfirmListViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
         data = d;
-        res = resLocal;
         inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        libs = new Libs(_ctxt);
     }
 
     public int getCount() {
@@ -69,6 +66,12 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             holder.textEmail = (TextView) vi.findViewById(R.id.textEmail);
             holder.tableRow = (TableRow) vi.findViewById(R.id.tableDesc);
 
+            try {
+                holder.linearLayoutRoot = (LinearLayout) vi.findViewById(R.id.confirmLayoutRoot);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             holder.image = (RoundedImageView) vi.findViewById(R.id.imageView);
 
             vi.setTag(holder);
@@ -89,37 +92,42 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
 
                 holder.textDesc.setText(tempValues.getStrDesc());
-                //holder.textDesc.setVisibility(View.VISIBLE);
                 holder.tableRow.setVisibility(View.VISIBLE);
 
             } else {
                 holder.tableRow.setVisibility(View.GONE);
-                //holder.tableRow.setVisibility(View.GONE);
+
             }
 
             try {
-                /*if (tempValues.getStrImg().equalsIgnoreCase("1"))
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.guru_circle);
 
-                if (tempValues.getStrImg().equalsIgnoreCase("2"))
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.hungal_circle);
+                //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+                if (!tempValues.getStrImg().equalsIgnoreCase("")) {
 
-                if (tempValues.getStrImg().equalsIgnoreCase("3"))
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.mrs_hungal_circle);*/
+                    Libs libs = new Libs(_ctxt);
 
-                imageBitmap = libs.getBitmapFromFile(tempValues.getStrImg(), 300, 300);
+                    int intImgHeight = libs.getBitmapHeightFromFile(tempValues.getStrImg().trim());
 
-                /*roundedBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    holder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
 
-                roundedBitmapDrawable.setCornerRadius(40.0f);
-                roundedBitmapDrawable.setAntiAlias(true);*/
+                    if (Build.VERSION.SDK_INT <= 16)
+                        holder.linearLayoutRoot.setBackgroundDrawable(_ctxt.getResources().getDrawable(R.drawable.confirm_view));
+                    else
+                        holder.linearLayoutRoot.setBackground(_ctxt.getResources().getDrawable(R.drawable.confirm_view));
+
+                    layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
+                    holder.linearLayoutRoot.setLayoutParams(layoutParams);
+                    SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+
+                }
+
                 holder.image.setImageBitmap(imageBitmap);
-            } catch (OutOfMemoryError oOm) {
             } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            //vi.setOnClickListener(makeListener);
         }
 
         return vi;
@@ -133,6 +141,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
         public TextView textEmail;
         public RoundedImageView image;
         public TableRow tableRow;
+        public LinearLayout linearLayoutRoot;
     }
 
 }

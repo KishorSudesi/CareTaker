@@ -50,13 +50,20 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Up Next"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#cccccc" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Mom is doing better than last week"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Carla, Dec 5, 6:00 PM"
+                        android:text="Carla, Jan 28, 6:00 PM"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorWhite" />
 
@@ -101,7 +108,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Up Next"
+                        android:text=""
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="#cccccc" />
 
@@ -114,7 +121,113 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Carla, Jab 16, 6:00 PM"
+                        android:text="Carla, Jan 16, 6:00 PM"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#cccccc" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activityList3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/header_gradient"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="@dimen/margin_general"
+                    android:layout_marginRight="@dimen/margin_general"
+                    android:layout_marginTop="10dp">
+
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/carla1" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_general"
+                    android:layout_marginRight="@dimen/margin_general"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mom BP is Normal"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Carla, Jan 1, 6:00 PM"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/colorWhite" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activityList4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="@dimen/margin_general"
+                    android:layout_marginRight="@dimen/margin_general"
+                    android:layout_marginTop="10dp">
+
+                    <ImageButton
+                        android:layout_width="60dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/carla2" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="@dimen/margin_general"
+                    android:layout_marginRight="@dimen/margin_general"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#cccccc" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Weekly Grocery delivery by Carla"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Carla, Nov 16, 6:00 PM"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="#cccccc" />
 

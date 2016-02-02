@@ -1,6 +1,5 @@
 package com.hdfc.newzeal.fragments;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -27,22 +26,21 @@ public class AddDependantFragment extends Fragment {
     public static Button buttonContinue;
 
     public AddDependantFragment() {
-        Log.e("AddDependantFragment", "AddDependantFragment");
     }
 
     public static AddDependantFragment newInstance() {
         AddDependantFragment fragment = new AddDependantFragment();
-        Log.e("AddDependantFragment", "newInstance");
         return fragment;
     }
 
     public void setListData() {
 
         int intCount = 0;
-        //Log.e("AddDependantFragment", String.valueOf(SignupActivity.longUserId));
 
-        //if(SignupActivity.longUserId>0)
-        intCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
+        Log.e("AddDependantFragment", "setListData");
+
+        if (SignupActivity.longUserId > 0)
+            intCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
 
         if (intCount > 1)
             buttonContinue.setVisibility(View.VISIBLE);
@@ -51,7 +49,6 @@ public class AddDependantFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("AddDependantFragment", "onCreate");
         if (getArguments() != null) {
         }
     }
@@ -72,23 +69,22 @@ public class AddDependantFragment extends Fragment {
             }
         });
         Log.e("AddDependantFragment", "onCreateView");
+
         setListView();
+
         return addFragment;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("AddDependantFragment", "onResume");
     }
 
     public void setListView() {
         try {
             setListData();
-            Resources res = getResources();
-            adapter = new DependantViewAdapter(getContext(), CustomListViewValuesArr, res);
+            adapter = new DependantViewAdapter(getContext(), CustomListViewValuesArr);
             list.setAdapter(adapter);
-            //list.setEmptyView(R);
         } catch (Exception e) {
             e.printStackTrace();
         }

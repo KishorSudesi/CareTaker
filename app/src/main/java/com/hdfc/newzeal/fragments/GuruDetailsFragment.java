@@ -1,14 +1,15 @@
 package com.hdfc.newzeal.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,32 +25,34 @@ import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class GuruDetailsFragment extends Fragment {
 
     public static RoundedImageView imgButtonCamera;
 
-    public static Uri fileUri;
     public static String strCustomerImgName;
     public static String strCustomerImgNameCamera;
+    public static Bitmap bitmap = null;
+    public static Uri uri;
+    private static Thread backgroundThread, backgroundThreadCamera;
+    private static Handler backgroundThreadHandler;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editAddress;
     private Libs libs;
     private Button buttonContinue;
-
-    //public static String strDataName, strDataEmail, strDataContactNo, strDataImgName;
+    private ProgressDialog mProgress = null;
 
     public GuruDetailsFragment() {
-        // Required empty public constructor
-        Log.e("GuruDetailsFragment", "GuruDetailsFragment");
-
     }
 
     public static GuruDetailsFragment newInstance() {
         GuruDetailsFragment fragment = new GuruDetailsFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
-        Log.e("GuruDetailsFragment", "newInstance");
         return fragment;
     }
 
@@ -57,7 +60,6 @@ public class GuruDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         libs = new Libs(getActivity());
-        Log.e("GuruDetailsFragment", "onCreate");
     }
 
     @Override
@@ -75,6 +77,8 @@ public class GuruDetailsFragment extends Fragment {
         buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
         editAddress = (EditText) rootView.findViewById(R.id.editAddress);
 
+        mProgress = new ProgressDialog(getActivity());
+
         String tempDate = String.valueOf(new Date().getDate() + "" + new Date().getTime()) + ".jpeg";
 
         strCustomerImgNameCamera = tempDate;
@@ -82,7 +86,7 @@ public class GuruDetailsFragment extends Fragment {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera(strCustomerImgNameCamera);
+                libs.selectImage(strCustomerImgNameCamera, GuruDetailsFragment.this, null);
             }
         });
 
@@ -90,11 +94,8 @@ public class GuruDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 validateUser();
-                //SignupActivity._mViewPager.setCurrentItem(1);
             }
         });
-
-        Log.e("GuruDetailsFragment", "onCreateView");
 
         return rootView;
     }
@@ -103,13 +104,17 @@ public class GuruDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        //strCustomerImgName="";
-        Log.e("GuruDetailsFragment", "onResume");
+        if (SignupActivity.longUserId > 0) {
 
-        //Log.e("GuruDetailsFragment", String.valueOf(SignupActivity.longUserId));
+            editName.setText(SignupActivity.strCustomerName);
+            editEmail.setText(SignupActivity.strCustomerEmail);
+            editContactNo.setText(SignupActivity.strCustomerContactNo);
+            editAddress.setText(SignupActivity.strCustomerAddress);
 
-        if (SignupActivity.longUserId > 0)
-            NewZeal.dbCon.retrieveUser(SignupActivity.longUserId, editName, editEmail, editContactNo, imgButtonCamera, editAddress);
+            backgroundThreadHandler = new BackgroundThreadHandler();
+            backgroundThreadCamera = new BackgroundThreadCamera();
+            backgroundThreadCamera.start();
+        }
     }
 
     private void validateUser() {
@@ -199,20 +204,21 @@ public class GuruDetailsFragment extends Fragment {
 
                     SignupActivity.longUserId = lngUserId;
                     CustomViewPager.setPagingEnabled(true);
+
+                    SignupActivity.strCustomerName = strName;
+                    SignupActivity.strCustomerEmail = strEmail;
+                    SignupActivity.strCustomerContactNo = strContactNo;
+                    SignupActivity.strCustomerAddress = strAddress;
+                    SignupActivity.strCustomerImg = strCustomerImgName;
+
+                    //chk this
+                    NewZeal.dbCon.retrieveDependants(lngUserId);
+                    AddDependantFragment.adapter.notifyDataSetChanged();
+
+                    NewZeal.dbCon.retrieveConfirmDependants(lngUserId);
+                    ConfirmFragment.adapter.notifyDataSetChanged();
+
                     Libs.toast(1, 1, getString(R.string.your_details_saved));
-
-                    //
-
-                   /* int intCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
-
-                    if (intCount > 1)
-                        AddDependantFragment.buttonContinue.setVisibility(View.VISIBLE);
-
-                    //Resources res = getResources();
-                    AddDependantFragment.adapter.notifyDataSetChanged();*/
-
-                    strCustomerImgName = "";
-                    //
 
                     SignupActivity._mViewPager.setCurrentItem(1);
                 } else {
@@ -220,41 +226,86 @@ public class GuruDetailsFragment extends Fragment {
                 }
 
             } catch (Exception e) {
-
             }
         }
     }
 
-    public void openCamera(String strFileName) {
-
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = libs.createFileInternal(strFileName);
-        fileUri = Uri.fromFile(file);
-        if (file != null) {
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-            GuruDetailsFragment.this.startActivityForResult(cameraIntent, Config.START_CAMERA_REQUEST_CODE);
-        }
-    }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bitmap = null;
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
+                backgroundThreadHandler = new BackgroundThreadHandler();
+                //Libs.toast(1, 1, "Getting Image...");
+                mProgress.setMessage("Loading...");
+                mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        bitmap = libs.getBitmap(fileUri, 300, 300);
-                        strCustomerImgName = fileUri.getPath().toString();
+                        strCustomerImgName = Libs.customerImageUri.getPath().toString();
+                        backgroundThreadCamera = new BackgroundThreadCamera();
+                        backgroundThreadCamera.start();
+                        break;
+
+                    case Config.START_GALLERY_REQUEST_CODE:
+                        if (intent.getData() != null) {
+                            uri = intent.getData();
+                            backgroundThread = new BackgroundThread();
+                            backgroundThread.start();
+                        }
                         break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if (bitmap != null) {
-            libs.postImagePick(bitmap, imgButtonCamera);
+    }
+
+    //
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+
+            try {
+                if (uri != null) {
+                    Calendar calendar = new GregorianCalendar();
+                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+                    File galleryFile = libs.createFileInternal(strFileName);
+                    strCustomerImgName = galleryFile.getAbsolutePath();
+                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
+                    libs.copyInputStreamToFile(is, galleryFile);
+                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                }
+                backgroundThreadHandler.sendEmptyMessage(0);
+            } catch (IOException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    public class BackgroundThreadCamera extends Thread {
+        @Override
+        public void run() {
+
+            try {
+                if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
+                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                }
+                backgroundThreadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class BackgroundThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            mProgress.dismiss();
+            if (imgButtonCamera != null && strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase(""))
+                imgButtonCamera.setImageBitmap(bitmap);
+        }
+    }
 }

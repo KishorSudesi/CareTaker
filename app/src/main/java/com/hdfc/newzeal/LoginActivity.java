@@ -18,13 +18,10 @@ import com.hdfc.libs.Libs;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static Libs libs;
     private RelativeLayout relLayout;
-
     private EditText editEmail, editPassword;
-
     private RelativeLayout layoutLogin;
-
-    private Libs libs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +49,18 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
         editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //libs.setEditTextDrawable( editEmail, getResources().getDrawable(R.drawable.edit_text_blue) );
+                //libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue), editEmail);
 
                 if (relLayout.getVisibility() == View.GONE) {
 
                     relLayout.setVisibility(View.VISIBLE);
                     try {
-
-                        libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus), editEmail);
 
                         TranslateAnimation ta = new TranslateAnimation(0, 0, 15, Animation.RELATIVE_TO_SELF);
                         ta.setDuration(1000);
@@ -79,19 +78,29 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        editPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //libs.setEditTextDrawable( editPassword, getResources().getDrawable(R.drawable.edit_text_blue) );
+                //libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue),editPassword);
+            }
+        });
+
         editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
+                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue), editPassword);
             }
         });
 
         editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_focus),editPassword);
+                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue), editEmail);
             }
         });
+
+
     }
 
     @Override
@@ -103,6 +112,8 @@ public class LoginActivity extends AppCompatActivity {
         View view = findViewById(R.id.layoutLogin);
 
         libs.setupUI(view);
+
+        editEmail.clearFocus();
     }
 
     public void goToWho(View v) {
@@ -112,6 +123,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void validateLogin(View v) {
+
+        libs.setEditTextDrawable(editEmail, getResources().getDrawable(R.drawable.edit_text));
+        libs.setEditTextDrawable(editPassword, getResources().getDrawable(R.drawable.edit_text));
 
         if (relLayout.getVisibility() == View.VISIBLE) {
 

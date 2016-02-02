@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hdfc.config.Config;
 import com.hdfc.newzeal.R;
 
 import java.util.ArrayList;
@@ -24,9 +25,6 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
     private static final int DAY_OFFSET = 1;
     private final Context _context;
     private final List<String> list;
-    private final String[] weekNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-    private final String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    private final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private final HashMap<String, Integer> eventsPerMonthMap;
     String flag = "abc";
     String date_month_year;
@@ -53,11 +51,11 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
     }
 
     private String getMonthAsString(int i) {
-        return months[i];
+        return Config.months[i];
     }
 
     private int getNumberOfDaysOfMonth(int i) {
-        return daysOfMonth[i];
+        return Config.daysOfMonth[i];
     }
 
     public String getItem(int position) {
@@ -114,9 +112,9 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
         }
 
         // Daya
-        /*for (int i = 0; i < weekNames.length; i++){
-            list.add(weekNames[i] + "-WHITE" + "-" + getMonthAsString(currentMonth) + "-" + yy);
-        }*/
+        for (int i = 0; i < Config.weekNames.length; i++) {
+            list.add(Config.weekNames[i] + "-WHITE" + "-" + getMonthAsString(currentMonth) + "-" + yy);
+        }
 
 
         // Trailing Month days

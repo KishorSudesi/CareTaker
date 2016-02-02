@@ -18,7 +18,7 @@
         android:layout_marginTop="20dp"
         android:background="#cccccc"
         android:divider="@android:color/transparent"
-        android:dividerHeight="30.0sp" />
+        android:dividerHeight="5.0sp" />
 
     <Button
         android:id="@+id/buttonContinue"

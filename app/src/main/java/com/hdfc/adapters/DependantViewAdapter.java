@@ -1,20 +1,21 @@
 package com.hdfc.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.hdfc.libs.Libs;
 import com.hdfc.model.DependantModel;
 import com.hdfc.newzeal.DependantDetailPersonalActivity;
 import com.hdfc.newzeal.R;
+import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.views.RoundedImageView;
 
 import java.util.ArrayList;
@@ -25,20 +26,15 @@ import java.util.ArrayList;
 public class DependantViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    private static Libs libs;
-    public Resources res;
     private Context _ctxt;
     private ArrayList data;
     private DependantModel tempValues = null;
     private Bitmap imageBitmap = null;
-    //private RoundedBitmapDrawable roundedBitmapDrawable = null;
 
-    public DependantViewAdapter(Context ctxt, ArrayList d, Resources resLocal) {
+    public DependantViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
         data = d;
-        res = resLocal;
         inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        libs = new Libs(_ctxt);
     }
 
     public int getCount() {
@@ -77,6 +73,8 @@ public class DependantViewAdapter extends BaseAdapter {
                 tempValues = null;
                 tempValues = (DependantModel) data.get(position);
 
+                Log.e("getView", tempValues.getStrName());
+
                 holder.textName.setText(tempValues.getStrName());
 
                 if (!tempValues.getStrName().equalsIgnoreCase("Add Dependant") && !tempValues.getStrRelation().equalsIgnoreCase("")) {
@@ -84,73 +82,39 @@ public class DependantViewAdapter extends BaseAdapter {
                     holder.textRelation.setText(tempValues.getStrRelation());
 
                     if (!tempValues.getStrImg().equalsIgnoreCase(""))
-                        imageBitmap = libs.getBitmapFromFile(tempValues.getStrImg(), 300, 300);
-                /*roundedBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);*/
-
-                  /*  if (tempValues.getStrImg().equalsIgnoreCase("1"))
-                        imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.hungal_circle);
-
-                    if (tempValues.getStrImg().equalsIgnoreCase("2"))
-                        imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.mrs_hungal_circle);
-
-                    roundedBitmapDrawable =
-                            RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);*/
-
-                   /* LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
-                    //params.weight = 1.0f;
-                    params.topMargin = 50;
-                    params.gravity = Gravity.CENTER_HORIZONTAL;
-                    //params.
-
-                    holder.image.setLayoutParams(params);*/
-
+                        SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+                    //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
 
                 } else {
                     imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.plus_icon);
-                    //roundedBitmapDrawable =
-                    //RoundedBitmapDrawableFactory.create(_ctxt.getResources(), imageBitmap);
-
-                   /* LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(140, 140);
-                    //params.weight = 1.0f;
-                    params.topMargin = 50;
-                    params.bottomMargin = 60;
-                    params.gravity = Gravity.CENTER_HORIZONTAL;
-                    //params.
-
-                    holder.image.setLayoutParams(params);*/
 
                     holder.textRelation.setVisibility(View.GONE);
-
+                    holder.image.setImageBitmap(imageBitmap);
                 }
 
-                //roundedBitmapDrawable.setCornerRadius(40.0f);
-                //roundedBitmapDrawable.setAntiAlias(true);
-                holder.image.setImageBitmap(imageBitmap);
-            } catch (OutOfMemoryError oOm) {
             } catch (Exception e) {
             }
-
-
-            final View.OnClickListener makeListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    try {
-                        String strName = ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
-                        if (strName.equalsIgnoreCase("Add Dependant")) {
-                            Intent selection = new Intent(_ctxt, DependantDetailPersonalActivity.class);
-                            _ctxt.startActivity(selection);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            };
-
-            vi.setOnClickListener(makeListener);
         }
+
+        final View.OnClickListener makeListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    String strName = ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
+                    if (strName != null && strName.equalsIgnoreCase("Add Dependant")) {
+                        Intent selection = new Intent(_ctxt, DependantDetailPersonalActivity.class);
+                        ((Activity) _ctxt).finish();
+                        _ctxt.startActivity(selection);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        vi.setOnClickListener(makeListener);
 
         return vi;
     }

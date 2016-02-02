@@ -23,6 +23,10 @@
 -keep interface android.support.v7.** { *; }
 -dontwarn android.support.v7.**
 
+-keep class com.github.jjobes.** { *; }
+-keep interface com.github.jjobes.** { *; }
+-dontwarn com.github.jjobes.**
+
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
 
@@ -13,6 +14,9 @@ public class AccountEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_edit);
+
+        TextView txtViewHeader = (TextView) findViewById(R.id.header);
+        txtViewHeader.setText("Edit My Account");
 
         Libs libs = new Libs(AccountEditActivity.this);
         libs.dashboarMenuNavigation();

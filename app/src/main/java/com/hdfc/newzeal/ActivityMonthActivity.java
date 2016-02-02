@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hdfc.adapters.CalendarAdapter;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 
 import java.util.Calendar;
@@ -25,7 +27,8 @@ public class ActivityMonthActivity extends AppCompatActivity {
     private GridView calendarView;
     private CalendarAdapter adapter;
     private Calendar _calendar;
-    private int month, year;
+    private int month, year, day;
+    private TextView txtViewDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class ActivityMonthActivity extends AppCompatActivity {
         libs.dashboarMenuNavigation();
         //
         Button btnMonthly = (Button) findViewById(R.id.buttonMonthly);
+        txtViewDate = (TextView) findViewById(R.id.activity_header_date);
 
         btnMonthly.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +65,9 @@ public class ActivityMonthActivity extends AppCompatActivity {
         _calendar = Calendar.getInstance(Locale.getDefault());
         month = _calendar.get(Calendar.MONTH) + 1;
         year = _calendar.get(Calendar.YEAR);
+        day = _calendar.get(Calendar.DATE);
+
+        txtViewDate.setText("Activities on " + day + "-" + Config.months[month - 1] + "-" + year);
 
         /*selectedDayMonthYearButton = (Button) this.findViewById(R.id.selectedDayMonthYear);
         selectedDayMonthYearButton.setText("Select Date");
@@ -83,7 +90,6 @@ public class ActivityMonthActivity extends AppCompatActivity {
 
         //
     }
-
     /*private void setGridCellAdapterToDate(int month, int year){
         adapter = new CalendarAdapter(ActivityMonthActivity.this, month, year);
         _calendar.set(year, month - 1, _calendar.get(Calendar.DAY_OF_MONTH));
