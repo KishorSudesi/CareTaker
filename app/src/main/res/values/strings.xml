@@ -19,6 +19,7 @@
     <string name="forgot">Forgot?</string>
     <string name="submit">Submit</string>
     <string name="uploading">Uploading...</string>
+    <string name="loading">Loading...</string>
 
     <string name="myself">Myself</string>
     <string name="loved_one">A Loved One</string>
@@ -61,6 +62,7 @@
     <string name="dpndnt_medical_info_saved">Dependant Medical Details Saved</string>
     <string name="dpndnt_details_saved">Dependant Details Saved</string>
     <string name="dpndnt_details_not_saved">Dependant Not Saved. Check Name</string>
+    <string name="delete_info">All your Information will not be saved, Ok to Proceed?</string>
 
 
     <string name="menu_activities">Activities</string>
@@ -76,5 +78,7 @@
     <string name="email_exists">Email Id Already Exists!!!</string>
     <string name="error_field_required">This Field is Required</string>
     <string name="error">Something went wrong. Try Again!!!</string>
+
+    <string name="warning_profile_pic">Profile Picture Needed</string>
 
 </resources>

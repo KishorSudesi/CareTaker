@@ -99,6 +99,7 @@ public class DbCon {
 
         if (isDbOpened) {
             try {
+                dbHelper.delete("dependant", "status<=?", new String[]{"1"});
                 dbHelper.delete("user", "status=?", new String[]{"0"});
             } catch (Exception e) {
             }

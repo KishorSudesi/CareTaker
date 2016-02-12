@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -24,12 +23,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -71,7 +68,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -499,9 +495,9 @@ public class Libs {
 
     public void createAlertDialog(String msg) {
         AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-        alertbox.setTitle("NewZeal");
+        alertbox.setTitle(_ctxt.getString(R.string.app_name));
         alertbox.setMessage(msg);
-        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alertbox.setPositiveButton(_ctxt.getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
             }
         });
@@ -538,7 +534,7 @@ public class Libs {
         }
     }
 
-    public String getUUID() {
+   /* public String getUUID() {
         final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
 
         final String tmDevice, tmSerial, androidId;
@@ -551,7 +547,7 @@ public class Libs {
         String deviceId = deviceUuid.toString();
 
         return deviceId;
-    }
+    }*/
 
     public Date convertStringToDate(String strDate) {
 
@@ -633,7 +629,7 @@ public class Libs {
 
         boolean isValid = false;
 
-        if (number.length() >= 10 && number.length() <= 20)
+        if (number.length() >= 9 && number.length() <= 15)
             isValid = true;
 
         return isValid;
@@ -641,7 +637,7 @@ public class Libs {
 
     public void setupUI(View view) {
         //Set up touch listener for non-text box views to hide keyboard.
-        if (!(view instanceof EditText)) {
+        //if (!(view instanceof EditText)) {
             view.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -649,7 +645,7 @@ public class Libs {
                     return false;
                 }
             });
-        }
+        // }
 
         //If a layout container, iterate over children and seed recursion.
         if (view instanceof ViewGroup) {
@@ -758,7 +754,7 @@ public class Libs {
             editText.setBackground(drw);
     }
 
-    public void setEditTextDrawableGeneral(View v, Drawable drw) {
+    public void setDrawable(View v, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
             v.setBackgroundDrawable(drw);
         else
@@ -791,21 +787,6 @@ public class Libs {
         return original;
     }
 
-    public String getPhoneNumber(String name) {
-        String ret = null;
-        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like'%" + name + "%'";
-        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-        Cursor c = _ctxt.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                projection, selection, null, null);
-        if (c.moveToFirst()) {
-            ret = c.getString(0);
-        }
-        c.close();
-        if (ret == null)
-            ret = "Unsaved";
-        return ret;
-    }
-
     private void updateView(int index, ListView listView) {
         View v = listView.getChildAt(index -
                 listView.getFirstVisiblePosition());
@@ -818,8 +799,6 @@ public class Libs {
     }
 
     //Application Specigfic Start
-
-
     public void dashboarMenuNavigation() {
         ImageButton buttonActivity = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonCallActivity);
         TextView txtViewActivity = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewActivity);

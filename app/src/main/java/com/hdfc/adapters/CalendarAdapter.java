@@ -19,8 +19,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
-// ///////////////////////////////////////////////////////////////////////////////////////
-// Inner Class
 public class CalendarAdapter extends BaseAdapter implements View.OnClickListener {
     private static final int DAY_OFFSET = 1;
     private final Context _context;
@@ -207,7 +205,6 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
     public void onClick(View view) {
         date_month_year = (String) view.getTag();
         flag = "Date selected ...";
-        //selectedDayMonthYearButton.setText("Selected: " + date_month_year);
     }
 
     public int getCurrentDayOfMonth() {

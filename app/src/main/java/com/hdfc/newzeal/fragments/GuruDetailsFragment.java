@@ -124,7 +124,7 @@ public class GuruDetailsFragment extends Fragment {
         editPass.setError(null);
         editConfirmPass.setError(null);
         editContactNo.setError(null);
-        editAddress.setError(null);
+        //editAddress.setError(null);
 
         String strName = editName.getText().toString();
         String strEmail = editEmail.getText().toString();
@@ -136,63 +136,65 @@ public class GuruDetailsFragment extends Fragment {
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strContactNo)) {
-            editContactNo.setError(getString(R.string.error_field_required));
-            focusView = editContactNo;
+        if (TextUtils.isEmpty(strCustomerImgName) & SignupActivity.longUserId <= 0) {
+            Libs.toast(1, 1, getString(R.string.warning_profile_pic));
+            focusView = imgButtonCamera;
             cancel = true;
-        } else if (!libs.validCellPhone(strContactNo)) {
-            editContactNo.setError(getString(R.string.error_invalid_contact_no));
-            focusView = editContactNo;
-            cancel = true;
-        }
 
-        if (TextUtils.isEmpty(strAddress)) {
+        } else {
+
+            if (TextUtils.isEmpty(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_field_required));
+                focusView = editContactNo;
+                cancel = true;
+            } else if (!libs.validCellPhone(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_invalid_contact_no));
+                focusView = editContactNo;
+                cancel = true;
+            }
+
+        /*if (TextUtils.isEmpty(strAddress)) {
             editAddress.setError(getString(R.string.error_field_required));
             focusView = editAddress;
             cancel = true;
         }
+*/
+            if (!TextUtils.isEmpty(strPass) && libs.isPasswordValid(strPass) && !TextUtils.isEmpty(strConfirmPass) && libs.isPasswordValid(strConfirmPass)) {
 
-        if (!TextUtils.isEmpty(strPass) && libs.isPasswordValid(strPass) && !TextUtils.isEmpty(strConfirmPass) && libs.isPasswordValid(strConfirmPass)) {
+                if (!strPass.trim().equalsIgnoreCase(strConfirmPass.trim())) {
+                    editConfirmPass.setError(getString(R.string.error_confirm_password));
+                    focusView = editConfirmPass;
+                    cancel = true;
+                }
+            }
 
-            if (!strPass.trim().equalsIgnoreCase(strConfirmPass.trim())) {
-                editConfirmPass.setError(getString(R.string.error_confirm_password));
+            if (TextUtils.isEmpty(strConfirmPass)) {
+                editConfirmPass.setError(getString(R.string.error_field_required));
                 focusView = editConfirmPass;
                 cancel = true;
             }
-        }
 
-        if (TextUtils.isEmpty(strConfirmPass)) {
-            editConfirmPass.setError(getString(R.string.error_field_required));
-            focusView = editConfirmPass;
-            cancel = true;
-        }
+            if (TextUtils.isEmpty(strPass)) {
+                editPass.setError(getString(R.string.error_field_required));
+                focusView = editPass;
+                cancel = true;
+            }
 
-        if (TextUtils.isEmpty(strPass)) {
-            editPass.setError(getString(R.string.error_field_required));
-            focusView = editPass;
-            cancel = true;
-        }
+            if (TextUtils.isEmpty(strEmail)) {
+                editEmail.setError(getString(R.string.error_field_required));
+                focusView = editEmail;
+                cancel = true;
+            } else if (!libs.isEmailValid(strEmail)) {
+                editEmail.setError(getString(R.string.error_invalid_email));
+                focusView = editEmail;
+                cancel = true;
+            }
 
-        if (TextUtils.isEmpty(strEmail)) {
-            editEmail.setError(getString(R.string.error_field_required));
-            focusView = editEmail;
-            cancel = true;
-        } else if (!libs.isEmailValid(strEmail)) {
-            editEmail.setError(getString(R.string.error_invalid_email));
-            focusView = editEmail;
-            cancel = true;
-        }
-
-        if (TextUtils.isEmpty(strName)) {
-            editName.setError(getString(R.string.error_field_required));
-            focusView = editName;
-            cancel = true;
-        }
-
-        if (TextUtils.isEmpty(strCustomerImgName) & SignupActivity.longUserId <= 0) {
-            Libs.toast(1, 1, "Profile picture needed");
-            focusView = imgButtonCamera;
-            cancel = true;
+            if (TextUtils.isEmpty(strName)) {
+                editName.setError(getString(R.string.error_field_required));
+                focusView = editName;
+                cancel = true;
+            }
         }
 
         if (cancel) {
@@ -239,7 +241,7 @@ public class GuruDetailsFragment extends Fragment {
             try {
                 backgroundThreadHandler = new BackgroundThreadHandler();
                 //Libs.toast(1, 1, "Getting Image...");
-                mProgress.setMessage("Loading...");
+                mProgress.setMessage(getString(R.string.loading));
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
@@ -304,7 +306,7 @@ public class GuruDetailsFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             mProgress.dismiss();
-            if (imgButtonCamera != null && strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase(""))
+            if (imgButtonCamera != null && strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("") && bitmap != null)
                 imgButtonCamera.setImageBitmap(bitmap);
         }
     }

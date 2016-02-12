@@ -2,7 +2,7 @@
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
     android:hint="@string/search_contacts"
     android:includeInGlobalSearch="true"
-    android:label="Search"
+    android:label="@string/search_contacts"
     android:queryAfterZeroResults="true"
     android:searchMode="queryRewriteFromText"
     android:searchSettingsDescription="@string/search_contacts"

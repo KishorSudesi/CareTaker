@@ -5,11 +5,13 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -106,9 +108,9 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
     public void backToSelection() {
         final AlertDialog.Builder alertbox = new AlertDialog.Builder(DependantDetailPersonalActivity.this);
-        alertbox.setTitle("NewZeal");
-        alertbox.setMessage("All your Information will not be saved, Ok to Proceed?");
-        alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alertbox.setTitle(getString(R.string.app_name));
+        alertbox.setMessage(getString(R.string.delete_info));
+        alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 //delete temp dependants
                 try {
@@ -123,7 +125,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
                 }
             }
         });
-        alertbox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertbox.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 arg0.dismiss();
             }
@@ -136,7 +138,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         editContactNo.setError(null);
         editAddress.setError(null);
         editRelation.setError(null);
-        editDependantEmail.setError(null);
+        //editDependantEmail.setError(null);
 
         strDependantName = editName.getText().toString();
         String strContactNo = editContactNo.getText().toString();
@@ -147,29 +149,35 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strRelation)) {
-            editRelation.setError(getString(R.string.error_field_required));
-            focusView = editRelation;
+        if (TextUtils.isEmpty(strImageName) && longDependantId <= 0) {
+            Libs.toast(2, 2, getString(R.string.warning_profile_pic));
+            focusView = imgButtonCamera;
             cancel = true;
-        }
+        } else {
 
-        if (TextUtils.isEmpty(strAddress)) {
-            editAddress.setError(getString(R.string.error_field_required));
-            focusView = editAddress;
-            cancel = true;
-        }
+            if (TextUtils.isEmpty(strRelation)) {
+                editRelation.setError(getString(R.string.error_field_required));
+                focusView = editRelation;
+                cancel = true;
+            }
 
-        if (TextUtils.isEmpty(strContactNo)) {
-            editContactNo.setError(getString(R.string.error_field_required));
-            focusView = editContactNo;
-            cancel = true;
-        } else if (!libs.validCellPhone(strContactNo)) {
-            editContactNo.setError(getString(R.string.error_invalid_contact_no));
-            focusView = editContactNo;
-            cancel = true;
-        }
+            if (TextUtils.isEmpty(strAddress)) {
+                editAddress.setError(getString(R.string.error_field_required));
+                focusView = editAddress;
+                cancel = true;
+            }
 
-        if (TextUtils.isEmpty(strEmail)) {
+            if (TextUtils.isEmpty(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_field_required));
+                focusView = editContactNo;
+                cancel = true;
+            } else if (!libs.validCellPhone(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_invalid_contact_no));
+                focusView = editContactNo;
+                cancel = true;
+            }
+
+        /*if (TextUtils.isEmpty(strEmail)) {
             editDependantEmail.setError(getString(R.string.error_field_required));
             focusView = editDependantEmail;
             cancel = true;
@@ -177,19 +185,16 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             editDependantEmail.setError(getString(R.string.error_invalid_email));
             focusView = editDependantEmail;
             cancel = true;
+        }*/
+
+            if (TextUtils.isEmpty(strDependantName)) {
+                editName.setError(getString(R.string.error_field_required));
+                focusView = editName;
+                cancel = true;
+            }
         }
 
-        if (TextUtils.isEmpty(strDependantName)) {
-            editName.setError(getString(R.string.error_field_required));
-            focusView = editName;
-            cancel = true;
-        }
 
-        if (TextUtils.isEmpty(strImageName) && longDependantId <= 0) {
-            Libs.toast(2, 2, "Profile picture needed");
-            focusView = imgButtonCamera;
-            cancel = true;
-        }
 
         if (cancel) {
             focusView.requestFocus();
@@ -224,10 +229,17 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        //setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
         if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
             //handles suggestion clicked query
-            String displayName = getDisplayNameForContact(intent);
-            editName.setText(displayName);
+            readContacts(intent);
+
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // handles a search query
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -235,13 +247,85 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         }
     }
 
-    private String getDisplayNameForContact(Intent intent) {
-        Cursor phoneCursor = getContentResolver().query(intent.getData(), new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+    /*private void getDisplayNameForContact(Intent intent) {
+
+        Cursor phoneCursor = getContentResolver().query(intent.getData(), null, null, null, null);
+        //new String[]{ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.PhoneLookup.NUMBER,ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI}
+
         phoneCursor.moveToFirst();
         int idDisplayName = phoneCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+        int idDisplayNumber = phoneCursor.getColumnIndex(ContactsContract.PhoneLookup.NUMBER);
+        int idDisplayPhoto = phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
+
         String name = phoneCursor.getString(idDisplayName);
+        String number = phoneCursor.getString(idDisplayNumber);
+        String photo = phoneCursor.getString(idDisplayPhoto);
         phoneCursor.close();
-        return name;
+    }*/
+
+    public void readContacts(Intent intent) {
+
+        try {
+
+            ContentResolver cr = getContentResolver();
+            Cursor cur = cr.query(intent.getData(), new String[]{ContactsContract.Contacts._ID, ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_URI, ContactsContract.Contacts.HAS_PHONE_NUMBER}, null, null, null);
+
+            String phone = "";
+            String emailContact = null;
+            String image_uri = "";
+            String id = "";
+            String name = "";
+
+            editName.setText("");
+            editContactNo.setText("");
+            editDependantEmail.setText("");
+
+            imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
+
+            if (cur.getCount() > 0) {
+                while (cur.moveToNext()) {
+                    id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                    name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    image_uri = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
+
+                    if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                        while (pCur.moveToNext()) {
+                            phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        }
+                        pCur.close();
+                    }
+                }
+
+                Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
+
+                if (emailCur.getCount() > 0) {
+                    while (emailCur.moveToNext()) {
+                        emailContact = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                    }
+                    emailCur.close();
+                }
+
+                if (image_uri != null) {
+                    try {
+                        mProgress.setMessage(getString(R.string.loading));
+                        mProgress.show();
+                        uri = Uri.parse(image_uri);
+                        backgroundThreadHandler = new BackgroundThreadHandler();
+                        backgroundThread = new BackgroundThread();
+                        backgroundThread.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                editName.setText(name);
+                editContactNo.setText(phone);
+                editDependantEmail.setText(emailContact);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -266,7 +350,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
                 //Libs.toast(1, 1, "Getting Image...");
-                mProgress.setMessage("Loading...");
+                mProgress.setMessage(getString(R.string.loading));
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:

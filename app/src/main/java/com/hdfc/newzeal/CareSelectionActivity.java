@@ -15,23 +15,6 @@ public class CareSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_care_selection);
-
-        ///libs = new Libs(CareSelectionActivity.this);
-
-        /*DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
-        int screenWidth = displaymetrics.widthPixels;
-
-        Log.e("Dimensions", String.valueOf(screenWidth + " X " + screenHeight));
-
-        try {
-            ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
-            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.ppl_bg, screenWidth, screenHeight));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
     public void selectedMyself(View v) {

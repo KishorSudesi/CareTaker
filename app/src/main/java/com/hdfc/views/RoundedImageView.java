@@ -28,22 +28,29 @@ public class RoundedImageView extends ImageView {
     }
 
     public static Bitmap getCroppedBitmap(Bitmap bmp) {
-        Bitmap output = Bitmap.createBitmap(bmp.getWidth(),
-                bmp.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
 
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
+        Bitmap output = null;
 
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
-        canvas.drawCircle(bmp.getWidth() / 2 + 0.7f, bmp.getHeight() / 2 + 0.7f,
-                bmp.getWidth() / 2 + 0.1f, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bmp, rect, rect, paint);
+        try {
+            output = Bitmap.createBitmap(bmp.getWidth(),
+                    bmp.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(output);
+
+            final Paint paint = new Paint();
+            final Rect rect = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
+
+            paint.setAntiAlias(true);
+            paint.setFilterBitmap(true);
+            paint.setDither(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(Color.parseColor("#BAB399"));
+            canvas.drawCircle(bmp.getWidth() / 2 + 0.7f, bmp.getHeight() / 2 + 0.7f,
+                    bmp.getWidth() / 2 + 0.1f, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bmp, rect, rect, paint);
+        } catch (Exception e) {
+
+        }
 
         return output;
     }
