@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.hdfc.config.Config;
+import com.scottyab.aescrypt.AESCrypt;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.DatabaseObjectNotClosedException;
@@ -15,12 +16,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Date;
 
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "newzeal";
+    private static String dbPass = ""; //"hdfc@12#$";//
     private static DbHelper dbInstance = null;
     private static SQLiteDatabase db;
     public String Create_User_Tbl = "CREATE TABLE user ( user_id integer primary key autoincrement," +
@@ -28,7 +31,7 @@ public class DbHelper extends SQLiteOpenHelper {
             ", image_path varchar(100), status integer)";
     public String Create_Dependant_Tbl = "CREATE TABLE dependant ( dependant_id integer primary key autoincrement," +
             " name VARCHAR(100) unique, contact_no VARCHAR(15), address VARCHAR(300), relationship VARCHAR(20)," +
-            " age integer, diseases VARCHAR(200), notes VARCHAR(500), user_id integer, image_path varchar(100), email VARCHAR(100), status integer)";
+            " age integer, diseases VARCHAR(200), notes VARCHAR(500), user_id integer, image_path varchar(100), image_path_server varchar(200), email VARCHAR(100), status integer)";
 
     private Context _ctxt;
 
@@ -38,6 +41,12 @@ public class DbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this._ctxt = context;
         originalFile = _ctxt.getDatabasePath(DATABASE_NAME);
+
+        try {
+            dbPass = AESCrypt.decrypt(Config.string, "IqSKDxDO7p2HjCs+8R4Z0A==");
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     public static synchronized DbHelper getInstance(Context ctx) {
@@ -52,7 +61,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public void open() {
         try {
             SQLiteDatabase.loadLibs(_ctxt);
-            db = this.getWritableDatabase(Config.dbPass);
+            db = this.getWritableDatabase(dbPass);
         } catch (Exception e1) {
             try {
                 if (originalFile.exists())
@@ -212,7 +221,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
             SQLiteDatabase db = SQLiteDatabase.openDatabase(originalFile.getAbsolutePath(), "", null, SQLiteDatabase.OPEN_READWRITE);
 
-            db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s';", newFile.getAbsolutePath(), Config.dbPass));
+            db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s';", newFile.getAbsolutePath(), dbPass));
             db.rawExecSQL("SELECT sqlcipher_export('encrypted')");
             db.rawExecSQL("DETACH DATABASE encrypted;");
 
@@ -224,7 +233,7 @@ public class DbHelper extends SQLiteOpenHelper {
             db.close();
 
             db = SQLiteDatabase.openDatabase(newFile.getAbsolutePath(),
-                    Config.dbPass, null,
+                    dbPass, null,
                     SQLiteDatabase.OPEN_READWRITE);
             db.setVersion(version);
             db.close();
@@ -234,7 +243,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
             if (isToOpen) {
                 DbHelper.db = SQLiteDatabase.openDatabase(dbPath,
-                        Config.dbPass, null,
+                        dbPass, null,
                         SQLiteDatabase.OPEN_READWRITE);
             }
         }

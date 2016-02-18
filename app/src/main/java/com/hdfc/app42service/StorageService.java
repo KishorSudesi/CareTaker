@@ -30,9 +30,13 @@ public class StorageService implements
         asyncService.findDocByDocId(Config.dbName, Config.collectionName, checkValue, this);
     }
 
-    public void updateDocs(JSONObject jsonToUpdate, String fieldName, String checkValue) {
-        asyncService.updateDocByKeyValue(Config.dbName, Config.collectionName, fieldName, checkValue, jsonToUpdate, this);
+    public void findDocsByKeyValue(String strKey, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
+        asyncService.findDocumentByKeyValue(Config.dbName, Config.collectionName, strKey, strValue, app42CallBack);
     }
+
+    /*public void updateDocs(JSONObject jsonToUpdate, String fieldName, String checkValue) {
+        asyncService.updateDocByKeyValue(Config.dbName, Config.collectionName, fieldName, checkValue, jsonToUpdate, this);
+    }*/
 
     @Override
     public void onDocumentInserted(Storage response) {
@@ -42,13 +46,13 @@ public class StorageService implements
             //libs.createAlertDialog("Document Saved "+ json.get("Name"));
             // docId = response.getJsonDocList().get(0).getDocId();
         } catch (JSONException ex) {
-            Libs.toast(2, 2, "Error : " + ex.getMessage());
+            //Libs.toast(2, 2, "Error : " + ex.getMessage());
         }
     }
 
     @Override
     public void onInsertionFailed(App42Exception ex) {
-        Libs.toast(2, 2, "Error : " + ex.getMessage());
+        //Libs.toast(2, 2, "Error : " + ex.getMessage());
     }
 
     @Override

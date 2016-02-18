@@ -1,20 +1,24 @@
 package com.hdfc.newzeal;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hdfc.app42service.UploadService;
 import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.upload.Upload;
+import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
+
+import java.util.ArrayList;
 
 public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
@@ -25,11 +29,9 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
     private Button buttonContinue, buttonBack;
 
     private String strAge, strDiseases, strNotes;
-
-
     private boolean isUpdated;
 
-    private int intDpndtCount = 0;
+    private ProgressDialog progressDialog;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -38,6 +40,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dependant_details_medical);
 
         libs = new Libs(DependantDetailsMedicalActivity.this);
+        progressDialog = new ProgressDialog(DependantDetailsMedicalActivity.this);
 
         editAge = (EditText) findViewById(R.id.editAge);
         editDiseases = (EditText) findViewById(R.id.editDiseases);
@@ -56,27 +59,14 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         longUserId = SignupActivity.longUserId;
         strDependantName = DependantDetailPersonalActivity.strDependantName;
 
-       /* mProgress = new ProgressDialog(this);
-        myHandler = new MyHandler();*/
-
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 validateDependantMedicalData();
-
-               /* Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
-                selection.putExtra("LIST_DEPENDANT", true);
-                startActivity(selection);
-                finish();*/
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor("#cccccc"));
-        }
+        libs.setStatusBarColor("#cccccc");
 
     }
 
@@ -129,27 +119,62 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            try {
-
-                isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId);
-
-                if (isUpdated) {
-
-                    Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
-                    selection.putExtra("LIST_DEPENDANT", true);
-                    DependantDetailPersonalActivity.strDependantName = "";
-                    DependantDetailPersonalActivity.strImageName = "";
-                    DependantDetailPersonalActivity.longDependantId = 0;
-
-                    startActivity(selection);
-                    finish();
-
-                } else Libs.toast(1, 1, getString(R.string.error));
-
-            } catch (Exception e) {
-
-            }
+            uploadDependantProfile();
         }
+    }
+
+    public void uploadDependantProfile() {
+
+        if (libs.isConnectingToInternet()) {
+
+            progressDialog.setMessage("Uplaoding Profile Picture...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            UploadService uploadService = new UploadService(DependantDetailsMedicalActivity.this);
+
+            uploadService.uploadImageCommon(DependantDetailPersonalActivity.strImagePathToServer, DependantDetailPersonalActivity.strDependantName, "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
+                public void onSuccess(Object response) {
+                    Upload upload = (Upload) response;
+
+                    Libs.log(response.toString(), "");
+                    ArrayList<Upload.File> fileList = upload.getFileList();
+
+                    if (fileList.size() > 0) {
+                        String strDependantImageUrl = fileList.get(0).getUrl();
+
+                        isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId, strDependantImageUrl);
+
+                        if (isUpdated) {
+
+                            Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
+                            selection.putExtra("LIST_DEPENDANT", true);
+                            DependantDetailPersonalActivity.strDependantName = "";
+                            DependantDetailPersonalActivity.strImageName = "";
+                            DependantDetailPersonalActivity.longDependantId = 0;
+                            DependantDetailPersonalActivity.strImagePathToServer = "";
+                            progressDialog.dismiss();
+                            libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
+
+                            startActivity(selection);
+                            finish();
+
+                        } else {
+                            progressDialog.dismiss();
+                            libs.toast(2, 2, getString(R.string.error));
+                        }
+                    } else libs.toast(2, 2, getString(R.string.error));
+
+                }
+
+                public void onException(Exception ex) {
+                    progressDialog.dismiss();
+                    libs.toast(2, 2, getString(R.string.error) + ex.getMessage());
+                    //ex.printStackTrace();
+                }
+            });
+
+        } else libs.toast(2, 2, getString(R.string.warning_internet));
     }
 
     public void backToSelection() {

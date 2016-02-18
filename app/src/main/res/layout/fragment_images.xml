@@ -19,7 +19,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
-            android:src="@drawable/senior1"></ImageView>
+            android:src="@drawable/senior1" />
+
+        <ImageView
+            android:id="@+id/content1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:src="@drawable/carla1" />
+
+        <ImageView
+            android:id="@+id/content2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:src="@drawable/senior2" />
 
     </com.hdfc.views.MyLinearView>
 

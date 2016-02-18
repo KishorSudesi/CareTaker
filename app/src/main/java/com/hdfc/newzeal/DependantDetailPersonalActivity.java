@@ -1,5 +1,6 @@
 package com.hdfc.newzeal;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -17,6 +18,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -37,11 +40,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
+@RuntimePermissions
 public class DependantDetailPersonalActivity extends AppCompatActivity {
 
     public static RoundedImageView imgButtonCamera;
     public static String dependantImgName = "";
-    public static String strImageName = "";
+    public static String strImageName = "", strImagePathToServer = "";
     public static String strDependantName = "";
     public static long longDependantId = 0;
     public static Bitmap bitmap = null;
@@ -49,6 +58,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
+    private static SearchView searchView;
     private Libs libs;
     private EditText editName, editContactNo, editAddress, editRelation, editDependantEmail;
     private Button buttonContinue;
@@ -150,7 +160,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         View focusView = null;
 
         if (TextUtils.isEmpty(strImageName) && longDependantId <= 0) {
-            Libs.toast(2, 2, getString(R.string.warning_profile_pic));
+            libs.toast(2, 2, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
         } else {
@@ -202,13 +212,14 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             try {
                 longDependantId = NewZeal.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, SignupActivity.longUserId, strImageName, strEmail);
                 if (longDependantId > 0) {
-                    Libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                    libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                    strImagePathToServer = strImageName;
                     strImageName = "";
                     Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
                     startActivity(selection);
                     finish();
                 } else {
-                    Libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                    libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                 }
 
             } catch (Exception e) {
@@ -219,7 +230,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) findViewById(R.id.searchView);
+        searchView = (SearchView) findViewById(R.id.searchView);
 
         ComponentName cn = new ComponentName(this, DependantDetailPersonalActivity.class);
 
@@ -234,7 +245,8 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         handleIntent(intent);
     }
 
-    private void handleIntent(Intent intent) {
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    protected void handleIntent(Intent intent) {
 
         if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
             //handles suggestion clicked query
@@ -247,21 +259,39 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         }
     }
 
-    /*private void getDisplayNameForContact(Intent intent) {
+    @OnShowRationale({Manifest.permission.READ_CONTACTS})
+    void showRationaleForContact(PermissionRequest request) {
+        // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
+        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
+        showRationaleDialog(R.string.permission_contact_rationale, request);
+    }
 
-        Cursor phoneCursor = getContentResolver().query(intent.getData(), null, null, null, null);
-        //new String[]{ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.PhoneLookup.NUMBER,ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI}
 
-        phoneCursor.moveToFirst();
-        int idDisplayName = phoneCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-        int idDisplayNumber = phoneCursor.getColumnIndex(ContactsContract.PhoneLookup.NUMBER);
-        int idDisplayPhoto = phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        DependantDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
 
-        String name = phoneCursor.getString(idDisplayName);
-        String number = phoneCursor.getString(idDisplayNumber);
-        String photo = phoneCursor.getString(idDisplayPhoto);
-        phoneCursor.close();
-    }*/
+    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
+        new AlertDialog.Builder(this)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(@NonNull DialogInterface dialog, int which) {
+                        request.proceed();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(@NonNull DialogInterface dialog, int which) {
+                        request.cancel();
+                    }
+                })
+                .setCancelable(false)
+                .setMessage(messageResId)
+                .show();
+    }
 
     public void readContacts(Intent intent) {
 
@@ -322,6 +352,9 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
                 editName.setText(name);
                 editContactNo.setText(phone);
                 editDependantEmail.setText(emailContact);
+
+                searchView.setFocusable(false);
+                searchView.clearFocus();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,15 +365,16 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        String strImgPath = NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.longUserId, editName, editContactNo, editAddress, editRelation, strDependantName, editDependantEmail);
+        if (SignupActivity.longUserId > 0 && !strDependantName.equalsIgnoreCase("")) {
+            String strImgPath = NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.longUserId, editName, editContactNo, editAddress, editRelation, strDependantName, editDependantEmail);
 
-        if (!strDependantName.equalsIgnoreCase("") && isCamera == false) {
-            strImageName = strImgPath;
-            backgroundThreadHandler = new BackgroundThreadHandler();
-            backgroundThreadCamera = new BackgroundThreadCamera();
-            backgroundThreadCamera.start();
+            if (!strDependantName.equalsIgnoreCase("") && isCamera == false) {
+                strImageName = strImgPath;
+                backgroundThreadHandler = new BackgroundThreadHandler();
+                backgroundThreadCamera = new BackgroundThreadCamera();
+                backgroundThreadCamera.start();
+            } else isCamera = false;
         } else isCamera = false;
-
     }
 
     @Override
@@ -349,7 +383,6 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
-                //Libs.toast(1, 1, "Getting Image...");
                 mProgress.setMessage(getString(R.string.loading));
                 mProgress.show();
                 switch (requestCode) {
@@ -384,7 +417,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
                 if (uri != null) {
                     Calendar calendar = new GregorianCalendar();
                     String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                    File galleryFile = libs.createFileInternal(strFileName);
+                    File galleryFile = libs.createFileInternalImage(strFileName);
                     strImageName = galleryFile.getAbsolutePath();
                     InputStream is = getContentResolver().openInputStream(uri);
                     libs.copyInputStreamToFile(is, galleryFile);

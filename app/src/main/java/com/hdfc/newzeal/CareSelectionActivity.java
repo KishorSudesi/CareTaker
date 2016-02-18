@@ -9,16 +9,18 @@ import com.hdfc.libs.Libs;
 
 public class CareSelectionActivity extends AppCompatActivity {
 
-    // private Libs libs;
+    private Libs libs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_care_selection);
+
+        libs = new Libs(CareSelectionActivity.this);
     }
 
     public void selectedMyself(View v) {
-        Libs.toast(1, 1, getString(R.string.coming_soon));
+        libs.toast(1, 1, getString(R.string.coming_soon));
     }
 
     public void selectedLovedOne(View v) {

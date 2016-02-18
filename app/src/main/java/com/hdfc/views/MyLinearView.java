@@ -5,10 +5,10 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-import com.hdfc.newzeal.DashboardActivity;
+import com.hdfc.newzeal.fragments.DashboardFragment;
 
 public class MyLinearView extends LinearLayout {
-    private float scale = DashboardActivity.BIG_SCALE;
+    private float scale = DashboardFragment.BIG_SCALE;
 
     public MyLinearView(Context context, AttributeSet attrs) {
         super(context, attrs);

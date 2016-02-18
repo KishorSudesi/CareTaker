@@ -18,8 +18,7 @@ import java.util.Date;
 public class UserService implements
         AsyncApp42ServiceApi.App42UserServiceListener {
 
-    private static final String appId = "1680764112163895", appSecret = "ce2da3541a0de50f9eb269fa561e0c0f";
-    ArrayList<String> roleList = new ArrayList<String>();
+    private ArrayList<String> roleList = new ArrayList<String>();
     private AsyncApp42ServiceApi asyncService;
     private Context _ctxt;
     private Libs libs;
@@ -31,13 +30,17 @@ public class UserService implements
         asyncService = AsyncApp42ServiceApi.instance(context);
         libs = new Libs(context);
 
-        roleList.add("Admin");
-        roleList.add("User");
+        roleList.add("Customer");
     }
 
-    public void onSigninClicked(String userName, String password) {
+    public void authenticate(String userName, String password, App42CallBack app42CallBack) {
+        //libs.showProgress(true, formView, progressView);
+        asyncService.authenticateUser(userName, password, app42CallBack);
+    }
+
+    public void addJSONObject(String collectionName, String password) {
         libs.showProgress(true, formView, progressView);
-        asyncService.authenticateUser(userName, password, this);
+        //asyncService.addJSONObject(collectionName, jsonDoc);
     }
 
     public void onChangePasswordClicked(String userName, String oldPassword, String confirmPassword) {
@@ -154,9 +157,8 @@ public class UserService implements
         });
     }
 
-    public void onRegisterClicked(String userName, String password, String email) {
-        libs.showProgress(true, formView, progressView);
-        asyncService.createUser(userName, password, email, roleList, this);
+    public void onCreateUser(String userName, String password, String email, App42CallBack app42CallBack) {
+        asyncService.createUser(userName, password, email, roleList, app42CallBack);
     }
 
     @Override

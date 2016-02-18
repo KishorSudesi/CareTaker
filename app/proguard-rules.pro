@@ -23,6 +23,7 @@
 -keep interface android.support.v7.** { *; }
 -dontwarn android.support.v7.**
 
+#for date time slider
 -keep class com.github.jjobes.** { *; }
 -keep interface com.github.jjobes.** { *; }
 -dontwarn com.github.jjobes.**
@@ -40,5 +41,20 @@
 -keep class com.shephertz.app42.** { *; }
 -keep interface com.shephertz.app42.** { *; }
 -dontwarn com.shephertz.app42.**
+
+#apache commons codec AES
+-dontwarn org.apache.commons.codec.**
+-keep class org.apache.commons.codec.** { *; }
+-keep interface org.apache.commons.codec.** { *; }
+
+#Permission Dispatcher
+-dontwarn com.github.hotchemi.**
+-keep class com.github.hotchemi.** { *; }
+-keep interface com.github.hotchemi.** { *; }
+
+#AES
+-dontwarn com.scottyab:aescrypt.**
+-keep class com.scottyab:aescrypt.** { *; }
+-keep interface com.scottyab:aescrypt.** { *; }
 
 #-keepattributes *Annotation*

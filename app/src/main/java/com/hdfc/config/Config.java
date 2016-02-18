@@ -1,5 +1,7 @@
 package com.hdfc.config;
 
+import com.hdfc.libs.Libs;
+
 import org.json.JSONObject;
 
 /**
@@ -7,20 +9,15 @@ import org.json.JSONObject;
  */
 public class Config {
 
-    public static final String apiKey = "458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439";
-    public static final String apiSecret = "960d9964855c20907d6bd3ff8b16302bd05082cf8e699cc5ee496b88b41e37d9";
-
     public static final String dbName = "newzeal";
     public static final String collectionName = "customer";
 
-    public static final String dbPass = "";
-
-    public static final String mode = "DES";
-
-    public static final String key = "HDfc@12#";
+    public static final String string = Libs.getStringJni();
 
     public final static int START_CAMERA_REQUEST_CODE = 1;
     public final static int START_GALLERY_REQUEST_CODE = 2;
+
+    public final static int CACHE_EXPIRE = 1;//In Minutes
 
     public static final int intWidth = 300, intHeight = 300;
     public static final String[] weekNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -28,4 +25,5 @@ public class Config {
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public static JSONObject jsonServer = null;
 
+    public static boolean isDebuggable = true;
 }

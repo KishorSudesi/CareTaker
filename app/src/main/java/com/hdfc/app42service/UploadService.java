@@ -31,7 +31,15 @@ public class UploadService implements
         libs = new Libs(context);
     }
 
-    public void uploadImage(String imagePath, String fileName, String desc, String userName, UploadFileType fileType, AsyncApp42ServiceApi.App42UploadServiceListener callBack) {
+   /* public void uploadImage(String imagePath, String fileName, String desc, String userName, UploadFileType fileType, AsyncApp42ServiceApi.App42UploadServiceListener callBack) {
+        //libs.showProgress(true, formView, progressView);
+
+        asyncService.uploadImageForUser(fileName, userName, imagePath, fileType, desc, callBack);
+        //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
+        //desc, this);
+    }*/
+
+    public void uploadImageCommon(String imagePath, String fileName, String desc, String userName, UploadFileType fileType, App42CallBack callBack) {
         //libs.showProgress(true, formView, progressView);
 
         asyncService.uploadImageForUser(fileName, userName, imagePath, fileType, desc, callBack);
@@ -39,9 +47,9 @@ public class UploadService implements
         //desc, this);
     }
 
-    public void uploadFile(String imagePath, String fileName, String desc, UploadFileType fileType) {
+    public void uploadFile(String imagePath, String fileName, String desc, UploadFileType fileType, App42CallBack callBack) {
         // libs.showProgress(true, formView, progressView);
-        asyncService.uploadFile(fileName, imagePath, fileType, desc, this);
+        asyncService.uploadFile(fileName, imagePath, fileType, desc, callBack);
         //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
         //desc, this);
     }

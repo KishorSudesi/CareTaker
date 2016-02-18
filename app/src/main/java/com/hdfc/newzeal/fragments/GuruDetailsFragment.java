@@ -137,7 +137,7 @@ public class GuruDetailsFragment extends Fragment {
         View focusView = null;
 
         if (TextUtils.isEmpty(strCustomerImgName) & SignupActivity.longUserId <= 0) {
-            Libs.toast(1, 1, getString(R.string.warning_profile_pic));
+            libs.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
 
@@ -220,11 +220,11 @@ public class GuruDetailsFragment extends Fragment {
                     NewZeal.dbCon.retrieveConfirmDependants(lngUserId);
                     ConfirmFragment.adapter.notifyDataSetChanged();
 
-                    Libs.toast(1, 1, getString(R.string.your_details_saved));
+                    libs.toast(1, 1, getString(R.string.your_details_saved));
 
                     SignupActivity._mViewPager.setCurrentItem(1);
                 } else {
-                    Libs.toast(1, 1, getString(R.string.email_exists));
+                    libs.toast(1, 1, getString(R.string.email_exists));
                 }
 
             } catch (Exception e) {
@@ -273,7 +273,7 @@ public class GuruDetailsFragment extends Fragment {
                 if (uri != null) {
                     Calendar calendar = new GregorianCalendar();
                     String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                    File galleryFile = libs.createFileInternal(strFileName);
+                    File galleryFile = libs.createFileInternalImage(strFileName);
                     strCustomerImgName = galleryFile.getAbsolutePath();
                     InputStream is = getActivity().getContentResolver().openInputStream(uri);
                     libs.copyInputStreamToFile(is, galleryFile);

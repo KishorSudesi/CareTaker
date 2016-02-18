@@ -27,7 +27,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,7 +39,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +50,7 @@ import com.hdfc.newzeal.NotificationsActivity;
 import com.hdfc.newzeal.R;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,34 +58,36 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLConnection;
-import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-
 /**
  * Created by balamurugan@adstringo.in on 23-12-2015.
  */
 public class Libs {
 
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    private static final String mode = "DES";
     public static Uri customerImageUri;
     private static Context _ctxt;
-    private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-    private static ArrayList<String> pathExternals;
+    private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()); //check the format and standardize it
+
+    static {
+        System.loadLibrary("stringGen");
+    }
 
     public Libs(Context context) {
         _ctxt = context;
+    }
+
+    public static native String getString();
+
+    public static String getStringJni() {
+        return getString();
     }
 
     public static double round(double value, int places) {
@@ -155,8 +156,10 @@ public class Libs {
             oom.printStackTrace();
         }
 
-        Canvas canvas = new Canvas(scaledBitmap);
-        canvas.drawBitmap(unscaledBitmap, srcRect, dstRect, new Paint(Paint.FILTER_BITMAP_FLAG));
+        if (scaledBitmap != null) {
+            Canvas canvas = new Canvas(scaledBitmap);
+            canvas.drawBitmap(unscaledBitmap, srcRect, dstRect, new Paint(Paint.FILTER_BITMAP_FLAG));
+        }
 
         return scaledBitmap;
     }
@@ -181,10 +184,8 @@ public class Libs {
 
             bmp = createScaledBitmap(BitmapFactory.decodeResource(res, resId, options), reqWidth, reqHeight);
 
-        } catch (Exception e) {
+        } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
-        } catch (OutOfMemoryError oOe) {
-            oOe.printStackTrace();
         }
 
         return bmp;
@@ -196,14 +197,12 @@ public class Libs {
         //check this logic
 
         // Raw height and width of image
-        final int height = srcHeight;
-        final int width = srcWidth;
         int inSampleSize = 1;
 
-        if (height > dstHeight || width > dstWidth) {
+        if (srcHeight > dstHeight || srcWidth > dstWidth) {
 
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
+            final int halfHeight = srcHeight / 2;
+            final int halfWidth = srcWidth / 2;
 
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
@@ -300,36 +299,9 @@ public class Libs {
         }
     }
 
-    public static void toast(int type, int duration, String message) {
-
-        String strColor = "#ffffff";
-
-        if (type == 2)
-            strColor = "#fcc485";
-
-        LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
-        View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).findViewById(R.id.toast_layout_root));
-
-        TextView text = (TextView) layout.findViewById(R.id.text);
-        text.setText(message);
-        text.setTextColor(Color.parseColor(strColor));
-
-        Toast toast = new Toast(_ctxt);
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-
-        if (duration == 1)
-            toast.setDuration(Toast.LENGTH_LONG);
-
-        if (duration == 2)
-            toast.setDuration(Toast.LENGTH_SHORT);
-
-        toast.setView(layout);
-        toast.show();
-    }
-    //
-
     public static ArrayList<String> getExternals() {
 
+        ArrayList<String> pathExternals;
         try {
 
             pathExternals = new ArrayList<String>();
@@ -343,24 +315,26 @@ public class Libs {
                 //Retrieve the External Storages root directory:
                 final String externalStorageRootDir;
                 if ((externalStorageRootDir = primaryExternalStorage.getParent()) == null) {  // no parent...
-                    pathExternals.add(primaryExternalStorage.getAbsolutePath().toString());
+                    pathExternals.add(primaryExternalStorage.getAbsolutePath());
                 } else {
                     final File externalStorageRoot = new File(externalStorageRootDir);
                     final File[] files = externalStorageRoot.listFiles();
                     for (final File file : files) {
                         if (file.isDirectory() && file.canRead() && (file.listFiles().length > 0)) {  // it is a real directory (not a USB drive)...
-                            pathExternals.add(file.getAbsolutePath().toString());
+                            pathExternals.add(file.getAbsolutePath());
                         }
                     }
                 }
-            } else pathExternals = pathExternals = null;
+            } else pathExternals = null;
 
         } catch (Exception e) {
             e.printStackTrace();
+            pathExternals = null;
         }
 
         return pathExternals;
     }
+    //
 
     public static String sha512(final String toEncrypt) {
 
@@ -371,8 +345,8 @@ public class Libs {
             final byte[] bytes = digest.digest();
             final StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            for (byte aByte : bytes) {
+                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
             }
             return sb.toString().toLowerCase();
 
@@ -393,18 +367,24 @@ public class Libs {
             mRecorder.prepare();
             mRecorder.start();
         } catch (IOException e) {
+            e.printStackTrace();
         }
 
         mRecorder.start();
     }
 
-    public static String encrypt(String Data) {
+    public static String getDeviceID(Activity activity) {
+        return Settings.Secure.getString(activity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
+
+    /*public static String encrypt(String Data) {
 
         String encryptedValue = null;
         Cipher c = null;
         try {
             Key key = generateKey();
-            c = Cipher.getInstance(Config.mode);
+            c = Cipher.getInstance(mode);
             c.init(Cipher.ENCRYPT_MODE, key);
             byte[] encVal = c.doFinal(Data.getBytes());
             encryptedValue = Base64.encodeToString(encVal, Base64.DEFAULT);
@@ -423,15 +403,24 @@ public class Libs {
         }
 
         return encryptedValue;
+    }*/
+
+    public static void hideSoftKeyboard(Activity activity) {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static String decrypt(String encryptedData) {
+   /* public static String decrypt(String encryptedData) {
         String decryptedValue = null;
         Cipher c = null;
 
         try {
             Key key = generateKey();
-            c = Cipher.getInstance(Config.mode);
+            c = Cipher.getInstance(mode);
             c.init(Cipher.DECRYPT_MODE, key);
             byte[] decordedValue = Base64.decode(encryptedData, Base64.DEFAULT);
             byte[] decValue = c.doFinal(decordedValue);
@@ -454,25 +443,16 @@ public class Libs {
     }
 
     private static Key generateKey() throws Exception {
-        Key key = new SecretKeySpec(Config.key.getBytes(), Config.mode);
+        Key key = new SecretKeySpec(Config.string.getBytes(), mode);
         return key;
-    }
+    }*/
 
-    public static String getDeviceID(Activity activity) {
-        String deviceId = Settings.Secure.getString(activity.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-        return deviceId;
-    }
-
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }
-
-    public static String loadJSONFromAsset(Context ctx, String file) {
+    public static String loadJSONFromFile(String path) {
         String json = null;
         try {
-            InputStream is = ctx.getAssets().open(file);
+
+            File f = new File(path);
+            InputStream is = new FileInputStream(f);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -491,6 +471,57 @@ public class Libs {
             btn.setBackgroundDrawable(drw);
         else
             btn.setBackground(drw);
+    }
+
+    public static void log(String message, String tag) {
+
+        if ((tag == null || tag.equalsIgnoreCase("")) && _ctxt != null)
+            tag = _ctxt.getClass().getName();
+
+        if (Config.isDebuggable)
+            Log.e(tag, message);
+
+    }
+
+    public void toast(int type, int duration, String message) {
+
+        String strColor = "#ffffff";
+
+        if (type == 2)
+            strColor = "#fcc485";
+
+        try {
+            LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
+            View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).findViewById(R.id.toast_layout_root));
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText(message);
+            text.setTextColor(Color.parseColor(strColor));
+
+            Toast toast = new Toast(_ctxt);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+
+            if (duration == 1)
+                toast.setDuration(Toast.LENGTH_LONG);
+
+            if (duration == 2)
+                toast.setDuration(Toast.LENGTH_SHORT);
+
+            toast.setView(layout);
+            toast.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(_ctxt, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(_ctxt)
+                .setMessage(message)
+                .setPositiveButton(_ctxt.getString(R.string.ok), okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     public void createAlertDialog(String msg) {
@@ -521,19 +552,6 @@ public class Libs {
         }
     }
 
-    public void setExifData(String pathName) throws Exception {
-
-        try {
-            //working for Exif defined attributes
-            ExifInterface exif = new ExifInterface(pathName);
-            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
-            exif.saveAttributes();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
    /* public String getUUID() {
         final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -548,6 +566,19 @@ public class Libs {
 
         return deviceId;
     }*/
+
+    public void setExifData(String pathName) throws Exception {
+
+        try {
+            //working for Exif defined attributes
+            ExifInterface exif = new ExifInterface(pathName);
+            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
+            exif.saveAttributes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public Date convertStringToDate(String strDate) {
 
@@ -580,11 +611,10 @@ public class Libs {
         if (connectivity != null) {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();
             if (info != null)
-                for (int i = 0; i < info.length; i++)
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                for (NetworkInfo anInfo : info)
+                    if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
                         return true;
                     }
-
         }
         return false;
     }
@@ -641,7 +671,7 @@ public class Libs {
             view.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    //hideSoftKeyboard(activity);
+                    hideSoftKeyboard((Activity) _ctxt);
                     return false;
                 }
             });
@@ -656,11 +686,24 @@ public class Libs {
         }
     }
 
-    public File createFileInternal(String strFileName) {
+    public File createFileInternalImage(String strFileName) {
 
         File file = null;
         try {
             file = new File(_ctxt.getExternalFilesDir(Environment.DIRECTORY_PICTURES), strFileName);
+            file.getParentFile().mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+    public File createFileInternal(String strFileName) {
+
+        File file = null;
+        try {
+            file = new File(_ctxt.getFilesDir(), strFileName);
             file.getParentFile().mkdirs();
         } catch (Exception e) {
             e.printStackTrace();
@@ -699,7 +742,7 @@ public class Libs {
     public void openCamera(String strFileName, Fragment fragment, final Activity activity) {
 
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = createFileInternal(strFileName);
+        File file = createFileInternalImage(strFileName);
         customerImageUri = Uri.fromFile(file);
         if (file != null) {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, customerImageUri);
@@ -770,6 +813,17 @@ public class Libs {
         }
     }
 
+    /*private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
+
+        if (v == null)
+            return;
+
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
+    }*/
+
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
@@ -780,26 +834,26 @@ public class Libs {
                 options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
                 options.inJustDecodeBounds = false;
                 original = BitmapFactory.decodeFile(strPath, options);
-            } catch (OutOfMemoryError oOm) {
-            } catch (Exception e) {
+            } catch (OutOfMemoryError | Exception oOm) {
+                oOm.printStackTrace();
             }
         }
         return original;
     }
 
-    private void updateView(int index, ListView listView) {
-        View v = listView.getChildAt(index -
-                listView.getFirstVisiblePosition());
-
-        if (v == null)
-            return;
-
-        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
-        //someText.setText("Hi! I updated you manually!");
-    }
+    /*public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }*/
 
     //Application Specigfic Start
     public void dashboarMenuNavigation() {
+
         ImageButton buttonActivity = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonCallActivity);
         TextView txtViewActivity = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewActivity);
 
@@ -900,7 +954,7 @@ public class Libs {
 
     public int getBitmapHeightFromFile(String strPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap original = null;
+        Bitmap original;
         int intSampleHeight = 0;
         if (strPath != null && !strPath.equalsIgnoreCase("")) {
             try {
@@ -911,8 +965,8 @@ public class Libs {
                 options.inJustDecodeBounds = false;
                 intSampleHeight = options.outHeight / options.inSampleSize;
                 original.recycle();
-            } catch (OutOfMemoryError oOm) {
-            } catch (Exception e) {
+            } catch (OutOfMemoryError | Exception oOm) {
+                oOm.printStackTrace();
             }
         }
         return intSampleHeight;

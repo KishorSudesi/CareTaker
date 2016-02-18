@@ -3,8 +3,11 @@
     package="com.hdfc.newzeal">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <supports-screens
         android:anyDensity="true"
@@ -121,6 +124,16 @@
             android:name=".MyAccountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver android:name="com.shephertz.app42.paas.sdk.android.App42BroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.shephertz.app42.paas.sdk.android.AlarmReceiver" />
+
+        <service android:name="com.shephertz.app42.paas.sdk.android.App42DataSyncService" />
+
     </application>
 
 </manifest>

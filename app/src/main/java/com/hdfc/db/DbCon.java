@@ -3,16 +3,17 @@ package com.hdfc.db;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.EditText;
 
-import com.hdfc.app42service.UploadService;
 import com.hdfc.config.Config;
+import com.hdfc.libs.Libs;
 import com.hdfc.model.ConfirmViewModel;
 import com.hdfc.model.DependantModel;
 import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.newzeal.fragments.AddDependantFragment;
 import com.hdfc.newzeal.fragments.ConfirmFragment;
+import com.ricardo.androidcipher.PRNGFixes;
+import com.scottyab.aescrypt.AESCrypt;
 
 import net.sqlcipher.Cursor;
 
@@ -22,11 +23,13 @@ import org.json.JSONObject;
 
 public class DbCon {
 
+    public static String strPass;
     private static DbHelper dbHelper;
     private static boolean isDbOpened = false;
     private static DbCon dbConInstance = null;
-    private static Thread dbOpenThread;
     private static Handler dbOpenHandler;
+    private static int intDependantCount = 0;
+    private static JSONArray jsonArrayDependant = new JSONArray();
     private Context context;
 
     public DbCon(Context context) {
@@ -45,17 +48,19 @@ public class DbCon {
     public DbCon open() {
         try {
             dbOpenHandler = new DbOpenHandler();
-            dbOpenThread = new DbOpenThread();
+            Thread dbOpenThread = new DbOpenThread();
             dbOpenThread.start();
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return this;
     }
 
     public void close() {
+        //TODO will be called in future
         dbHelper.close();
     }
-    //
+
 
     public long insertUser(String strName, String strEmail, String strPassword, String strContactNo, long longUserId, String strImagPath, String strAddress) {
 
@@ -102,6 +107,7 @@ public class DbCon {
                 dbHelper.delete("dependant", "status<=?", new String[]{"1"});
                 dbHelper.delete("user", "status=?", new String[]{"0"});
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -157,7 +163,7 @@ public class DbCon {
                 if (cur.getCount() > 0) {
                     cur.moveToFirst();
 
-                    while (cur.isAfterLast() == false) {
+                    while (!cur.isAfterLast()) {
 
                         strImg = cur.getString(4);
                         editName.setText(cur.getString(0));
@@ -166,7 +172,7 @@ public class DbCon {
                         editRelation.setText(cur.getString(3));
                         editEmail.setText(cur.getString(5));
 
-                        Log.e("Image 2", strImg);
+                        Libs.log(strImg + " 2", "Image 2");
 
                         cur.moveToNext();
                     }
@@ -180,15 +186,15 @@ public class DbCon {
         return strImg;
     }
 
-    public boolean updateDependantMedicalDetails(String strName, String strAge, String strDiseases, String strNotes, long longUserId) {
+    public boolean updateDependantMedicalDetails(String strName, String strAge, String strDiseases, String strNotes, long longUserId, String strImagePathServer) {
 
         boolean isUpdated = false;
 
         if (isDbOpened) {
 
             try {
-                isUpdated = dbHelper.update("name=? and user_id=?", new String[]{strAge, strDiseases, strNotes, "1"},
-                        new String[]{"age", "diseases", "notes", "status"}, "dependant", new String[]{strName, String.valueOf(longUserId)});
+                isUpdated = dbHelper.update("name=? and user_id=?", new String[]{strAge, strDiseases, strNotes, "1", strImagePathServer},
+                        new String[]{"age", "diseases", "notes", "status", "image_path_server"}, "dependant", new String[]{strName, String.valueOf(longUserId)});
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -203,6 +209,7 @@ public class DbCon {
             try {
                 dbHelper.delete("dependant", "status=?", new String[]{"0"});
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -225,7 +232,7 @@ public class DbCon {
                 if(cur.getCount()>0) {
 
                     cur.moveToFirst();
-                    while(cur.isAfterLast()==false){
+                    while (!cur.isAfterLast()) {
 
                         dpndntModel = new DependantModel();
                         dpndntModel.setStrName(cur.getString(0));
@@ -236,7 +243,7 @@ public class DbCon {
                         dpndntModel.setStrContacts(cur.getString(5));
                         dpndntModel.setStrEmail(cur.getString(6));
 
-                        Log.e("Image 3", cur.getString(1));
+                        Libs.log(cur.getString(1) + " 3", "Image 3");
 
                         AddDependantFragment.CustomListViewValuesArr.add(dpndntModel);
 
@@ -269,7 +276,7 @@ public class DbCon {
 
     public int retrieveConfirmDependants(long longUserId) {
 
-        ConfirmViewModel confirmViewModel = null;
+        ConfirmViewModel confirmViewModel;
 
         ConfirmFragment.CustomListViewValuesArr.clear();
 
@@ -289,7 +296,7 @@ public class DbCon {
 
                 count++;
 
-                Log.e("Image 4", SignupActivity.strCustomerImg);
+                Libs.log(SignupActivity.strCustomerImg + " 4", "Image 4");
 
                 ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
 
@@ -304,7 +311,7 @@ public class DbCon {
                         confirmViewModel.setStrEmail(dpndntModel.getStrEmail());
                         confirmViewModel.setStrImg(dpndntModel.getStrImg());
 
-                        Log.e("Image 5", dpndntModel.getStrImg());
+                        Libs.log(dpndntModel.getStrImg() + " 5", "Image 5");
 
                         ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
                         count++;
@@ -312,7 +319,7 @@ public class DbCon {
                     }
 
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
 
@@ -320,70 +327,26 @@ public class DbCon {
         return count;
     }
 
-    public boolean sendToServer() {
+    public boolean prepareData(String strCustomerImageUrl) {
 
-        UploadService uploadService;
-
-        final boolean[] isFormed = {true};
+        boolean isFormed = false;
 
         JSONObject jsonCustomer = new JSONObject();
-
-        JSONArray jsonArrayDependant = new JSONArray();
-
-        uploadService = new UploadService(context);
 
         Config.jsonServer = null;
 
         try {
 
-            jsonCustomer.put("Customer_Name", SignupActivity.strCustomerName);
-            jsonCustomer.put("Customer_Address", SignupActivity.strCustomerAddress);
-            jsonCustomer.put("Customer_Contact_No", SignupActivity.strCustomerContactNo);
-            jsonCustomer.put("Customer_Email", SignupActivity.strCustomerEmail);/////chk this
-
-           /* uploadService.uploadImage(SignupActivity.strCustomerImg, SignupActivity.strCustomerName, "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new AsyncApp42ServiceApi.App42UploadServiceListener() {
-                @Override
-                public void onUploadImageSuccess(Upload response, String fileName, String userName) {
-                    isFormed[0] =true;
-                }
-
-                @Override
-                public void onUploadImageFailed(App42Exception ex) {
-                    isFormed[0] =false;
-                }
-
-                @Override
-                public void onGetImageSuccess(Upload response) {
-                    isFormed[0] =true;
-                }
-
-                @Override
-                public void onGetImageFailed(App42Exception ex) {
-                    isFormed[0] =false;
-                }
-
-                @Override
-                public void onSuccess(Upload response) {
-                    isFormed[0] =true;
-                }
-
-                @Override
-                public void onException(App42Exception ex) {
-                    isFormed[0] =false;
-                }
-
-                @Override
-                public void onSuccess(Object o) {
-                    isFormed[0] =true;
-                }
-
-                @Override
-                public void onException(Exception e) {
-                    isFormed[0] =false;
-                }
-            });*/
-
             if (isDbOpened) {
+
+                jsonCustomer.put("customer_name", SignupActivity.strCustomerName);
+                jsonCustomer.put("customer_address", SignupActivity.strCustomerAddress);
+                jsonCustomer.put("customer_contact_no", SignupActivity.strCustomerContactNo);
+                jsonCustomer.put("customer_email", SignupActivity.strCustomerEmail);/////chk this
+                jsonCustomer.put("customer_profile_url", strCustomerImageUrl);/////chk this
+                jsonCustomer.put("paytm_account", "paytm_account");/////chk this
+
+                isFormed = true;
 
                 Cursor cur = null;
 
@@ -393,103 +356,107 @@ public class DbCon {
 
                     if (cur.getCount() > 0) {
                         cur.moveToFirst();
-                        while (cur.isAfterLast() == false) {
-                            jsonCustomer.put("Customer_Password", cur.getString(0));
+                        while (!cur.isAfterLast()) {
+
+                            try {
+                                PRNGFixes.apply();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            String str = cur.getString(0);
+
+                           /* MyCipher myCipher = new MyCipher(Config.string);
+                            MyCipherData myCipherData = myCipher.encryptUTF8(str);*/
+
+                            String strPassLocal = AESCrypt.encrypt(Config.string, str);
+                            jsonCustomer.put("customer_password", strPassLocal);
+                            strPass = strPassLocal;
+
+                            //Libs.bytesToHex(myCipherData.getData());
+
+                            isFormed = true;
                             cur.moveToNext();
                         }
                         dbHelper.closeCursor(cur);
-                    }
+                    } else isFormed = false;
                 } catch (Exception e) {
                     dbHelper.closeCursor(cur);
+                    isFormed = false;
                 }
 
-                cur = null;
+                if (isFormed) {
 
-                try {
+                    Cursor cursorSubmit = null;
 
-                    cur = dbHelper.fetch("dependant", new String[]{"name", "email", "contact_no", "address", "relationship", "notes", "age", "diseases", "image_path"}, "user_id=?", new String[]{String.valueOf(SignupActivity.longUserId)}, "relationship ASC", null, true, null, null);
+                    try {
 
-                    if (cur.getCount() > 0) {
+                        cursorSubmit = dbHelper.fetch("dependant", new String[]{"name", "email", "contact_no", "address", "relationship", "notes", "age", "diseases", "image_path", "image_path_server"}, "user_id=?", new String[]{String.valueOf(SignupActivity.longUserId)}, "relationship ASC", null, true, null, null);
 
-                        cur.moveToFirst();
-                        while (cur.isAfterLast() == false) {
+                        int intCount = cursorSubmit.getCount();
 
-                            JSONObject jsonDependant = new JSONObject();
-                            jsonDependant.put("Dependant_Name", cur.getString(0));
-                            jsonDependant.put("Dependant_Email", cur.getString(1));
-                            jsonDependant.put("Dependant_Contact_No", cur.getString(2));
-                            jsonDependant.put("Dependant_Address", cur.getString(3));
-                            jsonDependant.put("Dependant_Relation", cur.getString(4));
-                            jsonDependant.put("Dependant_Notes", cur.getString(5));
-                            jsonDependant.put("Dependant_Age", cur.getString(6));
-                            jsonDependant.put("Dependant_Diseases", cur.getString(7));
+                        if (intCount > 0) {
 
-                           /* uploadService.uploadImage(cur.getString(8), cur.getString(0), "Profile Picture", cur.getString(1), UploadFileType.IMAGE, new AsyncApp42ServiceApi.App42UploadServiceListener() {
-                                @Override
-                                public void onUploadImageSuccess(Upload response, String fileName, String userName) {
-                                    isFormed[0] =true;
+                            cursorSubmit.moveToFirst();
+                            while (!cursorSubmit.isAfterLast()) {
+
+                                try {
+
+                                    JSONObject jsonDependant = new JSONObject();
+                                    jsonDependant.put("dependant_name", cursorSubmit.getString(0));
+                                    jsonDependant.put("dependant_email", cursorSubmit.getString(1));
+                                    jsonDependant.put("dependant_contact_no", cursorSubmit.getString(2));
+                                    jsonDependant.put("dependant_address", cursorSubmit.getString(3));
+                                    jsonDependant.put("dependant_relation", cursorSubmit.getString(4));
+                                    jsonDependant.put("dependant_notes", cursorSubmit.getString(5));
+                                    jsonDependant.put("dependant_age", cursorSubmit.getString(6));
+                                    jsonDependant.put("dependant_illness", cursorSubmit.getString(7));
+
+                                    jsonDependant.put("dependant_profile_url", cursorSubmit.getString(9));
+
+                                    jsonArrayDependant.put(jsonDependant);
+
+                                    intDependantCount++;
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
 
-                                @Override
-                                public void onUploadImageFailed(App42Exception ex) {
-                                    isFormed[0] =false;
-                                }
+                                cursorSubmit.moveToNext();
+                            }
 
-                                @Override
-                                public void onGetImageSuccess(Upload response) {
-                                    isFormed[0] =true;
-                                }
+                            jsonCustomer.put("Dependants", jsonArrayDependant);
 
-                                @Override
-                                public void onGetImageFailed(App42Exception ex) {
-                                    isFormed[0] =false;
-                                }
-
-                                @Override
-                                public void onSuccess(Upload response) {
-                                    isFormed[0] =true;
-                                }
-
-                                @Override
-                                public void onException(App42Exception ex) {
-                                    isFormed[0] =false;
-                                }
-
-                                @Override
-                                public void onSuccess(Object o) {
-                                    isFormed[0] =true;
-                                }
-
-                                @Override
-                                public void onException(Exception e) {
-                                    isFormed[0] =false;
-                                }
-                            });*/
-
-                            jsonArrayDependant.put(jsonDependant);
-                            cur.moveToNext();
+                            if (intCount != intDependantCount) {
+                                isFormed = false;
+                            } else {
+                                Config.jsonServer = jsonCustomer;
+                                isFormed = true;
+                            }
                         }
 
-                        jsonCustomer.put("Dependants", jsonArrayDependant);
+                        dbHelper.closeCursor(cursorSubmit);
+                    } catch (Exception e) {
+                        dbHelper.closeCursor(cursorSubmit);
+                        isFormed = false;
                     }
-
-                    dbHelper.closeCursor(cur);
-                } catch (Exception e) {
-                    dbHelper.closeCursor(cur);
                 }
             }
 
-            Config.jsonServer = jsonCustomer;
-
-            isFormed[0] = true;
-
         } catch (JSONException e) {
             e.printStackTrace();
+            isFormed = false;
         }
 
-        return isFormed[0];
+        return isFormed;
     }
 
+    public static class DbOpenHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            isDbOpened = true;
+        }
+    }
 
     public class DbOpenThread extends Thread {
         @Override
@@ -501,13 +468,6 @@ public class DbCon {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public class DbOpenHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            isDbOpened = true;
         }
     }
 }

@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.hdfc.config.Config;
+import com.scottyab.aescrypt.AESCrypt;
 import com.shephertz.app42.paas.sdk.android.App42API;
+import com.shephertz.app42.paas.sdk.android.App42CacheManager;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.App42Response;
@@ -18,17 +20,32 @@ import com.shephertz.app42.paas.sdk.android.user.UserService;
 
 import org.json.JSONObject;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class AsyncApp42ServiceApi {
 
     private static AsyncApp42ServiceApi mInstance = null;
+    private static String apiKey = "";
+    private static String apiSecret = "";
     private UserService userService;
     private StorageService storageService;
     private UploadService uploadService;
 
+
     private AsyncApp42ServiceApi(Context context) {
-        App42API.initialize(context, Config.apiKey, Config.apiSecret);
+
+        try {
+            apiKey = AESCrypt.decrypt(Config.string, "a3tEVMM63P40VdMvybYAHvhjdR91k6uRHnBoRIjQq7bEYH0jWh22DnT6eYLCPv+3X0UrhjF4nwresW4BA1bKBXvUIl2/Z2cqfdtY5la00U4=");
+            apiSecret = AESCrypt.decrypt(Config.string, "TizgBe+sjPzxHZKp7eQwwgd78xjELdu3+NLfNqFZvVNStxezaFr1xkkYHRr2FJDYDsd46xK1UxeC9tlHG5kf9xkUc8n9Ompf5sr1DQaxbmQ=");
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+
+        App42API.initialize(context, apiKey, apiSecret);
+        App42CacheManager.setPolicy(App42CacheManager.Policy.CACHE_FIRST);
+        App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
+
         this.userService = App42API.buildUserService();
         this.storageService = App42API.buildStorageService();
         this.uploadService = App42API.buildUploadService();
@@ -78,7 +95,7 @@ public class AsyncApp42ServiceApi {
 
 
     public User createUser(final String name, final String pswd,
-                           final String email, final ArrayList<String> roleList, final App42UserServiceListener callBack) {
+                           final String email, final ArrayList<String> roleList, final App42CallBack callBack) {
         final User[] user = {null};
 
         final Handler callerThreadHandler = new Handler();
@@ -90,7 +107,7 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onUserCreated(user[0]);
+                            callBack.onSuccess(user[0]);
                         }
                     });
                 } catch (final App42Exception ex) {
@@ -98,7 +115,7 @@ public class AsyncApp42ServiceApi {
                         @Override
                         public void run() {
                             if (callBack != null) {
-                                callBack.onCreationFailed(ex);
+                                callBack.onException(ex);
                             }
                         }
                     });
@@ -170,7 +187,7 @@ public class AsyncApp42ServiceApi {
 
 
     public void authenticateUser(final String name, final String pswd,
-                                 final App42UserServiceListener callBack) {
+                                 final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -180,7 +197,7 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onUserAuthenticated(response);
+                            callBack.onSuccess(response);
                         }
                     });
                 } catch (final App42Exception ex) {
@@ -188,7 +205,7 @@ public class AsyncApp42ServiceApi {
                         @Override
                         public void run() {
                             if (callBack != null) {
-                                callBack.onAuthenticationFailed(ex);
+                                callBack.onException(ex);
                             }
                         }
                     });
@@ -281,9 +298,37 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
+    public void findDocumentByKeyValue(final String dbName, final String collectionName,
+                                       final String strKey, final String strValue, final App42StorageServiceListener callBack) {
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final Storage response = storageService.findDocumentByKeyValue(dbName, collectionName, strKey, strValue);
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onFindDocSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onFindDocFailed(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
     public void updateDocByKeyValue(final String dbName,
                                     final String collectionName, final String key, final String value,
-                                    final JSONObject newJsonDoc, final App42StorageServiceListener callBack) {
+                                    final JSONObject newJsonDoc, final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -293,7 +338,7 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onUpdateDocSuccess(response);
+                            callBack.onSuccess(response);
                         }
                     });
                 } catch (final App42Exception ex) {
@@ -301,7 +346,7 @@ public class AsyncApp42ServiceApi {
                         @Override
                         public void run() {
                             if (callBack != null) {
-                                callBack.onUpdateDocFailed(ex);
+                                callBack.onException(ex);
                             }
                         }
                     });
@@ -342,7 +387,7 @@ public class AsyncApp42ServiceApi {
     }
 
     public void uploadFile(final String name,
-                           final String filePath, final UploadFileType fileType, final String description, final App42UploadServiceListener callBack) {
+                           final String filePath, final UploadFileType fileType, final String description, final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -352,7 +397,7 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onUploadImageSuccess(response, name, null);
+                            callBack.onSuccess(response);
                         }
                     });
                 } catch (final App42Exception ex) {
@@ -360,7 +405,7 @@ public class AsyncApp42ServiceApi {
                         @Override
                         public void run() {
                             if (callBack != null) {
-                                callBack.onUploadImageFailed(ex);
+                                callBack.onException(ex);
                             }
                         }
                     });
@@ -457,7 +502,7 @@ public class AsyncApp42ServiceApi {
 	 * This function Uploads File On App42 Cloud.
 	 */
     public void uploadImageForUser(final String name, final String userName,
-                                   final String filePath, final UploadFileType fileType, final String description, final App42UploadServiceListener callBack) {
+                                   final String filePath, final UploadFileType fileType, final String description, final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -467,7 +512,7 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onUploadImageSuccess(response, name, userName);
+                            callBack.onSuccess(response); //, name, userName
                         }
                     });
                 } catch (final App42Exception ex) {
@@ -475,7 +520,7 @@ public class AsyncApp42ServiceApi {
                         @Override
                         public void run() {
                             if (callBack != null) {
-                                callBack.onUploadImageFailed(ex);
+                                callBack.onException(ex);
                             }
                         }
                     });

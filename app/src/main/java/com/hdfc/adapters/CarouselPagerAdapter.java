@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
-import com.hdfc.newzeal.DashboardActivity;
 import com.hdfc.newzeal.R;
+import com.hdfc.newzeal.fragments.DashboardFragment;
 import com.hdfc.newzeal.fragments.ImagesFragment;
 import com.hdfc.views.MyLinearView;
 
@@ -30,12 +30,12 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
     @Override
     public Fragment getItem(int position) {
         // make the first pager bigger than others
-        if (position == DashboardActivity.FIRST_PAGE)
-            scale = DashboardActivity.BIG_SCALE;
+        if (position == DashboardFragment.FIRST_PAGE)
+            scale = DashboardFragment.BIG_SCALE;
         else
-            scale = DashboardActivity.SMALL_SCALE;
+            scale = DashboardFragment.SMALL_SCALE;
 
-        position = position % DashboardActivity.PAGES;
+        position = position % DashboardFragment.PAGES;
 
         Log.e("CarouselPagerAdapter", String.valueOf(position));
         return ImagesFragment.newInstance(context, position, scale);
@@ -43,7 +43,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
 
     @Override
     public int getCount() {
-        return DashboardActivity.PAGES * DashboardActivity.LOOPS;
+        return DashboardFragment.PAGES * DashboardFragment.LOOPS;
     }
 
     @Override
@@ -51,14 +51,14 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
                                int positionOffsetPixels) {
         if (positionOffset >= 0f && positionOffset <= 1f) {
             cur = getRootView(position);
-            cur.setScaleBoth(DashboardActivity.BIG_SCALE - DashboardActivity.DIFF_SCALE * positionOffset);
+            cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE * positionOffset);
 
 
             Log.e("CarouselPagerAdapter 1 ", String.valueOf(position + " ~ " + positionOffset));
 
-            if (position < DashboardActivity.PAGES - 1) {
+            if (position < DashboardFragment.PAGES - 1) {
                 next = getRootView(position + 1);
-                next.setScaleBoth(DashboardActivity.SMALL_SCALE + DashboardActivity.DIFF_SCALE * positionOffset);
+                next.setScaleBoth(DashboardFragment.SMALL_SCALE + DashboardFragment.DIFF_SCALE * positionOffset);
 
                 /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     next.setBackground(context.getResources().getDrawable(R.drawable.rounded_image_view));
@@ -83,6 +83,6 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
     }
 
     private String getFragmentTag(int position) {
-        return "android:switcher:" + DashboardActivity.pager.getId() + ":" + position;
+        return "android:switcher:" + DashboardFragment.pager.getId() + ":" + position;
     }
 }

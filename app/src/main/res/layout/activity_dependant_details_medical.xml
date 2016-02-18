@@ -83,7 +83,6 @@
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/button_success"
-                android:onClick="gotoSignupListDependants"
                 android:text="@string/submit"
                 android:textAllCaps="false" />
 

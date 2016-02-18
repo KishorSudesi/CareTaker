@@ -23,7 +23,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
         Libs libs = new Libs(AccountSuccessActivity.this);
 
-        Libs.toast(1, 1, "Registered Successfully");
+        libs.toast(1, 1, "Registered Successfully");
 
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
@@ -44,5 +44,6 @@ public class AccountSuccessActivity extends AppCompatActivity {
     public void goToDashboard(View v) {
         Intent dashboardIntent = new Intent(AccountSuccessActivity.this, DashboardActivity.class);
         startActivity(dashboardIntent);
+        finish();
     }
 }

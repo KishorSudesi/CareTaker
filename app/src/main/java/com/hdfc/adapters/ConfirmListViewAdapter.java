@@ -1,7 +1,6 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +27,6 @@ public class ConfirmListViewAdapter extends BaseAdapter {
     private Context _ctxt;
     private ArrayList data;
     private ConfirmViewModel tempValues = null;
-
-    private Bitmap imageBitmap = null;
 
     public ConfirmListViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
@@ -123,7 +120,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
 
                 }
 
-                holder.image.setImageBitmap(imageBitmap);
+                //holder.image.setImageBitmap(imageBitmap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
