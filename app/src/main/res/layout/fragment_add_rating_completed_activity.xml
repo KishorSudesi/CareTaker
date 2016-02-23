@@ -62,7 +62,7 @@
                 </LinearLayout>
 
                 <EditText
-                    android:id="@+id/editDiseases"
+                    android:id="@+id/editFeedBack"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginTop="20dp"
@@ -77,17 +77,18 @@
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical" />
 
-                <TextView
+                <CheckBox
+                    android:id="@+id/checkReport"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:drawableLeft="@drawable/ok"
                     android:drawablePadding="15dp"
                     android:gravity="center_vertical"
                     android:padding="@dimen/padding_general"
                     android:text="I want to report this activity" />
 
                 <Button
+                    android:id="@+id/btnSubmit"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
@@ -102,3 +103,5 @@
     </ScrollView>
 
 </LinearLayout>
+
+

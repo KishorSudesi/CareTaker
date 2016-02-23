@@ -12,7 +12,6 @@ import com.hdfc.model.DependantModel;
 import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.newzeal.fragments.AddDependantFragment;
 import com.hdfc.newzeal.fragments.ConfirmFragment;
-import com.ricardo.androidcipher.PRNGFixes;
 import com.scottyab.aescrypt.AESCrypt;
 
 import net.sqlcipher.Cursor;
@@ -28,8 +27,6 @@ public class DbCon {
     private static boolean isDbOpened = false;
     private static DbCon dbConInstance = null;
     private static Handler dbOpenHandler;
-    private static int intDependantCount = 0;
-    private static JSONArray jsonArrayDependant = new JSONArray();
     private Context context;
 
     public DbCon(Context context) {
@@ -358,12 +355,6 @@ public class DbCon {
                         cur.moveToFirst();
                         while (!cur.isAfterLast()) {
 
-                            try {
-                                PRNGFixes.apply();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
                             String str = cur.getString(0);
 
                            /* MyCipher myCipher = new MyCipher(Config.string);
@@ -397,10 +388,16 @@ public class DbCon {
 
                         if (intCount > 0) {
 
+                            JSONArray jsonArrayDependant = new JSONArray();
+
+                            int intDependantCount = 0;
+
                             cursorSubmit.moveToFirst();
                             while (!cursorSubmit.isAfterLast()) {
 
                                 try {
+
+                                    Libs.log(" 1 ", " ");
 
                                     JSONObject jsonDependant = new JSONObject();
                                     jsonDependant.put("dependant_name", cursorSubmit.getString(0));
@@ -412,32 +409,172 @@ public class DbCon {
                                     jsonDependant.put("dependant_age", cursorSubmit.getString(6));
                                     jsonDependant.put("dependant_illness", cursorSubmit.getString(7));
 
+                                    jsonDependant.put("health_bp", 90);
+                                    jsonDependant.put("health_heart_rate", 75);
+
                                     jsonDependant.put("dependant_profile_url", cursorSubmit.getString(9));
+
+
+                                    JSONArray jsonArrAct = new JSONArray();
+
+                                    JSONObject pnObj2 = new JSONObject();
+
+                                    pnObj2.put("provider_email", "provider@gmail.com");
+                                    pnObj2.put("provider_contact_no", "321423423");
+                                    pnObj2.put("provider_description", "This is a Test Data from APP42");
+                                    pnObj2.put("provider_name", "Carla");
+                                    pnObj2.put("activity_date", "19-03-2016 18:00:00");
+                                    pnObj2.put("status", "upcoming");
+                                    pnObj2.put("activity_name", "Buy grocery and delivery");
+                                    pnObj2.put("author_profile_url", "http://url.com/23e3WQE124");
+
+                                    jsonArrAct.put(pnObj2);
+
+                                    for (int i = 0; i < 1; i++) {
+
+                                        JSONObject pnObj3 = new JSONObject();
+
+                                        pnObj3.put("provider_email", "provider@email.com");
+                                        pnObj3.put("provider_contact_no", "9842103278");
+                                        pnObj3.put("provider_description", "description");
+                                        pnObj3.put("provider_name", "carla1");
+                                        pnObj3.put("activity_date", i + "9-02-2016 18:00:00");
+                                        pnObj3.put("status", "completed");
+                                        pnObj3.put("activity_name", "Medical Checkups " + i);
+                                        pnObj3.put("author_profile_url", "url");
+
+                                        JSONArray jsonArrAct1 = new JSONArray();
+
+                                        for (int j = 0; j < 1; j++) {
+
+                                            JSONObject pnObj4 = new JSONObject();
+
+                                            pnObj4.put("feedback_message", "good service by carla " + j);
+                                            pnObj4.put("feedback_raring", 3);
+                                            pnObj4.put("feedback_by", "hungal");
+                                            pnObj4.put("report", 1);
+                                            pnObj4.put("feedback_time", "19-02-2016 12:00:00");
+                                            pnObj4.put("feedback_by_url", "url");
+
+                                            jsonArrAct1.put(pnObj4);
+                                        }
+
+                                        pnObj3.put("feedbacks", jsonArrAct1);
+
+                                        //
+                                        JSONArray jsonArrAct2 = new JSONArray();
+
+                                        for (int k = 0; k < 1; k++) {
+
+                                            JSONObject pnObj5 = new JSONObject();
+
+                                            pnObj5.put("video_taken", "19-01-2016 18:00:00");
+                                            pnObj5.put("video_description", "Video taken on hungal house");
+                                            pnObj5.put("video_name", "Video name " + k);
+                                            pnObj5.put("video_url", "url");
+
+                                            jsonArrAct2.put(pnObj5);
+                                        }
+
+                                        pnObj3.put("videos", jsonArrAct2);
+                                        //
+
+                                        //
+                                        JSONArray jsonArrAct3 = new JSONArray();
+
+                                        for (int l = 0; l < 1; l++) {
+
+                                            JSONObject pnObj6 = new JSONObject();
+
+                                            pnObj6.put("image_name", "abc.jpg ");
+                                            pnObj6.put("image_url", "http://url");
+                                            pnObj6.put("image_description", "This is a Test Data from APP42");
+                                            pnObj6.put("image_taken", "19-01-2016 18:00:00");
+
+                                            jsonArrAct3.put(pnObj6);
+                                        }
+
+                                        pnObj3.put("images", jsonArrAct3);
+
+
+                                        jsonArrAct.put(pnObj3);
+                                    }
+
+                                    jsonDependant.put("activities", jsonArrAct);
+
+                                    JSONArray jsonArr0 = new JSONArray();
+
+                                    for (int m = 0; m < 3; m++) {
+
+                                        JSONObject pnObj0 = new JSONObject();
+                                        pnObj0.put("notification_message", "This is a Test Data from APP42 " + m);
+                                        pnObj0.put("author", "hungal");
+                                        pnObj0.put("time", "19-01-2016 18:00:00");
+                                        pnObj0.put("author_profile_url", "http://url.com/23e3WQE124");
+                                        jsonArr0.put(pnObj0);
+                                    }
+
+                                    jsonDependant.put("notifications", jsonArr0);
+
+
+                                    JSONArray jsonArr = new JSONArray();
+
+                                    for (int n = 0; n < 3; n++) {
+
+                                        JSONObject pnObj = new JSONObject();
+                                        pnObj.put("service_name", "Medical Checkups and Health checkups" + n);
+                                        pnObj.put("service_features", "BP, Heart Rate, etc");
+                                        pnObj.put("unit", 3);
+                                        pnObj.put("unit_consumed", 10);
+                                        jsonArr.put(pnObj);
+
+                                    }
+                                    jsonDependant.put("services", jsonArr);
+
+                                    //health_status
+                                    JSONArray jsonArrHealth = new JSONArray();
+
+                                    for (int o = 0; o < 3; o++) {
+
+                                        JSONObject pnObjHealth = new JSONObject();
+                                        pnObjHealth.put("bp", 80 + o);
+                                        pnObjHealth.put("heart_rate", 230 + o);
+                                        pnObjHealth.put("time_taken", "29-01-2016 18:00:00");
+                                        jsonArrHealth.put(pnObjHealth);
+
+                                    }
+                                    jsonDependant.put("health_status", jsonArrHealth);
+                                    //
 
                                     jsonArrayDependant.put(jsonDependant);
 
-                                    intDependantCount++;
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
+
+                                intDependantCount++;
                                 cursorSubmit.moveToNext();
                             }
 
-                            jsonCustomer.put("Dependants", jsonArrayDependant);
+                            jsonCustomer.put("dependants", jsonArrayDependant);
 
                             if (intCount != intDependantCount) {
                                 isFormed = false;
                             } else {
                                 Config.jsonServer = jsonCustomer;
+                                Libs.log(jsonCustomer.toString(), "");
+                                //
                                 isFormed = true;
                             }
                         }
 
+
                         dbHelper.closeCursor(cursorSubmit);
                     } catch (Exception e) {
                         dbHelper.closeCursor(cursorSubmit);
+                        e.printStackTrace();
                         isFormed = false;
                     }
                 }

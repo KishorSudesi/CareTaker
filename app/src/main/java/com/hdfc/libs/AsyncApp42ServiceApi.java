@@ -298,6 +298,35 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
+    public void findDocByDocIdCommon(final String dbName, final String collectionName,
+                                     final String docId, final App42StorageServiceListener callBack) {
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final Storage response = storageService.findDocumentById(dbName, collectionName, docId);
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onFindDocSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onFindDocFailed(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+
     public void findDocumentByKeyValue(final String dbName, final String collectionName,
                                        final String strKey, final String strValue, final App42StorageServiceListener callBack) {
         final Handler callerThreadHandler = new Handler();
@@ -335,6 +364,37 @@ public class AsyncApp42ServiceApi {
             public void run() {
                 try {
                     final Storage response = storageService.updateDocumentByKeyValue(dbName, collectionName, key, value, newJsonDoc);
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    //addOrUpdateKeys(dbName, collectionName, docId, keys,
+    public void updateDocPartByKeyValue(final String dbName,
+                                        final String collectionName, final String key,
+                                        final JSONObject newJsonDoc, final App42CallBack callBack) {
+        //final String value,
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final Storage response = storageService.addOrUpdateKeys(dbName, collectionName, key, newJsonDoc);
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -490,6 +550,36 @@ public class AsyncApp42ServiceApi {
                         public void run() {
                             if (callBack != null) {
                                 callBack.onGetImageFailed(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    /*
+     * This function get Files by user On App42 Cloud.
+	 */
+    public void getAllFilesByUser(final String userName, final App42CallBack callBack) {
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final Upload response = uploadService.getAllFilesByUser(userName);
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
                             }
                         }
                     });

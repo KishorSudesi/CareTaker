@@ -2,12 +2,12 @@
     <string name="app_name">NewZeal</string>
 
     <string name="back">Back</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
     <string name="account_success_header">Account Successfully Created</string>
-    <string name="add_dependant">Add a Dependant</string>
+    <string name="add_dependant">Add a Dependent</string>
 
     <string name="title_activity_dependant_details_medical">DependantDetailsMedicalActivity</string>
 
@@ -15,11 +15,13 @@
     <string name="take_me_in">Take Me In</string>
     <string name="am_new_here">I am New Here</string>
     <string name="password">Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
     <string name="forgot">Forgot?</string>
     <string name="submit">Submit</string>
 
-    <string name="uploading">Uploading...</string>
-    <string name="loading">Loading...</string>
+    <string name="uploading">Uploading…</string>
+    <string name="loading">Loading…</string>
 
     <string name="myself">Myself</string>
     <string name="loved_one">A Loved One</string>
@@ -39,8 +41,8 @@
     <string name="contact_number">Contact Number</string>
 
     <string name="search_contacts">Search from Contacts</string>
-    <string name="dependant_name">Dependant Name</string>
-    <string name="dependant_details">Dependant Details</string>
+    <string name="dependant_name">Dependent Name</string>
+    <string name="dependant_details">Dependent Details</string>
     <string name="address">Address</string>
     <string name="relation">Relationship</string>
 
@@ -51,18 +53,19 @@
     <string name="confirm_details">Confirm Details</string>
 
     <string name="view_dashboard">View Dashboard</string>
-    <string name="info_discard">All your Information will not be saved, Ok to Proceed?</string>
+    <string name="info_discard">All your Information will not be saved, OK to Proceed?</string>
 
     <string name="add_new_activity">Add New Activity</string>
     <string name="activity">Activity</string>
     <string name="my_account">My Account</string>
+    <string name="my_account_edit">Edit My Account</string>
 
     <string name="coming_soon">Coming Soon</string>
 
-    <string name="dpndnt_medical_info_saved">Dependant Medical Details Saved</string>
-    <string name="dpndnt_details_saved">Dependant Details Saved</string>
-    <string name="dpndnt_details_not_saved">Dependant Not Saved. Check Name</string>
-    <string name="delete_info">All your Information will not be saved, Ok to Proceed?</string>
+    <string name="dpndnt_medical_info_saved">Dependent Medical Details Saved</string>
+    <string name="dpndnt_details_saved">Dependent Details Saved</string>
+    <string name="dpndnt_details_not_saved">Dependent Not Saved. Check Name</string>
+    <string name="delete_info">All your Information will not be saved, OK to Proceed?</string>
 
 
     <string name="menu_activities">Activities</string>
@@ -70,7 +73,7 @@
     <string name="menu_seniors">Seniors</string>
     <string name="menu_notification">Notifications</string>
     <string name="menu_account">My Account</string>
-    r
+
     <string name="error_confirm_password">Invalid Confirm Password</string>
     <string name="error_invalid_email">Invalid Email</string>
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
@@ -78,6 +81,8 @@
     <string name="email_exists">Email Id Already Exists!!!</string>
     <string name="error_field_required">This Field is Required</string>
     <string name="error">Something went wrong. Try Again!!!</string>
+
+    <string name="error_same_password">New and Old Password cannot be same</string>
 
     <string name="warning_profile_pic">Profile Picture Needed</string>
     <string name="warning_internet">Please check your internet connection and try again</string>
@@ -93,8 +98,20 @@
     <string name="permission_storage_denied">Storage Access Denied</string>
     <string name="permission_storage_neverask">Storage Access Granted</string>
 
-    <string name="success_login">Login Success...</string>
+    <string name="process_login">Authenticating…</string>
+    <string name="success_login">Login Success…</string>
     <string name="invalid_credentials">Invalid Credentials</string>
+
+    <string name="no_activities">No Activities</string>
+    <string name="no_notifications">Notifications Not Available</string>
+
+    <string name="confirm_logout">Are you sure want to Logout !?</string>
+    <string name="account_updated">Account updated successfully</string>
+
+    <string name="no_services">No Services</string>
+    <string name="error_service">Select a Service</string>
+
+    <string name="register_success">Registered Successfully</string>
 
 
 </resources>

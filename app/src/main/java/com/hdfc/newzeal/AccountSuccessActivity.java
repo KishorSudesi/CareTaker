@@ -3,10 +3,10 @@ package com.hdfc.newzeal;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 
 public class AccountSuccessActivity extends AppCompatActivity {
@@ -16,18 +16,13 @@ public class AccountSuccessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_success);
 
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
-        int screenWidth = displaymetrics.widthPixels;
-
         Libs libs = new Libs(AccountSuccessActivity.this);
 
-        libs.toast(1, 1, "Registered Successfully");
+        libs.toast(1, 1, getResources().getString(R.string.register_success));
 
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
-            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, screenWidth, screenHeight));
+            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
 
             //NewZeal.dbCon = DbCon.getInstance(AccountSuccessActivity.this);
         } catch (Exception e) {
@@ -43,6 +38,8 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
     public void goToDashboard(View v) {
         Intent dashboardIntent = new Intent(AccountSuccessActivity.this, DashboardActivity.class);
+        dashboardIntent.putExtra("WHICH_SCREEN", Config.intDashboardScreen);
+        Config.boolIsLoggedIn = true;
         startActivity(dashboardIntent);
         finish();
     }

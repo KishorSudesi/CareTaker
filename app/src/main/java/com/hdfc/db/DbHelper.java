@@ -62,7 +62,7 @@ public class DbHelper extends SQLiteOpenHelper {
         try {
             SQLiteDatabase.loadLibs(_ctxt);
             db = this.getWritableDatabase(dbPass);
-        } catch (Exception e1) {
+        } catch (Exception | UnsatisfiedLinkError e1) {
             try {
                 if (originalFile.exists())
                     encrypt(true);

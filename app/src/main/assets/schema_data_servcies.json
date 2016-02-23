@@ -1,0 +1,28 @@
+{
+  "services": [
+    {
+      "unit": 10,
+      "service_name": "Medical Checkups",
+      "cost": 600.213,
+      "service_features": "BP, Heart Rate"
+    },
+    {
+      "unit": 10,
+      "service_name": "Medical Checkups",
+      "cost": 600.213,
+      "service_features": "BP, Heart Rate"
+    },
+    {
+      "unit": 10,
+      "service_name": "Medical Checkups",
+      "cost": 600.213,
+      "service_features": "BP, Heart Rate"
+    },
+    {
+      "unit": 10,
+      "service_name": "Medical Checkups",
+      "cost": 600.213,
+      "service_features": "BP, Heart Rate"
+    }
+  ]
+}

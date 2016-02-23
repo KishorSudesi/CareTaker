@@ -8,7 +8,7 @@
     android:padding="@dimen/padding_general">
 
     <Button
-        android:id="@+id/buttonMonthly"
+        android:id="@+id/buttonList"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"
@@ -28,7 +28,7 @@
         android:layout_centerVertical="true"
         android:layout_weight="2"
         android:padding="@dimen/text_padding"
-        android:text="January 2016"
+        android:text="February 2016"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView

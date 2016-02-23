@@ -48,8 +48,8 @@ public class RoundedImageView extends ImageView {
                     bmp.getWidth() / 2 + 0.1f, paint);
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(bmp, rect, rect, paint);
-        } catch (Exception e) {
-
+        } catch (Exception | OutOfMemoryError e) {
+            e.printStackTrace();
         }
 
         return output;

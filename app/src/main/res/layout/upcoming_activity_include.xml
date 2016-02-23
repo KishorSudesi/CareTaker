@@ -11,33 +11,31 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/carla_1_big">
+        android:background="@drawable/carla2">
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/textViewHead1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="54dp"
-            android:text="Caring Carla assisted Mr.Hungal"
+            android:layout_marginBottom="75dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorWhite" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/textViewHead2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="With Household Maintenance"
+            android:layout_marginBottom="15dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/colorWhite" />
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -46,19 +44,17 @@
         android:layout_marginLeft="28dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="20dp"
-        android:text="at 6:00PM, 20-Dec-2015"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#000000" />
 
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/textViewMSG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView14"
-        android:layout_alignStart="@+id/textView14"
-        android:layout_below="@+id/textView14"
+        android:layout_alignLeft="@+id/textViewDate"
+        android:layout_alignStart="@+id/textViewDate"
+        android:layout_below="@+id/textViewDate"
         android:layout_marginTop="20dp"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequa"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

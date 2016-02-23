@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.hdfc.libs.Libs;
 import com.hdfc.model.ActivitiesModel;
 import com.hdfc.newzeal.R;
-import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.views.RoundedImageView;
 
 import java.util.ArrayList;
@@ -82,35 +81,35 @@ public class ActivitesAdapter extends BaseAdapter {
 
             Date dateNow = new Date();
 
-            if (position % 2 == 0)
+            if (position % 2 == 0) {
                 libs.setDrawable(viewHolder.linearLayout, _context.getResources().getDrawable(R.drawable.header_gradient));
-            else
-                viewHolder.linearLayout.setBackgroundColor(_context.getResources().getColor(R.color.colorWhite));
-
-            if (dateNow.after(date)) {
-                viewHolder.textViewUpcoming.setVisibility(View.VISIBLE);
-                viewHolder.textViewUpcoming.setText(" UP Next");
+                viewHolder.textViewTime.setTextColor(_context.getResources().getColor(R.color.colorWhite));
+                viewHolder.roundedImageView.setImageResource(R.drawable.carla2);
             } else {
-                viewHolder.textViewUpcoming.setVisibility(View.GONE);
-                //iewHolder.textViewUpcoming.setText("2 ");
+                viewHolder.linearLayout.setBackgroundColor(_context.getResources().getColor(R.color.colorWhite));
+                viewHolder.textViewTime.setTextColor(_context.getResources().getColor(R.color.colorAccentDark));
+                viewHolder.roundedImageView.setImageResource(R.drawable.carla1);
             }
 
-            viewHolder.textViewUpcoming.setText("UP Next");
+            if (!dateNow.after(date) && position == 0) {
+                viewHolder.textViewUpcoming.setVisibility(View.VISIBLE);
+                viewHolder.textViewUpcoming.setText("UP Next");
+                viewHolder.textViewTime.setText(activitiesModel.getStrAuthor() + " " + activitiesModel.getStrDateTime());
+            } else {
+                viewHolder.textViewUpcoming.setVisibility(View.GONE);
+                viewHolder.textViewTime.setText(activitiesModel.getStrDateTime());
+            }
 
             if (!activitiesModel.getStrActivityFeedback().equalsIgnoreCase(""))
                 viewHolder.textViewText.setText(activitiesModel.getStrActivityFeedback());
             else
                 viewHolder.textViewText.setText(activitiesModel.getStrActivityName());
 
-            viewHolder.textViewTime.setText(activitiesModel.getStrAuthor() + " " + activitiesModel.getStrDateTime());
-
             try {
 
                 if (!activitiesModel.getStrCarlaImagePath().equalsIgnoreCase("")) {
-                    SignupActivity.loadBitmap(activitiesModel.getStrCarlaImagePath().trim(), viewHolder.roundedImageView);
-                } else
-                    viewHolder.roundedImageView.setBackgroundDrawable(_context.getResources().getDrawable(R.drawable.carla2));
-
+                    //SignupActivity.loadBitmap(activitiesModel.getStrCarlaImagePath().trim(), viewHolder.roundedImageView);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();

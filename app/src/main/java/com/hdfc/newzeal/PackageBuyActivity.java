@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.hdfc.config.Config;
+
 public class PackageBuyActivity extends AppCompatActivity {
 
     @Override
@@ -19,6 +21,7 @@ public class PackageBuyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent newIntent = new Intent(PackageBuyActivity.this, DashboardActivity.class);
+                newIntent.putExtra("WHICH_SCREEN", Config.intAccountScreen);
                 startActivity(newIntent);
             }
         });

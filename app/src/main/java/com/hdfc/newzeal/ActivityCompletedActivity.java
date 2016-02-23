@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.hdfc.libs.Libs;
 import com.hdfc.newzeal.fragments.AddRatingCompletedActivityFragment;
 import com.hdfc.newzeal.fragments.CarlaCompletedActivityFragment;
 import com.hdfc.newzeal.fragments.ImageCompletedActivityFragment;
@@ -25,9 +24,6 @@ public class ActivityCompletedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_completed);
-
-        Libs libs = new Libs(ActivityCompletedActivity.this);
-        libs.dashboarMenuNavigation();
 
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
         TextView txtViewHeader = (TextView) findViewById(R.id.header);

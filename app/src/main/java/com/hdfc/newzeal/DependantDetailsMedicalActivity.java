@@ -133,7 +133,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
             UploadService uploadService = new UploadService(DependantDetailsMedicalActivity.this);
 
-            uploadService.uploadImageCommon(DependantDetailPersonalActivity.strImagePathToServer, DependantDetailPersonalActivity.strDependantName, "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
+            uploadService.uploadImageCommon(DependantDetailPersonalActivity.strImagePathToServer, libs.replaceSpace(DependantDetailPersonalActivity.strDependantName), "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
                 public void onSuccess(Object response) {
                     Upload upload = (Upload) response;
 

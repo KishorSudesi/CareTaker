@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.hdfc.libs.Libs;
-
 public class AccountEditActivity extends AppCompatActivity {
 
     @Override
@@ -17,9 +15,6 @@ public class AccountEditActivity extends AppCompatActivity {
 
         TextView txtViewHeader = (TextView) findViewById(R.id.header);
         txtViewHeader.setText("Edit My Account");
-
-        Libs libs = new Libs(AccountEditActivity.this);
-        libs.dashboarMenuNavigation();
 
     }
 

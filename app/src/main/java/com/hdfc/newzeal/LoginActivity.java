@@ -3,11 +3,8 @@ package com.hdfc.newzeal;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -16,30 +13,33 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.hdfc.app42service.StorageService;
+import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.config.NewZeal;
 import com.hdfc.db.DbCon;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Libs;
+import com.hdfc.model.FileModel;
 import com.scottyab.aescrypt.AESCrypt;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
+import com.shephertz.app42.paas.sdk.android.upload.Upload;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
 
     public static Libs libs;
     private static ProgressDialog progressDialog;
-    private static String userName, strResponse;
-    private static boolean isSuccess;
-    private static Thread backgroundThread;
-    private static Handler threadHandler;
+    private static String userName;
+    /* private static Thread backgroundThread;
+     private static Handler threadHandler;*/
     private RelativeLayout relLayout;
     private EditText editEmail, editPassword;
     private RelativeLayout layoutLogin;
@@ -57,17 +57,9 @@ public class LoginActivity extends AppCompatActivity {
         libs = new Libs(LoginActivity.this);
         progressDialog = new ProgressDialog(LoginActivity.this);
 
-        strResponse = "";
-        isSuccess = true;
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
-        int screenWidth = displaymetrics.widthPixels;
-
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
-            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, screenWidth, screenHeight));
+            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
 
             NewZeal.dbCon = DbCon.getInstance(LoginActivity.this);
         } catch (Exception e) {
@@ -78,42 +70,14 @@ public class LoginActivity extends AppCompatActivity {
         editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //libs.setEditTextDrawable( editEmail, getResources().getDrawable(R.drawable.edit_text_blue) );
-                //libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue), editEmail);
-
-                if (relLayout.getVisibility() == View.GONE) {
-
-                    relLayout.setVisibility(View.VISIBLE);
-                    try {
-
-                        TranslateAnimation ta = new TranslateAnimation(0, 0, 15, Animation.RELATIVE_TO_SELF);
-                        ta.setDuration(1000);
-                        ta.setFillAfter(true);
-                        relLayout.startAnimation(ta);
-
-                        TranslateAnimation ed = new TranslateAnimation(0, 0, 15, Animation.RELATIVE_TO_SELF);
-                        ed.setDuration(1000);
-                        ed.setFillAfter(true);
-                        editEmail.startAnimation(ed);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        editPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //libs.setEditTextDrawable( editPassword, getResources().getDrawable(R.drawable.edit_text_blue) );
-                //libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue),editPassword);
+                showPasswordfield();
             }
         });
 
         editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                showPasswordfield();
                 libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue), editPassword);
             }
         });
@@ -133,16 +97,30 @@ public class LoginActivity extends AppCompatActivity {
         Libs.log(myCipher.decryptUTF8(encrypted_data, iv), "");*/
     }
 
+    private void showPasswordfield() {
+        if (relLayout.getVisibility() == View.GONE) {
+
+            relLayout.setVisibility(View.VISIBLE);
+            try {
+
+                TranslateAnimation ta = new TranslateAnimation(0, 0, 15, Animation.RELATIVE_TO_SELF);
+                ta.setDuration(1000);
+                ta.setFillAfter(true);
+                relLayout.startAnimation(ta);
+
+                TranslateAnimation ed = new TranslateAnimation(0, 0, 15, Animation.RELATIVE_TO_SELF);
+                ed.setDuration(1000);
+                ed.setFillAfter(true);
+                editEmail.startAnimation(ed);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-
-        View view = findViewById(R.id.layoutLogin);
-
-        libs.setupUI(view);
-
-        editEmail.clearFocus();
-        editPassword.clearFocus();
     }
 
     public void goToWho(View v) {
@@ -185,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (libs.isConnectingToInternet()) {
 
-                    progressDialog.setMessage(getString(R.string.loading));
+                    progressDialog.setMessage(getString(R.string.process_login));
                     progressDialog.setCancelable(false);
                     progressDialog.show();
 
@@ -213,7 +191,6 @@ public class LoginActivity extends AppCompatActivity {
                     userService.authenticate(userName, strPass, new App42CallBack() {
                         @Override
                         public void onSuccess(Object o) {
-                            progressDialog.dismiss();
 
                             StorageService storageService = new StorageService(LoginActivity.this);
 
@@ -225,16 +202,103 @@ public class LoginActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onUpdateDocSuccess(Storage response) {
-                                    strResponse = response.toString();
-                                    isSuccess = true;
 
-                                    threadHandler = new ThreadHandler();
-                                    backgroundThread = new BackgroundThread();
-                                    backgroundThread.start();
                                 }
 
                                 @Override
                                 public void onFindDocSuccess(Storage response) {
+
+                                    if (response.getJsonDocList().size() > 0) {
+
+                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+
+                                        Config.jsonDocId = jsonDocument.getDocId();
+
+                                        try {
+                                            Config.jsonObject = new JSONObject(strDocument);
+
+                                            Config.strUserName = userName;
+
+                                           /* try {
+                                                Gson gson = new Gson();
+                                                CustomerModel customer1 = gson.fromJson(String.valueOf(Config.jsonObject), new TypeToken<CustomerModel>(){}.getType());
+
+                                                Libs.log(String.valueOf(customer1.getStrEmail()+" ! "+ customer1.getDependantModels().size()), "");
+
+                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getIntHealthBp()+" @ "+ customer1.getDependantModels().get(0).getDependantHealthModels().size()), "");
+
+                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getDependantNotificationModels().size()+" # "+
+                                                        customer1.getDependantModels().get(0).getDependantNotificationModels().get(0).getStrNotificationTime()), "");
+
+                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getActivityModels().size()+" $ "+
+                                                        customer1.getDependantModels().get(0).getActivityModels().get(0).getStrActivityDate()), "");
+
+                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getActivityModels().get(0).getActivityFeedBackModels().size()+" % "+
+                                                        customer1.getDependantModels().get(0).getActivityModels().get(0).getActivityFeedBackModels().get(0).getIntFeedBackRating()), "");
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }*/
+
+                                            //get all Images by user name start
+
+                                            UploadService uploadService = new UploadService(LoginActivity.this);
+
+                                            uploadService.getAllFilesByUser(Config.strUserName, new App42CallBack() {
+                                                public void onSuccess(Object response) {
+
+                                                    Libs.log(response.toString(), "");
+
+                                                    Upload upload = (Upload) response;
+                                                    ArrayList<Upload.File> fileList = upload.getFileList();
+
+                                                    if (fileList.size() > 0) {
+
+                                                        for (int i = 0; i < fileList.size(); i++) {
+                                                            Config.fileModels.add(
+                                                                    new FileModel(fileList.get(i).getName()
+                                                                            , fileList.get(i).getUrl(),
+                                                                            fileList.get(i).getType()));
+
+                                                        }
+
+                                                        progressDialog.dismiss();
+
+                                                        libs.toast(1, 1, getString(R.string.success_login));
+                                                        Intent dashboardIntent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                                        dashboardIntent.putExtra("WHICH_SCREEN", Config.intDashboardScreen);
+                                                        Config.boolIsLoggedIn = true;
+                                                        startActivity(dashboardIntent);
+                                                        finish();
+
+                                                    } else
+                                                        libs.toast(2, 2, getString(R.string.error));
+
+                                                }
+
+                                                public void onException(Exception ex) {
+                                                    progressDialog.dismiss();
+                                                    libs.toast(2, 2, getString(R.string.error));
+                                                    Libs.log(ex.getMessage(), " ");
+                                                    //ex.printStackTrace();
+                                                }
+                                            });
+
+                                            //end
+
+                                            libs.parseData();
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                       /* threadHandler = new ThreadHandler();
+                                        backgroundThread = new BackgroundThread();
+                                        backgroundThread.start();*/
+
+                                    } else libs.toast(2, 2, getString(R.string.error));
 
                                 }
 
@@ -246,7 +310,7 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onFindDocFailed(App42Exception ex) {
                                     progressDialog.dismiss();
-                                    libs.toast(2, 2, getString(R.string.invalid_credentials));
+                                    libs.toast(2, 2, getString(R.string.error));
                                     Libs.log(ex.getMessage(), "");
                                 }
 
@@ -262,8 +326,8 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onException(Exception e) {
                             progressDialog.dismiss();
-                            libs.toast(2, 2, getString(R.string.invalid_credentials));
-                            Libs.log(e.getMessage(), "");
+                            libs.toast(2, 2, e.getMessage());
+                            //Libs.log(, "");
                         }
                     });
 
@@ -271,6 +335,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {
@@ -280,7 +345,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public class BackgroundThread extends Thread {
+   /* public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {
@@ -320,5 +385,6 @@ public class LoginActivity extends AppCompatActivity {
                 libs.toast(2, 2, getString(R.string.error));
             }
         }
-    }
+    }*/
+
 }

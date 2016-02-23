@@ -53,8 +53,33 @@
 -keep interface com.github.hotchemi.** { *; }
 
 #AES
--dontwarn com.scottyab:aescrypt.**
--keep class com.scottyab:aescrypt.** { *; }
--keep interface com.scottyab:aescrypt.** { *; }
+-dontwarn com.scottyab.**
+-keep class com.scottyab.** { *; }
+-keep interface com.scottyab.** { *; }
+
+#jackson
+#-dontwarn com.fasterxml.jackson.**
+#-keep class com.fasterxml.jackson.** { *; }
+#-keep interface com.fasterxml.jackson.** { *; }
+
+#gson
+-dontwarn com.google.code.gson.**
+-keep class com.google.code.gson.** { *; }
+-keep interface com.google.code.gson.** { *; }
+
+#glide
+-dontwarn com.github.bumptech.glide.**
+-keep class com.github.bumptech.glide.** { *; }
+-keep interface com.github.bumptech.glide.** { *; }
+
+#davemorrissey
+-dontwarn com.davemorrissey.labs.**
+-keep class com.davemorrissey.labs.** { *; }
+-keep interface com.davemorrissey.labs.** { *; }
+
+#jakewharton
+-dontwarn com.jakewharton.**
+-keep class com.jakewharton.** { *; }
+-keep interface com.jakewharton.** { *; }
 
 #-keepattributes *Annotation*

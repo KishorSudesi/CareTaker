@@ -116,6 +116,14 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         libs.setStatusBarColor("#cccccc");
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            searchView.setIconified(true);
+        }
+    }
+
     public void backToSelection() {
         final AlertDialog.Builder alertbox = new AlertDialog.Builder(DependantDetailPersonalActivity.this);
         alertbox.setTitle(getString(R.string.app_name));
@@ -355,6 +363,11 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
 
                 searchView.setFocusable(false);
                 searchView.clearFocus();
+
+                searchView.setIconified(true);
+                searchView.setIconified(true);
+
+                editName.requestFocus();
             }
         } catch (Exception e) {
             e.printStackTrace();

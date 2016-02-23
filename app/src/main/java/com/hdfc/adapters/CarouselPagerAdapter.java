@@ -30,12 +30,12 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
     @Override
     public Fragment getItem(int position) {
         // make the first pager bigger than others
-        if (position == DashboardFragment.FIRST_PAGE)
+        /*if (position == DashboardFragment.FIRST_PAGE)*/
             scale = DashboardFragment.BIG_SCALE;
-        else
+       /* else
             scale = DashboardFragment.SMALL_SCALE;
-
-        position = position % DashboardFragment.PAGES;
+*/
+        //position = position % DashboardFragment.PAGES;
 
         Log.e("CarouselPagerAdapter", String.valueOf(position));
         return ImagesFragment.newInstance(context, position, scale);
@@ -53,17 +53,14 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
             cur = getRootView(position);
             cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE * positionOffset);
 
-
-            Log.e("CarouselPagerAdapter 1 ", String.valueOf(position + " ~ " + positionOffset));
+            /*if(Config.intDependantsCount<=position)*/
+            DashboardFragment.loadData(position);
+           /* else
+                DashboardFragment.loadData(0);*/
 
             if (position < DashboardFragment.PAGES - 1) {
                 next = getRootView(position + 1);
                 next.setScaleBoth(DashboardFragment.SMALL_SCALE + DashboardFragment.DIFF_SCALE * positionOffset);
-
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    next.setBackground(context.getResources().getDrawable(R.drawable.rounded_image_view));
-                } else
-                    next.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_image_view));*/
             }
         }
     }

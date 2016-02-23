@@ -43,21 +43,8 @@ public class UserService implements
         //asyncService.addJSONObject(collectionName, jsonDoc);
     }
 
-    public void onChangePasswordClicked(String userName, String oldPassword, String confirmPassword) {
-        libs.showProgress(true, formView, progressView);
-        asyncService.changePassword(userName, oldPassword, confirmPassword, new App42CallBack() {
-            @Override
-            public void onSuccess(Object o) {
-                libs.showProgress(false, formView, progressView);
-                libs.createAlertDialog("Password Changed");
-            }
-
-            @Override
-            public void onException(Exception e) {
-                libs.showProgress(false, formView, progressView);
-                libs.createAlertDialog(e.getMessage());
-            }
-        });
+    public void onChangePassword(String userName, String oldPassword, String confirmPassword, App42CallBack app42CallBack) {
+        asyncService.changePassword(userName, oldPassword, confirmPassword, app42CallBack);
     }
 
     public void onGetUser(String userName) {

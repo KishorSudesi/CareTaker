@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.CalendarAdapter;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -35,8 +34,6 @@ public class ActivityMonthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_month);
 
-        Libs libs = new Libs(ActivityMonthActivity.this);
-        libs.dashboarMenuNavigation();
         //
         Button btnMonthly = (Button) findViewById(R.id.buttonMonthly);
         txtViewDate = (TextView) findViewById(R.id.activity_header_date);

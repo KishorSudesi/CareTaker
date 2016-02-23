@@ -21,6 +21,7 @@ import com.hdfc.db.DbCon;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Libs;
 import com.hdfc.model.ConfirmViewModel;
+import com.hdfc.model.FileModel;
 import com.hdfc.newzeal.AccountSuccessActivity;
 import com.hdfc.newzeal.R;
 import com.hdfc.newzeal.SignupActivity;
@@ -93,21 +94,59 @@ public class ConfirmFragment extends Fragment {
 
         if (isRegistered) {
 
-            Intent dashboardIntent = new Intent(getActivity(), AccountSuccessActivity.class);
+            UploadService uploadService = new UploadService(getActivity());
 
-            //
-            SignupActivity.strCustomerName = "";
-            SignupActivity.strCustomerEmail = "";
-            SignupActivity.strCustomerContactNo = "";
-            SignupActivity.strCustomerAddress = "";
-            SignupActivity.strCustomerImg = "";
-            SignupActivity.longUserId = 0;
-            //
+            uploadService.getAllFilesByUser(Config.strUserName, new App42CallBack() {
+                public void onSuccess(Object response) {
 
-            progressDialog.dismiss();
-            startActivity(dashboardIntent);
+                    Libs.log(response.toString(), " ERROR ");
 
-            getActivity().finish();
+                    Upload upload = (Upload) response;
+                    ArrayList<Upload.File> fileList = upload.getFileList();
+
+                    Libs.log(String.valueOf(fileList.size()), " ERROR1 ");
+
+                    if (fileList.size() > 0) {
+
+                        for (int i = 0; i < fileList.size(); i++) {
+                            Config.fileModels.add(
+                                    new FileModel(fileList.get(i).getName()
+                                            , fileList.get(i).getUrl(),
+                                            fileList.get(i).getType()));
+
+                        }
+
+                    }
+                    //else libs.toast(2, 2, getString(R.string.error)); check this
+
+                    Config.boolIsLoggedIn = true;
+
+                    Intent dashboardIntent = new Intent(getActivity(), AccountSuccessActivity.class);
+                    //
+                    SignupActivity.strCustomerName = "";
+                    SignupActivity.strCustomerEmail = "";
+                    SignupActivity.strCustomerContactNo = "";
+                    SignupActivity.strCustomerAddress = "";
+                    SignupActivity.strCustomerImg = "";
+                    SignupActivity.longUserId = 0;
+                    //
+
+                    libs.parseData();
+
+                    progressDialog.dismiss();
+                    startActivity(dashboardIntent);
+
+                    getActivity().finish();
+
+                }
+
+                public void onException(Exception ex) {
+                    progressDialog.dismiss();
+                    libs.toast(2, 2, getString(R.string.error));
+                    Libs.log(ex.getMessage(), " 123 ");
+                    //ex.printStackTrace();
+                }
+            });
 
         } else {
             progressDialog.dismiss();
@@ -126,8 +165,9 @@ public class ConfirmFragment extends Fragment {
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            uploadService.uploadImageCommon(SignupActivity.strCustomerImg, SignupActivity.strCustomerName, "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
+            uploadService.uploadImageCommon(SignupActivity.strCustomerImg, libs.replaceSpace(SignupActivity.strCustomerName), "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
                 public void onSuccess(Object response) {
+
                     Upload upload = (Upload) response;
                     ArrayList<Upload.File> fileList = upload.getFileList();
 
@@ -152,8 +192,11 @@ public class ConfirmFragment extends Fragment {
                                     userService.onCreateUser(SignupActivity.strCustomerEmail, DbCon.strPass, SignupActivity.strCustomerEmail, new App42CallBack() {
                                         @Override
                                         public void onSuccess(Object o) {
-                                            Libs.log(o.toString(), "");
                                             DbCon.strPass = "";
+                                            Config.jsonObject = Config.jsonServer;
+                                            Config.jsonServer = null;
+                                            isRegistered = true;
+                                            Config.strUserName = SignupActivity.strCustomerEmail;
                                             callSuccess(isRegistered);
                                         }
 
@@ -161,6 +204,7 @@ public class ConfirmFragment extends Fragment {
                                         public void onException(Exception e) {
                                             Libs.log(e.getMessage(), "");
                                             DbCon.strPass = "";
+                                            isRegistered = false;
                                             callSuccess(isRegistered);
                                         }
                                     });
@@ -208,6 +252,7 @@ public class ConfirmFragment extends Fragment {
 
                 public void onException(Exception ex) {
                     progressDialog.dismiss();
+                    Libs.log(ex.getMessage(), "onException");
                     libs.toast(2, 2, getString(R.string.error_register_image));
                 }
 
@@ -216,7 +261,6 @@ public class ConfirmFragment extends Fragment {
         } catch (Exception e) {
             if (progressDialog != null)
                 progressDialog.dismiss();
-
             libs.toast(2, 2, getString(R.string.error_register));
         }
 

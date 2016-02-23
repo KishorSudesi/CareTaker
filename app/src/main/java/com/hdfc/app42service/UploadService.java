@@ -61,6 +61,11 @@ public class UploadService implements
         //desc, this);
     }
 
+    public void getAllFilesByUser(String userName, App42CallBack app42CallBack) {
+
+        asyncService.getAllFilesByUser(userName, app42CallBack);
+    }
+
     public void removeImage(String fileName, String userName, App42CallBack app42CallBack) {
         //libs.showProgress(true, formView, progressView);
 

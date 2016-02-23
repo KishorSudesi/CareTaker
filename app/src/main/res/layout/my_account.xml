@@ -21,17 +21,24 @@
                 android:background="@drawable/header_gradient"
                 android:padding="20dp">
 
-                <ImageView
+                <RelativeLayout
+                    android:id="@+id/loadingPanel"
+                    style="@style/GenericProgressBackground"
+                    android:visibility="gone">
+
+                    <ProgressBar style="@style/GenericProgressIndicator" />
+                </RelativeLayout>
+
+                <com.hdfc.views.RoundedImageView
                     android:id="@+id/imageView5"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:onClick="editProfile"
-                    android:padding="5dp"
-                    android:src="@drawable/guru_circle" />
+                    android:padding="5dp" />
 
-                <ImageView
+                <com.hdfc.views.RoundedImageView
                     android:id="@+id/imageView51"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
@@ -45,7 +52,7 @@
                     android:visibility="invisible" />
 
                 <TextView
-                    android:id="@+id/textView18"
+                    android:id="@+id/textViewName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageView5"
@@ -55,7 +62,7 @@
                     android:textColor="@color/colorWhite" />
 
                 <TextView
-                    android:id="@+id/textView181"
+                    android:id="@+id/textViewEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageView5"
@@ -122,24 +129,9 @@
                     android:text="Whitefields,Bangalore"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <TextView
-                    android:id="@+id/editText32"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bottom_border_grey"
-                    android:drawableLeft="@drawable/pass_icon"
-                    android:drawablePadding="15dp"
-                    android:padding="10dp"
-                    android:paddingLeft="10dp"
-                    android:text="*******"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
-                    android:id="@+id/editText341"
+                    android:id="@+id/txtviewBuyServices"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
@@ -172,7 +164,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
-                    android:id="@+id/editText33"
+                    android:id="@+id/logout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"

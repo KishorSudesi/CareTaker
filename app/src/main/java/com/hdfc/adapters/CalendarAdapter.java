@@ -193,10 +193,10 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
             gridcell.setTextColor(Color.WHITE);
         }
 
-        if (theday.equalsIgnoreCase("8") || theday.equalsIgnoreCase("21")) {
+        /*if (theday.equalsIgnoreCase("8") || theday.equalsIgnoreCase("21")) {
             gridcell.setBackgroundColor(Color.LTGRAY);
             gridcell.setTextColor(Color.WHITE);
-        }
+        }*/
 
         return row;
     }

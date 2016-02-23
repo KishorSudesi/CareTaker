@@ -10,17 +10,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hdfc.libs.Libs;
-
 public class ActivityListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_list);
-
-        Libs libs = new Libs(ActivityListActivity.this);
-        libs.dashboarMenuNavigation();
 
         Button btnMonthly = (Button) findViewById(R.id.buttonMonthly);
         ImageView addActivity = (ImageView) findViewById(R.id.addActivity);
@@ -31,6 +26,7 @@ public class ActivityListActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent newIntent = new Intent(ActivityListActivity.this, DashboardActivity.class);
+                newIntent.putExtra("MY_ACCOUT", false);
                 startActivity(newIntent);
             }
         });
@@ -41,6 +37,7 @@ public class ActivityListActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent newIntent = new Intent(ActivityListActivity.this, DashboardActivity.class);
+                newIntent.putExtra("MY_ACCOUT", false);
                 startActivity(newIntent);
             }
         });

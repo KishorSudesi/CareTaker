@@ -5,6 +5,7 @@ import android.content.Context;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Libs;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
@@ -30,13 +31,25 @@ public class StorageService implements
         asyncService.findDocByDocId(Config.dbName, Config.collectionName, checkValue, this);
     }
 
+    public void findDocsByNameCollection(String checkValue, String strCollectionName, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
+        asyncService.findDocByDocId(Config.dbName, strCollectionName, checkValue, app42CallBack);
+    }
+
     public void findDocsByKeyValue(String strKey, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
         asyncService.findDocumentByKeyValue(Config.dbName, Config.collectionName, strKey, strValue, app42CallBack);
+    }
+
+    public void findDocsByKeyValueCommon(String strCollectionName, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
+        asyncService.findDocByDocIdCommon(Config.dbName, strCollectionName, strValue, app42CallBack);
     }
 
     /*public void updateDocs(JSONObject jsonToUpdate, String fieldName, String checkValue) {
         asyncService.updateDocByKeyValue(Config.dbName, Config.collectionName, fieldName, checkValue, jsonToUpdate, this);
     }*/
+
+    public void updateDocs(JSONObject jsonToUpdate, String checkValue, App42CallBack app42CallBack) {
+        asyncService.updateDocPartByKeyValue(Config.dbName, Config.collectionName, checkValue, jsonToUpdate, app42CallBack);
+    }
 
     @Override
     public void onDocumentInserted(Storage response) {

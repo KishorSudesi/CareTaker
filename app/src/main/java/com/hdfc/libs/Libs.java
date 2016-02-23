@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,7 +28,10 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,16 +42,29 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
-import com.hdfc.newzeal.ActivityMonthActivity;
-import com.hdfc.newzeal.DashboardActivity;
-import com.hdfc.newzeal.MyAccountActivity;
-import com.hdfc.newzeal.NotificationsActivity;
+import com.hdfc.model.ActivityFeedBackModel;
+import com.hdfc.model.ActivityListModel;
+import com.hdfc.model.ActivityModel;
+import com.hdfc.model.ActivityVideoModel;
+import com.hdfc.model.CustomerModel;
+import com.hdfc.model.NotificationModel;
+import com.hdfc.model.ServiceModel;
+import com.hdfc.newzeal.LoginActivity;
 import com.hdfc.newzeal.R;
+import com.hdfc.newzeal.fragments.ActivityList;
+import com.hdfc.newzeal.fragments.NotificationFragment;
+import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,11 +99,23 @@ public class Libs {
 
     public Libs(Context context) {
         _ctxt = context;
+
+        WindowManager wm = (WindowManager) _ctxt.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        Config.intScreenWidth = metrics.widthPixels;
+        Config.intScreenHeight = metrics.heightPixels;
     }
 
     public static native String getString();
 
     public static String getStringJni() {
+        try {
+            //log(getStringJni(), " ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return getString();
     }
 
@@ -483,6 +512,50 @@ public class Libs {
 
     }
 
+    public static boolean isEmpty(String strInput) {
+
+        boolean isEmpty = false;
+
+        isEmpty = TextUtils.isEmpty(strInput);
+
+        if (!isEmpty && strInput.equalsIgnoreCase(""))
+            isEmpty = true;
+
+        return isEmpty;
+    }
+
+    public static void logout() {
+        try {
+            Config.jsonObject = null;
+            Config.jsonServer = null;
+            Config.jsonDocId = "";
+
+            Config.intSelectedMenu = 0;
+            Config.intDependantsCount = 0;
+
+            Config.serviceModels.clear();
+            Config.dependantNames.clear();
+            Config.notificationModels.clear();
+
+            Config.intSelectedDependant = 0;
+
+            Config.boolIsLoggedIn = false;
+
+            Config.customerModel = null;
+            Config.strUserName = "";
+
+            Config.fileModels.clear();
+
+            Config.bitmaps.clear();
+
+            Intent dashboardIntent = new Intent(_ctxt, LoginActivity.class);
+            _ctxt.startActivity(dashboardIntent);
+            ((Activity) _ctxt).finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void toast(int type, int duration, String message) {
 
         String strColor = "#ffffff";
@@ -505,7 +578,7 @@ public class Libs {
                 toast.setDuration(Toast.LENGTH_LONG);
 
             if (duration == 2)
-                toast.setDuration(Toast.LENGTH_SHORT);
+                toast.setDuration(Toast.LENGTH_LONG);
 
             toast.setView(layout);
             toast.show();
@@ -539,19 +612,6 @@ public class Libs {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    public void getMemory() {
-        Runtime rt = Runtime.getRuntime();
-        int maxMemory = (int) rt.maxMemory() / (1024 * 1024);
-        int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
-    }
-
-    public void createFolder(String path) {
-        File root = new File(path);
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-    }
-
    /* public String getUUID() {
         final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -566,6 +626,19 @@ public class Libs {
 
         return deviceId;
     }*/
+
+    public void getMemory() {
+        Runtime rt = Runtime.getRuntime();
+        int maxMemory = (int) rt.maxMemory() / (1024 * 1024);
+        int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
+    }
+
+    public void createFolder(String path) {
+        File root = new File(path);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+    }
 
     public void setExifData(String pathName) throws Exception {
 
@@ -824,6 +897,23 @@ public class Libs {
         //someText.setText("Hi! I updated you manually!");
     }*/
 
+    public String replaceSpace(String string) {
+        string = string.replace(" ", "_");
+        return string;
+    }
+
+    /*public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }*/
+
+    //Application Specigfic Start
+
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
@@ -841,136 +931,500 @@ public class Libs {
         return original;
     }
 
-    /*public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }*/
-
-    //Application Specigfic Start
-    public void dashboarMenuNavigation() {
-
-        ImageButton buttonActivity = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonCallActivity);
-        TextView txtViewActivity = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewActivity);
-
-        ImageButton buttonNotifications = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonNotifications);
-        TextView textViewNotifications = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewNotifications);
-
-        ImageButton buttonAccount = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonAccount);
-        TextView textViewAccount = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewAccount);
-
-        ImageButton buttonSeniors = (ImageButton) ((Activity) _ctxt).findViewById(R.id.buttonSeniors);
-        TextView textViewSeniors = (TextView) ((Activity) _ctxt).findViewById(R.id.textViewSeniors);
-
-        //txtViewActivity.setBackground();
-
-        txtViewActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToActivity();
-            }
-        });
-
-        buttonActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToActivity();
-            }
-        });
-
-        textViewNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
-
-        buttonNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
-
-        buttonAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
-
-        textViewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
-
-
-        buttonSeniors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToDashboard();
-            }
-        });
-
-
-        textViewSeniors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToDashboard();
-            }
-        });
-    }
-
-    public void goToNotifications() {
-        Intent selection = new Intent(_ctxt, NotificationsActivity.class);
-        _ctxt.startActivity(selection);
-        ((Activity) _ctxt).finish();
-    }
-
-    public void goToAccount() {
-        Intent selection = new Intent(_ctxt, MyAccountActivity.class);
-        _ctxt.startActivity(selection);
-        ((Activity) _ctxt).finish();
-    }
-
-    public void goToActivity() {
-        Intent selection = new Intent(_ctxt, ActivityMonthActivity.class);
-        _ctxt.startActivity(selection);
-        ((Activity) _ctxt).finish();
-    }
-
-    public void goToDashboard() {
-
-        Intent newIntent = new Intent(_ctxt, DashboardActivity.class);
-        _ctxt.startActivity(newIntent);
-        ((Activity) _ctxt).finish();
-    }
-
     public int getBitmapHeightFromFile(String strPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap original;
+        //Bitmap original;
         int intSampleHeight = 0;
         if (strPath != null && !strPath.equalsIgnoreCase("")) {
             try {
                 //
                 options.inJustDecodeBounds = true;
-                original = BitmapFactory.decodeFile(strPath, options);
+                BitmapFactory.decodeFile(strPath, options);
                 options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, Config.intWidth, Config.intHeight);
                 options.inJustDecodeBounds = false;
                 intSampleHeight = options.outHeight / options.inSampleSize;
-                original.recycle();
+                //original.recycle();
+                //original=null;
             } catch (OutOfMemoryError | Exception oOm) {
                 oOm.printStackTrace();
             }
         }
         return intSampleHeight;
     }
+
+    public void fetchServices(){
+        StorageService storageService = new StorageService(_ctxt);
+
+        storageService.findDocsByNameCollection("56c70aefe4b0067c8c7658bf", "services", new AsyncApp42ServiceApi.App42StorageServiceListener() {
+            @Override
+            public void onDocumentInserted(Storage response) {
+
+            }
+
+            @Override
+            public void onUpdateDocSuccess(Storage response) {
+
+            }
+
+            @Override
+            public void onFindDocSuccess(Storage response) {
+
+                log(response.toString(), "");
+
+                if (response.getJsonDocList().size() > 0) {
+
+                    Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+
+                    String strDocument = jsonDocument.getJsonDoc();
+
+                    try {
+
+                        JSONObject jsonObjectServices = new JSONObject(strDocument);
+
+                        if (jsonObjectServices.has("services")) {
+
+                            Config.serviceModels.clear();
+
+                            JSONArray jsonArray = jsonObjectServices.getJSONArray("services");
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                                ServiceModel serviceModel = new ServiceModel(jsonObject.getString("service_name"),
+                                        jsonObject.getString("service_features"),
+                                        jsonObject.getDouble("unit"),
+                                        jsonObject.getDouble("cost"));
+
+                                Config.serviceModels.add(serviceModel);
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onInsertionFailed(App42Exception ex) {
+
+            }
+
+            @Override
+            public void onFindDocFailed(App42Exception ex) {
+                Libs.log(ex.getMessage(), "");
+            }
+
+            @Override
+            public void onUpdateDocFailed(App42Exception ex) {
+
+            }
+        });
+    }
+
+    public void populateHeaderDependants(final LinearLayout dynamicUserTab, final int intWhichScreen) {
+
+        int tabWidth;
+        //calculate tab width according to screen width so that no. of tabs will fit to screen
+        int screenSize = _ctxt.getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        switch (screenSize) {
+            case Configuration.SCREENLAYOUT_SIZE_LARGE:
+                tabWidth = (Config.intScreenWidth - 24) / 3;
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+                tabWidth = (Config.intScreenWidth - 18) / 2;
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_SMALL:
+                tabWidth = Config.intScreenWidth - 50;
+                break;
+            default:
+                tabWidth = 100;
+        }
+
+        for (int i = 0; i < Config.dependantNames.size(); i++) {
+
+            //Creates tab button
+            Button bt = new Button(_ctxt);
+            bt.setId(i);
+            bt.setText(Config.dependantNames.get(i));
+
+            log(Config.dependantNames.get(i), " Index ");
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
+            //params.setMargins(3, 0, 3, 0);
+            bt.setLayoutParams(params);
+            bt.setAllCaps(false);
+            bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Small);
+
+            if (i == 0)
+                bt.setBackgroundResource(R.drawable.one_side_border);
+            else
+                bt.setBackgroundResource(R.drawable.button_back_trans);
+
+            bt.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    try {
+                        Config.intSelectedDependant = v.getId();
+                        updateTabColor(v.getId(), dynamicUserTab);
+
+                        loadDependantData(intWhichScreen);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            dynamicUserTab.addView(bt);
+        }
+    }
+
+    public void loadDependantData(int intWhichScreen) {
+
+        if (intWhichScreen == Config.intNotificationScreen) {
+
+            NotificationFragment.staticNotificationModels.clear();
+
+            /////
+            try {
+
+                if (Config.jsonObject.has("customer_name")) {
+
+                    if (Config.jsonObject.has("dependants")) {
+
+                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependants");
+
+                        for (int i = Config.intSelectedDependant; i < Config.intSelectedDependant + 1; i++) {
+
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                            //Notifications
+                            if (jsonObject.has("notifications")) {
+
+                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("notifications");
+
+                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+
+                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
+
+                                    NotificationModel notificationModel = new NotificationModel("",
+                                            jsonObjectNotification.getString("notification_message"),
+                                            jsonObjectNotification.getString("time"),
+                                            jsonObjectNotification.getString("author"));
+
+                                    NotificationFragment.staticNotificationModels.add(notificationModel);
+                                }
+
+                            } //else NotificationFragment.staticNotificationModels.clear();
+                            //
+                        }
+                    }
+                }
+
+                NotificationFragment.notificationAdapter.notifyDataSetChanged();
+
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+                /////
+        }
+
+        //
+        if (intWhichScreen == Config.intActivityScreen) {
+
+            /////
+            try {
+
+                ActivityList.activitiesModelArrayList.clear();
+
+                log(" 1 ", " IN ");
+
+                if (Config.jsonObject.has("customer_name")) {
+
+                    log(" 2 ", " IN ");
+
+                    if (Config.jsonObject.has("dependants")) {
+
+                        log(" 3 ", " IN ");
+
+                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependants");
+
+                        for (int index = Config.intSelectedDependant; index < Config.intSelectedDependant + 1; index++) {
+
+                            JSONObject jsonObject = jsonArray.getJSONObject(index);
+
+                            log(" 4 ", " IN ");
+
+                            //Notifications
+                            if (jsonObject.has("activities")) {
+
+                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
+
+                                log(" 5 ", " IN ");
+
+                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+
+                                    log(" 6 ", " IN ");
+
+                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
+
+                                    ActivityListModel activityListModel = new ActivityListModel();
+                                    activityListModel.setStrDate(jsonObjectNotification.getString("activity_date").substring(3, 10));
+                                    activityListModel.setStrDateTime(jsonObjectNotification.getString("activity_date"));
+                                    activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
+                                    activityListModel.setStrDateNumber(jsonObjectNotification.getString("activity_date").substring(0, 2));
+                                    activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
+                                    activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
+                                    activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
+
+                                    ActivityList.activitiesModelArrayList.add(activityListModel);
+
+                                    ActivityList.activityModels.clear();
+
+                                    //
+                                    ArrayList<ActivityFeedBackModel> activityFeedBackModels = new ArrayList<>();
+                                    ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+
+                                    if (jsonObjectNotification.has("feedbacks")) {
+
+                                        JSONArray jsonArrayFeedback = jsonObjectNotification.getJSONArray("feedbacks");
+
+                                        for (int k = 0; k < jsonArrayFeedback.length(); k++) {
+
+                                            log(" 8", " IN ");
+
+                                            JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
+
+                                            ActivityFeedBackModel activityFeedBackModel = new ActivityFeedBackModel(
+                                                    jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
+                                                    jsonObjectFeedback.getInt("feedback_raring"), 0,
+                                                    jsonObjectFeedback.getString("feedback_time"),
+                                                    jsonObjectFeedback.getString("feedback_raring")
+                                            );
+
+                                            activityFeedBackModels.add(activityFeedBackModel);
+
+                                        }
+                                    }
+
+                                    if (jsonObjectNotification.has("videos")) {
+
+                                        JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("videos");
+
+                                        for (int k = 0; k < jsonArrayVideos.length(); k++) {
+
+                                            log(" 9 ", " IN ");
+
+                                            JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
+
+                                            ActivityVideoModel activityVideoModel = new ActivityVideoModel(
+                                                    jsonObjectVideo.getString("video_name"),
+                                                    jsonObjectVideo.getString("video_url"),
+                                                    jsonObjectVideo.getString("video_description"),
+                                                    jsonObjectVideo.getString("video_taken")
+                                            );
+
+                                            activityVideoModels.add(activityVideoModel);
+
+                                        }
+                                    }
+
+                                    ActivityModel activityModel = new ActivityModel(
+                                            jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
+                                            jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
+                                            jsonObjectNotification.getString("status"),
+                                            jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
+                                            jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
+                                            activityVideoModels, activityFeedBackModels);
+
+                                    ActivityList.activityModels.add(activityModel);
+                                    ///
+                                }
+                            }
+                        }
+                    }
+                }
+
+                log(" 7 ", " IN ");
+
+                ActivityList.activityListAdapter.notifyDataSetChanged();
+
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+                /////
+        }
+
+    }
+
+    protected void updateTabColor(int id, View v) {
+
+        for (int i = 0; i < Config.dependantNames.size(); i++) {
+            Button tab = (Button) v.findViewById(i);
+            if (i == id) {
+                tab.setBackgroundResource(R.drawable.one_side_border);
+            } else {
+                tab.setBackgroundResource(R.drawable.button_back_trans);
+            }
+
+        }
+    }
+
+    public void parseData() {
+
+        try {
+
+            if (Config.jsonObject.has("customer_name")) {
+
+                //fetch Customer data
+                Config.customerModel = new CustomerModel(Config.jsonObject.getString("customer_name"),
+                        Config.jsonObject.getString("paytm_account"), "URL",
+                        Config.jsonObject.getString("customer_address"),
+                        Config.jsonObject.getString("customer_contact_no"),
+                        Config.jsonObject.getString("customer_email"));
+                //
+
+                if (Config.jsonObject.has("dependants")) {
+
+                    Config.intDependantsCount = Config.jsonObject.getJSONArray("dependants").length();
+
+                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependants");
+
+                    try {
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                            //Dependant Names
+                            Config.dependantNames.add(jsonObject.getString("dependant_name"));
+
+                            //Notifications
+                      /*  if (jsonObject.has("notifications")) {
+
+                            ArrayList<NotificationModel> notificationModels = new ArrayList<>();
+
+                            JSONArray jsonArrayNotifications = jsonObject.getJSONArray("notifications");
+
+                            for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+
+                                JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
+
+                                NotificationModel notificationModel = new NotificationModel("",
+                                        jsonObjectNotification.getString("notification_message"),
+                                        jsonObjectNotification.getString("time"),
+                                        jsonObjectNotification.getString("author"));
+
+                                notificationModels.add(notificationModel);
+                            }
+
+                            Config.notificationModels.add(notificationModels);
+                        }*/
+                            //
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            //TESTING
+            /*try {
+                JSONObject jsonObjectAct = new JSONObject();
+                jsonObjectAct.put("provider_email", "provider@gmail.com");
+                jsonObjectAct.put("provider_contact_no", "1230432432");
+                jsonObjectAct.put("provider_description", "description");
+                jsonObjectAct.put("provider_name", "calra");
+                jsonObjectAct.put("activity_message", "message");
+                jsonObjectAct.put("status", "upcoming");
+                jsonObjectAct.put("activity_name", "NAME");
+                jsonObjectAct.put("activity_date", "time");
+
+
+                //
+                JSONObject jsonObject = new JSONObject();
+                try {
+
+                    jsonObject.put("customer_email", Config.customerModel.getStrEmail());
+
+                    JSONArray jsonArray = new JSONArray();
+
+                    JSONObject jsonObjectDeps = new JSONObject();
+
+                    JSONArray jsonArrayActivities = new JSONArray();
+
+
+                    jsonArrayActivities.put(jsonObjectAct);
+
+                    jsonObjectDeps.put("dependant_name", Config.dependantNames.get(Config.intSelectedDependant));
+
+                    jsonObjectDeps.put("activities", jsonArrayActivities);
+
+                    jsonArray.put(jsonObjectDeps);
+
+                    jsonObject.put("dependants", jsonArray);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                StorageService storageService = new StorageService(_ctxt);
+
+                storageService.updateDocs(jsonObject, Config.jsonDocId, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+                        toast(2,2, o.toString());
+                        log(o.toString(), " RESP ");
+
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+
+                        //toast(2,2, e.getMessage());
+                        log( e.getMessage().toString(), " RESP ");
+                    }
+                });
+
+            }catch (Exception e){
+
+            }*/
+            //
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public File getInternalFileImages(String strFileName) {
+
+        File file = null;
+        try {
+            file = new File(_ctxt.getFilesDir(), "images/" + strFileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+   /* SimpleDateFormat original = new SimpleDateFormat("yyyy-MM-ddThh:mm:sssZ");
+    SimpleDateFormat output= new SimpleDateFormat("yyyy/MM/dd");
+    String isoFormat = original.format(result.get("_id"));
+    Date d = original.parse(isoFormat);
+    String formattedTime = output.format(d);
+
+    System.out.println(formattedTime);*/
 
     //Application Specig=fic End
 
