@@ -34,44 +34,78 @@
                 android:inputType="number"
                 android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/editDiseases"
+            <RelativeLayout
+                android:id="@+id/relative1"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="25dp"
-                android:background="@drawable/edit_text"
+                android:background="@drawable/edit_text">
 
+                <ImageView
+                    android:id="@+id/image1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="7dp"
+                    android:src="@drawable/steth_icon" />
+
+                <EditText
+                    android:id="@+id/editDiseases"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toEndOf="@+id/image1"
+                    android:layout_toRightOf="@+id/image1"
+                    android:background="@drawable/edit_text_white_back"
                 android:gravity="top|left"
                 android:hint="@string/illness"
                 android:inputType="textMultiLine"
                 android:lines="8"
                 android:maxLines="10"
                 android:minLines="4"
-                android:padding="10dp"
+                    android:paddingTop="10dp"
                 android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical" />
+                    android:scrollbars="vertical" />
+            </RelativeLayout>
 
-            <EditText
-                android:id="@+id/editNotes"
+            <RelativeLayout
+                android:id="@+id/relative2"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="25dp"
-                android:background="@drawable/edit_text"
+                android:background="@drawable/edit_text">
 
+                <ImageView
+                    android:id="@+id/image2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="7dp"
+                    android:src="@drawable/notes_icon" />
+
+
+                <EditText
+                    android:id="@+id/editNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toEndOf="@+id/image2"
+                    android:layout_toRightOf="@+id/image2"
+                    android:background="@drawable/edit_text_white_back"
                 android:gravity="top|left"
                 android:hint="@string/notes"
                 android:lines="8"
                 android:maxLines="10"
-                android:minLines="4"
-                android:padding="10dp"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical" />
+                    android:minLines="4"
+                    android:paddingTop="10dp"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical" />
+
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/buttonContinue"
