@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 import com.hdfc.model.FileModel;
-import com.hdfc.newzeal.fragments.ActivityList;
+import com.hdfc.newzeal.fragments.ActivityListFragment;
 import com.hdfc.newzeal.fragments.ActivityMonthFragment;
 import com.hdfc.newzeal.fragments.DashboardFragment;
 import com.hdfc.newzeal.fragments.MyAccountFragment;
@@ -31,10 +31,9 @@ import java.net.URL;
 public class DashboardActivity extends AppCompatActivity {
 
     private static int intWhichScreen;
-    private static Thread backgroundThread;
     private static Handler threadHandler;
+    private static ProgressDialog progressDialog;
     private Libs libs;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +133,7 @@ public class DashboardActivity extends AppCompatActivity {
         //libs.loadImages();
 
         threadHandler = new ThreadHandler();
-        backgroundThread = new BackgroundThread();
+        Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
 
         progressDialog.setMessage(getResources().getString(R.string.loading));
@@ -182,7 +181,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
         if (Config.intSelectedMenu != Config.intListActivityScreen || intWhichScreen == Config.intListActivityScreen) {
             Config.intSelectedMenu = Config.intListActivityScreen;
-            ActivityList fragment = ActivityList.newInstance();
+            ActivityListFragment fragment = ActivityListFragment.newInstance();
             Bundle args = new Bundle();
             fragment.setArguments(args);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -224,29 +223,28 @@ public class DashboardActivity extends AppCompatActivity {
 
                     if (fileModel != null && fileModel.getStrFileUrl() != null && !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
 
-                        File fileImage = libs.createFileInternal("images/" + fileModel.getStrFileName());
+                        String strUrl = libs.replaceSpace(fileModel.getStrFileUrl());
+
+                        String strFileName = libs.replaceSpace(fileModel.getStrFileName());
+
+                        File fileImage = libs.createFileInternal("images/" + strFileName);
 
                         if (fileImage.length() <= 0) {
 
                             InputStream input;
                             try {
 
-                                String strUrl = libs.replaceSpace(fileModel.getStrFileUrl());
-
-                                Libs.log(strUrl, " URL ");
-
                                 URL url = new URL(strUrl); //URLEncoder.encode(fileModel.getStrFileUrl(), "UTF-8")
                                 input = url.openStream();
                                 byte[] buffer = new byte[1500];
                                 OutputStream output = new FileOutputStream(fileImage);
                                 try {
-                                    int bytesRead = 0;
+                                    int bytesRead;
                                     while ((bytesRead = input.read(buffer, 0, buffer.length)) >= 0) {
                                         output.write(buffer, 0, bytesRead);
                                     }
                                 } finally {
                                     output.close();
-                                    buffer = null;
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -255,9 +253,9 @@ public class DashboardActivity extends AppCompatActivity {
                     }
                 }
 
-                for (int i = 0; i < Config.dependantNames.size(); i++) {
+                for (int i = 0; i < Config.dependentNames.size(); i++) {
                     try {
-                        Config.bitmaps.add(libs.getBitmapFromFile(libs.getInternalFileImages(Config.dependantNames.get(i)).getAbsolutePath(), Config.intWidth, Config.intHeight));
+                        Config.bitmaps.add(libs.getBitmapFromFile(libs.getInternalFileImages(libs.replaceSpace(Config.dependentNames.get(i))).getAbsolutePath(), Config.intWidth, Config.intHeight));
                     } catch (OutOfMemoryError | Exception e) {
                     }
                 }

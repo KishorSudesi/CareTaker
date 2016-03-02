@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.hdfc.model.DependantModel;
-import com.hdfc.newzeal.DependantDetailPersonalActivity;
+import com.hdfc.model.DependentModel;
+import com.hdfc.newzeal.DependentDetailPersonalActivity;
 import com.hdfc.newzeal.R;
 import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.views.RoundedImageView;
@@ -22,15 +22,15 @@ import java.util.ArrayList;
 /**
  * Created by balamurugan@adstringo.in on 01-01-2016.
  */
-public class DependantViewAdapter extends BaseAdapter {
+public class DependentViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
     private Context _ctxt;
     private ArrayList data;
-    private DependantModel tempValues = null;
+    private DependentModel tempValues = null;
     private Bitmap imageBitmap = null;
 
-    public DependantViewAdapter(Context ctxt, ArrayList d) {
+    public DependentViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
         data = d;
         inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,7 +54,7 @@ public class DependantViewAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            vi = inflater.inflate(R.layout.dependant_list, null);
+            vi = inflater.inflate(R.layout.dependent_list, null);
 
             holder = new ViewHolder();
             holder.textName = (TextView) vi.findViewById(R.id.textViewName);
@@ -70,11 +70,11 @@ public class DependantViewAdapter extends BaseAdapter {
             try {
 
                 tempValues = null;
-                tempValues = (DependantModel) data.get(position);
+                tempValues = (DependentModel) data.get(position);
 
                 holder.textName.setText(tempValues.getStrName());
 
-                if (!tempValues.getStrName().equalsIgnoreCase("Add Dependant") && !tempValues.getStrRelation().equalsIgnoreCase("")) {
+                if (!tempValues.getStrName().equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent)) && !tempValues.getStrRelation().equalsIgnoreCase("")) {
                     holder.textRelation.setVisibility(View.VISIBLE);
                     holder.textRelation.setText(tempValues.getStrRelation());
 
@@ -99,8 +99,8 @@ public class DependantViewAdapter extends BaseAdapter {
 
                 try {
                     String strName = ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
-                    if (strName != null && strName.equalsIgnoreCase("Add Dependant")) {
-                        Intent selection = new Intent(_ctxt, DependantDetailPersonalActivity.class);
+                    if (strName != null && strName.equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))) {
+                        Intent selection = new Intent(_ctxt, DependentDetailPersonalActivity.class);
                         ((Activity) _ctxt).finish();
                         _ctxt.startActivity(selection);
                     }

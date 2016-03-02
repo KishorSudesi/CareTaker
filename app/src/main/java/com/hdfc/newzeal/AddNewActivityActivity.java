@@ -3,6 +3,8 @@ package com.hdfc.newzeal;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,10 +13,10 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.hdfc.adapters.AddNewAdapter;
+import com.hdfc.adapters.AddNewActivityAdapter;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.model.DependantServiceModel;
+import com.hdfc.model.DependentServiceModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,14 +27,13 @@ import java.util.List;
 
 public class AddNewActivityActivity extends AppCompatActivity {
 
-    public static List<DependantServiceModel> dependantServiceModels = new ArrayList<DependantServiceModel>();
-    public static List<DependantServiceModel> selectedDependantServiceModels = new ArrayList<DependantServiceModel>();
-    private static ListView listView;
+    public static List<DependentServiceModel> dependentServiceModels = new ArrayList<>();
+    public static List<DependentServiceModel> selectedDependentServiceModels = new ArrayList<>();
     private static int intWhichScreen;
-    private ProgressDialog progressDialog;
-    private AddNewAdapter addNewAdapter;
-    private TextView textViewEmpty;
-    private Button buttonContinue;
+    private static ProgressDialog progressDialog;
+    private static AddNewActivityAdapter addNewActivityAdapter;
+    private static Button buttonContinue;
+    private static Handler threadHandler;
     private Libs libs;
 
     @Override
@@ -41,8 +42,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
         setContentView(R.layout.activit_add_new);
 
         libs = new Libs(AddNewActivityActivity.this);
-        listView = (ListView) findViewById(R.id.listView1);
-        textViewEmpty = (TextView) findViewById(android.R.id.empty);
+        ListView listView = (ListView) findViewById(R.id.listView1);
+        TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
 
         Bundle b = getIntent().getExtras();
@@ -50,8 +51,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
 
-        addNewAdapter = new AddNewAdapter(this, dependantServiceModels);
-        listView.setAdapter(addNewAdapter);
+        addNewActivityAdapter = new AddNewActivityAdapter(this, dependentServiceModels);
+        listView.setAdapter(addNewActivityAdapter);
         listView.setEmptyView(textViewEmpty);
 
         Button cancelButton = (Button) findViewById(R.id.buttonCancel);
@@ -73,31 +74,23 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 View v;
 
                 CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxService);
-                DependantServiceModel dependantServiceModel = (DependantServiceModel) checkBox.getTag();
-
-                Libs.log(" IN ", " 1 ");
+                DependentServiceModel dependentServiceModel = (DependentServiceModel) checkBox.getTag();
 
                 if (checkBox.isChecked()) {
-                    selectedDependantServiceModels.remove(dependantServiceModel);
+                    selectedDependentServiceModels.remove(dependentServiceModel);
                     checkBox.setChecked(false);
-                    Libs.log(String.valueOf("O "), " ");
                 } else {
 
-                    //for clearing previously selected check boxes
-                    Libs.log(String.valueOf(count), " ");
                     for (int i = 0; i < count; i++) {
                         if (i != position) {
                             v = parent.getChildAt(i);
                             CheckBox checkBoxAll = (CheckBox) v.findViewById(R.id.checkBoxService);
-                            Libs.log(String.valueOf(i + " " + checkBoxAll.getTag().toString()), " ");
                             checkBoxAll.setChecked(false);
                         }
                     }
-                    selectedDependantServiceModels.clear();
+                    selectedDependentServiceModels.clear();
 
-                    Libs.log(" IN ", " 2 ");
-
-                    selectedDependantServiceModels.add(dependantServiceModel);
+                    selectedDependentServiceModels.add(dependentServiceModel);
                     checkBox.setChecked(true);
                 }
 
@@ -109,12 +102,12 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
     public void addNewActivityStep2(View v) {
 
-        //if(selectedDependantServiceModels.size()>0) {
-        Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
-        newIntent.putExtra("WHICH_SCREEN", intWhichScreen);
-        startActivity(newIntent);
-        finish();
-        //}else libs.toast(2,2, getResources().getString(R.string.error_service));
+        if (selectedDependentServiceModels.size() > 0) {
+            Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
+            newIntent.putExtra("WHICH_SCREEN", intWhichScreen);
+            startActivity(newIntent);
+            finish();
+        } else libs.toast(2, 2, getResources().getString(R.string.error_service));
     }
 
     @Override
@@ -130,49 +123,65 @@ public class AddNewActivityActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        dependantServiceModels.clear();
-        selectedDependantServiceModels.clear();
+        threadHandler = new ThreadHandler();
+        Thread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+    }
 
-        try {
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            if (dependentServiceModels.size() > 0)
+                buttonContinue.setVisibility(View.VISIBLE);
 
-            if (Config.jsonObject.has("customer_name")) {
+            addNewActivityAdapter.notifyDataSetChanged();
 
-                if (Config.jsonObject.has("dependants")) {
+            progressDialog.dismiss();
+        }
+    }
 
-                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependants");
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
 
-                    JSONObject jsonObject = jsonArray.getJSONObject(Config.intSelectedDependant);
+            try {
 
-                    if (jsonObject.has("services")) {
+                dependentServiceModels.clear();
+                selectedDependentServiceModels.clear();
 
-                        JSONArray jsonArrayNotifications = jsonObject.getJSONArray("services");
+                if (Config.jsonObject.has("customer_name")) {
 
-                        for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+                    if (Config.jsonObject.has("dependents")) {
 
-                            JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
+                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
 
-                            DependantServiceModel dependantServiceModel = new DependantServiceModel(
-                                    jsonObjectNotification.getString("service_name"),
-                                    jsonObjectNotification.getString("service_features"),
-                                    jsonObjectNotification.getInt("unit"),
-                                    jsonObjectNotification.getInt("unit_consumed")
-                            );
+                        JSONObject jsonObject = jsonArray.getJSONObject(Config.intSelectedDependent);
 
-                            dependantServiceModels.add(dependantServiceModel);
+                        if (jsonObject.has("services")) {
+
+                            JSONArray jsonArrayNotifications = jsonObject.getJSONArray("services");
+
+                            for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+
+                                JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
+
+                                DependentServiceModel dependentServiceModel = new DependentServiceModel(
+                                        jsonObjectNotification.getString("service_name"),
+                                        jsonObjectNotification.getString("service_features"),
+                                        jsonObjectNotification.getInt("unit"),
+                                        jsonObjectNotification.getInt("unit_consumed")
+                                );
+
+                                dependentServiceModels.add(dependentServiceModel);
+                            }
                         }
                     }
                 }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
-            if (dependantServiceModels.size() > 0)
-                buttonContinue.setVisibility(View.VISIBLE);
-
-            addNewAdapter.notifyDataSetChanged();
-
-            progressDialog.dismiss();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+            threadHandler.sendEmptyMessage(0);
         }
     }
 }

@@ -11,8 +11,16 @@ import android.widget.EditText;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
+import com.hdfc.model.DependentServiceModel;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,9 +30,13 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
     public static String message, time;
     private static int intWhichScreen;
+    private static Storage findObj;
+    private static StorageService storageService;
     private EditText editTextDate, editTextMessage;
     private Libs libs;
     private ProgressDialog progressDialog;
+    private JSONObject jsonObjectAct, responseJSONDoc;
+
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -33,7 +45,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             // Do something with the date. This Date object contains
             // the date and time that the user has selected.
 
-            SimpleDateFormat fmt = new SimpleDateFormat("DD-MM-yyyy HH:mm:ss", Locale.ENGLISH);
+            SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
             String strDate = fmt.format(date);
             editTextDate.setText(strDate);
         }
@@ -114,15 +126,17 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                     if (libs.isConnectingToInternet()) {
 
-                        /*JSONObject jsonObjectAct = new JSONObject();
+                        storageService = new StorageService(AddNewActivityStep2Activity.this);
+
+                        jsonObjectAct = new JSONObject();
 
                         progressDialog.setMessage(getResources().getString(R.string.loading));
-                        progressDialog.setCancelable(false);;
+                        progressDialog.setCancelable(false);
                         progressDialog.show();
 
-                        for(int i=0;i<AddNewActivityActivity.selectedDependantServiceModels.size();i++){
+                        if (AddNewActivityActivity.selectedDependentServiceModels.size() == 1) {
 
-                            DependantServiceModel dependantServiceModel = AddNewActivityActivity.selectedDependantServiceModels.get(i);
+                            DependentServiceModel dependentServiceModel = AddNewActivityActivity.selectedDependentServiceModels.get(0);
                             try {
                                 jsonObjectAct.put("provider_email", "provider@gmail.com");
                                 jsonObjectAct.put("provider_contact_no", "1230432432");
@@ -130,64 +144,70 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 jsonObjectAct.put("provider_name", "calra");
                                 jsonObjectAct.put("activity_message", message);
                                 jsonObjectAct.put("status", "upcoming");
-                                jsonObjectAct.put("activity_name", dependantServiceModel.getStrDependantServiceName());
+                                jsonObjectAct.put("activity_name", dependentServiceModel.getStrDependantServiceName());
                                 jsonObjectAct.put("activity_date", time);
 
-                                Libs.log(dependantServiceModel.getStrDependantServiceName(), " NEW ");
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                                jsonObjectAct = null;
                             }
-
                         }
 
-                        JSONObject jsonObject = new JSONObject();
-                        try {
+                        if (jsonObjectAct != null) {
 
-                            jsonObject.put("customer_email", Config.customerModel.getStrEmail());
+                            storageService.findDocsByIdApp42CallBack(Config.jsonDocId, Config.collectionName, new App42CallBack() {
+                                @Override
+                                public void onSuccess(Object o) {
 
-                            JSONArray jsonArray = new JSONArray();
+                                    findObj = (Storage) o;
 
-                            JSONObject jsonObjectDeps = new JSONObject();
+                                    try {
+                                        responseJSONDoc = new JSONObject(findObj.getJsonDocList().get(0).getJsonDoc());
+                                        if (responseJSONDoc.has("dependents")) {
+                                            JSONArray dependantsA = responseJSONDoc.getJSONArray("dependents");
+                                            if (Config.intSelectedDependent <= dependantsA.length()) {
+                                                JSONObject dependantsObject = dependantsA.getJSONObject(Config.intSelectedDependent);
+                                                if (dependantsObject.has("services")) {
+                                                    JSONArray activitiesA = dependantsObject.getJSONArray("services");
+                                                    activitiesA.put(jsonObjectAct);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException jSe) {
+                                        jSe.printStackTrace();
+                                        progressDialog.dismiss();
+                                    }
 
-                            JSONArray jsonArrayActivities = new JSONArray();
+                                    storageService.updateDocs(responseJSONDoc, Config.jsonDocId, Config.collectionName, new App42CallBack() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            Config.jsonObject = responseJSONDoc;
+                                            progressDialog.dismiss();
+                                            Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
+                                            newIntent.putExtra("WHICH_SCREEN", intWhichScreen);
+                                            startActivity(newIntent);
+                                            finish();
+                                        }
 
+                                        @Override
 
-                            jsonArrayActivities.put(jsonObjectAct);
+                                        public void onException(Exception e) {
+                                            progressDialog.dismiss();
+                                            Libs.log(e.getMessage(), " ");
+                                            libs.toast(2, 2, getString(R.string.error));
+                                        }
+                                    });
 
-                            jsonObjectDeps.put("dependant_name", Config.dependantNames.get(Config.intSelectedDependant));
+                                }
 
-                            jsonObjectDeps.put("activities", jsonArrayActivities);
-
-                            jsonArray.put(jsonObjectDeps);
-
-                            jsonObject.put("dependants", jsonArray);
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
-
-                        storageService.updateDocs(jsonObject, Config.jsonDocId, new App42CallBack() {
-                            @Override
-                            public void onSuccess(Object o) {
-
-                             Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
-                             newIntent.putExtra("WHICH_SCREEN", intWhichScreen);
-                             startActivity(newIntent);
-                             finish();
-
-                            }
-
-                            @Override
-                            public void onException(Exception e) {
-                                progressDialog.dismiss();
-                                libs.toast(2,2, e.getMessage());
-                            }
-                        });*/
-
+                                @Override
+                                public void onException(Exception e) {
+                                    progressDialog.dismiss();
+                                    libs.toast(2, 2, e.getMessage());
+                                    libs.toast(2, 2, getString(R.string.error));
+                                }
+                            });
+                        } else libs.toast(2, 2, getString(R.string.error));
 
                     } else libs.toast(2, 2, getString(R.string.warning_internet));
 

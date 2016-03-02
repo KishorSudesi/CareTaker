@@ -19,23 +19,25 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ViewPagerAdapter;
-import com.hdfc.config.NewZeal;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
+import com.hdfc.model.DependentModel;
 import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 
 public class SignupActivity extends FragmentActivity {
 
     public static ViewPager _mViewPager;
-    public static long longUserId;
-    public static String strCustomerName = "", strCustomerEmail = "", strCustomerContactNo = "", strCustomerAddress = "", strCustomerImg = "";
+    public static String strUserId;
+    public static String strCustomerName = "", strCustomerEmail = "", strCustomerContactNo = "", strCustomerAddress = "", strCustomerImg = "", strCustomerPass = "";
     public static LruCache<String, Bitmap> mMemoryCache;
+    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
+    public static ArrayList<String> dependentNames = new ArrayList<>();
     private static Libs libs;
-    private static int intWidth = 300, intHeight = 300;
-    private ViewPagerAdapter _adapter;
     private Button _btn1, _btn2, _btn3;
     private TextView texViewHeader;
 
@@ -76,9 +78,11 @@ public class SignupActivity extends FragmentActivity {
             // If bitmapData is not yet set or it differs from the new data
             if (bitmapData == null || bitmapData.equalsIgnoreCase("") || bitmapData != data) {
                 // Cancel previous task
+                Log.e("cancelPotentialWork", "1");
                 bitmapWorkerTask.cancel(true);
             } else {
                 // The same work is already in progress
+                Log.e("cancelPotentialWork", "2");
                 return false;
             }
         }
@@ -108,7 +112,7 @@ public class SignupActivity extends FragmentActivity {
         setTab();
 
         //
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        final int maxMemory = libs.getMemory();
 
         // Use 1/8th of the available memory for this memory cache.
         final int cacheSize = maxMemory / 8;
@@ -126,7 +130,7 @@ public class SignupActivity extends FragmentActivity {
 
     private void setUpView() {
         _mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        _adapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
+        ViewPagerAdapter _adapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
         _mViewPager.setAdapter(_adapter);
         _mViewPager.setCurrentItem(0);
         _mViewPager.setOffscreenPageLimit(3);
@@ -161,7 +165,7 @@ public class SignupActivity extends FragmentActivity {
 
             case 1:
                 setButton(_btn2);
-                texViewHeader.setText(getString(R.string.dependants));
+                texViewHeader.setText(getString(R.string.dependents));
                 break;
 
             case 2:
@@ -227,7 +231,7 @@ public class SignupActivity extends FragmentActivity {
         alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 try {
-                    NewZeal.dbCon.deleteTempUsers();
+                    //NewZeal.dbCon.deleteTempUsers();
                     Intent selection = new Intent(SignupActivity.this, CareSelectionActivity.class);
                     arg0.dismiss();
 
@@ -236,7 +240,11 @@ public class SignupActivity extends FragmentActivity {
                     SignupActivity.strCustomerContactNo = "";
                     SignupActivity.strCustomerAddress = "";
                     SignupActivity.strCustomerImg = "";
-                    SignupActivity.longUserId = 0;
+                    SignupActivity.strUserId = "";
+
+                    dependentModels = new ArrayList<>();
+                    dependentNames = new ArrayList<>();
+                    DependentDetailPersonalActivity.dependentModel = null;
 
                     startActivity(selection);
                     finish();
@@ -272,7 +280,7 @@ public class SignupActivity extends FragmentActivity {
         protected Bitmap doInBackground(String... params) {
             data = params[0];
             Log.e("doInBackground", data);
-            Bitmap tempBitmap = libs.getBitmapFromFile(data, intWidth, intHeight);
+            Bitmap tempBitmap = libs.getBitmapFromFile(data, Config.intWidth, Config.intHeight);
             addBitmapToMemoryCache(String.valueOf(params[0]), tempBitmap);
             return tempBitmap;
         }

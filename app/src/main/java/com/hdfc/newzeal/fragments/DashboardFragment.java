@@ -14,7 +14,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.hdfc.adapters.ActivitesAdapter;
+import com.hdfc.adapters.ActivitiesAdapter;
 import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
@@ -33,10 +33,10 @@ import java.util.ArrayList;
  */
 public class DashboardFragment extends Fragment {
 
-    public final static int PAGES = Config.intDependantsCount;
+    public final static int PAGES = Config.intDependentsCount;
     // You can choose a bigger number for LOOPS, but you know, nobody will fling
     // more than 1000 times just in order to test your "infinite" ViewPager :D
-    public final static int LOOPS = 1;//Config.intDependantsCount;
+    public final static int LOOPS = 1;//Config.intDependentsCount;
     public final static int FIRST_PAGE = PAGES * LOOPS / 2;
     public final static float BIG_SCALE = 1.0f; //1.0f
     public final static float SMALL_SCALE = 0.7f; //0.7f
@@ -45,7 +45,7 @@ public class DashboardFragment extends Fragment {
     public static ArrayList<ActivitiesModel> activitiesModelArrayList = new ArrayList<>();
     public static RoundedImageView roundedImageView;
     private static ListView listViewActivities;
-    private static ActivitesAdapter activitesAdapter;
+    private static ActivitiesAdapter activitiesAdapter;
     private static String strBp = "0", strHeartRate = "0", strTime = "";
     private static TextView textView1, textView2, textView3, textView4, emptyTextView;
     public CarouselPagerAdapter adapter;
@@ -68,13 +68,15 @@ public class DashboardFragment extends Fragment {
         Libs.log(String.valueOf(intIndex), "");
 
         JSONArray jsonArrayDependant, jsonArrayActivities;
-        JSONObject jsonObjectHealth, jsonObjectActivity;
+        JSONObject jsonObjectActivity;
 
         try {
 
+            activitiesModelArrayList.clear();
+
             if (Config.jsonObject != null) {
 
-                jsonArrayDependant = Config.jsonObject.getJSONArray("dependants");
+                jsonArrayDependant = Config.jsonObject.getJSONArray("dependents");
 
                 if (jsonArrayDependant.length() > 0 && intIndex <= jsonArrayDependant.length()) {
 
@@ -106,20 +108,23 @@ public class DashboardFragment extends Fragment {
                         jsonArrayActivities = jsonArrayDependant.getJSONObject(intIndex).getJSONArray("activities");
 
                         if (jsonArrayActivities.length() > 0) {
-                            activitiesModelArrayList.clear();
 
                             for (int i = 0; i < jsonArrayActivities.length(); i++) {
 
                                 jsonObjectActivity = jsonArrayActivities.getJSONObject(i);
 
-                                ActivitiesModel activitiesModel = new ActivitiesModel("",
-                                        jsonObjectActivity.getString("activity_name"),
-                                        jsonObjectActivity.getString("activity_date"),
-                                        "",//jsonObjectActivity.getString("activity_name"),//feedback
-                                        jsonObjectActivity.getString("provider_name"));
+                                if (jsonObjectActivity.has("activity_name")) {
 
-                                activitiesModelArrayList.add(activitiesModel);
+                                    ActivitiesModel activitiesModel = new ActivitiesModel("",
+                                            jsonObjectActivity.getString("activity_name"),
+                                            jsonObjectActivity.getString("activity_date"),
+                                            "",//jsonObjectActivity.getString("activity_name"),//feedback
+                                            jsonObjectActivity.getString("provider_name"));
+
+                                    activitiesModelArrayList.add(activitiesModel);
+                                }
                             }
+
                         }
                     } else activitiesModelArrayList.clear();
 
@@ -129,7 +134,7 @@ public class DashboardFragment extends Fragment {
                     activitiesModelArrayList.clear();
                 }
 
-                activitesAdapter.notifyDataSetChanged();
+                activitiesAdapter.notifyDataSetChanged();
 
                 textView1.setText(strBp);
                 textView2.setText(strHeartRate);
@@ -171,10 +176,11 @@ public class DashboardFragment extends Fragment {
 
             int intPosition = 0;
 
-            if (Config.dependantNames.size() > 1)
+            if (Config.dependentNames.size() > 1)
                 intPosition = 1;
 
-            roundedImageView.setImageBitmap(BitmapFactory.decodeFile(libs.getInternalFileImages(Config.dependantNames.get(intPosition)).getAbsolutePath()));
+            roundedImageView.setImageBitmap(BitmapFactory.decodeFile(libs.getInternalFileImages(
+                    libs.replaceSpace(Config.dependentNames.get(intPosition))).getAbsolutePath()));
         } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
         }
@@ -187,7 +193,7 @@ public class DashboardFragment extends Fragment {
 
                 int intPosition, intReversePosition;
 
-                if (pager.getCurrentItem() == Config.intDependantsCount - 1) {
+                if (pager.getCurrentItem() == Config.intDependentsCount - 1) {
                     intPosition = 0;
                     intReversePosition = intPosition + 1;
                 } else {
@@ -198,10 +204,10 @@ public class DashboardFragment extends Fragment {
                 Libs.log(String.valueOf(intReversePosition), "RP");
 
                 try {
-                    if (intReversePosition > Config.dependantNames.size() || intReversePosition < 0)
+                    if (intReversePosition > Config.dependentNames.size() || intReversePosition < 0)
                         intReversePosition = 0;
 
-                    roundedImageView.setImageBitmap(BitmapFactory.decodeFile(libs.getInternalFileImages(Config.dependantNames.get(intReversePosition)).getAbsolutePath()));
+                    roundedImageView.setImageBitmap(BitmapFactory.decodeFile(libs.getInternalFileImages(libs.replaceSpace(Config.dependentNames.get(intReversePosition))).getAbsolutePath()));
 
                 } catch (Exception | OutOfMemoryError e) {
                     e.printStackTrace();
@@ -224,8 +230,8 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        activitesAdapter = new ActivitesAdapter(getContext(), activitiesModelArrayList);
-        listViewActivities.setAdapter(activitesAdapter);
+        activitiesAdapter = new ActivitiesAdapter(getContext(), activitiesModelArrayList);
+        listViewActivities.setAdapter(activitiesAdapter);
         loadData(0);
 
         listViewActivities.setEmptyView(emptyTextView);
@@ -252,7 +258,7 @@ public class DashboardFragment extends Fragment {
 
             // Necessary or the pager will only have one extra page to show
             // make this at least however many pages you can see
-            pager.setOffscreenPageLimit(Config.intDependantsCount); //1
+            pager.setOffscreenPageLimit(Config.intDependentsCount); //1
 
             // Set margin for pages as a negative number, so a part of next and
             // previous pages will be showed

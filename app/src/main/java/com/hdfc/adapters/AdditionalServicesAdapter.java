@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.hdfc.model.ServiceModel;
@@ -52,6 +53,7 @@ public class AdditionalServicesAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.activityTitle = (TextView) convertView.findViewById(R.id.txtActivityTitle);
             viewHolder.activityDetails = (TextView) convertView.findViewById(R.id.txtActivityDetails);
+            viewHolder.checkBoxService = (CheckBox) convertView.findViewById(R.id.checkBoxService);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -60,6 +62,8 @@ public class AdditionalServicesAdapter extends BaseAdapter {
         if (data.size() > 0) {
             viewHolder.activityTitle.setText(data.get(position).getStrServiceName() + " " + String.valueOf(data.get(position).getDoubleCost()));
             viewHolder.activityDetails.setText(data.get(position).getStrServiceFeatures());
+
+            viewHolder.checkBoxService.setTag(data.get(position));
         }
         return convertView;
     }
@@ -67,5 +71,6 @@ public class AdditionalServicesAdapter extends BaseAdapter {
     public class ViewHolder {
         TextView activityTitle;
         TextView activityDetails;
+        CheckBox checkBoxService;
     }
 }

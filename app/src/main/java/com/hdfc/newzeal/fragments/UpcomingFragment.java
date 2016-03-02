@@ -62,7 +62,7 @@ public class UpcomingFragment extends Fragment {
     }
 
     public void goToList() {
-        ActivityList fragment = ActivityList.newInstance();
+        ActivityListFragment fragment = ActivityListFragment.newInstance();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

@@ -123,7 +123,7 @@ public class GalleryFragment extends Fragment {
 
             // Necessary or the pager will only have one extra page to show
             // make this at least however many pages you can see
-            //  _pager.setOffscreenPageLimit(Config.intDependantsCount); //1
+            //  _pager.setOffscreenPageLimit(Config.intDependentsCount); //1
 
             _pager.setOffscreenPageLimit(6);
 

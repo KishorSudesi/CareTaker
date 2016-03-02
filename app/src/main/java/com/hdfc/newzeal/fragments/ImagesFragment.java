@@ -29,9 +29,8 @@ public class ImagesFragment extends Fragment {
     private static Libs libs;
     private static Thread backgroundThread;
     private static Handler threadHandler;
+    private static ProgressDialog progressDialog;
     private int intPosition;
-    private ProgressDialog progressDialog;
-
 
     public static Fragment newInstance(Context context, int pos,
                                        float scale) {
@@ -88,25 +87,7 @@ public class ImagesFragment extends Fragment {
         progressDialog.show();*/
     }
 
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                Libs.log(Config.dependantNames.get(intPosition), " FILE ");
-
-                File f = libs.getInternalFileImages(Config.dependantNames.get(intPosition));
-
-                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public class ThreadHandler extends Handler {
+    public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             progressDialog.dismiss();
@@ -115,6 +96,24 @@ public class ImagesFragment extends Fragment {
                 imageView.setImageBitmap(bitmap);
 
             //loadingPanel.setVisibility(View.GONE);
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+
+                Libs.log(Config.dependentNames.get(intPosition), " FILE ");
+
+                File f = libs.getInternalFileImages(Config.dependentNames.get(intPosition));
+
+                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

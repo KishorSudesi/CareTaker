@@ -9,27 +9,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.hdfc.adapters.DependantViewAdapter;
-import com.hdfc.config.NewZeal;
-import com.hdfc.model.DependantModel;
+import com.hdfc.adapters.DependentViewAdapter;
+import com.hdfc.libs.Libs;
 import com.hdfc.newzeal.R;
 import com.hdfc.newzeal.SignupActivity;
 
-import java.util.ArrayList;
+public class AddDependentFragment extends Fragment {
 
-public class AddDependantFragment extends Fragment {
-
-    public static ArrayList<DependantModel> CustomListViewValuesArr = new ArrayList<DependantModel>();
+    //public static ArrayList<DependentModel> CustomListViewValuesArr = new ArrayList<DependentModel>();
     public static ListView list;
-    public static DependantViewAdapter adapter;
-
+    public static DependentViewAdapter adapter;
     public static Button buttonContinue;
+    private Libs libs;
 
-    public AddDependantFragment() {
+    public AddDependentFragment() {
     }
 
-    public static AddDependantFragment newInstance() {
-        AddDependantFragment fragment = new AddDependantFragment();
+    public static AddDependentFragment newInstance() {
+        AddDependentFragment fragment = new AddDependentFragment();
         return fragment;
     }
 
@@ -37,10 +34,10 @@ public class AddDependantFragment extends Fragment {
 
         int intCount = 0;
 
-        Log.e("AddDependantFragment", "setListData");
+        Log.e("AddDependentFragment", "setListData");
 
-        if (SignupActivity.longUserId > 0)
-            intCount = NewZeal.dbCon.retrieveDependants(SignupActivity.longUserId);
+        if (SignupActivity.strUserId != null && !SignupActivity.strUserId.equalsIgnoreCase(""))
+            intCount = libs.retrieveDependants();
 
         if (intCount > 1)
             buttonContinue.setVisibility(View.VISIBLE);
@@ -57,10 +54,12 @@ public class AddDependantFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View addFragment = inflater.inflate(R.layout.fragment_add_dependant, container, false);
+        View addFragment = inflater.inflate(R.layout.fragment_add_dependent, container, false);
 
         list = (ListView) addFragment.findViewById(R.id.listViewDpndnts);
         buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
+
+        libs = new Libs(getActivity());
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +67,7 @@ public class AddDependantFragment extends Fragment {
                 SignupActivity._mViewPager.setCurrentItem(2);
             }
         });
-        Log.e("AddDependantFragment", "onCreateView");
+        Log.e("AddDependentFragment", "onCreateView");
 
         setListView();
 
@@ -83,7 +82,7 @@ public class AddDependantFragment extends Fragment {
     public void setListView() {
         try {
             setListData();
-            adapter = new DependantViewAdapter(getContext(), CustomListViewValuesArr);
+            adapter = new DependentViewAdapter(getContext(), SignupActivity.dependentModels);
             list.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();

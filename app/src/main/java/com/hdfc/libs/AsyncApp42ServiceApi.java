@@ -215,7 +215,7 @@ public class AsyncApp42ServiceApi {
     }
 
 
-    public void getUser(final String name, final App42UserServiceListener callBack) {
+    public void getUser(final String name, final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -225,7 +225,7 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onGetUserSuccess(response);
+                            callBack.onSuccess(response);
                         }
                     });
                 } catch (final App42Exception ex) {
@@ -233,7 +233,7 @@ public class AsyncApp42ServiceApi {
                         @Override
                         public void run() {
                             if (callBack != null) {
-                                callBack.onGetUserFailed(ex);
+                                callBack.onException(ex);
                             }
                         }
                     });
@@ -298,8 +298,8 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
-    public void findDocByDocIdCommon(final String dbName, final String collectionName,
-                                     final String docId, final App42StorageServiceListener callBack) {
+    public void findDocByDocIdApp42CallBack(final String dbName, final String collectionName,
+                                            final String docId, final App42CallBack app42CallBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -309,15 +309,15 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onFindDocSuccess(response);
+                            app42CallBack.onSuccess(response);
                         }
                     });
                 } catch (final App42Exception ex) {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (callBack != null) {
-                                callBack.onFindDocFailed(ex);
+                            if (app42CallBack != null) {
+                                app42CallBack.onException(ex);
                             }
                         }
                     });
@@ -325,7 +325,6 @@ public class AsyncApp42ServiceApi {
             }
         }.start();
     }
-
 
     public void findDocumentByKeyValue(final String dbName, final String collectionName,
                                        final String strKey, final String strValue, final App42StorageServiceListener callBack) {

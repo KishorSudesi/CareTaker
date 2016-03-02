@@ -19,17 +19,17 @@ import java.util.Date;
 /**
  * Created by balamurugan@adstringo.in on 2/17/2016.
  */
-public class ActivitesAdapter extends BaseAdapter {
+public class ActivitiesAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
     private Context _context;
     private ArrayList data;
     private Libs libs;
 
-    public ActivitesAdapter(Context ctxt, ArrayList d) {
-        _context = ctxt;
+    public ActivitiesAdapter(Context context, ArrayList d) {
+        _context = context;
         data = d;
-        libs = new Libs(ctxt);
+        libs = new Libs(context);
     }
 
     @Override

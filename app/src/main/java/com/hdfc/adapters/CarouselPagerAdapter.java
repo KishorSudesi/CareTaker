@@ -53,7 +53,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
             cur = getRootView(position);
             cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE * positionOffset);
 
-            /*if(Config.intDependantsCount<=position)*/
+            /*if(Config.intDependentsCount<=position)*/
             DashboardFragment.loadData(position);
            /* else
                 DashboardFragment.loadData(0);*/

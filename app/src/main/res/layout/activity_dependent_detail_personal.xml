@@ -52,7 +52,7 @@
                 android:background="@drawable/edit_text"
                 android:drawableLeft="@drawable/person_icon"
                 android:drawablePadding="10dp"
-                android:hint="@string/dependant_name"
+                android:hint="@string/dependent_name"
                 android:inputType="textPersonName"
                 android:padding="10dp" />
 

@@ -29,8 +29,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.hdfc.config.Config;
-import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
+import com.hdfc.model.DependentModel;
 import com.hdfc.views.RoundedImageView;
 
 import java.io.File;
@@ -46,7 +46,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class DependantDetailPersonalActivity extends AppCompatActivity {
+public class DependentDetailPersonalActivity extends AppCompatActivity {
 
     public static RoundedImageView imgButtonCamera;
     public static String dependantImgName = "";
@@ -55,21 +55,21 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     public static long longDependantId = 0;
     public static Bitmap bitmap = null;
     public static Uri uri;
+    public static DependentModel dependentModel = null;
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
-    private static boolean isCamera = false;
+    private static boolean isCamera = false, isSaved = false;
     private static SearchView searchView;
+    private static EditText editName, editContactNo, editAddress, editRelation, editDependantEmail;
+    private static ProgressDialog mProgress = null;
     private Libs libs;
-    private EditText editName, editContactNo, editAddress, editRelation, editDependantEmail;
-    private Button buttonContinue;
-    private ProgressDialog mProgress = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dependant_detail_personal);
+        setContentView(R.layout.activity_dependent_detail_personal);
 
-        libs = new Libs(DependantDetailPersonalActivity.this);
+        libs = new Libs(DependentDetailPersonalActivity.this);
 
         editName = (EditText) findViewById(R.id.editDependantName);
         editContactNo = (EditText) findViewById(R.id.editContactNo);
@@ -77,9 +77,9 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         editRelation = (EditText) findViewById(R.id.editRelation);
         editDependantEmail = (EditText) findViewById(R.id.editDependantEmail);
 
-        mProgress = new ProgressDialog(DependantDetailPersonalActivity.this);
+        mProgress = new ProgressDialog(DependentDetailPersonalActivity.this);
 
-        buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
 
         imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);
 
@@ -106,7 +106,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                libs.selectImage(dependantImgName, null, DependantDetailPersonalActivity.this);
+                libs.selectImage(dependantImgName, null, DependentDetailPersonalActivity.this);
                 isCamera = true;
             }
         });
@@ -125,16 +125,22 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     }
 
     public void backToSelection() {
-        final AlertDialog.Builder alertbox = new AlertDialog.Builder(DependantDetailPersonalActivity.this);
+        final AlertDialog.Builder alertbox = new AlertDialog.Builder(DependentDetailPersonalActivity.this);
         alertbox.setTitle(getString(R.string.app_name));
         alertbox.setMessage(getString(R.string.delete_info));
         alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-                //delete temp dependants
+                //delete temp dependents
                 try {
-                    NewZeal.dbCon.deleteTempDependants();
-                    Intent selection = new Intent(DependantDetailPersonalActivity.this, SignupActivity.class);
+                    //NewZeal.dbCon.deleteTempDependants();
+                    Intent selection = new Intent(DependentDetailPersonalActivity.this, SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
+
+                    //
+                    dependentModel = null;
+                    SignupActivity.dependentNames.clear();
+                    //dependentModels.clear();
+                    //
 
                     arg0.dismiss();
                     startActivity(selection);
@@ -195,15 +201,13 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
                 cancel = true;
             }
 
-        /*if (TextUtils.isEmpty(strEmail)) {
-            editDependantEmail.setError(getString(R.string.error_field_required));
-            focusView = editDependantEmail;
-            cancel = true;
-        } else if (!libs.isEmailValid(strEmail)) {
-            editDependantEmail.setError(getString(R.string.error_invalid_email));
-            focusView = editDependantEmail;
-            cancel = true;
-        }*/
+            if (!TextUtils.isEmpty(strEmail)) {
+                if (!libs.isEmailValid(strEmail)) {
+                    editDependantEmail.setError(getString(R.string.error_invalid_email));
+                    focusView = editDependantEmail;
+                    cancel = true;
+                }
+            }
 
             if (TextUtils.isEmpty(strDependantName)) {
                 editName.setError(getString(R.string.error_field_required));
@@ -212,23 +216,50 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
             }
         }
 
-
-
         if (cancel) {
             focusView.requestFocus();
         } else {
             try {
-                longDependantId = NewZeal.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, SignupActivity.longUserId, strImageName, strEmail);
-                if (longDependantId > 0) {
+
+                boolean b = true;
+
+                if (!SignupActivity.dependentNames.contains(strDependantName) && !isSaved) {
+                    dependentModel = new DependentModel(strDependantName, strRelation, strImageName, "", "", strAddress, strContactNo, strEmail, "", 0);
+                    SignupActivity.dependentNames.add(strDependantName);
+                } else {
+                    if (dependentModel != null &&
+                            SignupActivity.dependentNames.contains(strDependantName)
+                            && isSaved && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
+                        dependentModel.setStrRelation(strRelation);
+                        dependentModel.setStrImg(strImageName);
+                        dependentModel.setStrAddress(strAddress);
+                        dependentModel.setStrContacts(strContactNo);
+                        dependentModel.setStrEmail(strEmail);
+                    } else b = false;
+                }
+
+                if (b) {
                     libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
                     strImagePathToServer = strImageName;
                     strImageName = "";
-                    Intent selection = new Intent(DependantDetailPersonalActivity.this, DependantDetailsMedicalActivity.class);
+                    Intent selection = new Intent(DependentDetailPersonalActivity.this, DependentDetailsMedicalActivity.class);
                     startActivity(selection);
                     finish();
                 } else {
                     libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                 }
+
+                /*longDependantId = NewZeal.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, SignupActivity.strUserId, strImageName, strEmail);
+                if (longDependantId > 0) {
+                    libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                    strImagePathToServer = strImageName;
+                    strImageName = "";
+                    Intent selection = new Intent(DependentDetailPersonalActivity.this, DependentDetailsMedicalActivity.class);
+                    startActivity(selection);
+                    finish();
+                } else {
+                    libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                }*/
 
             } catch (Exception e) {
 
@@ -240,7 +271,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) findViewById(R.id.searchView);
 
-        ComponentName cn = new ComponentName(this, DependantDetailPersonalActivity.class);
+        ComponentName cn = new ComponentName(this, DependentDetailPersonalActivity.class);
 
         SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
         searchView.setSearchableInfo(searchableInfo);
@@ -279,7 +310,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
-        DependantDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        DependentDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
@@ -332,7 +363,7 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
                             phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         }
                         pCur.close();
-                    }
+                    } else phone = "";
                 }
 
                 Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
@@ -355,20 +386,26 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-
-                editName.setText(name);
-                editContactNo.setText(phone);
-                editDependantEmail.setText(emailContact);
-
-                searchView.setFocusable(false);
-                searchView.clearFocus();
-
-                searchView.setIconified(true);
-                searchView.setIconified(true);
-
-                editName.requestFocus();
+                } else
+                    imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
+            } else {
+                name = "";
+                emailContact = "";
+                phone = "";
             }
+
+            editName.setText(name);
+            editContactNo.setText(phone);
+            editDependantEmail.setText(emailContact);
+
+            searchView.setFocusable(false);
+            searchView.clearFocus();
+
+            searchView.setIconified(true);
+            searchView.setIconified(true);
+
+            editName.requestFocus();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -378,14 +415,24 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (SignupActivity.longUserId > 0 && !strDependantName.equalsIgnoreCase("")) {
-            String strImgPath = NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.longUserId, editName, editContactNo, editAddress, editRelation, strDependantName, editDependantEmail);
+        if (!SignupActivity.strUserId.equalsIgnoreCase("") && !strDependantName.equalsIgnoreCase("")) {
 
-            if (!strDependantName.equalsIgnoreCase("") && isCamera == false) {
-                strImageName = strImgPath;
-                backgroundThreadHandler = new BackgroundThreadHandler();
-                backgroundThreadCamera = new BackgroundThreadCamera();
-                backgroundThreadCamera.start();
+            //String strImgPath = NewZeal.dbCon.retrieveDependantPersonal(SignupActivity.strUserId,
+            // editName, editContactNo, editAddress, editRelation, strDependantName, editDependantEmail);
+
+            if (dependentModel != null) {
+                editName.setText(dependentModel.getStrName());
+                editContactNo.setText(dependentModel.getStrContacts());
+                editAddress.setText(dependentModel.getStrAddress());
+                editRelation.setText(dependentModel.getStrRelation());
+                editDependantEmail.setText(dependentModel.getStrEmail());
+
+                if (!strDependantName.equalsIgnoreCase("") && isCamera == false) {
+                    strImageName = dependentModel.getStrImg();
+                    backgroundThreadHandler = new BackgroundThreadHandler();
+                    backgroundThreadCamera = new BackgroundThreadCamera();
+                    backgroundThreadCamera.start();
+                } else isCamera = false;
             } else isCamera = false;
         } else isCamera = false;
     }
@@ -463,8 +510,11 @@ public class DependantDetailPersonalActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             mProgress.dismiss();
+
             if (imgButtonCamera != null && bitmap != null)
                 imgButtonCamera.setImageBitmap(bitmap);
+            else if (bitmap != null)
+                imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
         }
     }
 }

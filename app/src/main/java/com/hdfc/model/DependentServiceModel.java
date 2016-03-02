@@ -5,14 +5,14 @@ import java.io.Serializable;
 /**
  * Created by Suhail on 2/19/2016.
  */
-public class DependantServiceModel implements Serializable {
+public class DependentServiceModel implements Serializable {
 
     private String strDependantServiceName;
     private String strDependantServiceFeatures;
     private int intDependantServiceUnit;
     private int intDependantServiceUnitUsed;
 
-    public DependantServiceModel(String strDependantServiceName, String strDependantServiceFeatures,
+    public DependentServiceModel(String strDependantServiceName, String strDependantServiceFeatures,
                                  int intDependantServiceUnit, int intDependantServiceUnitUsed) {
         this.strDependantServiceName = strDependantServiceName;
         this.strDependantServiceFeatures = strDependantServiceFeatures;

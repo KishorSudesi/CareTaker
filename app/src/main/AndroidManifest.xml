@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
 
     <supports-screens
@@ -51,7 +51,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".DependantDetailPersonalActivity"
+            android:name=".DependentDetailPersonalActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
@@ -64,7 +64,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".DependantDetailsMedicalActivity"
+            android:name=".DependentDetailsMedicalActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
@@ -73,19 +73,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".BasePackageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!-- <activity
+             android:name=".BasePackageActivity"
+             android:screenOrientation="portrait"
+             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".PackageBuyActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+         <activity
+             android:name=".PackageBuyActivity"
+             android:screenOrientation="portrait"
+             android:theme="@style/AppTheme.NoActionBar" />-->
         <activity
             android:name=".AdditionalServicesActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".AddNewActivityActivity"
             android:screenOrientation="portrait"

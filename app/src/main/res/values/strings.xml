@@ -7,9 +7,6 @@
 
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
     <string name="account_success_header">Account Successfully Created</string>
-    <string name="add_dependant">Add a Dependent</string>
-
-    <string name="title_activity_dependant_details_medical">DependantDetailsMedicalActivity</string>
 
     <string name="email">Email</string>
     <string name="take_me_in">Take Me In</string>
@@ -22,6 +19,7 @@
 
     <string name="uploading">Uploading…</string>
     <string name="loading">Loading…</string>
+    <string name="add_dependent">Add Dependent</string>
 
     <string name="myself">Myself</string>
     <string name="loved_one">A Loved One</string>
@@ -30,7 +28,7 @@
     <string name="your_details">Your Details</string>
     <string name="your_details_saved">Your Details Saved</string>
     <string name="string_continue">Continue</string>
-    <string name="dependants">Dependants</string>
+    <string name="dependents">Dependents</string>
 
     <string name="number">9874560123</string>
 
@@ -41,8 +39,8 @@
     <string name="contact_number">Contact Number</string>
 
     <string name="search_contacts">Search from Contacts</string>
-    <string name="dependant_name">Dependent Name</string>
-    <string name="dependant_details">Dependent Details</string>
+    <string name="dependent_name">Dependent Name</string>
+    <string name="dependent_details">Dependent Details</string>
     <string name="address">Address</string>
     <string name="relation">Relationship</string>
 
@@ -112,6 +110,7 @@
     <string name="error_service">Select a Service</string>
 
     <string name="register_success">Registered Successfully</string>
+    <string name="uploading_profile_pic">Uploading Profile Picture</string>
 
 
 </resources>

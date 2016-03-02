@@ -86,13 +86,13 @@ public class ActivityMonthFragment extends Fragment {
         LinearLayout dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
 
         Libs libs = new Libs(getActivity());
-        libs.populateHeaderDependants(dynamicUserTab, Config.intActivityScreen);
+        libs.populateHeaderDependents(dynamicUserTab, Config.intActivityScreen);
 
         return view;
     }
 
     public void goToList() {
-        ActivityList fragment = ActivityList.newInstance();
+        ActivityListFragment fragment = ActivityListFragment.newInstance();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

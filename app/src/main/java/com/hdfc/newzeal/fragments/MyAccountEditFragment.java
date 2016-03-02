@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hdfc.app42service.StorageService;
@@ -32,7 +31,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.security.GeneralSecurityException;
 
-public class AccountEditFragment extends Fragment {
+public class MyAccountEditFragment extends Fragment {
 
     private static EditText name, number, city, editTextOldPassword, editTextPassword, editTextConfirmPassword;
     private static Libs libs;
@@ -45,14 +44,12 @@ public class AccountEditFragment extends Fragment {
 
     private static Bitmap bitmap;
     private static RoundedImageView roundedImageView;
-    private static Thread backgroundThread;
     private static Handler threadHandler;
-    private RelativeLayout loadingPanel;
-    private ProgressDialog progressDialog;
+    private static ProgressDialog progressDialog;
 
 
-    public static AccountEditFragment newInstance() {
-        AccountEditFragment fragment = new AccountEditFragment();
+    public static MyAccountEditFragment newInstance() {
+        MyAccountEditFragment fragment = new MyAccountEditFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -70,7 +67,7 @@ public class AccountEditFragment extends Fragment {
         TextView mail = (TextView) view.findViewById(R.id.textViewEmail);
         mail.setText(Config.customerModel.getStrEmail());
 
-        loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
+        //RelativeLayout loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
         progressDialog = new ProgressDialog(getActivity());
 
@@ -99,7 +96,7 @@ public class AccountEditFragment extends Fragment {
         //
 
         threadHandler = new ThreadHandler();
-        backgroundThread = new BackgroundThread();
+        Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
 
         progressDialog.setMessage(getResources().getString(R.string.loading));
@@ -194,7 +191,7 @@ public class AccountEditFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, new App42CallBack() {
+                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionName, new App42CallBack() {
                             @Override
                             public void onSuccess(Object o) {
 
@@ -259,23 +256,7 @@ public class AccountEditFragment extends Fragment {
         ft.commit();
     }
 
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                File f = libs.getInternalFileImages(Config.customerModel.getStrName());
-
-                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public class ThreadHandler extends Handler {
+    public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             progressDialog.dismiss();
@@ -284,6 +265,22 @@ public class AccountEditFragment extends Fragment {
                 roundedImageView.setImageBitmap(bitmap);
 
             //loadingPanel.setVisibility(View.GONE);
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+
+                File f = libs.getInternalFileImages(libs.replaceSpace(Config.customerModel.getStrName()));
+
+                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

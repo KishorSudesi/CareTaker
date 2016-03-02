@@ -14,21 +14,21 @@ public class CustomerModel {
     private String strContacts = "";
     private String strEmail = "";
 
-    private ArrayList<DependantModel> dependantModels = new ArrayList<>();
+    private ArrayList<DependentModel> dependentModels = new ArrayList<>();
 
     public CustomerModel() {
     }
 
     public CustomerModel(String strName, String strPaytm, String strImgUrl, String strAddress,
                          String strContacts,
-                         String strEmail, ArrayList<DependantModel> dependantModels) {
+                         String strEmail, ArrayList<DependentModel> dependentModels) {
         this.strName = strName;
         this.strPaytm = strPaytm;
         this.strImgUrl = strImgUrl;
         this.strAddress = strAddress;
         this.strContacts = strContacts;
         this.strEmail = strEmail;
-        this.dependantModels = dependantModels;
+        this.dependentModels = dependentModels;
     }
 
     public CustomerModel(String strName, String strPaytm, String strImgUrl, String strAddress,
@@ -90,11 +90,11 @@ public class CustomerModel {
         this.strEmail = strEmail;
     }
 
-    public ArrayList<DependantModel> getDependantModels() {
-        return dependantModels;
+    public ArrayList<DependentModel> getDependentModels() {
+        return dependentModels;
     }
 
-    public void setDependantModels(ArrayList<DependantModel> dependantModels) {
-        this.dependantModels = dependantModels;
+    public void setDependentModels(ArrayList<DependentModel> dependentModels) {
+        this.dependentModels = dependentModels;
     }
 }

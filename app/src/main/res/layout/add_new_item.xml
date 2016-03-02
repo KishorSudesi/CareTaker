@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayoutroot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
@@ -16,7 +17,10 @@
             android:id="@+id/checkBoxService"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
     </LinearLayout>
 
 
@@ -31,6 +35,9 @@
             android:id="@+id/activityTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:text="Medical Checkups - (2 left)"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorAccent" />
@@ -40,6 +47,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_general"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:text="BP, Heart Rate, Blood Suger and Temperature" />
     </LinearLayout>
 </LinearLayout>

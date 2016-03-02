@@ -95,11 +95,11 @@ public class MyAccountFragment extends Fragment {
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AccountEditFragment accountEditFragment = AccountEditFragment.newInstance();
+                MyAccountEditFragment myAccountEditFragment = MyAccountEditFragment.newInstance();
 
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.fragment_dashboard, accountEditFragment);
+                ft.replace(R.id.fragment_dashboard, myAccountEditFragment);
                 ft.commit();
             }
         });
@@ -144,7 +144,7 @@ public class MyAccountFragment extends Fragment {
         public void run() {
             try {
 
-                File f = libs.getInternalFileImages(Config.customerModel.getStrName());
+                File f = libs.getInternalFileImages(libs.replaceSpace(Config.customerModel.getStrName()));
 
                 bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
 

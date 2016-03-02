@@ -47,9 +47,9 @@ public class UserService implements
         asyncService.changePassword(userName, oldPassword, confirmPassword, app42CallBack);
     }
 
-    public void onGetUser(String userName) {
-        libs.showProgress(true, formView, progressView);
-        asyncService.getUser(userName, this);
+    public void getUser(String userName, App42CallBack app42CallBack) {
+        //libs.showProgress(true, formView, progressView);
+        asyncService.getUser(userName, app42CallBack);
     }
 
     public void onGetUserRoles(String userName) {

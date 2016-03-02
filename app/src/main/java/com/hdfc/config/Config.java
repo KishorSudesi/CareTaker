@@ -52,13 +52,13 @@ public class Config {
     public static String jsonDocId = "";
 
     public static int intSelectedMenu = 0;
-    public static int intDependantsCount = 0;
+    public static int intDependentsCount = 0;
 
     public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
-    public static ArrayList<String> dependantNames = new ArrayList<>();
+    public static ArrayList<String> dependentNames = new ArrayList<>();
     public static ArrayList<ArrayList<NotificationModel>> notificationModels = new ArrayList<ArrayList<NotificationModel>>();
 
-    public static int intSelectedDependant = 0;
+    public static int intSelectedDependent = 0;
 
     public static boolean boolIsLoggedIn = false;
 

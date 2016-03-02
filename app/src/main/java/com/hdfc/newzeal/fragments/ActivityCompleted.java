@@ -52,7 +52,7 @@ public class ActivityCompleted extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ActivityList myAccountFragment = ActivityList.newInstance();
+                ActivityListFragment myAccountFragment = ActivityListFragment.newInstance();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_dashboard, myAccountFragment);
                 ft.commit();

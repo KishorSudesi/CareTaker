@@ -16,17 +16,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
-import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
 import com.hdfc.newzeal.R;
 import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
+import com.scottyab.aescrypt.AESCrypt;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.GeneralSecurityException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -39,11 +42,11 @@ public class GuruDetailsFragment extends Fragment {
     public static String strCustomerImgNameCamera;
     public static Bitmap bitmap = null;
     public static Uri uri;
-    private static Thread backgroundThread, backgroundThreadCamera;
+    private static Thread backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
+    private static String strName, strEmail, strConfirmPass, strContactNo, strAddress;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editAddress;
     private Libs libs;
-    private Button buttonContinue;
     private ProgressDialog mProgress = null;
 
     public GuruDetailsFragment() {
@@ -74,14 +77,12 @@ public class GuruDetailsFragment extends Fragment {
         editPass = (EditText) rootView.findViewById(R.id.editPassword);
         editConfirmPass = (EditText) rootView.findViewById(R.id.editConfirmPassword);
         editContactNo = (EditText) rootView.findViewById(R.id.editContactNo);
-        buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
+        Button buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
         editAddress = (EditText) rootView.findViewById(R.id.editAddress);
 
         mProgress = new ProgressDialog(getActivity());
 
-        String tempDate = String.valueOf(new Date().getDate() + "" + new Date().getTime()) + ".jpeg";
-
-        strCustomerImgNameCamera = tempDate;
+        strCustomerImgNameCamera = String.valueOf(new Date().getDate() + "" + new Date().getTime()) + ".jpeg";
 
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +105,7 @@ public class GuruDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (SignupActivity.longUserId > 0) {
+        if (SignupActivity.strUserId != null && !SignupActivity.strUserId.equalsIgnoreCase("")) {
 
             editName.setText(SignupActivity.strCustomerName);
             editEmail.setText(SignupActivity.strCustomerEmail);
@@ -126,17 +127,17 @@ public class GuruDetailsFragment extends Fragment {
         editContactNo.setError(null);
         //editAddress.setError(null);
 
-        String strName = editName.getText().toString();
-        String strEmail = editEmail.getText().toString();
+        strName = editName.getText().toString();
+        strEmail = editEmail.getText().toString();
         String strPass = editPass.getText().toString();
-        String strConfirmPass = editConfirmPass.getText().toString();
-        String strContactNo = editContactNo.getText().toString();
-        String strAddress = editAddress.getText().toString();
+        strConfirmPass = editConfirmPass.getText().toString();
+        strContactNo = editContactNo.getText().toString();
+        strAddress = editAddress.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strCustomerImgName) & SignupActivity.longUserId <= 0) {
+        if (TextUtils.isEmpty(strCustomerImgName) && SignupActivity.strUserId.equalsIgnoreCase("")) {
             libs.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
@@ -201,31 +202,60 @@ public class GuruDetailsFragment extends Fragment {
             focusView.requestFocus();
         } else {
             try {
-                long lngUserId = NewZeal.dbCon.insertUser(strName, strEmail, strConfirmPass, strContactNo, SignupActivity.longUserId, strCustomerImgName, strAddress);
-                if (lngUserId > 0) {
+                //
+                mProgress.setMessage(getResources().getString(R.string.loading));
+                mProgress.setCancelable(false);
+                mProgress.show();
 
-                    SignupActivity.longUserId = lngUserId;
-                    CustomViewPager.setPagingEnabled(true);
+                UserService userService = new UserService(getActivity());
 
-                    SignupActivity.strCustomerName = strName;
-                    SignupActivity.strCustomerEmail = strEmail;
-                    SignupActivity.strCustomerContactNo = strContactNo;
-                    SignupActivity.strCustomerAddress = strAddress;
-                    SignupActivity.strCustomerImg = strCustomerImgName;
+                userService.getUser(strEmail, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        mProgress.dismiss();
+                        libs.toast(2, 2, getString(R.string.email_exists));
+                    }
 
-                    //chk this
-                    NewZeal.dbCon.retrieveDependants(lngUserId);
-                    AddDependantFragment.adapter.notifyDataSetChanged();
+                    @Override
+                    public void onException(Exception e) {
 
-                    NewZeal.dbCon.retrieveConfirmDependants(lngUserId);
-                    ConfirmFragment.adapter.notifyDataSetChanged();
+                        //long lngUserId = NewZeal.dbCon.insertUser(strName, strEmail,
+                        // strConfirmPass, strContactNo, strEmail, strCustomerImgName, strAddress);
 
-                    libs.toast(1, 1, getString(R.string.your_details_saved));
+                        SignupActivity.strUserId = strEmail;
+                        CustomViewPager.setPagingEnabled(true);
 
-                    SignupActivity._mViewPager.setCurrentItem(1);
-                } else {
-                    libs.toast(1, 1, getString(R.string.email_exists));
-                }
+                        SignupActivity.strCustomerName = strName;
+                        SignupActivity.strCustomerEmail = strEmail;
+                        SignupActivity.strCustomerContactNo = strContactNo;
+                        SignupActivity.strCustomerAddress = strAddress;
+                        SignupActivity.strCustomerImg = strCustomerImgName;
+
+                        String strPass = null;
+                        try {
+                            strPass = AESCrypt.encrypt(Config.string, strConfirmPass);
+                        } catch (GeneralSecurityException gSe) {
+                            gSe.printStackTrace();
+                        }
+
+                        if (strPass != null && !strPass.equalsIgnoreCase(""))
+                            SignupActivity.strCustomerPass = strPass;
+
+                        //chk this
+                        libs.retrieveDependants();//strEmail
+                        AddDependentFragment.adapter.notifyDataSetChanged();
+
+                        libs.retrieveConfirmDependants();
+                        ConfirmFragment.adapter.notifyDataSetChanged();
+                        mProgress.dismiss();
+
+                        libs.toast(1, 1, getString(R.string.your_details_saved));
+
+                        SignupActivity._mViewPager.setCurrentItem(1);
+
+                        Libs.log(e.getMessage(), "");
+                    }
+                });
 
             } catch (Exception e) {
             }
@@ -253,7 +283,7 @@ public class GuruDetailsFragment extends Fragment {
                     case Config.START_GALLERY_REQUEST_CODE:
                         if (intent.getData() != null) {
                             uri = intent.getData();
-                            backgroundThread = new BackgroundThread();
+                            Thread backgroundThread = new BackgroundThread();
                             backgroundThread.start();
                         }
                         break;

@@ -1,17 +1,17 @@
 {
-  "dependants": [
+  "dependents": [
     {
-      "dependant_age": "65",
-      "dependant_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/9cece7314b48783b76752b45c2bb55fdef03cd08/komu.jpeg",
-      "dependant_illness": "Xcf",
+      "dependent_age": "65",
+      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/9cece7314b48783b76752b45c2bb55fdef03cd08/komu.jpeg",
+      "dependent_illness": "Xcf",
       "health_bp": 100,
       "health_heart_rate": 80,
-      "dependant_relation": "cvgh",
-      "dependant_contact_no": "7598407769",
-      "dependant_address": "Fghh",
-      "dependant_name": "Komu",
-      "dependant_notes": "Cgg",
-      "dependant_email": "komagan09@gmail.com",
+      "dependent_relation": "cvgh",
+      "dependent_contact_no": "7598407769",
+      "dependent_address": "Fghh",
+      "dependent_name": "Komu",
+      "dependent_notes": "Cgg",
+      "dependent_email": "komagan09@gmail.com",
       "notifications": [
         {
           "notification_message": "message",
@@ -223,15 +223,15 @@
       ]
     },
     {
-      "dependant_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/59146a7f0576adcd901b2d547cb07e56e430e318/Shruthi, Janarthanan.jpeg",
-      "dependant_age": "65",
-      "dependant_illness": "Xdf",
-      "dependant_address": "Address ",
-      "dependant_name": "Shruthi",
-      "dependant_notes": "Ddd",
-      "dependant_email": "bala@gkm.cjh",
-      "dependant_relation": "gggh",
-      "dependant_contact_no": "9655996792",
+      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/59146a7f0576adcd901b2d547cb07e56e430e318/Shruthi, Janarthanan.jpeg",
+      "dependent_age": "65",
+      "dependent_illness": "Xdf",
+      "dependent_address": "Address ",
+      "dependent_name": "Shruthi",
+      "dependent_notes": "Ddd",
+      "dependent_email": "bala@gkm.cjh",
+      "dependent_relation": "gggh",
+      "dependent_contact_no": "9655996792",
       "health_bp": 100,
       "health_heart_rate": 80
     }

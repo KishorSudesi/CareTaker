@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.hdfc.model.DependantServiceModel;
+import com.hdfc.model.DependentServiceModel;
 import com.hdfc.newzeal.R;
 
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.List;
 /**
  * Created by Admin on 2/20/2016.
  */
-public class AddNewAdapter extends BaseAdapter {
+public class AddNewActivityAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
     private Context _context;
-    private List<DependantServiceModel> data;
+    private List<DependentServiceModel> data;
 
-    public AddNewAdapter(Context context, List<DependantServiceModel> p) {
+    public AddNewActivityAdapter(Context context, List<DependentServiceModel> p) {
         _context = context;
         data = p;
     }

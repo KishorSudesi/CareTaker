@@ -3,14 +3,14 @@ package com.hdfc.model;
 /**
  * Created by Suhail on 2/19/2016.
  */
-public class DependantNotificationModel {
+public class DependentNotificationModel {
 
     private String strNotificationMessage;
     private String strNotificationAuthor;
     private String strNotificationTime;
     private String strNotificationUrl;
 
-    public DependantNotificationModel(String strNotificationMessage, String strNotificationAuthor, String strNotificationTime, String strNotificationUrl) {
+    public DependentNotificationModel(String strNotificationMessage, String strNotificationAuthor, String strNotificationTime, String strNotificationUrl) {
         this.strNotificationMessage = strNotificationMessage;
         this.strNotificationAuthor = strNotificationAuthor;
         this.strNotificationTime = strNotificationTime;

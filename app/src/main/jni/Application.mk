@@ -1,9 +1,9 @@
-APP_ABI := armeabi armeabi-v7a x86
+APP_ABI := armeabi-v7a x86 mips
 
-##armeabi armeabi-v7a armeabi-v7a-hard arm64-v8a
+#APP_ABI := armeabi armeabi-v7a armeabi-v7a-hard arm64-v8a
 
-##APP_ABI += x86 x86_64
+APP_ABI += x86 x86_64
 
-##APP_ABI += mips
+APP_ABI += mips
 
 APP_PLATFORM := android-14

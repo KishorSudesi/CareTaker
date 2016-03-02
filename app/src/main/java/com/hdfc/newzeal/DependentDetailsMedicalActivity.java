@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.hdfc.app42service.UploadService;
-import com.hdfc.config.NewZeal;
 import com.hdfc.libs.Libs;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.upload.Upload;
@@ -20,9 +19,9 @@ import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 
 import java.util.ArrayList;
 
-public class DependantDetailsMedicalActivity extends AppCompatActivity {
+public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
-    private static long longUserId;
+    private static String strCustomerEmail;
     private static String strDependantName;
     private Libs libs;
     private EditText editAge, editDiseases, editNotes;
@@ -37,10 +36,10 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dependant_details_medical);
+        setContentView(R.layout.activity_dependent_details_medical);
 
-        libs = new Libs(DependantDetailsMedicalActivity.this);
-        progressDialog = new ProgressDialog(DependantDetailsMedicalActivity.this);
+        libs = new Libs(DependentDetailsMedicalActivity.this);
+        progressDialog = new ProgressDialog(DependentDetailsMedicalActivity.this);
 
         editAge = (EditText) findViewById(R.id.editAge);
         editDiseases = (EditText) findViewById(R.id.editDiseases);
@@ -56,8 +55,8 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
             }
         });
 
-        longUserId = SignupActivity.longUserId;
-        strDependantName = DependantDetailPersonalActivity.strDependantName;
+        strCustomerEmail = SignupActivity.strUserId;
+        strDependantName = DependentDetailPersonalActivity.strDependantName;
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,13 +126,13 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
 
         if (libs.isConnectingToInternet()) {
 
-            progressDialog.setMessage("Uplaoding Profile Picture...");
+            progressDialog.setMessage(getResources().getString(R.string.uploading_profile_pic));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            UploadService uploadService = new UploadService(DependantDetailsMedicalActivity.this);
+            UploadService uploadService = new UploadService(DependentDetailsMedicalActivity.this);
 
-            uploadService.uploadImageCommon(DependantDetailPersonalActivity.strImagePathToServer, libs.replaceSpace(DependantDetailPersonalActivity.strDependantName), "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
+            uploadService.uploadImageCommon(DependentDetailPersonalActivity.strImagePathToServer, libs.replaceSpace(DependentDetailPersonalActivity.strDependantName), "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
                 public void onSuccess(Object response) {
                     Upload upload = (Upload) response;
 
@@ -143,16 +142,24 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
                     if (fileList.size() > 0) {
                         String strDependantImageUrl = fileList.get(0).getUrl();
 
-                        isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, longUserId, strDependantImageUrl);
+                        //isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, strCustomerEmail, strDependantImageUrl);
 
-                        if (isUpdated) {
+                        if (DependentDetailPersonalActivity.dependentModel != null) {
 
-                            Intent selection = new Intent(DependantDetailsMedicalActivity.this, SignupActivity.class);
+                            DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
+                            DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
+                            DependentDetailPersonalActivity.dependentModel.setStrDesc(strNotes);
+                            DependentDetailPersonalActivity.dependentModel.setStrImgServer(strDependantImageUrl);
+
+                            SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
+
+                            //
+                            Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
                             selection.putExtra("LIST_DEPENDANT", true);
-                            DependantDetailPersonalActivity.strDependantName = "";
-                            DependantDetailPersonalActivity.strImageName = "";
-                            DependantDetailPersonalActivity.longDependantId = 0;
-                            DependantDetailPersonalActivity.strImagePathToServer = "";
+                            DependentDetailPersonalActivity.strDependantName = "";
+                            DependentDetailPersonalActivity.strImageName = "";
+                            DependentDetailPersonalActivity.longDependantId = 0;
+                            DependentDetailPersonalActivity.strImagePathToServer = "";
                             progressDialog.dismiss();
                             libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
 
@@ -160,9 +167,15 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
                             finish();
 
                         } else {
-                            progressDialog.dismiss();
                             libs.toast(2, 2, getString(R.string.error));
                         }
+
+                        /*if (isUpdated) {
+
+                        } else {
+                            progressDialog.dismiss();
+                            libs.toast(2, 2, getString(R.string.error));
+                        }*/
                     } else libs.toast(2, 2, getString(R.string.error));
 
                 }
@@ -178,7 +191,7 @@ public class DependantDetailsMedicalActivity extends AppCompatActivity {
     }
 
     public void backToSelection() {
-        Intent selection = new Intent(DependantDetailsMedicalActivity.this, DependantDetailPersonalActivity.class);
+        Intent selection = new Intent(DependentDetailsMedicalActivity.this, DependentDetailPersonalActivity.class);
         startActivity(selection);
         finish();
     }

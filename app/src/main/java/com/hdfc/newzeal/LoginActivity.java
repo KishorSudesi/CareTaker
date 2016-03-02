@@ -16,8 +16,6 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
-import com.hdfc.config.NewZeal;
-import com.hdfc.db.DbCon;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Libs;
 import com.hdfc.model.FileModel;
@@ -61,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
 
-            NewZeal.dbCon = DbCon.getInstance(LoginActivity.this);
+            //NewZeal.dbCon = DbCon.getInstance(LoginActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -155,6 +153,10 @@ public class LoginActivity extends AppCompatActivity {
                 editEmail.setError(getString(R.string.error_field_required));
                 focusView = editEmail;
                 cancel = true;
+            } else if (!libs.isEmailValid(userName)) {
+                editEmail.setError(getString(R.string.error_invalid_email));
+                focusView = editEmail;
+                cancel = true;
             }
 
             if (cancel) {
@@ -225,18 +227,18 @@ public class LoginActivity extends AppCompatActivity {
                                                 Gson gson = new Gson();
                                                 CustomerModel customer1 = gson.fromJson(String.valueOf(Config.jsonObject), new TypeToken<CustomerModel>(){}.getType());
 
-                                                Libs.log(String.valueOf(customer1.getStrEmail()+" ! "+ customer1.getDependantModels().size()), "");
+                                                Libs.log(String.valueOf(customer1.getStrEmail()+" ! "+ customer1.getDependentModels().size()), "");
 
-                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getIntHealthBp()+" @ "+ customer1.getDependantModels().get(0).getDependantHealthModels().size()), "");
+                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getIntHealthBp()+" @ "+ customer1.getDependentModels().get(0).getDependentHealthModels().size()), "");
 
-                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getDependantNotificationModels().size()+" # "+
-                                                        customer1.getDependantModels().get(0).getDependantNotificationModels().get(0).getStrNotificationTime()), "");
+                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getDependentNotificationModels().size()+" # "+
+                                                        customer1.getDependentModels().get(0).getDependentNotificationModels().get(0).getStrNotificationTime()), "");
 
-                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getActivityModels().size()+" $ "+
-                                                        customer1.getDependantModels().get(0).getActivityModels().get(0).getStrActivityDate()), "");
+                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getActivityModels().size()+" $ "+
+                                                        customer1.getDependentModels().get(0).getActivityModels().get(0).getStrActivityDate()), "");
 
-                                                Libs.log(String.valueOf(customer1.getDependantModels().get(0).getActivityModels().get(0).getActivityFeedBackModels().size()+" % "+
-                                                        customer1.getDependantModels().get(0).getActivityModels().get(0).getActivityFeedBackModels().get(0).getIntFeedBackRating()), "");
+                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getActivityModels().get(0).getActivityFeedBackModels().size()+" % "+
+                                                        customer1.getDependentModels().get(0).getActivityModels().get(0).getActivityFeedBackModels().get(0).getIntFeedBackRating()), "");
 
                                             } catch (Exception e) {
                                                 e.printStackTrace();
@@ -248,8 +250,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                             uploadService.getAllFilesByUser(Config.strUserName, new App42CallBack() {
                                                 public void onSuccess(Object response) {
-
-                                                    Libs.log(response.toString(), "");
 
                                                     Upload upload = (Upload) response;
                                                     ArrayList<Upload.File> fileList = upload.getFileList();
@@ -319,15 +319,24 @@ public class LoginActivity extends AppCompatActivity {
 
                                 }
                             });
-
-
                         }
 
                         @Override
                         public void onException(Exception e) {
-                            progressDialog.dismiss();
-                            libs.toast(2, 2, e.getMessage());
-                            //Libs.log(, "");
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(e.getMessage().toString());
+
+                                JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+
+                                String strMess = jsonObjectError.getString("details");
+
+                                progressDialog.dismiss();
+
+                                libs.toast(2, 2, strMess);
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
                         }
                     });
 

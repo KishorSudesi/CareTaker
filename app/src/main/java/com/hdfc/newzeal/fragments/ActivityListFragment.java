@@ -32,16 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ActivityList extends Fragment {
+public class ActivityListFragment extends Fragment {
 
     public static ListView listView;
-    public static List<ActivityListModel> activitiesModelArrayList = new ArrayList<ActivityListModel>();
-    public static List<ActivityModel> activityModels = new ArrayList<ActivityModel>();
+    public static List<ActivityListModel> activitiesModelArrayList = new ArrayList<>();
+    public static List<ActivityModel> activityModels = new ArrayList<>();
     public static ActivityListAdapter activityListAdapter;
-    private static TextView emptyTextView;
 
-    public static ActivityList newInstance() {
-        ActivityList fragment = new ActivityList();
+    public static ActivityListFragment newInstance() {
+        ActivityListFragment fragment = new ActivityListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -71,7 +70,7 @@ public class ActivityList extends Fragment {
         });
         ImageView addActivity = (ImageView) view.findViewById(R.id.addActivity);
 
-        emptyTextView = (TextView) view.findViewById(android.R.id.empty);
+        TextView emptyTextView = (TextView) view.findViewById(android.R.id.empty);
 
         addActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,11 +86,11 @@ public class ActivityList extends Fragment {
 
             activitiesModelArrayList.clear();
 
-            if (Config.jsonObject.has("customer_name")) {
+            if (Config.jsonObject != null && Config.jsonObject.has("customer_name")) {
 
-                if (Config.jsonObject.has("dependants")) {
+                if (Config.jsonObject.has("dependents")) {
 
-                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependants");
+                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
 
                     JSONObject jsonObject = jsonArray.getJSONObject(0);
 
@@ -104,69 +103,72 @@ public class ActivityList extends Fragment {
 
                             JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
 
-                            ActivityListModel activityListModel = new ActivityListModel();
-                            activityListModel.setStrDate(jsonObjectNotification.getString("activity_date").substring(3, 10));
-                            activityListModel.setStrDateTime(jsonObjectNotification.getString("activity_date"));
-                            activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                            activityListModel.setStrDateNumber(jsonObjectNotification.getString("activity_date").substring(0, 2));
-                            activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
-                            activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
-                            activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
+                            if (jsonObjectNotification.has("activity_date")) {
 
-                            activitiesModelArrayList.add(activityListModel);
+                                ActivityListModel activityListModel = new ActivityListModel();
+                                activityListModel.setStrDate(jsonObjectNotification.getString("activity_date").substring(3, 10));
+                                activityListModel.setStrDateTime(jsonObjectNotification.getString("activity_date"));
+                                activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
+                                activityListModel.setStrDateNumber(jsonObjectNotification.getString("activity_date").substring(0, 2));
+                                activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
+                                activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
+                                activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
 
-                            ArrayList<ActivityFeedBackModel> activityFeedBackModels = new ArrayList<>();
-                            ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+                                activitiesModelArrayList.add(activityListModel);
 
-                            if (jsonObjectNotification.has("feedbacks")) {
+                                ArrayList<ActivityFeedBackModel> activityFeedBackModels = new ArrayList<>();
+                                ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
 
-                                JSONArray jsonArrayFeedback = jsonObjectNotification.getJSONArray("feedbacks");
+                                if (jsonObjectNotification.has("feedbacks")) {
 
-                                for (int k = 0; k < jsonArrayFeedback.length(); k++) {
+                                    JSONArray jsonArrayFeedback = jsonObjectNotification.getJSONArray("feedbacks");
 
-                                    JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
+                                    for (int k = 0; k < jsonArrayFeedback.length(); k++) {
 
-                                    ActivityFeedBackModel activityFeedBackModel = new ActivityFeedBackModel(
-                                            jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                            jsonObjectFeedback.getInt("feedback_raring"), 0,
-                                            jsonObjectFeedback.getString("feedback_time"),
-                                            jsonObjectFeedback.getString("feedback_raring")
-                                    );
+                                        JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
 
-                                    activityFeedBackModels.add(activityFeedBackModel);
+                                        ActivityFeedBackModel activityFeedBackModel = new ActivityFeedBackModel(
+                                                jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
+                                                jsonObjectFeedback.getInt("feedback_raring"), 0,
+                                                jsonObjectFeedback.getString("feedback_time"),
+                                                jsonObjectFeedback.getString("feedback_raring")
+                                        );
 
+                                        activityFeedBackModels.add(activityFeedBackModel);
+
+                                    }
                                 }
-                            }
 
-                            if (jsonObjectNotification.has("videos")) {
+                                if (jsonObjectNotification.has("videos")) {
 
-                                JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("videos");
+                                    JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("videos");
 
-                                for (int k = 0; k < jsonArrayVideos.length(); k++) {
+                                    for (int k = 0; k < jsonArrayVideos.length(); k++) {
 
-                                    JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
+                                        JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
 
-                                    ActivityVideoModel activityVideoModel = new ActivityVideoModel(
-                                            jsonObjectVideo.getString("video_name"),
-                                            jsonObjectVideo.getString("video_url"),
-                                            jsonObjectVideo.getString("video_description"),
-                                            jsonObjectVideo.getString("video_taken")
-                                    );
+                                        ActivityVideoModel activityVideoModel = new ActivityVideoModel(
+                                                jsonObjectVideo.getString("video_name"),
+                                                jsonObjectVideo.getString("video_url"),
+                                                jsonObjectVideo.getString("video_description"),
+                                                jsonObjectVideo.getString("video_taken")
+                                        );
 
-                                    activityVideoModels.add(activityVideoModel);
+                                        activityVideoModels.add(activityVideoModel);
 
+                                    }
                                 }
+
+                                ActivityModel activityModel = new ActivityModel(
+                                        jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
+                                        jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
+                                        jsonObjectNotification.getString("status"),
+                                        jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
+                                        jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
+                                        activityVideoModels, activityFeedBackModels);
+
+                                activityModels.add(activityModel);
                             }
-
-                            ActivityModel activityModel = new ActivityModel(
-                                    jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
-                                    jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
-                                    jsonObjectNotification.getString("status"),
-                                    jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
-                                    jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                    activityVideoModels, activityFeedBackModels);
-
-                            activityModels.add(activityModel);
                         }
                     }
                 }
@@ -181,7 +183,7 @@ public class ActivityList extends Fragment {
         listView.setAdapter(activityListAdapter);
         listView.setEmptyView(emptyTextView);
 
-        libs.populateHeaderDependants(dynamicUserTab, Config.intActivityScreen);
+        libs.populateHeaderDependents(dynamicUserTab, Config.intActivityScreen);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -189,7 +191,7 @@ public class ActivityList extends Fragment {
 
                 ActivityListModel activityListModel = activitiesModelArrayList.get(position);
 
-                ActivityModel activityModel = null;
+                ActivityModel activityModel;
 
                 if (position < activityModels.size()) {
                     activityModel = activityModels.get(position);

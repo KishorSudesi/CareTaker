@@ -77,8 +77,8 @@ public class NotificationFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-      /*  if(Config.notificationModels.size()>0&&Config.intSelectedDependant<Config.notificationModels.size())
-            notificationModels = Config.notificationModels.get(Config.intSelectedDependant);
+      /*  if(Config.notificationModels.size()>0&&Config.intSelectedDependent<Config.notificationModels.size())
+            notificationModels = Config.notificationModels.get(Config.intSelectedDependent);
         else
             notificationModels.clear();*/
 
@@ -91,9 +91,9 @@ public class NotificationFragment extends Fragment {
 
             if (Config.jsonObject.has("customer_name")) {
 
-                if (Config.jsonObject.has("dependants")) {
+                if (Config.jsonObject.has("dependents")) {
 
-                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependants");
+                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
 
                     JSONObject jsonObject = jsonArray.getJSONObject(0);
 
@@ -125,7 +125,7 @@ public class NotificationFragment extends Fragment {
         listViewActivities.setAdapter(notificationAdapter);
         listViewActivities.setEmptyView(emptyTextView);
 
-        libs.populateHeaderDependants(dynamicUserTab, Config.intNotificationScreen);
+        libs.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
 
     }
 }

@@ -4,87 +4,43 @@ import android.content.Context;
 
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
-import com.hdfc.libs.Libs;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.App42Exception;
-import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-public class StorageService implements
-        AsyncApp42ServiceApi.App42StorageServiceListener {
+public class StorageService {
 
     private AsyncApp42ServiceApi asyncService;
-    private Libs libs;
 
     public StorageService(Context context) {
         asyncService = AsyncApp42ServiceApi.instance(context);
-        libs = new Libs(context);
     }
 
     public void insertDocs(JSONObject jsonToSave, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
         asyncService.insertJSONDoc(Config.dbName, Config.collectionName, jsonToSave, app42CallBack);
     }
 
-    public void findDocsByName(String checkValue) {
+    /*public void findDocsByName(String checkValue) {
         asyncService.findDocByDocId(Config.dbName, Config.collectionName, checkValue, this);
+    }*/
+
+    public void findDocsById(String strDocId, String strCollectionName, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
+        asyncService.findDocByDocId(Config.dbName, strCollectionName, strDocId, app42CallBack);
     }
 
-    public void findDocsByNameCollection(String checkValue, String strCollectionName, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
-        asyncService.findDocByDocId(Config.dbName, strCollectionName, checkValue, app42CallBack);
+    public void findDocsByIdApp42CallBack(String strDocId, String strCollectionName, App42CallBack app42CallBack) {
+        asyncService.findDocByDocIdApp42CallBack(Config.dbName, strCollectionName, strDocId, app42CallBack);
     }
 
     public void findDocsByKeyValue(String strKey, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
         asyncService.findDocumentByKeyValue(Config.dbName, Config.collectionName, strKey, strValue, app42CallBack);
     }
 
-    public void findDocsByKeyValueCommon(String strCollectionName, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
-        asyncService.findDocByDocIdCommon(Config.dbName, strCollectionName, strValue, app42CallBack);
-    }
-
     /*public void updateDocs(JSONObject jsonToUpdate, String fieldName, String checkValue) {
         asyncService.updateDocByKeyValue(Config.dbName, Config.collectionName, fieldName, checkValue, jsonToUpdate, this);
     }*/
 
-    public void updateDocs(JSONObject jsonToUpdate, String checkValue, App42CallBack app42CallBack) {
-        asyncService.updateDocPartByKeyValue(Config.dbName, Config.collectionName, checkValue, jsonToUpdate, app42CallBack);
-    }
-
-    @Override
-    public void onDocumentInserted(Storage response) {
-        String getJson = response.getJsonDocList().get(0).getJsonDoc();
-        try {
-            JSONObject json = new JSONObject(getJson);
-            //libs.createAlertDialog("Document Saved "+ json.get("Name"));
-            // docId = response.getJsonDocList().get(0).getDocId();
-        } catch (JSONException ex) {
-            //Libs.toast(2, 2, "Error : " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public void onInsertionFailed(App42Exception ex) {
-        //Libs.toast(2, 2, "Error : " + ex.getMessage());
-    }
-
-    @Override
-    public void onFindDocFailed(App42Exception ex) {
-        libs.createAlertDialog("Error : " + ex.getMessage());
-    }
-
-    @Override
-    public void onFindDocSuccess(Storage response) {
-        libs.createAlertDialog("Document Found : " + response.getJsonDocList().get(0).getJsonDoc());
-    }
-
-    @Override
-    public void onUpdateDocSuccess(Storage response) {
-        libs.createAlertDialog("Document Updated : " + response.getJsonDocList().get(0).getJsonDoc());
-    }
-
-    @Override
-    public void onUpdateDocFailed(App42Exception ex) {
-        libs.createAlertDialog("Error : " + ex.getMessage());
+    public void updateDocs(JSONObject jsonToUpdate, String strDocId, String strCollectionName, App42CallBack app42CallBack) {
+        asyncService.updateDocPartByKeyValue(Config.dbName, strCollectionName, strDocId, jsonToUpdate, app42CallBack);
     }
 }
