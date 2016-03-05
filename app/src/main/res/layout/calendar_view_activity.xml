@@ -33,54 +33,7 @@
                 android:textColor="#040404"
                 android:textSize="25sp" />
 
-
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="20dp">
-
-                    <ImageButton
-                        android:layout_width="60dp"
-                        android:layout_height="70dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_margin="@dimen/margin_general"
-                        android:background="@drawable/hungal_circle"
-                        android:padding="@dimen/padding_general" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="99dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:text="Doctor Visit"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:textColor="#040404"
-                        android:textSize="25sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Scheduled visit to Dr. Ankit, Rainbow hopitals, Hyd. Tap to know more "
-                        android:textColor="#040404"
-                        android:textSize="17sp" />
-                </LinearLayout>-->
-
             </LinearLayout>
-
-        <!--</LinearLayout>-->
 
     </ScrollView>
 

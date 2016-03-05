@@ -26,7 +26,6 @@ public class ConfirmListViewAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     private Context _ctxt;
     private ArrayList data;
-    private ConfirmViewModel tempValues = null;
 
     public ConfirmListViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
@@ -77,8 +76,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            tempValues = null;
-            tempValues = (ConfirmViewModel) data.get(position);
+            ConfirmViewModel tempValues = (ConfirmViewModel) data.get(position);
 
             holder.textName.setText(tempValues.getStrName());
             holder.textAddress.setText(tempValues.getStrAddress());

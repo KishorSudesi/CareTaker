@@ -15,15 +15,15 @@ import com.hdfc.model.ActivityListModel;
 import com.hdfc.model.ActivityModel;
 import com.hdfc.newzeal.R;
 
-public class ActivityCompleted extends Fragment {
+public class ActivityCompletedFragment extends Fragment {
 
     private static ActivityListModel _activityListModel;
     private static ActivityModel _activityModel;
 
     private static ImageButton imageButtonDesc, imageButtonVideo, imageButtonImage, imageButtonRating, imageButtonAdd;
 
-    public static ActivityCompleted newInstance(ActivityListModel activityListModel, ActivityModel activityModels) {
-        ActivityCompleted fragment = new ActivityCompleted();
+    public static ActivityCompletedFragment newInstance(ActivityListModel activityListModel, ActivityModel activityModels) {
+        ActivityCompletedFragment fragment = new ActivityCompletedFragment();
         Bundle args = new Bundle();
         args.putSerializable("ACTIVITY", activityListModel);
         args.putSerializable("ACTIVITY_COMPLETE", activityModels);
@@ -54,7 +54,7 @@ public class ActivityCompleted extends Fragment {
 
                 ActivityListFragment myAccountFragment = ActivityListFragment.newInstance();
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_dashboard, myAccountFragment);
+                ft.replace(R.id.frameLayoutActivity, myAccountFragment);
                 ft.commit();
 
             }

@@ -13,8 +13,7 @@ import android.widget.TextView;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 import com.hdfc.model.FileModel;
-import com.hdfc.newzeal.fragments.ActivityListFragment;
-import com.hdfc.newzeal.fragments.ActivityMonthFragment;
+import com.hdfc.newzeal.fragments.ActivityFragment;
 import com.hdfc.newzeal.fragments.DashboardFragment;
 import com.hdfc.newzeal.fragments.MyAccountFragment;
 import com.hdfc.newzeal.fragments.NotificationFragment;
@@ -169,7 +168,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void goToActivity() {
-        if (Config.intSelectedMenu != Config.intActivityScreen || intWhichScreen == Config.intActivityScreen) {
+        /*if (Config.intSelectedMenu != Config.intActivityScreen || intWhichScreen == Config.intActivityScreen) {
             Config.intSelectedMenu = Config.intActivityScreen;
             ActivityMonthFragment fragment2 = ActivityMonthFragment.newInstance();
             Bundle args = new Bundle();
@@ -182,6 +181,17 @@ public class DashboardActivity extends AppCompatActivity {
         if (Config.intSelectedMenu != Config.intListActivityScreen || intWhichScreen == Config.intListActivityScreen) {
             Config.intSelectedMenu = Config.intListActivityScreen;
             ActivityListFragment fragment = ActivityListFragment.newInstance();
+            Bundle args = new Bundle();
+            fragment.setArguments(args);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }*/
+
+        if (Config.intSelectedMenu != Config.intListActivityScreen && Config.intSelectedMenu != Config.intActivityScreen) {
+            Config.intSelectedMenu = Config.intActivityScreen;
+            ActivityFragment fragment = ActivityFragment.newInstance();
             Bundle args = new Bundle();
             fragment.setArguments(args);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -257,6 +267,7 @@ public class DashboardActivity extends AppCompatActivity {
                     try {
                         Config.bitmaps.add(libs.getBitmapFromFile(libs.getInternalFileImages(libs.replaceSpace(Config.dependentNames.get(i))).getAbsolutePath(), Config.intWidth, Config.intHeight));
                     } catch (OutOfMemoryError | Exception e) {
+                        e.printStackTrace();
                     }
                 }
 

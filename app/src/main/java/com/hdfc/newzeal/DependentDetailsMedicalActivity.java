@@ -11,25 +11,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hdfc.app42service.UploadService;
 import com.hdfc.libs.Libs;
-import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.upload.Upload;
-import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
-
-import java.util.ArrayList;
+import com.hdfc.newzeal.fragments.AddDependentFragment;
+import com.hdfc.newzeal.fragments.ConfirmFragment;
 
 public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
-    private static String strCustomerEmail;
-    private static String strDependantName;
     private Libs libs;
     private EditText editAge, editDiseases, editNotes;
-    private Button buttonContinue, buttonBack;
-
     private String strAge, strDiseases, strNotes;
-    private boolean isUpdated;
-
     private ProgressDialog progressDialog;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -45,8 +35,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         editDiseases = (EditText) findViewById(R.id.editDiseases);
         editNotes = (EditText) findViewById(R.id.editNotes);
 
-        buttonContinue = (Button) findViewById(R.id.buttonContinue);
-        buttonBack = (Button) findViewById(R.id.buttonBack);
+        Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        Button buttonBack = (Button) findViewById(R.id.buttonBack);
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,9 +44,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 backToSelection();
             }
         });
-
-        strCustomerEmail = SignupActivity.strUserId;
-        strDependantName = DependentDetailPersonalActivity.strDependantName;
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,11 +67,11 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         editDiseases.setError(null);
         editNotes.setError(null);
 
-        strAge = editAge.getText().toString();
-        strDiseases = editDiseases.getText().toString();
-        strNotes = editNotes.getText().toString();
+        strAge = editAge.getText().toString().trim();
+        strDiseases = editDiseases.getText().toString().trim();
+        strNotes = editNotes.getText().toString().trim();
 
-        int tempIntAge = 0;
+        int tempIntAge;
 
         boolean cancel = false;
         View focusView = null;
@@ -118,76 +105,45 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            uploadDependantProfile();
+            storeData();
         }
     }
 
-    public void uploadDependantProfile() {
+    public void storeData() {
 
-        if (libs.isConnectingToInternet()) {
+        if (DependentDetailPersonalActivity.dependentModel != null) {
 
-            progressDialog.setMessage(getResources().getString(R.string.uploading_profile_pic));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
+            DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
+            DependentDetailPersonalActivity.dependentModel.setStrDesc(strNotes);
+            DependentDetailPersonalActivity.dependentModel.setStrImgServer("");
 
-            UploadService uploadService = new UploadService(DependentDetailsMedicalActivity.this);
+            SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
-            uploadService.uploadImageCommon(DependentDetailPersonalActivity.strImagePathToServer, libs.replaceSpace(DependentDetailPersonalActivity.strDependantName), "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
-                public void onSuccess(Object response) {
-                    Upload upload = (Upload) response;
+            Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
+            selection.putExtra("LIST_DEPENDANT", true);
+            DependentDetailPersonalActivity.strDependantName = "";
+            DependentDetailPersonalActivity.strImageName = "";
+            DependentDetailPersonalActivity.dependentModel = null;
 
-                    Libs.log(response.toString(), "");
-                    ArrayList<Upload.File> fileList = upload.getFileList();
+            //chk this
+            libs.retrieveDependants();
+            AddDependentFragment.adapter.notifyDataSetChanged();
 
-                    if (fileList.size() > 0) {
-                        String strDependantImageUrl = fileList.get(0).getUrl();
+            libs.retrieveConfirmDependants();
+            ConfirmFragment.adapter.notifyDataSetChanged();
+            //
 
-                        //isUpdated = NewZeal.dbCon.updateDependantMedicalDetails(strDependantName, strAge, strDiseases, strNotes, strCustomerEmail, strDependantImageUrl);
+            progressDialog.dismiss();
+            libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
 
-                        if (DependentDetailPersonalActivity.dependentModel != null) {
+            startActivity(selection);
+            finish();
 
-                            DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
-                            DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
-                            DependentDetailPersonalActivity.dependentModel.setStrDesc(strNotes);
-                            DependentDetailPersonalActivity.dependentModel.setStrImgServer(strDependantImageUrl);
-
-                            SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
-
-                            //
-                            Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
-                            selection.putExtra("LIST_DEPENDANT", true);
-                            DependentDetailPersonalActivity.strDependantName = "";
-                            DependentDetailPersonalActivity.strImageName = "";
-                            DependentDetailPersonalActivity.longDependantId = 0;
-                            DependentDetailPersonalActivity.strImagePathToServer = "";
-                            progressDialog.dismiss();
-                            libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
-
-                            startActivity(selection);
-                            finish();
-
-                        } else {
-                            libs.toast(2, 2, getString(R.string.error));
-                        }
-
-                        /*if (isUpdated) {
-
-                        } else {
-                            progressDialog.dismiss();
-                            libs.toast(2, 2, getString(R.string.error));
-                        }*/
-                    } else libs.toast(2, 2, getString(R.string.error));
-
-                }
-
-                public void onException(Exception ex) {
-                    progressDialog.dismiss();
-                    libs.toast(2, 2, getString(R.string.error) + ex.getMessage());
-                    //ex.printStackTrace();
-                }
-            });
-
-        } else libs.toast(2, 2, getString(R.string.warning_internet));
+        } else {
+            progressDialog.dismiss();
+            libs.toast(2, 2, getString(R.string.dependent_data_lost));
+        }
     }
 
     public void backToSelection() {

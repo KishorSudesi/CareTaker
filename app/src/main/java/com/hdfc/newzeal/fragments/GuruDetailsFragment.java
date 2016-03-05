@@ -26,8 +26,10 @@ import com.hdfc.views.RoundedImageView;
 import com.scottyab.aescrypt.AESCrypt;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.Calendar;
@@ -38,16 +40,16 @@ public class GuruDetailsFragment extends Fragment {
 
     public static RoundedImageView imgButtonCamera;
 
-    public static String strCustomerImgName;
+    public static String strCustomerImgName = "";
     public static String strCustomerImgNameCamera;
     public static Bitmap bitmap = null;
     public static Uri uri;
     private static Thread backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static String strName, strEmail, strConfirmPass, strContactNo, strAddress;
+    private static ProgressDialog mProgress = null;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editAddress;
     private Libs libs;
-    private ProgressDialog mProgress = null;
 
     public GuruDetailsFragment() {
     }
@@ -127,12 +129,12 @@ public class GuruDetailsFragment extends Fragment {
         editContactNo.setError(null);
         //editAddress.setError(null);
 
-        strName = editName.getText().toString();
-        strEmail = editEmail.getText().toString();
-        String strPass = editPass.getText().toString();
-        strConfirmPass = editConfirmPass.getText().toString();
-        strContactNo = editContactNo.getText().toString();
-        strAddress = editAddress.getText().toString();
+        strName = editName.getText().toString().trim();
+        strEmail = editEmail.getText().toString().trim();
+        String strPass = editPass.getText().toString().trim();
+        strConfirmPass = editConfirmPass.getText().toString().trim();
+        strContactNo = editContactNo.getText().toString().trim();
+        strAddress = editAddress.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -219,45 +221,56 @@ public class GuruDetailsFragment extends Fragment {
                     @Override
                     public void onException(Exception e) {
 
-                        //long lngUserId = NewZeal.dbCon.insertUser(strName, strEmail,
-                        // strConfirmPass, strContactNo, strEmail, strCustomerImgName, strAddress);
+                        String strMess = "";
 
-                        SignupActivity.strUserId = strEmail;
-                        CustomViewPager.setPagingEnabled(true);
-
-                        SignupActivity.strCustomerName = strName;
-                        SignupActivity.strCustomerEmail = strEmail;
-                        SignupActivity.strCustomerContactNo = strContactNo;
-                        SignupActivity.strCustomerAddress = strAddress;
-                        SignupActivity.strCustomerImg = strCustomerImgName;
-
-                        String strPass = null;
                         try {
-                            strPass = AESCrypt.encrypt(Config.string, strConfirmPass);
-                        } catch (GeneralSecurityException gSe) {
-                            gSe.printStackTrace();
+                            JSONObject jsonObject = new JSONObject(e.getMessage());
+                            JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                            strMess = jsonObjectError.getString("message");
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
 
-                        if (strPass != null && !strPass.equalsIgnoreCase(""))
-                            SignupActivity.strCustomerPass = strPass;
+                        if (strMess.equalsIgnoreCase("Not Found")) {
 
-                        //chk this
-                        libs.retrieveDependants();//strEmail
-                        AddDependentFragment.adapter.notifyDataSetChanged();
+                            SignupActivity.strUserId = strEmail;
+                            CustomViewPager.setPagingEnabled(true);
 
-                        libs.retrieveConfirmDependants();
-                        ConfirmFragment.adapter.notifyDataSetChanged();
-                        mProgress.dismiss();
+                            SignupActivity.strCustomerName = strName;
+                            SignupActivity.strCustomerEmail = strEmail;
+                            SignupActivity.strCustomerContactNo = strContactNo;
+                            SignupActivity.strCustomerAddress = strAddress;
+                            SignupActivity.strCustomerImg = strCustomerImgName;
 
-                        libs.toast(1, 1, getString(R.string.your_details_saved));
+                            String strPass = null;
+                            try {
+                                strPass = AESCrypt.encrypt(Config.string, strConfirmPass);
+                            } catch (GeneralSecurityException gSe) {
+                                gSe.printStackTrace();
+                            }
 
-                        SignupActivity._mViewPager.setCurrentItem(1);
+                            if (strPass != null && !strPass.equalsIgnoreCase(""))
+                                SignupActivity.strCustomerPass = strPass;
 
-                        Libs.log(e.getMessage(), "");
+                            //chk this
+                            libs.retrieveDependants();//strEmail
+                            AddDependentFragment.adapter.notifyDataSetChanged();
+
+                            libs.retrieveConfirmDependants();
+                            ConfirmFragment.adapter.notifyDataSetChanged();
+                            mProgress.dismiss();
+
+                            libs.toast(1, 1, getString(R.string.your_details_saved));
+
+                            SignupActivity._mViewPager.setCurrentItem(1);
+
+                            Libs.log(e.getMessage(), "");
+                        }
                     }
                 });
 
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -275,7 +288,7 @@ public class GuruDetailsFragment extends Fragment {
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        strCustomerImgName = Libs.customerImageUri.getPath().toString();
+                        strCustomerImgName = Libs.customerImageUri.getPath();
                         backgroundThreadCamera = new BackgroundThreadCamera();
                         backgroundThreadCamera.start();
                         break;
@@ -291,6 +304,15 @@ public class GuruDetailsFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static class BackgroundThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            mProgress.dismiss();
+            if (imgButtonCamera != null && strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("") && bitmap != null)
+                imgButtonCamera.setImageBitmap(bitmap);
         }
     }
 
@@ -310,7 +332,6 @@ public class GuruDetailsFragment extends Fragment {
                     bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
-            } catch (IOException e) {
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -329,15 +350,6 @@ public class GuruDetailsFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public class BackgroundThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            mProgress.dismiss();
-            if (imgButtonCamera != null && strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("") && bitmap != null)
-                imgButtonCamera.setImageBitmap(bitmap);
         }
     }
 }

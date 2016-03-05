@@ -264,6 +264,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                                         }
 
+                                                        libs.parseData();
+
                                                         progressDialog.dismiss();
 
                                                         libs.toast(1, 1, getString(R.string.success_login));
@@ -273,30 +275,22 @@ public class LoginActivity extends AppCompatActivity {
                                                         startActivity(dashboardIntent);
                                                         finish();
 
-                                                    } else
-                                                        libs.toast(2, 2, getString(R.string.error));
-
+                                                    } else {
+                                                        progressDialog.dismiss();
+                                                        libs.toast(2, 2, getString(R.string.error_load_images));
+                                                    }
                                                 }
 
                                                 public void onException(Exception ex) {
                                                     progressDialog.dismiss();
-                                                    libs.toast(2, 2, getString(R.string.error));
+                                                    libs.toast(2, 2, getString(R.string.error_load_images));
                                                     Libs.log(ex.getMessage(), " ");
-                                                    //ex.printStackTrace();
                                                 }
                                             });
-
-                                            //end
-
-                                            libs.parseData();
 
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
-                                       /* threadHandler = new ThreadHandler();
-                                        backgroundThread = new BackgroundThread();
-                                        backgroundThread.start();*/
 
                                     } else libs.toast(2, 2, getString(R.string.error));
 
@@ -310,8 +304,16 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onFindDocFailed(App42Exception ex) {
                                     progressDialog.dismiss();
-                                    libs.toast(2, 2, getString(R.string.error));
-                                    Libs.log(ex.getMessage(), "");
+
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                        JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                        String strMess = jsonObjectError.getString("details");
+
+                                        libs.toast(2, 2, strMess);
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                    }
                                 }
 
                                 @Override
@@ -324,14 +326,11 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onException(Exception e) {
 
+                            progressDialog.dismiss();
                             try {
-                                JSONObject jsonObject = new JSONObject(e.getMessage().toString());
-
+                                JSONObject jsonObject = new JSONObject(e.getMessage());
                                 JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
-
                                 String strMess = jsonObjectError.getString("details");
-
-                                progressDialog.dismiss();
 
                                 libs.toast(2, 2, strMess);
                             } catch (JSONException e1) {

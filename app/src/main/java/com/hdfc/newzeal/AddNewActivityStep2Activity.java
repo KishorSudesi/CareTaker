@@ -150,7 +150,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 jsonObjectAct = null;
-                            }
+                        }
                         }
 
                         if (jsonObjectAct != null) {
@@ -170,8 +170,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                                 if (dependantsObject.has("services")) {
                                                     JSONArray activitiesA = dependantsObject.getJSONArray("services");
                                                     activitiesA.put(jsonObjectAct);
-                                                }
                                             }
+                                        }
                                         }
                                     } catch (JSONException jSe) {
                                         jSe.printStackTrace();
@@ -182,12 +182,12 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Object o) {
                                             Config.jsonObject = responseJSONDoc;
-                                            progressDialog.dismiss();
+                                        progressDialog.dismiss();
                                             Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
                                             newIntent.putExtra("WHICH_SCREEN", intWhichScreen);
                                             startActivity(newIntent);
                                             finish();
-                                        }
+                                    }
 
                                         @Override
 
@@ -204,7 +204,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 public void onException(Exception e) {
                                     progressDialog.dismiss();
                                     libs.toast(2, 2, e.getMessage());
-                                    libs.toast(2, 2, getString(R.string.error));
+                                    //libs.toast(2, 2, getString(R.string.error));
                                 }
                             });
                         } else libs.toast(2, 2, getString(R.string.error));

@@ -8,7 +8,7 @@
     android:padding="@dimen/padding_general">
 
     <Button
-        android:id="@+id/buttonList"
+        android:id="@+id/buttonActivity"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_alignParentLeft="true"

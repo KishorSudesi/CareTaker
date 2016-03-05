@@ -354,7 +354,7 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
-    public void updateDocByKeyValue(final String dbName,
+    /*public void updateDocByKeyValue(final String dbName,
                                     final String collectionName, final String key, final String value,
                                     final JSONObject newJsonDoc, final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
@@ -381,7 +381,7 @@ public class AsyncApp42ServiceApi {
                 }
             }
         }.start();
-    }
+    }*/
 
     //addOrUpdateKeys(dbName, collectionName, docId, keys,
     public void updateDocPartByKeyValue(final String dbName,
@@ -417,7 +417,7 @@ public class AsyncApp42ServiceApi {
     /*
      * This function Uploads File On App42 Cloud.
 	 */
-    public void uploadImage(final String name,
+   /* public void uploadImage(final String name,
                             final String filePath, final UploadFileType fileType, final String description, final App42UploadServiceListener callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
@@ -443,7 +443,7 @@ public class AsyncApp42ServiceApi {
                 }
             }
         }.start();
-    }
+    }*/
 
     public void uploadFile(final String name,
                            final String filePath, final UploadFileType fileType, final String description, final App42CallBack callBack) {
@@ -473,7 +473,7 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
-    public void getImage(final String fileName, final App42UploadServiceListener callBack) {
+   /* public void getImage(final String fileName, final App42UploadServiceListener callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -498,7 +498,7 @@ public class AsyncApp42ServiceApi {
                 }
             }
         }.start();
-    }
+    }*/
 
     public void getFile(final String fileName, final App42UploadServiceListener callBack) {
         final Handler callerThreadHandler = new Handler();
@@ -530,7 +530,7 @@ public class AsyncApp42ServiceApi {
     /*
      * This function Uploads File On App42 Cloud.
 	 */
-    public void getImageByUser(final String fileName, final String userName, final App42UploadServiceListener callBack) {
+    public void getImageByUser(final String fileName, final String userName, final App42CallBack app42CallBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -540,15 +540,15 @@ public class AsyncApp42ServiceApi {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.onGetImageSuccess(response);
+                            app42CallBack.onSuccess(response);
                         }
                     });
                 } catch (final App42Exception ex) {
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (callBack != null) {
-                                callBack.onGetImageFailed(ex);
+                            if (app42CallBack != null) {
+                                app42CallBack.onException(ex);
                             }
                         }
                     });
@@ -679,7 +679,7 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
-    public interface App42UserServiceListener {
+   /* public interface App42UserServiceListener {
         void onUserCreated(User response);
 
         void onCreationFailed(App42Exception exception);
@@ -692,7 +692,7 @@ public class AsyncApp42ServiceApi {
 
         void onAuthenticationFailed(App42Exception exception);
 
-    }
+    }*/
 
 
     public interface App42StorageServiceListener {

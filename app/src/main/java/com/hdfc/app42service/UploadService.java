@@ -1,34 +1,23 @@
 package com.hdfc.app42service;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.hdfc.libs.AsyncApp42ServiceApi;
-import com.hdfc.libs.Libs;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.App42Exception;
-import com.shephertz.app42.paas.sdk.android.upload.Upload;
 import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 
-import java.io.InputStream;
-
-public class UploadService implements
-        AsyncApp42ServiceApi.App42UploadServiceListener, App42CallBack {
+public class UploadService {
 
     private AsyncApp42ServiceApi asyncService;
-    private Context _ctxt;
+    /*private Context _ctxt;
     private Libs libs;
     private View formView, progressView;
-    private ImageView imgView;
+    private ImageView imgView;*/
 
     public UploadService(Context context) {
-        this._ctxt = context;
+        //this._ctxt = context;
         asyncService = AsyncApp42ServiceApi.instance(context);
-        libs = new Libs(context);
+        //libs = new Libs(context);
     }
 
    /* public void uploadImage(String imagePath, String fileName, String desc, String userName, UploadFileType fileType, AsyncApp42ServiceApi.App42UploadServiceListener callBack) {
@@ -47,7 +36,7 @@ public class UploadService implements
         //desc, this);
     }
 
-    public void uploadFile(String imagePath, String fileName, String desc, UploadFileType fileType, App42CallBack callBack) {
+    /*public void uploadFile(String imagePath, String fileName, String desc, UploadFileType fileType, App42CallBack callBack) {
         // libs.showProgress(true, formView, progressView);
         asyncService.uploadFile(fileName, imagePath, fileType, desc, callBack);
         //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
@@ -59,30 +48,30 @@ public class UploadService implements
         asyncService.getFile(fileName, this);
         //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
         //desc, this);
-    }
+    }*/
 
     public void getAllFilesByUser(String userName, App42CallBack app42CallBack) {
 
         asyncService.getAllFilesByUser(userName, app42CallBack);
     }
 
-    public void removeImage(String fileName, String userName, App42CallBack app42CallBack) {
+    /*public void removeImage(String fileName, String userName, App42CallBack app42CallBack) {
         //libs.showProgress(true, formView, progressView);
 
         asyncService.removeImageByUser(fileName, userName, app42CallBack);
         //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
         //desc, this);
-    }
+    }*/
 
-    public void getImageCount(String userName, App42CallBack app42CallBack) {
+   /* public void getImageCount(String userName, App42CallBack app42CallBack) {
         //libs.showProgress(true, formView, progressView);
 
         asyncService.getImageCount(userName, app42CallBack);
         //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
         //desc, this);
-    }
+    }*/
 
-    public void loadImageFromUrl(final String url, final ImageView img) {
+    /*public void loadImageFromUrl(final String url, final ImageView img) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -96,10 +85,10 @@ public class UploadService implements
                 });
             }
         }.start();
-    }
+    }*/
 
     // decodes image and scales it to reduce memory consumption
-    private Bitmap loadBitmap(String url) {
+   /* private Bitmap loadBitmap(String url) {
         try {
             // decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
@@ -128,21 +117,22 @@ public class UploadService implements
             } else
                 return BitmapFactory.decodeFile(url, o2);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
-    public void getProfileImage(String fileName, String userName) {
+    /*public void getProfileImage(String fileName, String userName, App42CallBack app42CallBack) {
         //libs.showProgress(true, formView, progressView);
         //asyncService.getImage(fileName, this);
-        asyncService.getImageByUser(fileName, userName, this);
+        asyncService.getImageByUser(fileName, userName, app42CallBack);
     }
-
-    @Override
+*/
+   /* @Override
     public void onUploadImageSuccess(Upload response, String fileName, String userName) {
         //libs.showProgress(false, formView, progressView);
         libs.createAlertDialog("SuccessFully Uploaded : " + response);
-        getProfileImage(fileName, userName);
+        //getProfileImage(fileName, userName);
     }
 
     @Override
@@ -184,5 +174,5 @@ public class UploadService implements
     @Override
     public void onException(App42Exception e) {
         //libs.showProgress(false, formView, progressView);
-    }
+    }*/
 }

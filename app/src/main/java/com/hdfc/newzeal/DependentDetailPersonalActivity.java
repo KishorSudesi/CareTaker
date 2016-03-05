@@ -50,15 +50,14 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
     public static RoundedImageView imgButtonCamera;
     public static String dependantImgName = "";
-    public static String strImageName = "", strImagePathToServer = "";
+    public static String strImageName = "";
     public static String strDependantName = "";
-    public static long longDependantId = 0;
     public static Bitmap bitmap = null;
     public static Uri uri;
     public static DependentModel dependentModel = null;
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
-    private static boolean isCamera = false, isSaved = false;
+    private static boolean isCamera = false;
     private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editRelation, editDependantEmail;
     private static ProgressDialog mProgress = null;
@@ -146,6 +145,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     startActivity(selection);
                     finish();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -164,16 +164,16 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         editRelation.setError(null);
         //editDependantEmail.setError(null);
 
-        strDependantName = editName.getText().toString();
-        String strContactNo = editContactNo.getText().toString();
-        String strAddress = editAddress.getText().toString();
-        String strRelation = editRelation.getText().toString();
-        String strEmail = editDependantEmail.getText().toString();
+        strDependantName = editName.getText().toString().trim();
+        String strContactNo = editContactNo.getText().toString().trim();
+        String strAddress = editAddress.getText().toString().trim();
+        String strRelation = editRelation.getText().toString().trim();
+        String strEmail = editDependantEmail.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strImageName) && longDependantId <= 0) {
+        if (strImageName != null && TextUtils.isEmpty(strImageName) && dependentModel == null) {
             libs.toast(2, 2, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
@@ -223,13 +223,14 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                 boolean b = true;
 
-                if (!SignupActivity.dependentNames.contains(strDependantName) && !isSaved) {
+                if (!SignupActivity.dependentNames.contains(strDependantName)) {
                     dependentModel = new DependentModel(strDependantName, strRelation, strImageName, "", "", strAddress, strContactNo, strEmail, "", 0);
                     SignupActivity.dependentNames.add(strDependantName);
                 } else {
                     if (dependentModel != null &&
                             SignupActivity.dependentNames.contains(strDependantName)
-                            && isSaved && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
+                            && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
+
                         dependentModel.setStrRelation(strRelation);
                         dependentModel.setStrImg(strImageName);
                         dependentModel.setStrAddress(strAddress);
@@ -240,7 +241,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                 if (b) {
                     libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
-                    strImagePathToServer = strImageName;
+                    //strImagePathToServer = strImageName;
                     strImageName = "";
                     Intent selection = new Intent(DependentDetailPersonalActivity.this, DependentDetailsMedicalActivity.class);
                     startActivity(selection);
@@ -262,7 +263,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 }*/
 
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
     }
@@ -294,7 +295,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             // handles a search query
             String query = intent.getStringExtra(SearchManager.QUERY);
-            editName.setText("should search for query: '" + query + "'...");
+            editName.setText(getResources().getString(R.string.search_contacts));
         }
     }
 
@@ -351,7 +352,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
             imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
 
-            if (cur.getCount() > 0) {
+            if (cur != null && cur.getCount() > 0) {
                 while (cur.moveToNext()) {
                     id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                     name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -359,16 +360,18 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                     if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                         Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
-                        while (pCur.moveToNext()) {
-                            phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        if (pCur != null) {
+                            while (pCur.moveToNext()) {
+                                phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            }
+                            pCur.close();
                         }
-                        pCur.close();
                     } else phone = "";
                 }
 
                 Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
 
-                if (emailCur.getCount() > 0) {
+                if (emailCur != null && emailCur.getCount() > 0) {
                     while (emailCur.moveToNext()) {
                         emailContact = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                     }
@@ -386,12 +389,19 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else
+                } else {
                     imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
+                    strImageName = "";
+                }
+
+                if (!cur.isClosed())
+                    cur.close();
+
             } else {
                 name = "";
                 emailContact = "";
                 phone = "";
+                strImageName = "";
             }
 
             editName.setText(name);
@@ -427,7 +437,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 editRelation.setText(dependentModel.getStrRelation());
                 editDependantEmail.setText(dependentModel.getStrEmail());
 
-                if (!strDependantName.equalsIgnoreCase("") && isCamera == false) {
+                if (!strDependantName.equalsIgnoreCase("") && !isCamera) {
                     strImageName = dependentModel.getStrImg();
                     backgroundThreadHandler = new BackgroundThreadHandler();
                     backgroundThreadCamera = new BackgroundThreadCamera();
@@ -447,7 +457,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        strImageName = Libs.customerImageUri.getPath().toString();
+                        strImageName = Libs.customerImageUri.getPath();
                         backgroundThreadHandler = new BackgroundThreadHandler();
                         backgroundThreadCamera = new BackgroundThreadCamera();
                         backgroundThreadCamera.start();
@@ -484,7 +494,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     bitmap = libs.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             } catch (Exception e) {
                 e.printStackTrace();
             }

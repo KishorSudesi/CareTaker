@@ -2,7 +2,6 @@ package com.hdfc.newzeal.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +25,12 @@ public class AddDependentFragment extends Fragment {
     }
 
     public static AddDependentFragment newInstance() {
-        AddDependentFragment fragment = new AddDependentFragment();
-        return fragment;
+        return new AddDependentFragment();
     }
 
     public void setListData() {
 
         int intCount = 0;
-
-        Log.e("AddDependentFragment", "setListData");
 
         if (SignupActivity.strUserId != null && !SignupActivity.strUserId.equalsIgnoreCase(""))
             intCount = libs.retrieveDependants();
@@ -46,8 +42,8 @@ public class AddDependentFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+        /*if (getArguments() != null) {
+        }*/
     }
 
     @Override
@@ -67,7 +63,6 @@ public class AddDependentFragment extends Fragment {
                 SignupActivity._mViewPager.setCurrentItem(2);
             }
         });
-        Log.e("AddDependentFragment", "onCreateView");
 
         setListView();
 
@@ -77,6 +72,7 @@ public class AddDependentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Libs.log("AddDependentFragment", "onResume");
     }
 
     public void setListView() {

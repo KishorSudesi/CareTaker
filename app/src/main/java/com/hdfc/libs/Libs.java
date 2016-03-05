@@ -13,16 +13,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
-import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.StatFs;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -31,7 +27,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -43,7 +38,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
 import com.hdfc.model.ActivityFeedBackModel;
 import com.hdfc.model.ActivityListModel;
@@ -53,30 +47,21 @@ import com.hdfc.model.ConfirmViewModel;
 import com.hdfc.model.CustomerModel;
 import com.hdfc.model.DependentModel;
 import com.hdfc.model.NotificationModel;
-import com.hdfc.model.ServiceModel;
 import com.hdfc.newzeal.LoginActivity;
 import com.hdfc.newzeal.R;
 import com.hdfc.newzeal.SignupActivity;
 import com.hdfc.newzeal.fragments.ActivityListFragment;
 import com.hdfc.newzeal.fragments.ConfirmFragment;
 import com.hdfc.newzeal.fragments.NotificationFragment;
-import com.shephertz.app42.paas.sdk.android.App42Exception;
-import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URLConnection;
-import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -113,14 +98,13 @@ public class Libs {
 
     public static String getStringJni() {
         try {
-            //log(getStringJni(), " ");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return getString();
     }
 
-    public static double round(double value, int places) {
+   /* public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
         BigDecimal bd = new BigDecimal(value);
@@ -158,7 +142,7 @@ public class Libs {
                         } else {  // it is a file...
 
                             if (file.exists() && file.canRead() && file.canWrite()) {
-
+                                //TODO file
                             }
                         }
                     }
@@ -170,7 +154,7 @@ public class Libs {
         }
 
         return true;
-    }
+    }*/
 
     //creating scaled bitmap with required width and height
     public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
@@ -305,7 +289,7 @@ public class Libs {
                 android.os.Environment.MEDIA_MOUNTED);
     }
 
-    public static long getAvailableExternalMemorySize() {
+   /* public static long getAvailableExternalMemorySize() {
         if (externalMemoryAvailable()) {
             File path = Environment.getExternalStorageDirectory();
             StatFs stat = new StatFs(path.getPath());
@@ -401,12 +385,12 @@ public class Libs {
         }
 
         mRecorder.start();
-    }
+    }*/
 
-    public static String getDeviceID(Activity activity) {
+   /* public static String getDeviceID(Activity activity) {
         return Settings.Secure.getString(activity.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-    }
+    }*/
 
     /*public static String encrypt(String Data) {
 
@@ -437,8 +421,10 @@ public class Libs {
 
     public static void hideSoftKeyboard(Activity activity) {
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+            if (activity.getCurrentFocus() != null) {
+                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -477,7 +463,7 @@ public class Libs {
         return key;
     }*/
 
-    public static String loadJSONFromFile(String path) {
+    /*public static String loadJSONFromFile(String path) {
         String json = null;
         try {
 
@@ -494,7 +480,7 @@ public class Libs {
             return null;
         }
         return json;
-    }
+    }*/
 
     public static void setBtnDrawable(Button btn, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
@@ -515,7 +501,7 @@ public class Libs {
 
     public static boolean isEmpty(String strInput) {
 
-        boolean isEmpty = false;
+        boolean isEmpty;
 
         isEmpty = TextUtils.isEmpty(strInput);
 
@@ -557,6 +543,15 @@ public class Libs {
         }
     }
 
+   /* public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(_ctxt)
+                .setMessage(message)
+                .setPositiveButton(_ctxt.getString(R.string.ok), okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }*/
+
     public void toast(int type, int duration, String message) {
 
         String strColor = "#ffffff";
@@ -589,26 +584,6 @@ public class Libs {
         }
     }
 
-    public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(_ctxt)
-                .setMessage(message)
-                .setPositiveButton(_ctxt.getString(R.string.ok), okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
-    }
-
-    public void createAlertDialog(String msg) {
-        AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-        alertbox.setTitle(_ctxt.getString(R.string.app_name));
-        alertbox.setMessage(msg);
-        alertbox.setPositiveButton(_ctxt.getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-            }
-        });
-        alertbox.show();
-    }
-
    /* public String getUUID() {
         final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -624,6 +599,17 @@ public class Libs {
         return deviceId;
     }*/
 
+    public void createAlertDialog(String msg) {
+        AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
+        alertbox.setTitle(_ctxt.getString(R.string.app_name));
+        alertbox.setMessage(msg);
+        alertbox.setPositiveButton(_ctxt.getString(R.string.ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+            }
+        });
+        alertbox.show();
+    }
+
     public boolean isEmailValid(String email) {
         boolean b;
 
@@ -638,23 +624,14 @@ public class Libs {
         return b;
     }
 
-    public int getMemory() {
-        Runtime rt = Runtime.getRuntime();
-        int maxMemory = (int) rt.maxMemory() / 1024;
-
-        //int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
-
-        return maxMemory;
-    }
-
-    public void createFolder(String path) {
+   /* public void createFolder(String path) {
         File root = new File(path);
         if (!root.exists()) {
             root.mkdirs();
         }
-    }
+    }*/
 
-    public void setExifData(String pathName) throws Exception {
+   /* public void setExifData(String pathName) throws Exception {
 
         try {
             //working for Exif defined attributes
@@ -665,21 +642,18 @@ public class Libs {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+
+    public int getMemory() {
+        Runtime rt = Runtime.getRuntime();
+        int maxMemory = (int) rt.maxMemory() / 1024;
+
+        //int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
+
+        return maxMemory;
     }
 
-    public Date convertStringToDate(String strDate) {
-
-        Date date = null;
-        try {
-            date = fmt.parse(strDate);
-            Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date; //
-    }
-
-    public String convertDateToString(Date dtDate) {
+    /*public String convertDateToString(Date dtDate) {
 
         String date = null;
 
@@ -690,6 +664,18 @@ public class Libs {
         }
 
         Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }*/
+
+    public Date convertStringToDate(String strDate) {
+
+        Date date = null;
+        try {
+            date = fmt.parse(strDate);
+            Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return date; //
     }
 
@@ -709,6 +695,27 @@ public class Libs {
     public boolean isPasswordValid(String password) {
         return password.length() > 1;
     }
+
+    /*public void setupUI(View view) {
+        //Set up touch listener for non-text box views to hide keyboard.
+        //if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard((Activity) _ctxt);
+                    return false;
+                }
+            });
+        // }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
+    }*/
 
     /**
      * Shows the progress UI and hides the login form.
@@ -752,27 +759,6 @@ public class Libs {
         return isValid;
     }
 
-    public void setupUI(View view) {
-        //Set up touch listener for non-text box views to hide keyboard.
-        //if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    hideSoftKeyboard((Activity) _ctxt);
-                    return false;
-                }
-            });
-        // }
-
-        //If a layout container, iterate over children and seed recursion.
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                View innerView = ((ViewGroup) view).getChildAt(i);
-                setupUI(innerView);
-            }
-        }
-    }
-
     public File createFileInternalImage(String strFileName) {
 
         File file = null;
@@ -799,26 +785,35 @@ public class Libs {
         return file;
     }
 
-    public void selectImage(final String strFileName, final Fragment fragment, final Activity activity) {
-        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
+    public void selectImage(final String strFileName, final Fragment fragment,
+                            final Activity activity) {
+        final CharSequence[] items = {_ctxt.getResources().getString(R.string.take_photo),
+                _ctxt.getResources().getString(R.string.choose_library),
+                _ctxt.getResources().getString(R.string.cancel)};
+
         AlertDialog.Builder builder = new AlertDialog.Builder(_ctxt);
-        builder.setTitle("Add a Profile Photo!");
+        builder.setTitle(_ctxt.getResources().getString(R.string.add_profile));
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take Photo")) {
-                    openCamera(strFileName, fragment, activity);
-                } else if (items[item].equals("Choose from Library")) {
+                if (items[item].equals(_ctxt.getResources().getString(R.string.take_photo))) {
+
+                    if (externalMemoryAvailable())
+                        openCamera(strFileName, fragment, activity);
+                    else
+                        toast(2, 2, _ctxt.getResources().getString(R.string.no_memory_camera));
+
+                } else if (items[item].equals(_ctxt.getResources().getString(R.string.choose_library))) {
                     Intent intent = new Intent();
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
 
-                    if (fragment != null)
-                        fragment.startActivityForResult(Intent.createChooser(intent, "Select a Picture"), Config.START_GALLERY_REQUEST_CODE);
-                    else
-                        activity.startActivityForResult(Intent.createChooser(intent, "Select a Picture"), Config.START_GALLERY_REQUEST_CODE);
+                    if (fragment != null && fragment.isVisible())
+                        fragment.startActivityForResult(Intent.createChooser(intent, _ctxt.getResources().getString(R.string.select_picture)), Config.START_GALLERY_REQUEST_CODE);
+                    else if (activity != null && !activity.isFinishing())
+                        activity.startActivityForResult(Intent.createChooser(intent, _ctxt.getResources().getString(R.string.select_picture)), Config.START_GALLERY_REQUEST_CODE);
 
-                } else if (items[item].equals("Cancel")) {
+                } else if (items[item].equals(_ctxt.getResources().getString(R.string.cancel))) {
                     dialog.dismiss();
                 }
             }
@@ -884,13 +879,6 @@ public class Libs {
             editText.setBackground(drw);
     }
 
-    public void setDrawable(View v, Drawable drw) {
-        if (Build.VERSION.SDK_INT <= 16)
-            v.setBackgroundDrawable(drw);
-        else
-            v.setBackground(drw);
-    }
-
     /*private void updateView(int index, ListView listView) {
         View v = listView.getChildAt(index -
                 listView.getFirstVisiblePosition());
@@ -902,13 +890,11 @@ public class Libs {
         //someText.setText("Hi! I updated you manually!");
     }*/
 
-    public void setStatusBarColor(String strColor) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = ((Activity) _ctxt).getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor(strColor));
-        }
+    public void setDrawable(View v, Drawable drw) {
+        if (Build.VERSION.SDK_INT <= 16)
+            v.setBackgroundDrawable(drw);
+        else
+            v.setBackground(drw);
     }
 
     /*public static String bytesToHex(byte[] bytes) {
@@ -922,6 +908,15 @@ public class Libs {
     }*/
 
     //Application Specigfic Start
+
+    public void setStatusBarColor(String strColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = ((Activity) _ctxt).getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.parseColor(strColor));
+        }
+    }
 
     public String replaceSpace(String string) {
         string = string.replace(" ", "_");
@@ -966,7 +961,7 @@ public class Libs {
         return intSampleHeight;
     }
 
-    public void fetchServices(){
+    /*public void fetchServices(){
         StorageService storageService = new StorageService(_ctxt);
 
         storageService.findDocsById("56c70aefe4b0067c8c7658bf", Config.collectionNameServices, new AsyncApp42ServiceApi.App42StorageServiceListener() {
@@ -1035,7 +1030,7 @@ public class Libs {
 
             }
         });
-    }
+    }*/
 
     public void populateHeaderDependents(final LinearLayout dynamicUserTab, final int intWhichScreen) {
 
@@ -1351,73 +1346,6 @@ public class Libs {
                     }
                 }
             }
-
-
-            //TESTING
-            /*try {
-                JSONObject jsonObjectAct = new JSONObject();
-                jsonObjectAct.put("provider_email", "provider@gmail.com");
-                jsonObjectAct.put("provider_contact_no", "1230432432");
-                jsonObjectAct.put("provider_description", "description");
-                jsonObjectAct.put("provider_name", "calra");
-                jsonObjectAct.put("activity_message", "message");
-                jsonObjectAct.put("status", "upcoming");
-                jsonObjectAct.put("activity_name", "NAME");
-                jsonObjectAct.put("activity_date", "time");
-
-
-                //
-                JSONObject jsonObject = new JSONObject();
-                try {
-
-                    jsonObject.put("customer_email", Config.customerModel.getStrEmail());
-
-                    JSONArray jsonArray = new JSONArray();
-
-                    JSONObject jsonObjectDeps = new JSONObject();
-
-                    JSONArray jsonArrayActivities = new JSONArray();
-
-
-                    jsonArrayActivities.put(jsonObjectAct);
-
-                    jsonObjectDeps.put("dependent_name", Config.dependentNames.get(Config.intSelectedDependent));
-
-                    jsonObjectDeps.put("activities", jsonArrayActivities);
-
-                    jsonArray.put(jsonObjectDeps);
-
-                    jsonObject.put("dependents", jsonArray);
-
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                StorageService storageService = new StorageService(_ctxt);
-
-                storageService.updateDocs(jsonObject, Config.jsonDocId, new App42CallBack() {
-                    @Override
-                    public void onSuccess(Object o) {
-
-                        toast(2,2, o.toString());
-                        log(o.toString(), " RESP ");
-
-                    }
-
-                    @Override
-                    public void onException(Exception e) {
-
-                        //toast(2,2, e.getMessage());
-                        log( e.getMessage().toString(), " RESP ");
-                    }
-                });
-
-            }catch (Exception e){
-
-            }*/
-            //
 
         } catch (JSONException e) {
             e.printStackTrace();

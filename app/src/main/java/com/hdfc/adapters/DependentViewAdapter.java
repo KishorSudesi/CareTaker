@@ -27,8 +27,6 @@ public class DependentViewAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     private Context _ctxt;
     private ArrayList data;
-    private DependentModel tempValues = null;
-    private Bitmap imageBitmap = null;
 
     public DependentViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
@@ -69,8 +67,7 @@ public class DependentViewAdapter extends BaseAdapter {
 
             try {
 
-                tempValues = null;
-                tempValues = (DependentModel) data.get(position);
+                DependentModel tempValues = (DependentModel) data.get(position);
 
                 holder.textName.setText(tempValues.getStrName());
 
@@ -83,13 +80,14 @@ public class DependentViewAdapter extends BaseAdapter {
                     //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
 
                 } else {
-                    imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.plus_icon);
+                    Bitmap imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.plus_icon);
 
                     holder.textRelation.setVisibility(View.GONE);
                     holder.image.setImageBitmap(imageBitmap);
                 }
 
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

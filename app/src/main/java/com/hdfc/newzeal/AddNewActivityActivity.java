@@ -29,7 +29,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
     public static List<DependentServiceModel> dependentServiceModels = new ArrayList<>();
     public static List<DependentServiceModel> selectedDependentServiceModels = new ArrayList<>();
-    private static int intWhichScreen;
+    //private static int intWhichScreen;
     private static ProgressDialog progressDialog;
     private static AddNewActivityAdapter addNewActivityAdapter;
     private static Button buttonContinue;
@@ -39,15 +39,12 @@ public class AddNewActivityActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activit_add_new);
+        setContentView(R.layout.activity_add_new);
 
         libs = new Libs(AddNewActivityActivity.this);
         ListView listView = (ListView) findViewById(R.id.listView1);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
-
-        Bundle b = getIntent().getExtras();
-        intWhichScreen = b.getInt("WHICH_SCREEN", Config.intDashboardScreen);
 
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
 
@@ -60,7 +57,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
-                newIntent.putExtra("WHICH_SCREEN", intWhichScreen);
+                newIntent.putExtra("WHICH_SCREEN", Config.intSelectedMenu);
                 startActivity(newIntent);
                 finish();
             }
@@ -104,7 +101,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
         if (selectedDependentServiceModels.size() > 0) {
             Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
-            newIntent.putExtra("WHICH_SCREEN", intWhichScreen);
+            newIntent.putExtra("WHICH_SCREEN", Config.intSelectedMenu);
             startActivity(newIntent);
             finish();
         } else libs.toast(2, 2, getResources().getString(R.string.error_service));

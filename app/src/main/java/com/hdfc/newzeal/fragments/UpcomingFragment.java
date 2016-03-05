@@ -66,7 +66,7 @@ public class UpcomingFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, fragment);
+        transaction.replace(R.id.frameLayoutActivity, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

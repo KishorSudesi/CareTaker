@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class SignupActivity extends FragmentActivity {
 
     public static ViewPager _mViewPager;
-    public static String strUserId;
+    public static String strUserId = "";
     public static String strCustomerName = "", strCustomerEmail = "", strCustomerContactNo = "", strCustomerAddress = "", strCustomerImg = "", strCustomerPass = "";
     public static LruCache<String, Bitmap> mMemoryCache;
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
@@ -249,6 +249,7 @@ public class SignupActivity extends FragmentActivity {
                     startActivity(selection);
                     finish();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -272,7 +273,7 @@ public class SignupActivity extends FragmentActivity {
 
         public BitmapWorkerTask(RoundedImageView imageView) {
             // Use a WeakReference to ensure the ImageView can be garbage collected
-            imageViewReference = new WeakReference<RoundedImageView>(imageView);
+            imageViewReference = new WeakReference<>(imageView);
         }
 
         // Decode image in background.
@@ -312,7 +313,7 @@ public class SignupActivity extends FragmentActivity {
                              BitmapWorkerTask bitmapWorkerTask) {
             super(res, bitmap);
             bitmapWorkerTaskReference =
-                    new WeakReference<BitmapWorkerTask>(bitmapWorkerTask);
+                    new WeakReference<>(bitmapWorkerTask);
         }
 
         public BitmapWorkerTask getBitmapWorkerTask() {

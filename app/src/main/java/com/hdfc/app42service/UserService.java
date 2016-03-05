@@ -1,36 +1,28 @@
 package com.hdfc.app42service;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.view.View;
 
 import com.hdfc.libs.AsyncApp42ServiceApi;
-import com.hdfc.libs.Libs;
-import com.hdfc.newzeal.LoginActivity;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.App42Exception;
-import com.shephertz.app42.paas.sdk.android.user.User;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-public class UserService implements
-        AsyncApp42ServiceApi.App42UserServiceListener {
+public class UserService/* implements
+        AsyncApp42ServiceApi.App42UserServiceListener*/ {
 
-    private ArrayList<String> roleList = new ArrayList<String>();
+    private ArrayList<String> roleList = new ArrayList<>();
     private AsyncApp42ServiceApi asyncService;
-    private Context _ctxt;
+   /* private Context _ctxt;
     private Libs libs;
     private View formView, progressView;
-    private SharedPreferences sPre;
+    private SharedPreferences sPre;*/
 
     public UserService(Context context) {
-        this._ctxt = context;
+        //this._ctxt = context;
         asyncService = AsyncApp42ServiceApi.instance(context);
-        libs = new Libs(context);
+        // libs = new Libs(context);
 
-        roleList.add("Customer");
+        //roleList.add("Customer");
     }
 
     public void authenticate(String userName, String password, App42CallBack app42CallBack) {
@@ -38,10 +30,10 @@ public class UserService implements
         asyncService.authenticateUser(userName, password, app42CallBack);
     }
 
-    public void addJSONObject(String collectionName, String password) {
+    /*public void addJSONObject(String collectionName, String password) {
         //libs.showProgress(true, formView, progressView);
         //asyncService.addJSONObject(collectionName, jsonDoc);
-    }
+    }*/
 
     public void onChangePassword(String userName, String oldPassword, String confirmPassword, App42CallBack app42CallBack) {
         asyncService.changePassword(userName, oldPassword, confirmPassword, app42CallBack);
@@ -52,7 +44,7 @@ public class UserService implements
         asyncService.getUser(userName, app42CallBack);
     }
 
-    public void onGetUserRoles(String userName) {
+   /* public void onGetUserRoles(String userName) {
         // libs.showProgress(true, formView, progressView);
         asyncService.getRolesByUser(userName, new App42CallBack() {
             @Override
@@ -72,9 +64,9 @@ public class UserService implements
                 libs.createAlertDialog(e.getMessage());
             }
         });
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onUserCreated(User user) {
         //libs.showProgress(false, formView, progressView);
         libs.createAlertDialog("User Created");
@@ -100,14 +92,14 @@ public class UserService implements
 
         Intent mainActivity = new Intent(_ctxt, LoginActivity.class);
         _ctxt.startActivity(mainActivity);
-    }
+    }*/
 
    /* public void setData(User response){
             LoginActivity.setData(response);
     }*/
 
 
-    public void createOrUpdateUser(User user, String strFirstName, int intSex, Date dateDob) {
+    /*public void createOrUpdateUser(User user, String strFirstName, int intSex, Date dateDob) {
         //libs.showProgress(true, formView, progressView);
 
         User.Profile profile = user.new Profile();
@@ -142,13 +134,13 @@ public class UserService implements
                 //libs.showProgress(false, formView, progressView);
             }
         });
-    }
+    }*/
 
     public void onCreateUser(String userName, String password, String email, App42CallBack app42CallBack) {
         asyncService.createUser(userName, password, email, roleList, app42CallBack);
     }
 
-    @Override
+    /*@Override
     public void onCreationFailed(App42Exception exception) {
         libs.createAlertDialog(exception.getMessage());
         //libs.showProgress(false, formView, progressView);
@@ -171,6 +163,6 @@ public class UserService implements
     public void onGetUserFailed(App42Exception exception) {
         libs.createAlertDialog(exception.getMessage());
         //libs.showProgress(false, formView, progressView);
-    }
+    }*/
 
 }

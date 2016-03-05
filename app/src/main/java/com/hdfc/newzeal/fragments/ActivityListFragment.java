@@ -1,6 +1,5 @@
 package com.hdfc.newzeal.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,20 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ActivityListAdapter;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
 import com.hdfc.model.ActivityFeedBackModel;
 import com.hdfc.model.ActivityListModel;
 import com.hdfc.model.ActivityModel;
 import com.hdfc.model.ActivityVideoModel;
-import com.hdfc.newzeal.AddNewActivityActivity;
 import com.hdfc.newzeal.R;
 
 import org.json.JSONArray;
@@ -57,29 +51,7 @@ public class ActivityListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_activity_list, container, false);
         listView = (ListView) view.findViewById(R.id.listView);
 
-        LinearLayout dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
-
-        Libs libs = new Libs(getActivity());
-
-        Button monthly = (Button) view.findViewById(R.id.buttonMonthly);
-        monthly.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoMonth();
-            }
-        });
-        ImageView addActivity = (ImageView) view.findViewById(R.id.addActivity);
-
         TextView emptyTextView = (TextView) view.findViewById(android.R.id.empty);
-
-        addActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newIntent = new Intent(getActivity(), AddNewActivityActivity.class);
-                newIntent.putExtra("WHICH_SCREEN", Config.intListActivityScreen);
-                startActivity(newIntent);
-            }
-        });
 
         /////
         try {
@@ -183,8 +155,6 @@ public class ActivityListFragment extends Fragment {
         listView.setAdapter(activityListAdapter);
         listView.setEmptyView(emptyTextView);
 
-        libs.populateHeaderDependents(dynamicUserTab, Config.intActivityScreen);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -205,7 +175,7 @@ public class ActivityListFragment extends Fragment {
                     ft.commit();
 
                 } else {
-                    ActivityCompleted completedFragment = ActivityCompleted.newInstance(activityListModel, activityModel);
+                    ActivityCompletedFragment completedFragment = ActivityCompletedFragment.newInstance(activityListModel, activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();
@@ -214,16 +184,6 @@ public class ActivityListFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public void gotoMonth() {
-        ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
-        Bundle args = new Bundle();
-        fragment1.setArguments(args);
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, fragment1);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }
 

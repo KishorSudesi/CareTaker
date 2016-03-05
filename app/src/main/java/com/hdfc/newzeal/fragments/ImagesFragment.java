@@ -1,11 +1,7 @@
 package com.hdfc.newzeal.fragments;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,23 +10,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
 import com.hdfc.newzeal.R;
 import com.hdfc.views.MyLinearView;
 
-import java.io.File;
-
 public class ImagesFragment extends Fragment {
 
-    private static Bitmap bitmap;
-
-    private static ImageView imageView;
-
-    private static Libs libs;
-    private static Thread backgroundThread;
-    private static Handler threadHandler;
-    private static ProgressDialog progressDialog;
-    private int intPosition;
+    //private static Bitmap bitmap;
 
     public static Fragment newInstance(Context context, int pos,
                                        float scale) {
@@ -51,14 +36,13 @@ public class ImagesFragment extends Fragment {
         LinearLayout l = (LinearLayout)
                 inflater.inflate(R.layout.fragment_images, container, false);
 
-        progressDialog = new ProgressDialog(getActivity());
+        // progressDialog = new ProgressDialog(getActivity());
 
-        libs = new Libs(getActivity());
+        //libs = new Libs(getActivity());
 
-        imageView = (ImageView) l.findViewById(R.id.content);
+        ImageView imageView = (ImageView) l.findViewById(R.id.content);
 
-        int pos = this.getArguments().getInt("pos");
-        intPosition = pos;
+        int intPosition = this.getArguments().getInt("pos");
 
         try {
             imageView.setImageBitmap(Config.bitmaps.get(intPosition));
@@ -87,7 +71,7 @@ public class ImagesFragment extends Fragment {
         progressDialog.show();*/
     }
 
-    public static class ThreadHandler extends Handler {
+    /*public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             progressDialog.dismiss();
@@ -97,9 +81,9 @@ public class ImagesFragment extends Fragment {
 
             //loadingPanel.setVisibility(View.GONE);
         }
-    }
+    }*/
 
-    public class BackgroundThread extends Thread {
+    /*public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {
@@ -115,5 +99,5 @@ public class ImagesFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }

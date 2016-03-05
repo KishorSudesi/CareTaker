@@ -44,8 +44,8 @@ public class RoundedImageView extends ImageView {
             paint.setDither(true);
             canvas.drawARGB(0, 0, 0, 0);
             paint.setColor(Color.parseColor("#BAB399"));
-            canvas.drawCircle(bmp.getWidth() / 2 + 0.7f, bmp.getHeight() / 2 + 0.7f,
-                    bmp.getWidth() / 2 + 0.1f, paint);
+            canvas.drawCircle(bmp.getWidth() / 2 + 0.7f, bmp.getHeight() / 2,//+ 0.7f
+                    bmp.getWidth() / 2, paint); //+ 0.1f
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(bmp, rect, rect, paint);
         } catch (Exception | OutOfMemoryError e) {

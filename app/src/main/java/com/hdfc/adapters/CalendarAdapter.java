@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hdfc.config.Config;
+import com.hdfc.libs.Libs;
 import com.hdfc.newzeal.R;
 
 import java.util.ArrayList;
@@ -26,17 +27,14 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
     private final HashMap<String, Integer> eventsPerMonthMap;
     String flag = "abc";
     String date_month_year;
-    private int daysInMonth;
     private int currentDayOfMonth;
     private int currentWeekDay;
-    private Button gridcell;
-    private TextView num_events_per_day;
 
     // Days in Current Month
     public CalendarAdapter(Context context, int month, int year) {
         super();
         this._context = context;
-        this.list = new ArrayList<String>();
+        this.list = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         setCurrentDayOfMonth(calendar.get(Calendar.DAY_OF_MONTH));
         setCurrentWeekDay(calendar.get(Calendar.DAY_OF_WEEK));
@@ -74,7 +72,7 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
         int nextYear = 0;
 
         int currentMonth = mm - 1;
-        daysInMonth = getNumberOfDaysOfMonth(currentMonth);
+        int daysInMonth = getNumberOfDaysOfMonth(currentMonth);
         Log.e("m-y", String.valueOf(daysInMonth + " ~ " + currentMonth));
 
         // Gregorian Calendar : MINUS 1, set to FIRST OF MONTH
@@ -155,7 +153,7 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
         }
 
         // Get a reference to the Day gridcell
-        gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
+        Button gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
         gridcell.setOnClickListener(this);
 
         // ACCOUNT FOR SPACING
@@ -164,9 +162,10 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
         String theday = day_color[0];
         String themonth = day_color[2];
         String theyear = day_color[3];
+
         if ((!eventsPerMonthMap.isEmpty()) && (eventsPerMonthMap != null)) {
             if (eventsPerMonthMap.containsKey(theday)) {
-                num_events_per_day = (TextView) row.findViewById(R.id.num_events_per_day);
+                TextView num_events_per_day = (TextView) row.findViewById(R.id.num_events_per_day);
                 Integer numEvents = eventsPerMonthMap.get(theday);
                 num_events_per_day.setText(numEvents.toString());
             }
@@ -205,6 +204,7 @@ public class CalendarAdapter extends BaseAdapter implements View.OnClickListener
     public void onClick(View view) {
         date_month_year = (String) view.getTag();
         flag = "Date selected ...";
+        Libs.log(date_month_year, flag);
     }
 
     public int getCurrentDayOfMonth() {
