@@ -22,7 +22,7 @@ public class UserService/* implements
         asyncService = AsyncApp42ServiceApi.instance(context);
         // libs = new Libs(context);
 
-        //roleList.add("Customer");
+        roleList.add("Customer");
     }
 
     public void authenticate(String userName, String password, App42CallBack app42CallBack) {

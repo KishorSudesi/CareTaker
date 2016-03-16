@@ -34,9 +34,9 @@
 }
 
 #sql cipher
--dontwarn net.sqlcipher.**
--keep class net.sqlcipher.** { *; }
--keep interface net.sqlcipher.** { *; }
+#-dontwarn net.sqlcipher.**
+#-keep class net.sqlcipher.** { *; }
+#-keep interface net.sqlcipher.** { *; }
 
 -keep class com.shephertz.app42.** { *; }
 -keep interface com.shephertz.app42.** { *; }
@@ -63,9 +63,9 @@
 #-keep interface com.fasterxml.jackson.** { *; }
 
 #gson
-#-dontwarn com.google.code.gson.**
-#-keep class com.google.code.gson.** { *; }
-#-keep interface com.google.code.gson.** { *; }
+-dontwarn com.google.code.gson.**
+-keep class com.google.code.gson.** { *; }
+-keep interface com.google.code.gson.** { *; }
 
 #glide
 -dontwarn com.github.bumptech.glide.**
@@ -82,4 +82,33 @@
 -keep class com.jakewharton.** { *; }
 -keep interface com.jakewharton.** { *; }
 
-#-keepattributes *Annotation*
+#09.03.21016 10:30
+#dagger
+#-dontwarn com.google.dagger.**
+#-keep class com.google.dagger.** { *; }
+#-keep interface com.google.dagger.** { *; }
+
+#-keep class **$$ModuleAdapter { *; }
+#-keepnames class **$$InjectAdapter { *; }
+
+#-keepclassmembers class * {
+#    @javax.inject.Inject <fields>;
+#    @javax.inject.Inject <init>(...);
+#}
+
+#ignore duplicate libraries
+-dontnote android.net.http.*
+-dontnote org.apache.commons.codec.**
+-dontnote org.apache.http.**
+
+#butterknife
+-dontwarn butterknife.internal.**
+-keep class **$$ViewInjector { *; }
+-keepnames class * { @butterknife.InjectView *;}
+
+-keepattributes *Annotation*
+#-dontwarn
+-adaptclassstrings
+-repackageclasses 'obfuscated'
+
+-keepattributes InnerClasses,Signature

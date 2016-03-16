@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hdfc.model.VideoCompletedModel;
-import com.hdfc.newzeal.R;
+import com.hdfc.models.VideoModel;
+import com.hdfc.caretaker.R;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ public class VideoCompletedAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     private final Integer[] imgId = null;
     private Context _context;
-    private List<VideoCompletedModel> data;
+    private List<VideoModel> data;
 
-    public VideoCompletedAdapter(Context ctxt, List<VideoCompletedModel> c) {
+    public VideoCompletedAdapter(Context ctxt, List<VideoModel> c) {
         _context = ctxt;
         data = c;
     }
@@ -59,9 +59,9 @@ public class VideoCompletedAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.dateTime.setText(data.get(position).getDateTime());
-        viewHolder.information.setText(data.get(position).getInformation());
-        viewHolder.vid.setImageResource(data.get(position).getImgVid());
+        viewHolder.dateTime.setText(data.get(position).getStrDateTime());
+        viewHolder.information.setText(data.get(position).getStrDescription());
+        viewHolder.vid.setImageResource(data.get(position).getiVideoId());
         return convertView;
     }
 

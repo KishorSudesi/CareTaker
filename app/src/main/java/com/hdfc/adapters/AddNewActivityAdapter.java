@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.hdfc.model.DependentServiceModel;
-import com.hdfc.newzeal.R;
+import com.hdfc.models.ServiceModel;
+import com.hdfc.caretaker.R;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public class AddNewActivityAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
     private Context _context;
-    private List<DependentServiceModel> data;
+    private List<ServiceModel> data;
 
-    public AddNewActivityAdapter(Context context, List<DependentServiceModel> p) {
+    public AddNewActivityAdapter(Context context, List<ServiceModel> p) {
         _context = context;
         data = p;
     }
@@ -60,9 +60,9 @@ public class AddNewActivityAdapter extends BaseAdapter {
         }
 
         if (data.size() > 0) {
-            viewHolder.activityTitle.setText(data.get(position).getStrDependantServiceName() + " " +
-                    (data.get(position).getIntDependantServiceUnit() - data.get(position).getIntDependantServiceUnitUsed()) + " Left");
-            viewHolder.activityDetails.setText(data.get(position).getStrDependantServiceFeatures());
+            viewHolder.activityTitle.setText(data.get(position).getStrServiceName() + " " +
+                    (data.get(position).getiUnit() - data.get(position).getiUnitUsed()) + " Left");
+            viewHolder.activityDetails.setText(data.get(position).getStrServiceDesc());
 
             viewHolder.checkBoxService.setTag(data.get(position));
         }

@@ -1,85 +1,50 @@
 {
-  "provider_address": "address ",
-  "provider_email": "balamscint@gmail.com",
-  "provider_name": "Balamurugan G ",
-  "provider_profile_url": " http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/4f0079ef81cc39934461c7bb67833c77340d1b35/Balamurugan G .jpeg",
-  "provider_contact_no": "979863136",
-  "feedbacks": [
-    {
-      "feedback_message": "good service",
-      "feedback_raring": 3,
-      "feedback_by": "Hungal - from name",
-      "report": 1,
-      "feedback_time": "19-01-2016 18:00:00",
-      "feedback_by_url": "Hungal - from name"
-    },
-    {
-      "feedback_message": "good service",
-      "feedback_raring": 3,
-      "feedback_by": "gurunathan - from customer name",
-      "feedback_time": "19-01-2016 18:00:00",
-      "feedback_by_url": "Hungal - from name"
-    }
-  ],
+  "provider_email": "carla1@gmail.com",
   "dependents": [
     {
-      "dependent_age": "65",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/9cece7314b48783b76752b45c2bb55fdef03cd08/komu.jpeg",
-      "dependent_illness": "Xcf",
-      "dependent_contact_no": "7598407769",
-      "dependent_address": "Fghh",
-      "dependent_name": "Komu",
-      "dependent_notes": "Cgg",
-      "dependent_email": "komagan09@gmail.com"
+      "dependent_illness": "Illness",
+      "dependent_name": "komu",
+      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/6ab454893564502587769da6bd9d927c38054a13/komu.jpeg",
+      "dependent_address": "Address",
+      "customer_email": "balamscint@gmail.com",
+      "dependent_email": "komagan09@gmail.com",
+      "dependent_age": 65,
+      "dependent_notes": "Note",
+      "dependent_contact_no": "8998907769"
+    },
+    {
+      "dependent_illness": "Illness",
+      "dependent_name": "Kovendan V",
+      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/4bf7564e8907f46ba145b5547ae0639cdc72b9c8/Kovendan_V.jpeg",
+      "dependent_address": "Address",
+      "customer_email": "balamscint@gmail.com",
+      "dependent_email": "emailkove@gmail.com",
+      "dependent_age": 65,
+      "dependent_notes": "Notes",
+      "dependent_contact_no": "09619449616"
     }
   ],
-  "activities": [
+  "provider_contact_no": "8956231852",
+  "feedbacks": [
     {
-      "activity_message": "test",
-      "activity_date": "19-04-2016 18:00:00",
-      "activity_done_date": "19-04-2016 18:00:00",
-      "status": "upcoming",
-      "activity_name": "Medical Checkups",
-      "dependent_name": "hungal",
-      "features": [
-        {
-          "feature_name": "potato",
-          "feature_name": "corn"
-        }
-      ],
-      "features_done": [
-        {
-          "feature_name": "potato"
-        }
-      ],
-      "videos": [
-        {
-          "video_taken": "19-01-2016 18:00:00",
-          "video_description": "description",
-          "video_name": "abc.avi",
-          "video_url": "http://url"
-        },
-        {
-          "video_taken": "19-01-2016 18:00:00",
-          "video_description": "description",
-          "video_name": "aqc.avi",
-          "video_url": "http://url"
-        }
-      ],
-      "images": [
-        {
-          "image_name": "abc.jpg",
-          "image_url": "http://url",
-          "image_description": "description",
-          "image_taken": "19-01-2016 18:00:00"
-        },
-        {
-          "image_name": "aqc.jpg",
-          "image_url": "http://url",
-          "image_description": "description",
-          "image_taken": "19-01-2016 18:00:00"
-        }
-      ]
+      "feedback_message": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "feedback_raring": 3,
+      "feedback_by": "komu",
+      "feedback_by_url": "komu",
+      "feedback_time": "19-01-2016 18:00:00",
+      "report": 1
+    },
+    {
+      "feedback_message": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+      "feedback_raring": 3,
+      "feedback_by": "Bala",
+      "feedback_by_url": "Bala",
+      "feedback_time": "19-01-2016 18:00:00"
     }
-  ]
+  ],
+  "provider_profile_url": " http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/4adf797dc7cc07bc2f45282748d44d0ca6669219/provider_image.jpeg",
+  "activities": [
+  ],
+  "provider_address": "Pune,Kothrud,poud 1 road",
+  "provider_name": "Rushi"
 }

@@ -20,16 +20,39 @@
         android:textAllCaps="false"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <TextView
-        android:id="@+id/header"
+    <LinearLayout
+        android:id="@+id/buttonlayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_weight="2"
-        android:padding="@dimen/text_padding"
-        android:text="February 2016"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="55dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="#EEEEEE"
+        android:layout_centerHorizontal="true">
+
+        <ImageView android:id="@+id/prevMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_general"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin_general"
+            android:src="@drawable/calendar_left_arrow_selector"/>
+
+        <TextView android:id="@+id/currentMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_margin="@dimen/margin_general"
+            android:gravity="center"
+            android:padding="@dimen/padding_general"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageView android:id="@+id/nextMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_general"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/margin_general"
+            android:src="@drawable/calendar_right_arrow_selector"/>
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/addActivity"

@@ -9,13 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hdfc.model.DependentModel;
-import com.hdfc.newzeal.DependentDetailPersonalActivity;
-import com.hdfc.newzeal.R;
-import com.hdfc.newzeal.SignupActivity;
-import com.hdfc.views.RoundedImageView;
+import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.models.DependentModel;
+import com.hdfc.caretaker.DependentDetailPersonalActivity;
+import com.hdfc.caretaker.R;
 
 import java.util.ArrayList;
 
@@ -27,11 +27,13 @@ public class DependentViewAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     private Context _ctxt;
     private ArrayList data;
+    public MultiBitmapLoader multiBitmapLoader;
 
     public DependentViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
         data = d;
         inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        multiBitmapLoader = new MultiBitmapLoader(_ctxt);
     }
 
     public int getCount() {
@@ -57,7 +59,7 @@ public class DependentViewAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.textName = (TextView) vi.findViewById(R.id.textViewName);
             holder.textRelation = (TextView) vi.findViewById(R.id.textViewRealtion);
-            holder.image = (RoundedImageView) vi.findViewById(R.id.imageViewDpndt);
+            holder.image = (ImageView) vi.findViewById(R.id.imageViewDpndt);
 
             vi.setTag(holder);
         } else
@@ -75,9 +77,10 @@ public class DependentViewAdapter extends BaseAdapter {
                     holder.textRelation.setVisibility(View.VISIBLE);
                     holder.textRelation.setText(tempValues.getStrRelation());
 
-                    if (!tempValues.getStrImg().equalsIgnoreCase(""))
-                        SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
-                    //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+                    if (!tempValues.getStrImg().equalsIgnoreCase("")) {
+                        multiBitmapLoader.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+                    }
+                        //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
 
                 } else {
                     Bitmap imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.plus_icon);
@@ -117,7 +120,7 @@ public class DependentViewAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView textName;
         public TextView textRelation;
-        public RoundedImageView image;
+        public ImageView image;
     }
 
 }

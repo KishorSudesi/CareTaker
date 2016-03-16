@@ -23,7 +23,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
-                android:text="02"
                 android:textSize="50sp" />
 
             <TextView
@@ -31,7 +30,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
-                android:text="Jan 2016"
                 android:textSize="13sp" />
         </LinearLayout>
 
@@ -46,7 +44,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:paddingLeft="13dp"
-                android:text="Scheduled visit to Dr.Ankit from Rainbow hospitals.hyd"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -59,7 +56,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="13dp"
-                    android:text="Hungal"
                     android:textSize="14sp" />
 
                 <TextView
@@ -67,7 +63,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
-                    android:text="06:00pm 01 jan 2016"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>

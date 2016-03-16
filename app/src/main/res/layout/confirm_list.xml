@@ -13,8 +13,8 @@
 
         <LinearLayout
             android:id="@+id/confirmLayoutRoot"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="90dp"
             android:background="@drawable/confirm_view"
             android:orientation="vertical">
@@ -125,12 +125,12 @@
 
     </LinearLayout>
 
-    <com.hdfc.views.RoundedImageView
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/mrs_hungal_circle" />
+        android:background="@null"/>
 
 </RelativeLayout>

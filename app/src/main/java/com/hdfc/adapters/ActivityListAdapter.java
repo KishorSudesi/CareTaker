@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hdfc.model.ActivityListModel;
-import com.hdfc.newzeal.R;
+import com.hdfc.models.ActivityListModel;
+import com.hdfc.caretaker.R;
 
 import java.util.List;
 
@@ -75,11 +75,16 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.dateNumber.setText(activityListModel.getStrDateNumber());
             viewHolder.date.setText(activityListModel.getStrDate());
-            viewHolder.dateTime.setText(activityListModel.getStrDateTime());
+
+            String strTimeStamp = activityListModel.getStrDateTime();
+
+            viewHolder.dateTime.setText(strTimeStamp);
 
             viewHolder.Message.setText(activityListModel.getStrMessage());
 
-            viewHolder.person.setText(activityListModel.getStrPerson());
+            String strAuthor = activityListModel.getStrPerson() + _context.getResources().getString(R.string.space)+  _context.getResources().getString(R.string.at)+_context.getResources().getString(R.string.space);
+
+            viewHolder.person.setText(strAuthor);
             // viewHolder.Message.setText(data.get(i).getStrMessage());
             // viewHolder.dateTime.setText(data.get(i).getStrDateTime());
 

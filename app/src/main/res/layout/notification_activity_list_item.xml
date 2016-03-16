@@ -5,70 +5,6 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <!--  <LinearLayout
-
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:background="@drawable/header_gradient"
-          android:orientation="horizontal">
-
-          <LinearLayout
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="10dp"
-              android:layout_marginLeft="10dp"
-              android:layout_marginRight="10dp"
-              android:layout_marginTop="10dp">
-
-              <com.hdfc.views.RoundedImageView
-
-                  android:layout_width="60dp"
-                  android:layout_height="70dp"
-                  android:layout_gravity="center_horizontal"
-                  android:background="@drawable/person_icon" />
-
-          </LinearLayout>
-
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_marginLeft="@dimen/margin_general"
-              android:layout_marginRight="@dimen/margin_general"
-              android:layout_marginTop="5dp"
-              android:orientation="vertical">
-
-              <TextView
-
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="5dp"
-                  android:text="Up Next"
-                  android:textAppearance="?android:attr/textAppearanceSmall"
-                  android:textColor="#cccccc" />
-
-              <TextView
-
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="10dp"
-                  android:paddingLeft="13dp"
-                  android:textSize="18sp"
-                  android:text="Mom is doing better than last week"
-                  android:textAppearance="?android:attr/textAppearanceMedium" />
-
-              <TextView
-
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="2dp"
-                  android:text="Carla, Jan 28, 6:00 PM"
-                  android:textAppearance="?android:attr/textAppearanceSmall"
-                  android:textColor="@color/colorWhite" />
-
-          </LinearLayout>
-
-      </LinearLayout>-->
-
     <LinearLayout
         android:id="@+id/activityList"
         android:layout_width="match_parent"
@@ -88,7 +24,6 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_general"
-                android:background="@drawable/carla1"
                 android:padding="@dimen/padding_general" />
 
         </LinearLayout>
@@ -104,8 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:paddingLeft="13dp"
+                android:paddingStart="13dp"
                 android:paddingRight="3dp"
-                android:text="Scheduled visit to Dr.Ankit from Rainbow hospitals.hyd"
+                android:paddingEnd="3dp"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -119,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="13dp"
-                    android:text="Carla"
+                    android:paddingRight="13dp"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp" />
 
@@ -128,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="13dp"
-                    android:text="Carla, Jan 28, 6:00 PM"
+                    android:paddingRight="13dp"
                     android:textColor="#333333"
                     android:textSize="12sp" />
 

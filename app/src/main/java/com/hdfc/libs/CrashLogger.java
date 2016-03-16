@@ -12,7 +12,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.StatFs;
 
-import com.hdfc.newzeal.R;
+import com.hdfc.caretaker.R;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -96,7 +96,7 @@ public class CrashLogger implements Thread.UncaughtExceptionHandler {
             // Files dir for storing the stack traces
             //FilePath = Configurator.getInstance(context).getLogsDirectory().getAbsolutePath();
             FilePath = context.getFilesDir().getAbsolutePath();
-            // Device model
+            // Device models
             PhoneModel = android.os.Build.MODEL;
             // Android version
             AndroidVersion = android.os.Build.VERSION.RELEASE;

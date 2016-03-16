@@ -5,14 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
-import com.hdfc.model.ActivitiesModel;
-import com.hdfc.newzeal.R;
-import com.hdfc.views.RoundedImageView;
+import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.models.ActivitiesModel;
+import com.hdfc.caretaker.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,11 +27,13 @@ public class ActivitiesAdapter extends BaseAdapter {
     private Context _context;
     private ArrayList data;
     private Libs libs;
+    public MultiBitmapLoader multiBitmapLoader;
 
     public ActivitiesAdapter(Context context, ArrayList d) {
         _context = context;
         data = d;
         libs = new Libs(context);
+        multiBitmapLoader = new MultiBitmapLoader(context);
     }
 
     @Override
@@ -64,7 +68,7 @@ public class ActivitiesAdapter extends BaseAdapter {
             viewHolder.textViewUpcoming = (TextView) convertView.findViewById(R.id.textViewUpcoming);
             viewHolder.textViewText = (TextView) convertView.findViewById(R.id.textViewText);
             viewHolder.textViewTime = (TextView) convertView.findViewById(R.id.textViewTime);
-            viewHolder.roundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
+            viewHolder.roundedImageView = (ImageView) convertView.findViewById(R.id.roundedImageView);
             viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.activityList);
 
 
@@ -81,23 +85,38 @@ public class ActivitiesAdapter extends BaseAdapter {
 
             Date dateNow = new Date();
 
+
+            String strDisplayDate = _context.getResources().getString(R.string.space)+
+                    _context.getResources().getString(R.string.at)+
+                    _context.getResources().getString(R.string.space)+
+                    libs.formatDate(activitiesModel.getStrDateTime());
+
             if (position % 2 == 0) {
                 libs.setDrawable(viewHolder.linearLayout, _context.getResources().getDrawable(R.drawable.header_gradient));
                 viewHolder.textViewTime.setTextColor(_context.getResources().getColor(R.color.colorWhite));
-                viewHolder.roundedImageView.setImageResource(R.drawable.carla2);
+                //viewHolder.roundedImageView.setImageResource(R.drawable.carla2);
             } else {
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().getColor(R.color.colorWhite));
                 viewHolder.textViewTime.setTextColor(_context.getResources().getColor(R.color.colorAccentDark));
-                viewHolder.roundedImageView.setImageResource(R.drawable.carla1);
+                //viewHolder.roundedImageView.setImageResource(R.drawable.carla1);
             }
 
-            if (!dateNow.after(date) && position == 0) {
-                viewHolder.textViewUpcoming.setVisibility(View.VISIBLE);
-                viewHolder.textViewUpcoming.setText("UP Next");
-                viewHolder.textViewTime.setText(activitiesModel.getStrAuthor() + " " + activitiesModel.getStrDateTime());
-            } else {
-                viewHolder.textViewUpcoming.setVisibility(View.GONE);
-                viewHolder.textViewTime.setText(activitiesModel.getStrDateTime());
+            try {
+                if (!dateNow.after(date) && position == 0) {//
+                    viewHolder.textViewUpcoming.setVisibility(View.VISIBLE);
+                    viewHolder.textViewUpcoming.setText("UP Next");//TODO use strings.xml
+                    String strTemp=activitiesModel.getStrAuthor() + " " + strDisplayDate;
+                    viewHolder.textViewTime.setText(strTemp);
+                } else {
+                    viewHolder.textViewUpcoming.setVisibility(View.GONE);
+
+                    String strTemp=activitiesModel.getStrAuthor() + " " + strDisplayDate;
+                    viewHolder.textViewTime.setText(strTemp);
+
+                    //viewHolder.textViewTime.setText(activitiesModel.getStrDateTime());
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
 
             if (!activitiesModel.getStrActivityFeedback().equalsIgnoreCase(""))
@@ -107,9 +126,10 @@ public class ActivitiesAdapter extends BaseAdapter {
 
             try {
 
-                if (!activitiesModel.getStrCarlaImagePath().equalsIgnoreCase("")) {
-                    //SignupActivity.loadBitmap(activitiesModel.getStrCarlaImagePath().trim(), viewHolder.roundedImageView);
-                }
+                File f = libs.getInternalFileImages(libs.replaceSpace(activitiesModel.getStrAuthor()));
+
+                if(f.exists())
+                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.roundedImageView);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -125,7 +145,7 @@ public class ActivitiesAdapter extends BaseAdapter {
         TextView textViewText;
         TextView textViewTime;
 
-        RoundedImageView roundedImageView;
+        ImageView roundedImageView;
         LinearLayout linearLayout;
     }
 }
