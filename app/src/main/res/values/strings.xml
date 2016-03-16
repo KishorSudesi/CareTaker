@@ -67,6 +67,7 @@
     <string name="space">&#160;</string>
     <string name="add_message">Add a Message</string>
     <string name="will_assist">&#160;will Assist in</string>
+    <string name="select_date">Select a Date</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

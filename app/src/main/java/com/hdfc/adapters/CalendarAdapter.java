@@ -2,52 +2,46 @@ package com.hdfc.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
-import com.hdfc.models.ActivityListModel;
-import com.hdfc.models.ActivityModel;
 import com.hdfc.caretaker.R;
-import com.hdfc.caretaker.fragments.ActivityMonthFragment;
+import com.hdfc.config.Config;
+import com.hdfc.models.ActivityListModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class CalendarAdapter extends BaseAdapter {
+    public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
+    public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
+    public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
     private static final int DAY_OFFSET = 1;
     private final Context _context;
     private final List<String> list;
+    public List<ActivityListModel> _activityListModels = new ArrayList<>();
     //private final HashMap<String, Integer> eventsPerMonthMap;
     private int currentDayOfMonth;
     private int currentWeekDay;
 
-    public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
-    public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
-    public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
-
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
-
     // Days in Current Month
-    public CalendarAdapter(Context context, int month, int year) {
+    public CalendarAdapter(Context context, int month, int year, List<ActivityListModel> activityListModels) {
         super();
         this._context = context;
         this.list = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         setCurrentDayOfMonth(calendar.get(Calendar.DAY_OF_MONTH));
         setCurrentWeekDay(calendar.get(Calendar.DAY_OF_WEEK));
+        _activityListModels = activityListModels;
 
         // Print Month
         printMonth(month, year);
@@ -206,7 +200,7 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         if (day_color[1].equals("GREEN")) {
-            gridcell.setBackgroundColor(_context.getResources().getColor(R.color.colorPrimaryDark));
+            //gridcell.setBackgroundColor(_context.getResources().getColor(R.color.colorPrimaryDark));
             gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimary));
         }
 
@@ -224,7 +218,7 @@ public class CalendarAdapter extends BaseAdapter {
             int iYear = Integer.parseInt(day_color[3]);
 
             try {
-                for (ActivityListModel activityModel : ActivityMonthFragment.activitiesModelArrayList) {
+                for (ActivityListModel activityModel : _activityListModels) {
 
                     Date date = readFormat.parse(activityModel.getStrDateTime());
 
@@ -232,10 +226,12 @@ public class CalendarAdapter extends BaseAdapter {
                     int iActivityYear = Integer.parseInt(writeFormatYear.format(date));
                     int iActivityDate = Integer.parseInt(writeFormatDate.format(date));
 
-                    Libs.log(String.valueOf(iActivityYear + " == " + iYear + " && " + strActivityMonth + " EQS " + themonth + " && " + iActivityDate + " == " + iDay), " Compare ");
+                    //Libs.log(String.valueOf(iActivityYear + " == " + iYear + " && " + strActivityMonth + " EQS " + themonth + " && " + iActivityDate + " == " + iDay), " Compare ");
 
                     if (iActivityYear == iYear && strActivityMonth.trim().equalsIgnoreCase(themonth) && iActivityDate == iDay) {
-                        gridcell.setTextColor(Color.RED);
+                        //gridcell.setTextColor(Color.RED);
+                        gridcell.setBackground(_context.getResources().getDrawable(R.drawable.bottom_border_grey));
+
                     }
                 }
             } catch (Exception e) {

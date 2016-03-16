@@ -40,23 +40,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hdfc.caretaker.LoginActivity;
+import com.hdfc.caretaker.R;
+import com.hdfc.caretaker.SignupActivity;
+import com.hdfc.caretaker.fragments.ActivityFragment;
+import com.hdfc.caretaker.fragments.ActivityListFragment;
 import com.hdfc.caretaker.fragments.ActivityMonthFragment;
+import com.hdfc.caretaker.fragments.ConfirmFragment;
+import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
-import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ActivityVideoModel;
 import com.hdfc.models.ConfirmViewModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
+import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.NotificationModel;
-import com.hdfc.caretaker.LoginActivity;
-import com.hdfc.caretaker.R;
-import com.hdfc.caretaker.SignupActivity;
-import com.hdfc.caretaker.fragments.ActivityListFragment;
-import com.hdfc.caretaker.fragments.ConfirmFragment;
-import com.hdfc.caretaker.fragments.NotificationFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,16 +87,14 @@ import java.util.regex.Pattern;
  */
 public class Libs {
 
-    public static Uri customerImageUri;
-    private static Context _ctxt;
-    //private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()); //check the format and standardize it
-
     //application specific
     public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-
     public final static SimpleDateFormat writeFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+    //private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()); //check the format and standardize it
     public final static SimpleDateFormat writeFormatActivity = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
     public final static SimpleDateFormat writeFormatActivityMonthYear = new SimpleDateFormat("MMM yyyy", Locale.US);
+    public static Uri customerImageUri;
+    private static Context _ctxt;
 
     static {
         System.loadLibrary("stringGen");
@@ -124,29 +123,34 @@ public class Libs {
         return getString();
     }
 
-    public void moveFile(File file, File newFile) throws IOException {
-        //File newFile = new File(dir, file.getName());
-        FileChannel outputChannel = null;
-        FileChannel inputChannel = null;
-        try {
-            outputChannel = new FileOutputStream(newFile).getChannel();
-            inputChannel = new FileInputStream(file).getChannel();
-            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
-            file.delete();
-        } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
-        }
-
-    }
-
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    //creating scaled bitmap with required width and height
+    public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
+
+        Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
+        Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
+
+        Bitmap scaledBitmap = null;
+
+        try {
+            scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(), Bitmap.Config.ARGB_8888);
+        } catch (OutOfMemoryError oom) {
+            oom.printStackTrace();
+        }
+
+        if (scaledBitmap != null) {
+            Canvas canvas = new Canvas(scaledBitmap);
+            canvas.drawBitmap(unscaledBitmap, srcRect, dstRect, new Paint(Paint.FILTER_BITMAP_FLAG));
+        }
+
+        return scaledBitmap;
     }
 
     /*public static boolean isImageFile(String path) {
@@ -192,28 +196,6 @@ public class Libs {
 
         return true;
     }*/
-
-    //creating scaled bitmap with required width and height
-    public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
-
-        Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
-        Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
-
-        Bitmap scaledBitmap = null;
-
-        try {
-            scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(), Bitmap.Config.ARGB_8888);
-        } catch (OutOfMemoryError oom) {
-            oom.printStackTrace();
-        }
-
-        if (scaledBitmap != null) {
-            Canvas canvas = new Canvas(scaledBitmap);
-            canvas.drawBitmap(unscaledBitmap, srcRect, dstRect, new Paint(Paint.FILTER_BITMAP_FLAG));
-        }
-
-        return scaledBitmap;
-    }
 
     //
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
@@ -324,6 +306,17 @@ public class Libs {
     public static boolean externalMemoryAvailable() {
         return android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED);
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        try {
+            if (activity.getCurrentFocus() != null) {
+                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
    /* public static long getAvailableExternalMemorySize() {
@@ -456,15 +449,11 @@ public class Libs {
         return encryptedValue;
     }*/
 
-    public static void hideSoftKeyboard(Activity activity) {
-        try {
-            if (activity.getCurrentFocus() != null) {
-                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void setBtnDrawable(Button btn, Drawable drw) {
+        if (Build.VERSION.SDK_INT <= 16)
+            btn.setBackgroundDrawable(drw);
+        else
+            btn.setBackground(drw);
     }
 
    /* public static String decrypt(String encryptedData) {
@@ -518,13 +507,6 @@ public class Libs {
         }
         return json;
     }*/
-
-    public static void setBtnDrawable(Button btn, Drawable drw) {
-        if (Build.VERSION.SDK_INT <= 16)
-            btn.setBackgroundDrawable(drw);
-        else
-            btn.setBackground(drw);
-    }
 
     public static void log(String message, String tag) {
 
@@ -580,6 +562,23 @@ public class Libs {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void moveFile(File file, File newFile) throws IOException {
+        //File newFile = new File(dir, file.getName());
+        FileChannel outputChannel = null;
+        FileChannel inputChannel = null;
+        try {
+            outputChannel = new FileOutputStream(newFile).getChannel();
+            inputChannel = new FileInputStream(file).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+            file.delete();
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+        }
+
     }
 
    /* public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
@@ -1518,9 +1517,8 @@ public class Libs {
 
                 log(" 7 ", " IN1 ");
 
-                ActivityMonthFragment.activitiesModelSelected.clear();
+                ActivityFragment.setGridCellAdapterToDate(ActivityFragment.month, ActivityFragment.year);
 
-                ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
 
             }catch ( JSONException e){
                 e.printStackTrace();

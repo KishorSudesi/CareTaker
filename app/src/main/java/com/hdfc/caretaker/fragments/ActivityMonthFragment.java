@@ -9,20 +9,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.hdfc.adapters.ActivityListAdapter;
 import com.hdfc.adapters.ActivityMonthListAdapter;
 import com.hdfc.adapters.CalendarAdapter;
+import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ActivityVideoModel;
-import com.hdfc.caretaker.R;
+import com.hdfc.models.FeedBackModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,20 +36,17 @@ import java.util.Locale;
 
 public class ActivityMonthFragment extends Fragment {
 
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+    public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
+    public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
+    public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
     public static List<ActivityListModel> activitiesModelArrayList = new ArrayList<>();
     public static List<ActivityModel> activityModels = new ArrayList<>();
     public static GridView calendarView;
     public static CalendarAdapter adapter=null;
-
     public static ListView listView;
     public static ActivityMonthListAdapter activityListAdapter;
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
     public static List<ActivityListModel> activitiesModelSelected = new ArrayList<>();
-
-    public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
-    public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
-    public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
-
     private TextView txtViewDate;
 
     public static ActivityMonthFragment newInstance() {
@@ -188,9 +183,9 @@ public class ActivityMonthFragment extends Fragment {
         }
 
         // Initialised
-        adapter = new CalendarAdapter(getContext(), month, year);
-        adapter.notifyDataSetChanged();
+        adapter = new CalendarAdapter(getContext(), month, year, activitiesModelArrayList);
         calendarView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
         activityListAdapter = new ActivityMonthListAdapter(getActivity(), activitiesModelSelected);
         listView.setAdapter(activityListAdapter);
@@ -202,6 +197,8 @@ public class ActivityMonthFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     final int position, long id) {
 
+                //TODO background color for selected date except today date
+
                 int count = parent.getChildCount();
                 View v;
 
@@ -209,12 +206,14 @@ public class ActivityMonthFragment extends Fragment {
                     if (i != position) {
                         v = parent.getChildAt(i);
                         Button gridcell = (Button) v.findViewById(R.id.calendar_day_gridcell);
-                        gridcell.setBackgroundColor(getActivity().getResources().getColor(R.color.colorWhite));
+                        //gridcell.setBackgroundColor(getActivity().getResources().getColor(R.color.colorWhite));
+                        //gridcell.setTextColor(getActivity().getResources().getColor(R.color.colorWhite));
                     }
                 }
 
                 Button gridcell = (Button) view.findViewById(R.id.calendar_day_gridcell);
-                gridcell.setBackgroundColor(getActivity().getResources().getColor(R.color.colorPrimaryDark));
+                //gridcell.setBackgroundColor(getActivity().getResources().getColor(R.color.colorPrimaryDark));
+                gridcell.setTextColor(getActivity().getResources().getColor(R.color.colorPrimaryDark));
 
                 String date_month_year = (String) gridcell.getTag();
 
@@ -245,7 +244,7 @@ public class ActivityMonthFragment extends Fragment {
                                 int iActivityYear = Integer.parseInt(writeFormatYear.format(date));
                                 int iActivityDate = Integer.parseInt(writeFormatDate.format(date));
 
-                                Libs.log(String.valueOf(iActivityYear + " == " + theyear + " && " + strActivityMonth + " EQS " + themonth + " && " + iActivityDate + " == " + theday), " Compare ");
+                                //Libs.log(String.valueOf(iActivityYear + " == " + theyear + " && " + strActivityMonth + " EQS " + themonth + " && " + iActivityDate + " == " + theday), " Compare ");
 
                                 if (iActivityYear == theyear && strActivityMonth.trim().equalsIgnoreCase(themonth) && iActivityDate == theday) {
                                     activitiesModelSelected.add(activityModel);

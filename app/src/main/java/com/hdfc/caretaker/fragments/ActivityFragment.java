@@ -1,5 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.adapters.CalendarAdapter;
-import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
 import com.hdfc.caretaker.AddNewActivityActivity;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
+import com.hdfc.libs.Libs;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -32,20 +33,18 @@ import java.util.Locale;
  */
 public class ActivityFragment extends Fragment implements View.OnClickListener {
 
+    private static final String dateTemplate = "MMMM yyyy";
+    public static int month, year;
+    private static TextView currentMonth;
+    private static Context _context;
+    private static Calendar calendar;
     private Button buttonActivity;
     private  Libs libs;
     private LinearLayout dynamicUserTab;
 
+    //public static int iSelectedDependent=0;
     private ImageView prevMonth;
     private ImageView nextMonth;
-    private int month, year;
-    private TextView currentMonth;
-
-    //public static int iSelectedDependent=0;
-
-    private Calendar calendar;
-
-    private static final String dateTemplate = "MMMM yyyy";
 
     public ActivityFragment() {
         // Required empty public constructor
@@ -61,6 +60,29 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         return new ActivityFragment();
     }
 
+    /**
+     * @param month
+     * @param year
+     */
+    public static void setGridCellAdapterToDate(int month, int year) {
+
+        Libs.log(String.valueOf(month + "-" + year), " DATE ");
+
+        calendar.set(year, month - 1, calendar.get(Calendar.DAY_OF_MONTH));
+
+        currentMonth.setText(DateFormat.format(dateTemplate, calendar.getTime()));
+
+        if (ActivityMonthFragment.adapter != null) {
+
+            ActivityMonthFragment.adapter = new CalendarAdapter(_context, month, year, ActivityMonthFragment.activitiesModelArrayList);
+            ActivityMonthFragment.calendarView.setAdapter(ActivityMonthFragment.adapter);
+            ActivityMonthFragment.adapter.notifyDataSetChanged();
+
+            ActivityMonthFragment.activitiesModelSelected.clear();
+            ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +96,10 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
 
+        _context = getActivity();
+
         calendar = Calendar.getInstance(Locale.getDefault());
-        month = calendar.get(Calendar.MONTH);
+        month = calendar.get(Calendar.MONTH) + 1;
         year = calendar.get(Calendar.YEAR);
 
         Log.d(" TAG ", "Calendar Instance:= " + "Month: " + month + " " + "Year: "
@@ -171,27 +195,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         }
 
         libs.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
-    }
-
-    /**
-     *
-     * @param month
-     * @param year
-     */
-    private void setGridCellAdapterToDate(int month, int year) {
-
-        calendar.set(year, month - 1, calendar.get(Calendar.DAY_OF_MONTH));
-
-        currentMonth.setText(DateFormat.format(dateTemplate,calendar.getTime()));
-
-        if(ActivityMonthFragment.adapter!=null) {
-
-            ActivityMonthFragment.adapter = new CalendarAdapter(getContext(), month, year);
-            ActivityMonthFragment.adapter.notifyDataSetChanged();
-            ActivityMonthFragment.calendarView.setAdapter(ActivityMonthFragment.adapter);
-
-            ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
-        }
     }
 
     @Override
