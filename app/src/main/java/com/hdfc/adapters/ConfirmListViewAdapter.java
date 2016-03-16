@@ -6,15 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.hdfc.libs.Libs;
-import com.hdfc.model.ConfirmViewModel;
-import com.hdfc.newzeal.R;
-import com.hdfc.newzeal.SignupActivity;
-import com.hdfc.views.RoundedImageView;
+import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.models.ConfirmViewModel;
+import com.hdfc.caretaker.R;
 
 import java.util.ArrayList;
 
@@ -27,10 +27,13 @@ public class ConfirmListViewAdapter extends BaseAdapter {
     private Context _ctxt;
     private ArrayList data;
 
+    public MultiBitmapLoader multiBitmapLoader;
+
     public ConfirmListViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;
         data = d;
         inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        multiBitmapLoader = new MultiBitmapLoader(_ctxt);
     }
 
     public int getCount() {
@@ -68,7 +71,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
                 e.printStackTrace();
             }
 
-            holder.image = (RoundedImageView) vi.findViewById(R.id.imageView);
+            holder.image = (ImageView) vi.findViewById(R.id.imageView);
 
             vi.setTag(holder);
         } else
@@ -114,8 +117,9 @@ public class ConfirmListViewAdapter extends BaseAdapter {
 
                     layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
                     holder.linearLayoutRoot.setLayoutParams(layoutParams);
-                    SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+                    //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
 
+                    multiBitmapLoader.loadBitmap(tempValues.getStrImg().trim(), holder.image);
                 }
 
                 //holder.image.setImageBitmap(imageBitmap);
@@ -134,7 +138,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
         public TextView textAddress;
         public TextView textContact;
         public TextView textEmail;
-        public RoundedImageView image;
+        public ImageView image;
         public TableRow tableRow;
         public LinearLayout linearLayoutRoot;
     }

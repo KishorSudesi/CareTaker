@@ -8,8 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hdfc.model.NotificationModel;
-import com.hdfc.newzeal.R;
+import com.hdfc.libs.Libs;
+import com.hdfc.models.NotificationModel;
+import com.hdfc.caretaker.R;
 import com.hdfc.views.RoundedImageView;
 
 import java.util.ArrayList;
@@ -19,14 +20,15 @@ import java.util.ArrayList;
  */
 public class NotificationAdapter extends BaseAdapter {
 
-    private static LayoutInflater inflater = null;
+    private LayoutInflater inflater = null;
     private Context _context;
     private ArrayList<NotificationModel> adapterNotificationModels;
-    private NotificationModel tempValues = null;
+    private Libs libs;
 
     public NotificationAdapter(Context ctxt, ArrayList d) {
         _context = ctxt;
         adapterNotificationModels = d;
+        libs = new Libs(ctxt);
     }
 
     @Override
@@ -72,17 +74,27 @@ public class NotificationAdapter extends BaseAdapter {
 
         if (adapterNotificationModels.size() > 0) {
 
-            tempValues = adapterNotificationModels.get(position);
+            NotificationModel notificationModel = adapterNotificationModels.get(position);
 
-            viewHolder.textViewText.setText(tempValues.getStrMessage());
-            viewHolder.textViewName.setText(tempValues.getStrAuthor());
-            viewHolder.textViewTime.setText(tempValues.getStrDateTime());
+            viewHolder.textViewText.setText(notificationModel.getStrMessage());
+            viewHolder.textViewName.setText(notificationModel.getStrAuthor());
+
+            try {
+                String strDate = notificationModel.getStrDateTime();
+                String strDisplayDate = _context.getResources().getString(R.string.space)+
+                         _context.getResources().getString(R.string.at)+
+                        _context.getResources().getString(R.string.space)+
+                        libs.formatDate(strDate);
+
+                viewHolder.textViewTime.setText(strDisplayDate);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
             if (position % 2 == 0)
                 viewHolder.roundedImageView.setImageResource(R.drawable.carla2);
             else
                 viewHolder.roundedImageView.setImageResource(R.drawable.carla1);
-
         }
 
         return convertView;
@@ -92,7 +104,6 @@ public class NotificationAdapter extends BaseAdapter {
         TextView textViewName;
         TextView textViewText;
         TextView textViewTime;
-
         RoundedImageView roundedImageView;
         LinearLayout linearLayout;
     }

@@ -3,10 +3,10 @@ package com.hdfc.config;
 import android.graphics.Bitmap;
 
 import com.hdfc.libs.Libs;
-import com.hdfc.model.CustomerModel;
-import com.hdfc.model.FileModel;
-import com.hdfc.model.NotificationModel;
-import com.hdfc.model.ServiceModel;
+import com.hdfc.models.CustomerModel;
+import com.hdfc.models.FileModel;
+import com.hdfc.models.NotificationModel;
+import com.hdfc.models.ServiceModel;
 
 import org.json.JSONObject;
 
@@ -20,6 +20,7 @@ public class Config {
 
     public static final String dbName = "newzeal";
     public static final String collectionNameServices = "services";
+    public static final String collectionNameProviders = "providers";
     public static final String collectionName = "customer";
     public static final String strServiceDocId = "56c70aefe4b0067c8c7658bf";//remove this
     public static final String string = Libs.getStringJni();
@@ -28,6 +29,8 @@ public class Config {
     public static final int START_GALLERY_REQUEST_CODE = 2;
     public static final int CACHE_EXPIRE = 1;//In Minutes
     public static final int intWidth = 300, intHeight = 300;
+
+    public static final String strCustomerImageName = "customer_image";
 
     public static final String[] weekNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     public static final String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -48,6 +51,7 @@ public class Config {
 
     //User Specific clear at logout or whenever needed
     public static JSONObject jsonObject = null;
+    //public static JSONObject jsonObjectCarla = null;
     public static JSONObject jsonServer = null;
     public static String jsonDocId = "";
 

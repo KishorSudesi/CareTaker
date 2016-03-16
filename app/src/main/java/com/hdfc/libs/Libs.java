@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -38,35 +40,44 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hdfc.caretaker.fragments.ActivityMonthFragment;
 import com.hdfc.config.Config;
-import com.hdfc.model.ActivityFeedBackModel;
-import com.hdfc.model.ActivityListModel;
-import com.hdfc.model.ActivityModel;
-import com.hdfc.model.ActivityVideoModel;
-import com.hdfc.model.ConfirmViewModel;
-import com.hdfc.model.CustomerModel;
-import com.hdfc.model.DependentModel;
-import com.hdfc.model.NotificationModel;
-import com.hdfc.newzeal.LoginActivity;
-import com.hdfc.newzeal.R;
-import com.hdfc.newzeal.SignupActivity;
-import com.hdfc.newzeal.fragments.ActivityListFragment;
-import com.hdfc.newzeal.fragments.ConfirmFragment;
-import com.hdfc.newzeal.fragments.NotificationFragment;
+import com.hdfc.models.FeedBackModel;
+import com.hdfc.models.ActivityListModel;
+import com.hdfc.models.ActivityModel;
+import com.hdfc.models.ActivityVideoModel;
+import com.hdfc.models.ConfirmViewModel;
+import com.hdfc.models.CustomerModel;
+import com.hdfc.models.DependentModel;
+import com.hdfc.models.FileModel;
+import com.hdfc.models.NotificationModel;
+import com.hdfc.caretaker.LoginActivity;
+import com.hdfc.caretaker.R;
+import com.hdfc.caretaker.SignupActivity;
+import com.hdfc.caretaker.fragments.ActivityListFragment;
+import com.hdfc.caretaker.fragments.ConfirmFragment;
+import com.hdfc.caretaker.fragments.NotificationFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +88,14 @@ public class Libs {
 
     public static Uri customerImageUri;
     private static Context _ctxt;
-    private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()); //check the format and standardize it
+    //private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()); //check the format and standardize it
+
+    //application specific
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+
+    public final static SimpleDateFormat writeFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+    public final static SimpleDateFormat writeFormatActivity = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
+    public final static SimpleDateFormat writeFormatActivityMonthYear = new SimpleDateFormat("MMM yyyy", Locale.US);
 
     static {
         System.loadLibrary("stringGen");
@@ -92,6 +110,8 @@ public class Libs {
         display.getMetrics(metrics);
         Config.intScreenWidth = metrics.widthPixels;
         Config.intScreenHeight = metrics.heightPixels;
+
+        readFormat.setTimeZone(TimeZone.getDefault());
     }
 
     public static native String getString();
@@ -104,7 +124,24 @@ public class Libs {
         return getString();
     }
 
-   /* public static double round(double value, int places) {
+    public void moveFile(File file, File newFile) throws IOException {
+        //File newFile = new File(dir, file.getName());
+        FileChannel outputChannel = null;
+        FileChannel inputChannel = null;
+        try {
+            outputChannel = new FileOutputStream(newFile).getChannel();
+            inputChannel = new FileInputStream(file).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+            file.delete();
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+        }
+
+    }
+
+    public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
         BigDecimal bd = new BigDecimal(value);
@@ -112,7 +149,7 @@ public class Libs {
         return bd.doubleValue();
     }
 
-    public static boolean isImageFile(String path) {
+    /*public static boolean isImageFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
         return mimeType != null && mimeType.indexOf("image") == 0;
     }
@@ -535,6 +572,8 @@ public class Libs {
 
             Config.bitmaps.clear();
 
+            //todo files delete and  clear shared pref.
+
             Intent dashboardIntent = new Intent(_ctxt, LoginActivity.class);
             _ctxt.startActivity(dashboardIntent);
             ((Activity) _ctxt).finish();
@@ -571,7 +610,7 @@ public class Libs {
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 
             /*if (duration == 1)*/
-                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setDuration(Toast.LENGTH_SHORT);
 
             /*if (duration == 2)
                 toast.setDuration(Toast.LENGTH_LONG);*/
@@ -653,26 +692,26 @@ public class Libs {
         return maxMemory;
     }
 
-    /*public String convertDateToString(Date dtDate) {
+    public String convertDateToString(Date dtDate) {
 
         String date = null;
 
         try {
-            date = fmt.format(dtDate);
+            date = readFormat.format(dtDate);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        //Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         return date; //
-    }*/
+    }
 
     public Date convertStringToDate(String strDate) {
 
         Date date = null;
         try {
-            date = fmt.parse(strDate);
-            Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+            date = readFormat.parse(strDate);
+            //Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -923,6 +962,76 @@ public class Libs {
         return string;
     }
 
+    //load image from url
+    public void loadImageFromWeb(String strFileName, String strFileUrl){
+
+        strFileName = replaceSpace(strFileName);
+        strFileUrl = replaceSpace(strFileUrl);
+
+        File fileImage = createFileInternal("images/" + strFileName);
+
+        log(strFileName+" ~ "+strFileUrl, " paths ");
+        //fileImage.
+        if (fileImage.length() <= 0) {
+
+            InputStream input;
+            try {
+
+                log(" 1 ", " IN ");
+
+                URL url = new URL(strFileUrl); //URLEncoder.encode(fileModel.getStrFileUrl(), "UTF-8")
+                input = url.openStream();
+                byte[] buffer = new byte[1500];
+                OutputStream output = new FileOutputStream(fileImage);
+                try {
+                    int bytesRead;
+                    while ((bytesRead = input.read(buffer, 0, buffer.length)) >= 0) {
+                        output.write(buffer, 0, bytesRead);
+                    }
+                    log(" 2.0 ", " IN ");
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }finally {
+                    output.close();
+                }
+
+                log(" 2.1 ", " IN ");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Bitmap roundedBitmap(Bitmap bmp){
+        Bitmap output = null;
+
+        try {
+            if(bmp!=null) {
+                output = Bitmap.createBitmap(bmp.getWidth(),
+                        bmp.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(output);
+
+                final Paint paint = new Paint();
+                final Rect rect = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
+
+                paint.setAntiAlias(true);
+                paint.setFilterBitmap(true);
+                paint.setDither(true);
+                canvas.drawARGB(0, 0, 0, 0);
+                paint.setColor(Color.parseColor("#BAB399"));
+                canvas.drawCircle(bmp.getWidth() / 2 + 0.7f, bmp.getHeight() / 2 + 0.7f,//
+                        bmp.getWidth() / 2 + 0.1f, paint); //
+                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                canvas.drawBitmap(bmp, rect, rect, paint);
+            }
+        } catch (Exception | OutOfMemoryError e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
@@ -1053,6 +1162,8 @@ public class Libs {
                 tabWidth = 100;
         }
 
+        dynamicUserTab.removeAllViews();
+
         for (int i = 0; i < Config.dependentNames.size(); i++) {
 
             //Creates tab button
@@ -1101,7 +1212,6 @@ public class Libs {
 
             NotificationFragment.staticNotificationModels.clear();
 
-            /////
             try {
 
                 if (Config.jsonObject.has("customer_name")) {
@@ -1130,9 +1240,7 @@ public class Libs {
 
                                     NotificationFragment.staticNotificationModels.add(notificationModel);
                                 }
-
-                            } //else NotificationFragment.staticNotificationModels.clear();
-                            //
+                            }
                         }
                     }
                 }
@@ -1142,55 +1250,62 @@ public class Libs {
             }catch (JSONException e){
                 e.printStackTrace();
             }
-                /////
         }
 
         //
-        if (intWhichScreen == Config.intActivityScreen) {
+        if (intWhichScreen == Config.intListActivityScreen) {
 
             /////
             try {
 
                 ActivityListFragment.activitiesModelArrayList.clear();
 
-                log(" 1 ", " IN ");
+                log(" 1 ", " IN0 ");
 
                 if (Config.jsonObject.has("customer_name")) {
 
-                    log(" 2 ", " IN ");
+                    log(" 2 ", " IN0 ");
 
                     if (Config.jsonObject.has("dependents")) {
 
-                        log(" 3 ", " IN ");
+                        log(" 3 ", " IN0 ");
 
                         JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
 
                         for (int index = Config.intSelectedDependent; index < Config.intSelectedDependent + 1; index++) {
 
+
                             JSONObject jsonObject = jsonArray.getJSONObject(index);
 
-                            log(" 4 ", " IN ");
+                            log(" 4 " + jsonObject.getString("dependent_name"), " IN 0 ");
 
                             //Notifications
                             if (jsonObject.has("activities")) {
 
                                 JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
 
-                                log(" 5 ", " IN ");
+                                log(" 5 ", " IN0 ");
 
                                 for (int j = 0; j < jsonArrayNotifications.length(); j++) {
 
-                                    log(" 6 ", " IN ");
+                                    log(" 6 ", " IN0 ");
 
                                     JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
 
                                     if (jsonObjectNotification.has("activity_date")) {
 
                                         ActivityListModel activityListModel = new ActivityListModel();
-                                        activityListModel.setStrDate(jsonObjectNotification.getString("activity_date").substring(3, 10));
-                                        activityListModel.setStrDateTime(jsonObjectNotification.getString("activity_date"));
+                                        //
+                                        String strDisplayDateTime = formatDate(jsonObjectNotification.getString("activity_date"));
+                                        String strDisplayDate = formatDateActivity(jsonObjectNotification.getString("activity_date"));
+                                        String strDisplayDateMonthYear = formatDateActivityMonthYear(jsonObjectNotification.getString("activity_date"));
+
+                                        activityListModel.setStrDate(strDisplayDateMonthYear);//month-year
+                                        activityListModel.setStrDateTime(strDisplayDateTime);
+                                        activityListModel.setStrDateNumber(strDisplayDate.substring(0, 2));//date
+                                        //
+
                                         activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                                        activityListModel.setStrDateNumber(jsonObjectNotification.getString("activity_date").substring(0, 2));
                                         activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
                                         activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
                                         activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
@@ -1200,7 +1315,7 @@ public class Libs {
                                         ActivityListFragment.activityModels.clear();
 
                                         //
-                                        ArrayList<ActivityFeedBackModel> activityFeedBackModels = new ArrayList<>();
+                                        ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
                                         ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
 
                                         if (jsonObjectNotification.has("feedbacks")) {
@@ -1209,18 +1324,18 @@ public class Libs {
 
                                             for (int k = 0; k < jsonArrayFeedback.length(); k++) {
 
-                                                log(" 8", " IN ");
+                                                log(" 8", " IN0 ");
 
                                                 JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
 
-                                                ActivityFeedBackModel activityFeedBackModel = new ActivityFeedBackModel(
+                                                FeedBackModel feedBackModel = new FeedBackModel(
                                                         jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
                                                         jsonObjectFeedback.getInt("feedback_raring"), 0,
                                                         jsonObjectFeedback.getString("feedback_time"),
                                                         jsonObjectFeedback.getString("feedback_raring")
                                                 );
 
-                                                activityFeedBackModels.add(activityFeedBackModel);
+                                                feedBackModels.add(feedBackModel);
 
                                             }
                                         }
@@ -1231,7 +1346,7 @@ public class Libs {
 
                                             for (int k = 0; k < jsonArrayVideos.length(); k++) {
 
-                                                log(" 9 ", " IN ");
+                                                log(" 9 ", " IN0 ");
 
                                                 JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
 
@@ -1253,7 +1368,8 @@ public class Libs {
                                                 jsonObjectNotification.getString("status"),
                                                 jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
                                                 jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                                activityVideoModels, activityFeedBackModels);
+                                                activityVideoModels, feedBackModels);
+                                        //, jsonObjectNotification.getString("provider_image_url")
 
                                         ActivityListFragment.activityModels.add(activityModel);
                                         ///
@@ -1264,7 +1380,7 @@ public class Libs {
                     }
                 }
 
-                log(" 7 ", " IN ");
+                log(" 7 ", " IN0 ");
 
                 ActivityListFragment.activityListAdapter.notifyDataSetChanged();
 
@@ -1274,6 +1390,143 @@ public class Libs {
                 /////
         }
 
+        //for month
+        if (intWhichScreen == Config.intActivityScreen) {
+
+            /////
+            /////
+            try {
+
+                ActivityMonthFragment.activitiesModelArrayList.clear();
+
+                log(" 1 ", " IN1 ");
+
+                if (Config.jsonObject.has("customer_name")) {
+
+                    log(" 2 ", " IN1 ");
+
+                    if (Config.jsonObject.has("dependents")) {
+
+                        log(" 3 ", " IN1 ");
+
+                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
+
+                        for (int index = Config.intSelectedDependent; index < Config.intSelectedDependent + 1; index++) {
+
+                            JSONObject jsonObject = jsonArray.getJSONObject(index);
+
+                            log(" 4 "+jsonObject.getString("dependent_name"), " IN1 ");
+
+                            //Notifications
+                            if (jsonObject.has("activities")) {
+
+                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
+
+                                log(" 5 ", " IN1 ");
+
+                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+
+                                    log(" 6 ", " IN1 ");
+
+                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
+
+                                    if (jsonObjectNotification.has("activity_date")) {
+
+                                        ActivityListModel activityListModel = new ActivityListModel();
+
+                                        String strDisplayDateTime = formatDate(jsonObjectNotification.getString("activity_date"));
+                                        String strDisplayDate = formatDateActivity(jsonObjectNotification.getString("activity_date"));
+                                        String strDisplayDateMonthYear = formatDateActivityMonthYear(jsonObjectNotification.getString("activity_date"));
+
+                                        activityListModel.setStrDate(strDisplayDateMonthYear);//month-year
+                                        activityListModel.setStrDateTime(strDisplayDateTime);
+                                        activityListModel.setStrDateNumber(strDisplayDate.substring(0, 2));//date
+
+                                        activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
+
+                                        activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
+                                        activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
+                                        activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
+                                        activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
+
+                                        ActivityMonthFragment.activitiesModelArrayList.add(activityListModel);
+                                        //
+                                        ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
+                                        ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+
+                                        if (jsonObjectNotification.has("feedbacks")) {
+
+                                            JSONArray jsonArrayFeedback = jsonObjectNotification.getJSONArray("feedbacks");
+
+                                            for (int k = 0; k < jsonArrayFeedback.length(); k++) {
+
+                                                log(" 8", " IN1 ");
+
+                                                JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
+
+                                                FeedBackModel feedBackModel = new FeedBackModel(
+                                                        jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
+                                                        jsonObjectFeedback.getInt("feedback_raring"), 0,
+                                                        jsonObjectFeedback.getString("feedback_time"),
+                                                        jsonObjectFeedback.getString("feedback_raring")
+                                                );
+
+                                                feedBackModels.add(feedBackModel);
+
+                                            }
+                                        }
+
+                                        if (jsonObjectNotification.has("videos")) {
+
+                                            JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("videos");
+
+                                            for (int k = 0; k < jsonArrayVideos.length(); k++) {
+
+                                                log(" 9 ", " IN1 ");
+
+                                                JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
+
+                                                ActivityVideoModel activityVideoModel = new ActivityVideoModel(
+                                                        jsonObjectVideo.getString("video_name"),
+                                                        jsonObjectVideo.getString("video_url"),
+                                                        jsonObjectVideo.getString("video_description"),
+                                                        jsonObjectVideo.getString("video_taken")
+                                                );
+
+                                                activityVideoModels.add(activityVideoModel);
+
+                                            }
+                                        }
+
+                                        ActivityModel activityModel = new ActivityModel(
+                                                jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
+                                                jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
+                                                jsonObjectNotification.getString("status"),
+                                                jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
+                                                jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
+                                                activityVideoModels, feedBackModels);
+                                        //, jsonObjectNotification.getString("provider_image_url")
+
+                                        ActivityListFragment.activityModels.add(activityModel);
+                                        ///
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                log(" 7 ", " IN1 ");
+
+                ActivityMonthFragment.activitiesModelSelected.clear();
+
+                ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
+
+            }catch ( JSONException e){
+                e.printStackTrace();
+            }
+            /////
+        }
     }
 
     protected void updateTabColor(int id, View v) {
@@ -1318,27 +1571,21 @@ public class Libs {
                             //Dependant Names
                             Config.dependentNames.add(jsonObject.getString("dependent_name"));
 
-                            //Notifications
-                      /*  if (jsonObject.has("notifications")) {
+                            //carla profile images
+                            if (jsonObject.has("activities")) {
 
-                            ArrayList<NotificationModel> notificationModels = new ArrayList<>();
+                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
 
-                            JSONArray jsonArrayNotifications = jsonObject.getJSONArray("notifications");
+                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
 
-                            for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
 
-                                JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
-
-                                NotificationModel notificationModel = new NotificationModel("",
-                                        jsonObjectNotification.getString("notification_message"),
-                                        jsonObjectNotification.getString("time"),
-                                        jsonObjectNotification.getString("author"));
-
-                                notificationModels.add(notificationModel);
+                                    Config.fileModels.add(
+                                            new FileModel(jsonObjectNotification.getString("provider_name"),
+                                                    jsonObjectNotification.getString("provider_image_url"),
+                                                    "IMAGE"));
+                                }
                             }
-
-                            Config.notificationModels.add(notificationModels);
-                        }*/
                             //
                         }
                     } catch (Exception e) {
@@ -1493,15 +1740,15 @@ public class Libs {
                                     jsonDependant.put("dependent_age", dependentModel.getIntAge());
                                     jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
 
-                                    jsonDependant.put("health_bp", 90);
-                                    jsonDependant.put("health_heart_rate", 75);
+                                    jsonDependant.put("health_bp", 0);
+                                    jsonDependant.put("health_heart_rate", 0);
 
                                     jsonDependant.put("dependent_profile_url", dependentModel.getStrImgServer());
 
 
                                     JSONArray jsonArrAct = new JSONArray();
 
-                                    JSONObject pnObj2 = new JSONObject();
+                                    /*JSONObject pnObj2 = new JSONObject();
 
                                     pnObj2.put("provider_email", "provider@gmail.com");
                                     pnObj2.put("provider_contact_no", "321423423");
@@ -1580,6 +1827,8 @@ public class Libs {
                                         jsonArrAct.put(pnObj3);
                                     }
 
+                                    */
+
                                     jsonDependant.put("activities", jsonArrAct);
 
                                     JSONArray jsonArr0 = new JSONArray();
@@ -1589,7 +1838,7 @@ public class Libs {
                                         JSONObject pnObj0 = new JSONObject();
                                         pnObj0.put("notification_message", "This is a Test Data from APP42 " + m);
                                         pnObj0.put("author", "hungal");
-                                        pnObj0.put("time", "19-01-2016 18:00:00");
+                                        pnObj0.put("time", "2016-03-06T10:15:16.181Z");
                                         pnObj0.put("author_profile_url", "http://url.com/23e3WQE124");
                                         jsonArr0.put(pnObj0);
                                     }
@@ -1598,7 +1847,7 @@ public class Libs {
 
                                     JSONArray jsonArr = new JSONArray();
 
-                                    for (int n = 0; n < 3; n++) {
+                                    /*for (int n = 0; n < 3; n++) {
 
                                         JSONObject pnObj = new JSONObject();
                                         pnObj.put("service_name", "Medical Checkups and Health checkups" + n);
@@ -1606,8 +1855,12 @@ public class Libs {
                                         pnObj.put("unit", 3);
                                         pnObj.put("unit_consumed", 10);
                                         jsonArr.put(pnObj);
-                                    }
+                                    }*/
                                     jsonDependant.put("services", jsonArr);
+
+                                    JSONArray jsonArrServiceHistory = new JSONArray();
+
+                                    jsonDependant.put("services_history", jsonArrServiceHistory);
 
                                     JSONArray jsonArrHealth = new JSONArray();
 
@@ -1616,7 +1869,7 @@ public class Libs {
                                         JSONObject pnObjHealth = new JSONObject();
                                         pnObjHealth.put("bp", 80 + o);
                                         pnObjHealth.put("heart_rate", 230 + o);
-                                        pnObjHealth.put("time_taken", "29-01-2016 18:00:00");
+                                        pnObjHealth.put("time_taken", "2016-03-06T10:15:16.181Z");
                                         jsonArrHealth.put(pnObjHealth);
 
                                     }
@@ -1657,6 +1910,54 @@ public class Libs {
 
         return isFormed;
     }
+
+    public String formatDate(String strDate){
+
+        String strDisplayDate="06-03-2016 20:55:00";
+
+        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+            Date date = convertStringToDate(strDate);
+
+            if(date!=null)
+                strDisplayDate = writeFormat.format(date);
+        }
+
+        return strDisplayDate;
+    }
+
+    public String formatDateActivity(String strDate){
+
+        String strDisplayDate="06-03-2016 20:55:00";
+
+        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+            Date date = convertStringToDate(strDate);
+
+            if(date!=null)
+                strDisplayDate = writeFormatActivity.format(date);
+        }
+
+        return strDisplayDate;
+    }
+
+    public String formatDateActivityMonthYear(String strDate){
+
+        String strDisplayDate="06-03-2016 20:55:00";
+
+        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+            Date date = convertStringToDate(strDate);
+
+            if(date!=null)
+                strDisplayDate = writeFormatActivityMonthYear.format(date);
+        }
+
+        return strDisplayDate;
+    }
+
+    /*Calendar c = Calendar.getInstance();
+System.out.println("Current time => " + c.getTime());
+
+SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+String formattedDate = df.format(c.getTime());*/
 
     //Application Specig=fic End
 

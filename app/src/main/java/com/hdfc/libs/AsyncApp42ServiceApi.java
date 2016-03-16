@@ -43,7 +43,7 @@ public class AsyncApp42ServiceApi {
         }
 
         App42API.initialize(context, apiKey, apiSecret);
-        App42CacheManager.setPolicy(App42CacheManager.Policy.CACHE_FIRST);
+        App42CacheManager.setPolicy(App42CacheManager.Policy.NETWORK_FIRST);
         App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
 
         this.userService = App42API.buildUserService();

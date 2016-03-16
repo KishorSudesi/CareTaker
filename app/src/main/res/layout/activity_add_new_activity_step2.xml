@@ -7,12 +7,12 @@
     <include
         layout="@layout/header_back"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></include>
+        android:layout_height="wrap_content"/>
 
     <include
         layout="@layout/activity_new_activity_step2_include"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="3"></include>
+        android:layout_height="0dp"
+        android:layout_weight="3"/>
 
 </LinearLayout>

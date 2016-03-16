@@ -13,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.hdfc.libs.MultiBitmapLoader;
+
 public class RoundedImageView extends ImageView {
 
     public RoundedImageView(Context context) {
@@ -44,8 +46,8 @@ public class RoundedImageView extends ImageView {
             paint.setDither(true);
             canvas.drawARGB(0, 0, 0, 0);
             paint.setColor(Color.parseColor("#BAB399"));
-            canvas.drawCircle(bmp.getWidth() / 2 + 0.7f, bmp.getHeight() / 2,//+ 0.7f
-                    bmp.getWidth() / 2, paint); //+ 0.1f
+            canvas.drawCircle(bmp.getWidth() / 2 + 0.7f, bmp.getHeight() / 2+ 0.7f,//
+                    bmp.getWidth() / 2+ 0.1f, paint); //
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(bmp, rect, rect, paint);
         } catch (Exception | OutOfMemoryError e) {
@@ -55,11 +57,16 @@ public class RoundedImageView extends ImageView {
         return output;
     }
 
+
+
     @Override
     public void setImageDrawable(Drawable drawable) {
         Bitmap b = ((BitmapDrawable) drawable).getBitmap();
 
         Bitmap roundBitmap = getCroppedBitmap(b);
+
+       /* final MultiBitmapLoader.AsyncDrawable asyncDrawable = new MultiBitmapLoader.AsyncDrawable(_context.getResources(), roundBitmap, task);
+        imgView.setImageDrawable(asyncDrawable);*/
 
         super.setImageDrawable(new BitmapDrawable(getResources(), roundBitmap));
     }
@@ -69,4 +76,11 @@ public class RoundedImageView extends ImageView {
         super.setImageBitmap(getCroppedBitmap(bm));
     }
 
+    /*public Drawable getDrawable() {
+        if (mDrawable == mRecycleableBitmapDrawable) {
+            // Consider our cached version dirty since app code now has a reference to it
+            mRecycleableBitmapDrawable = null;
+        }
+        return mDrawable;
+    }*/
 }

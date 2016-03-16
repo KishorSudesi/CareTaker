@@ -32,8 +32,8 @@ public class StorageService {
         asyncService.findDocByDocIdApp42CallBack(Config.dbName, strCollectionName, strDocId, app42CallBack);
     }
 
-    public void findDocsByKeyValue(String strKey, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
-        asyncService.findDocumentByKeyValue(Config.dbName, Config.collectionName, strKey, strValue, app42CallBack);
+    public void findDocsByKeyValue(String strCollectionName, String strKey, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
+        asyncService.findDocumentByKeyValue(Config.dbName, strCollectionName, strKey, strValue, app42CallBack);
     }
 
     /*public void updateDocs(JSONObject jsonToUpdate, String fieldName, String checkValue) {

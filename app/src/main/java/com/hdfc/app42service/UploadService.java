@@ -55,13 +55,14 @@ public class UploadService {
         asyncService.getAllFilesByUser(userName, app42CallBack);
     }
 
-    /*public void removeImage(String fileName, String userName, App42CallBack app42CallBack) {
-        //libs.showProgress(true, formView, progressView);
+    public void getFileByUser(String strFileName, String userName, App42CallBack app42CallBack) {
 
+        asyncService.getImageByUser(strFileName, userName, app42CallBack);
+    }
+
+    public void removeImage(String fileName, String userName, App42CallBack app42CallBack) {
         asyncService.removeImageByUser(fileName, userName, app42CallBack);
-        //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
-        //desc, this);
-    }*/
+    }
 
    /* public void getImageCount(String userName, App42CallBack app42CallBack) {
         //libs.showProgress(true, formView, progressView);
