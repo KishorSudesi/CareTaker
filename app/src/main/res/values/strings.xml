@@ -1,128 +1,133 @@
 <resources>
-    <string name="app_name">NewZeal</string>
+    <string name="app_name">CareTaker</string>
 
+    <!--Common Strings-->
     <string name="back">Back</string>
     <string name="ok">OK</string>
+    <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
-
-    <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
-    <string name="account_success_header">Account Successfully Created</string>
-
     <string name="email">Email</string>
-    <string name="take_me_in">Take Me In</string>
-    <string name="am_new_here">I am New Here</string>
     <string name="password">Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="forgot">Forgot?</string>
     <string name="submit">Submit</string>
-
-    <string name="uploading">Uploading…</string>
-    <string name="uploading_image">Uploading Image…</string>
-    <string name="loading">Loading…</string>
-    <string name="add_dependent">Add Dependent</string>
-
-    <string name="myself">Myself</string>
-    <string name="loved_one">A Loved One</string>
-    <string name="who_needs_care">Who Needs Care?</string>
-
-    <string name="your_details">Your Details</string>
-    <string name="your_details_saved">Your Details Saved</string>
     <string name="string_continue">Continue</string>
-    <string name="dependents">Dependents</string>
-
-    <string name="number">9874560123</string>
-
-    <string name="gurunathan">Mr.Gurunathan</string>
-    <string name="string_email">abc@xyz.com</string>
     <string name="create_password">Create a Password</string>
     <string name="verify_password">Verify Password</string>
     <string name="contact_number">Contact Number</string>
+    <string name="age">Age</string>
+    <string name="activity">Activity</string>
+    <string name="my_account">My Account</string>
+    <string name="my_account_edit">Edit My Account</string>
+    <string name="activity_month">Monthly</string>
+    <string name="activity_list">List</string>
+    <string name="logout">Logout</string>
+    <string name="at">at</string>
+    <string name="image">Image</string>
 
+    <!--Info/App Specific Strings-->
+    <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
+    <string name="take_me_in">Take Me In</string>
+    <string name="am_new_here">I am New Here</string>
+    <string name="add_dependent">Add Dependent</string>
+    <string name="myself">Myself</string>
+    <string name="loved_one">A Loved One</string>
+    <string name="who_needs_care">Who Needs Care?</string>
+    <string name="your_details">Your Details</string>
+    <string name="your_details_saved">Your Details Saved</string>
+    <string name="dependents">Dependents</string>
+    <string name="number">9874560123</string>
+    <string name="gurunathan">Mr.Gurunathan</string>
+    <string name="string_email">abc@xyz.com</string>
     <string name="search_contacts">Search from Contacts</string>
     <string name="dependent_name">Dependent Name</string>
     <string name="dependent_details">Dependent Details</string>
     <string name="address">Address</string>
     <string name="relation">Relationship</string>
-
-    <string name="age">Age</string>
     <string name="illness">Any Major Illness</string>
     <string name="notes">Notes for Caregivers</string>
-
     <string name="confirm_details">Confirm Details</string>
-
     <string name="view_dashboard">View Dashboard</string>
-    <string name="info_discard">All your Information will not be saved, OK to Proceed?</string>
-
+    <string name="info_discard">All your Information will be Deleted, OK to Proceed?</string>
     <string name="add_new_activity">Add New Activity</string>
-    <string name="activity">Activity</string>
-    <string name="my_account">My Account</string>
-    <string name="my_account_edit">Edit My Account</string>
-
     <string name="coming_soon">Coming Soon</string>
-
     <string name="dpndnt_medical_info_saved">Dependent Medical Details Saved</string>
     <string name="dpndnt_details_saved">Dependent Details Saved</string>
+    <string name="delete_info">All your Information will be Deleted, OK to Proceed?</string>
+    <string name="account_updated">Account updated successfully</string>
+    <string name="confirm_logout">Are you sure want to Logout !?</string>
+    <string name="not_found">NOT FOUND</string>
+    <string name="upcoming_activity">Upcoming Activity</string>
+    <string name="completed_activity">Completed Activity</string>
+    <string name="buy_services">Buy Services</string>
+    <string name="buy_services_large_text">Pay as you go services that can be easily added to an existing package</string>
+    <string name="date_time">21-Dec-15 at 6:00pm</string>
+    <string name="paytm">Paytm</string>
+    <string name="space">&#160;</string>
+    <string name="add_message">Add a Message</string>
+    <string name="will_assist">&#160;will Assist in</string>
+
+    <!--Success Strings-->
+    <string name="account_success_header">Account Successfully Created</string>
+    <string name="success_login">You are In, Please wait…</string>
+    <string name="service_added">Services Added Successfully</string>
+    <string name="register_success">Account Registered Successfully</string>
+    <string name="update_profile_image">Profile Image Updated Successfully</string>
+
+    <!--Process Strings-->
+    <string name="uploading">Uploading…</string>
+    <string name="uploading_image">Setting Images…</string>
+    <string name="loading">Getting Information…</string>
+    <string name="process_login">Taking you In…</string>
+    <string name="verify_identity">Taking you In…</string>
+    <string name="uploading_profile_pic">Setting Profile Images…</string>
+
+    <!--Error Strings-->
     <string name="dpndnt_details_not_saved">Dependent Not Saved. Check Name</string>
-    <string name="delete_info">All your Information will not be saved, OK to Proceed?</string>
-
-
-    <string name="menu_activities">Activities</string>
-    <string name="menu_reports">Reports</string>
-    <string name="menu_seniors">Seniors</string>
-    <string name="menu_notification">Notifications</string>
-    <string name="menu_account">My Account</string>
-
     <string name="error_confirm_password">Invalid Confirm Password</string>
     <string name="error_invalid_email">Invalid Email</string>
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
     <string name="error_invalid_age">Invalid Age</string>
     <string name="email_exists">Email Id Already Exists!!!</string>
     <string name="error_field_required">This Field is Required</string>
-    <string name="error">Something went wrong. Try Again!!!</string>
-
+    <string name="error">Something went wrong. Please try Again!!!</string>
     <string name="error_same_password">New and Old Password cannot be same</string>
+    <string name="error_register">Error in uploading with server. Please try again Later!!!</string>
+    <string name="error_register_image">Error in Setting Profile picture. Please try again Later!!!</string>
+    <string name="invalid_credentials">Invalid Credentials. Not able to Take you In</string>
+    <string name="error_load_images">Error Loading Images. Try Again!!!</string>
+    <string name="error_service">Select a Service</string>
+    <string name="error_service_zero">Select a Valid Service</string>
+    <string name="dependent_data_lost">Something went wrong, Please create Dependent again</string>
+    <string name="no_memory_camera">No storage mounted to save camera image</string>
+    <string name="image_write_failed">Sorry!!! we may have lost your Profile Image</string>
 
-    <string name="warning_profile_pic">Profile Picture Needed</string>
+    <!--Dashboard Menu Strings-->
+    <string name="menu_activities">Activities</string>
+    <string name="menu_reports">Reports</string>
+    <string name="menu_seniors">Seniors</string>
+    <string name="menu_notification">Notifications</string>
+    <string name="menu_account">My Account</string>
+
+    <!--Warning Strings-->
+    <string name="warning_profile_pic">We need a Profile Picture</string>
     <string name="warning_internet">Please check your internet connection and try again</string>
 
-    <string name="error_register">Error in uploading with server. Please try again Later!!!</string>
-    <string name="error_register_image">Error in uploading Profile picture. Please try again Later!!!</string>
-
+    <!--Permission Strings-->
     <string name="permission_contact_rationale">We need access to Contacts to Proceed Further</string>
     <string name="permission_contact_denied">Contacts Access Denied</string>
     <string name="permission_contact_neverask">Contacts Access Granted</string>
-
     <string name="permission_storage_rationale">We need access to Storage to Proceed Further</string>
     <string name="permission_storage_denied">Storage Access Denied</string>
     <string name="permission_storage_neverask">Storage Access Granted</string>
 
-    <string name="process_login">Authenticating…</string>
-    <string name="success_login">Login Success…</string>
-    <string name="invalid_credentials">Invalid Credentials</string>
-
+    <!--List View Empty Strings-->
     <string name="no_activities">No Activities</string>
     <string name="no_notifications">Notifications Not Available</string>
-
-    <string name="confirm_logout">Are you sure want to Logout !?</string>
-    <string name="account_updated">Account updated successfully</string>
-
     <string name="no_services">No Services</string>
-    <string name="error_service">Select a Service</string>
 
-    <string name="register_success">Registered Successfully</string>
-    <string name="uploading_profile_pic">Uploading Profile Pictures</string>
-
-    <string name="activity_month">Monthly</string>
-    <string name="activity_list">List</string>
-
-    <string name="dependent_data_lost">Something went wrong, Please create Dependant again</string>
-
-    <string name="error_load_images">Error Loading Data. Try Again!!!</string>
-    <string name="not_found">NOT FOUND</string>
-
-    <string name="no_memory_camera">No storage mounted to save camera image</string>
-
+    <!--File Picker Strings-->
     <string name="take_photo">Take Photo</string>
     <string name="choose_library">Choose From Library</string>
     <string name="add_profile">Add a Profile picture</string>

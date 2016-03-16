@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="com.hdfc.newzeal.AccountSuccessActivity">
+    tools:context="com.hdfc.caretaker.AccountSuccessActivity">
 
     <ImageView
         android:id="@+id/imageBg"

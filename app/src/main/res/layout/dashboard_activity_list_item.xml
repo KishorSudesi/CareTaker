@@ -20,12 +20,12 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp">
 
-            <com.hdfc.views.RoundedImageView
+            <ImageView
                 android:id="@+id/roundedImageView"
                 android:layout_width="60dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/carla1" />
+                android:contentDescription="@string/image" />
 
         </LinearLayout>
 
@@ -42,7 +42,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Up Next"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#cccccc" />
 
@@ -51,7 +50,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginTop="2dp"
-                android:text="Mom is doing better than last week"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -59,7 +57,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Carla, Jan 28, 6:00 PM"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/colorWhite" />
 

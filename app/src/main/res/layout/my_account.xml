@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_rowWeight="5"
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
@@ -25,7 +24,6 @@
                     android:id="@+id/loadingPanel"
                     style="@style/GenericProgressBackground"
                     android:visibility="gone">
-
                     <ProgressBar style="@style/GenericProgressIndicator" />
                 </RelativeLayout>
 
@@ -35,7 +33,7 @@
                     android:layout_height="120dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:onClick="editProfile"
+                    android:src="@mipmap/camera_icon"
                     android:padding="5dp" />
 
                 <com.hdfc.views.RoundedImageView
@@ -57,7 +55,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageView5"
                     android:layout_centerHorizontal="true"
-                    android:text="Gurunathan M"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/colorWhite" />
 
@@ -68,7 +65,6 @@
                     android:layout_below="@+id/imageView5"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="30dp"
-                    android:text="abc@xyz.com"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorWhite" />
 
@@ -82,7 +78,7 @@
                     android:layout_marginRight="40dp"
                     android:alpha="0.6"
                     android:padding="@dimen/padding_general"
-                    android:text="Edit"
+                    android:text="@string/edit"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorWhite"
                     android:visibility="invisible" />
@@ -110,7 +106,6 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="9876543210"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
@@ -126,7 +121,6 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="Whitefields,Bangalore"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
@@ -141,27 +135,37 @@
                     android:background="@drawable/bottom_border_grey"
                     android:drawableLeft="@drawable/wallet_icon_32"
                     android:drawablePadding="15dp"
-                    android:onClick="goToBuyServices"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="Buy Services"
+                    android:text="@string/buy_services"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                <TextView
-                    android:id="@+id/editText34"
+                <LinearLayout
                     android:layout_width="match_parent"
+                    android:orientation="horizontal"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bottom_border_grey"
-                    android:drawableLeft="@drawable/wallet_icon_32"
-                    android:drawablePadding="15dp"
-                    android:padding="10dp"
-                    android:paddingLeft="10dp"
-                    android:text="paytm"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:background="@drawable/bottom_border_grey">
+
+                    <TextView
+                        android:id="@+id/editText34"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/wallet_icon_32"
+                        android:drawablePadding="10dp"
+                        android:padding="10dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <ImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="70dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/paytm" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/logout"
@@ -176,7 +180,7 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="Logout"
+                    android:text="@string/logout"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
             </LinearLayout>

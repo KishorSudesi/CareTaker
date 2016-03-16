@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
-import com.hdfc.newzeal.R;
-import com.hdfc.newzeal.fragments.DashboardFragment;
-import com.hdfc.newzeal.fragments.ImagesFragment;
+import com.hdfc.caretaker.R;
+import com.hdfc.caretaker.fragments.DashboardFragment;
+import com.hdfc.caretaker.fragments.ImagesFragment;
 import com.hdfc.views.MyLinearView;
 
 public class CarouselPagerAdapter extends FragmentPagerAdapter implements

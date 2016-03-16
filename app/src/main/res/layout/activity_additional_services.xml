@@ -5,7 +5,7 @@
 
     <include
         android:id="@+id/includeLayoutHeaderBack"
-        layout="@layout/header_back"></include>
+        layout="@layout/header_back"/>
 
     <TextView
         android:id="@+id/txtAdditionalServices"
@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:text="Additional Services"
+        android:text="@string/buy_services"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/colorPrimary" />
 
@@ -30,7 +30,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:maxLines="2"
-        android:text="Pay as you go services that can be easily added to an existing package"
+        android:text="@string/buy_services_large_text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonContinue"
-        android:layout_below="@+id/txt"></ListView>
+        android:layout_below="@+id/txt"/>
 
     <Button
         android:id="@+id/buttonContinue"
@@ -61,6 +61,6 @@
         android:layout_marginRight="@dimen/edit_text_margin"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_success"
-        android:text="Buy Services for Rs.1200"
+        android:text="@string/buy_services"
         android:textAllCaps="false" />
 </RelativeLayout>

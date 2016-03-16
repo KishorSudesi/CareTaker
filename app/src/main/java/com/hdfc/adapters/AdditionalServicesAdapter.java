@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.hdfc.model.ServiceModel;
-import com.hdfc.newzeal.R;
+import com.hdfc.models.ServiceModel;
+import com.hdfc.caretaker.R;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class AdditionalServicesAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
             viewHolder.activityTitle.setText(data.get(position).getStrServiceName() + " " + String.valueOf(data.get(position).getDoubleCost()));
-            viewHolder.activityDetails.setText(data.get(position).getStrServiceFeatures());
+            viewHolder.activityDetails.setText(data.get(position).getStrServiceDesc());
 
             viewHolder.checkBoxService.setTag(data.get(position));
         }

@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hdfc.model.RatingCompletedModel;
-import com.hdfc.newzeal.R;
+import com.hdfc.models.RatingCompletedModel;
+import com.hdfc.caretaker.R;
 
 import java.util.ArrayList;
 import java.util.List;
