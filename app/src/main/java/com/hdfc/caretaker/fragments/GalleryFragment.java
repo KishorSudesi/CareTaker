@@ -1,9 +1,12 @@
 package com.hdfc.caretaker.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
@@ -20,9 +23,21 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
+import com.hdfc.libs.Libs;
+import com.hdfc.models.FileModel;
+import com.hdfc.models.GalleryModel;
 
 import junit.framework.Assert;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +50,16 @@ public class GalleryFragment extends Fragment {
     public static final String TAG = "GalleryActivity";
     public static final String EXTRA_NAME = "images";
 
+    private static Handler threadHandler;
     public List<Integer> images = new ArrayList<Integer>();
+    public List<GalleryModel> galleryModelArrayList;
     @InjectView(R.id.pager)
     public ViewPager _pager;
     ImageView thumbView;
     LinearLayout _thumbnails;
     private GalleryPagerAdapter _adapter;
+    private Libs libs;
+    private ProgressDialog progressDialog;
 
 
     public GalleryFragment() {
@@ -71,8 +90,17 @@ public class GalleryFragment extends Fragment {
 
         _pager = (ViewPager) view.findViewById(R.id.pager);
         _thumbnails = (LinearLayout) view.findViewById(R.id.thumbnails);
+        libs = new Libs(getActivity());
 
+        progressDialog = new ProgressDialog(getActivity());
 
+      //  threadHandler = new ThreadHandler();
+      //  Thread backgroundThread = new BackgroundThread();
+      //  backgroundThread.start();
+
+      // progressDialog.setMessage(getString(R.string.loading));
+      //  progressDialog.setCancelable(false);
+      //  progressDialog.show();
         // _images = (ArrayList<String>;
         Assert.assertNotNull(images);
 
@@ -198,7 +226,7 @@ public class GalleryFragment extends Fragment {
 
 
             // Asynchronously load the image and set the thumbnail and pager view
-            Glide.with(getContext())
+            Glide.with(getActivity())
                     .load(images.get(position))
                     .asBitmap()
                     .into(new SimpleTarget<Bitmap>() {
@@ -217,4 +245,80 @@ public class GalleryFragment extends Fragment {
             ((ViewPager) container).removeView((View) object);
         }
     }
+
+
+
+   /* public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+                        //
+            try {
+
+                galleryModelArrayList= new ArrayList<>();
+                galleryModelArrayList.clear();
+
+                if (Config.jsonObject != null && Config.jsonObject.has("customer_name")) {
+
+                    if (Config.jsonObject.has("dependents")) {
+
+                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+                        if (jsonObject.has("activities")) {
+
+                            JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
+
+
+                            for (int i = 0; i < jsonArrayNotifications.length(); i++) {
+                                JSONObject jsonImageObject = jsonArrayNotifications.getJSONObject(i);
+
+                                if (jsonImageObject.has("images")) {
+
+                                    JSONArray jsonArrayImage = jsonImageObject.getJSONArray("images");
+
+                                    for (int j = 0; j < jsonArrayImage.length(); j++) {
+
+                                        JSONObject jsonObjectimages = jsonArrayImage.getJSONObject(j);
+
+
+                                        GalleryModel galleryModel = new GalleryModel();
+                                       // galleryModel.setStrImageName(jsonObjectimages.getString("image_name"));
+                                       // galleryModel.setStrImageDesc(jsonObjectimages.getString("image_description"));
+                                       // galleryModel.setStrImageTime(jsonObjectimages.getString("image_taken"));
+                                        galleryModel.setStrImageUrl(jsonObjectimages.getString("image_url"));
+
+
+                                        galleryModelArrayList.add(galleryModel);
+                                    }
+
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+                //
+
+                Libs.log(String.valueOf(galleryModelArrayList.size()), " 1 ");
+                for (int i = 0; i < galleryModelArrayList.size(); i++) {
+                    GalleryModel galleryModel = galleryModelArrayList.get(i);
+
+                    if (galleryModel.getStrImageUrl() != null && !galleryModel.getStrImageUrl().equalsIgnoreCase("")) {
+
+                        for(int p=0 ; p<galleryModelArrayList.size();p++) {
+                            System.out.println("XXXXXXXX : "+galleryModelArrayList);
+                            libs.loadImageFromWeb(galleryModel.getStrImageName(), galleryModel.getStrImageUrl());
+
+                        }
+                    }
+                    System.out.println("aniketttttttttttttttttt"+galleryModel.getStrImageName());
+                }
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }*/
 }
