@@ -30,6 +30,7 @@ public class CarlaCompletedActivityFragment extends Fragment {
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
+    private static String strCarlaImageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName;
     private Libs libs;
@@ -83,7 +84,9 @@ public class CarlaCompletedActivityFragment extends Fragment {
 
             strCarlaImageName = libs.replaceSpace(activityListModel.getStrPerson());
 
-            Libs.log(strCarlaImageName + " 1 ", " 0 ");
+            strCarlaImageUrl = libs.replaceSpace(activityListModel.getStrImageUrl());
+
+            Libs.log(strCarlaImageUrl + " 1 ", " 0 ");
         }
         //
         return view;
@@ -123,12 +126,14 @@ public class CarlaCompletedActivityFragment extends Fragment {
                 if (strCarlaImageName != null && !strCarlaImageName.equalsIgnoreCase("")) {
 
                     File f = libs.getInternalFileImages(strCarlaImageName);
-                    Libs.log(" 3 ", " IN ");
+
+                    if (!f.exists()) {
+                        if (strCarlaImageUrl != null && !strCarlaImageUrl.equalsIgnoreCase(""))
+                            libs.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
+                    }
+
                     bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
-                    Libs.log(" 4 ", " IN ");
-                    //bitmap = libs.roundedBitmap(bitmap);
                 }
-                Libs.log(" 5 ", " IN ");
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();

@@ -11,13 +11,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ActivityListAdapter;
+import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ActivityVideoModel;
-import com.hdfc.caretaker.R;
+import com.hdfc.models.FeedBackModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,11 +91,15 @@ public class ActivityListFragment extends Fragment {
                                 activityListModel.setStrDateTime(strDisplayDateTime);
                                 activityListModel.setStrDateNumber(strDisplayDate.substring(0, 2));//date
 
+                                activityListModel.setStrActualDate(jsonObjectNotification.getString("activity_date"));
+
+                                activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
+
                                 activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                                activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
+                                activityListModel.setStrMessage(jsonObjectNotification.getString("activity_message"));
                                 activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
                                 activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
-                                //activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
+                                activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
 
                                 activitiesModelArrayList.add(activityListModel);
 
@@ -112,9 +116,9 @@ public class ActivityListFragment extends Fragment {
 
                                         FeedBackModel feedBackModel = new FeedBackModel(
                                                 jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                jsonObjectFeedback.getInt("feedback_raring"), 0,
+                                                jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("report"),
                                                 jsonObjectFeedback.getString("feedback_time"),
-                                                jsonObjectFeedback.getString("feedback_raring")
+                                                jsonObjectFeedback.getString("feedback_rating")
                                         );
 
                                         feedBackModels.add(feedBackModel);
@@ -143,7 +147,7 @@ public class ActivityListFragment extends Fragment {
                                 }
 
                                 ActivityModel activityModel = new ActivityModel(
-                                        jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
+                                        jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
                                         jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
                                         jsonObjectNotification.getString("status"),
                                         jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
@@ -174,7 +178,7 @@ public class ActivityListFragment extends Fragment {
 
                 ActivityModel activityModel;
 
-                if (position < activityModels.size()) {
+                if (position <= activityModels.size()) {
                     activityModel = activityModels.get(position);
                 } else activityModel = null;
 

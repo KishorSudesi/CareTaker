@@ -34,27 +34,23 @@ import java.util.Date;
 
 public class AddNewActivityStep2Activity extends AppCompatActivity {
 
+    private static final String[] CARLAS = new String[]{"carla1@gmail.com"};
     public static String message, time;
+    public static JSONObject jsonObjectCarla;
     private static Storage findObj;
     private static StorageService storageService;
-    private EditText editTextDate, editTextMessage;
-    private TextView textView6, textView7;
-    private Libs libs;
     private static ProgressDialog progressDialog;
-    private JSONObject jsonObjectAct, responseJSONDoc, jsonObjectActCarla, responseJSONDocCarla;
-    private String _strDate;
-    private String strCarlaJsonId, strCarlaImagepath;
     private static ImageView imageViewCarla;
-    public static JSONObject jsonObjectCarla;
-
     private static Bitmap bitmap;
     private static Handler threadHandler;
     private static String strSelectedCarla;
-
+    private EditText editTextDate, editTextMessage;
+    private TextView textView6, textView7;
+    private Libs libs;
+    private JSONObject jsonObjectAct, responseJSONDoc, jsonObjectActCarla, responseJSONDocCarla;
+    private String _strDate;
+    private String strCarlaJsonId, strCarlaImagepath;
     private String getStrSelectedCarla;
-
-    private static final String[] CARLAS = new String[]{"carla1@gmail.com"};
-
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -211,6 +207,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                                 jsonObjectActCarla.put("videos", jsonArray);
                                 jsonObjectActCarla.put("images", jsonArray);
+                                jsonObjectActCarla.put("feedbacks", jsonArray);
 
                                 //
                             }
@@ -536,6 +533,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         goBack();
     }
 
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            progressDialog.dismiss();
+
+            if (bitmap != null)
+                imageViewCarla.setImageBitmap(bitmap);
+        }
+    }
+
     public class BackgroundThread extends Thread {
         @Override
         public void run() {
@@ -550,16 +557,6 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            progressDialog.dismiss();
-
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
         }
     }
 }

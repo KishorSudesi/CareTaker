@@ -14,22 +14,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.ActivityListModel;
-import com.hdfc.caretaker.R;
 
 import java.io.File;
 
 
 public class UpcomingFragment extends Fragment {
-    TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private static Bitmap bitmap;
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
+    private static ProgressDialog progressDialog;
+    private static String strCarlaImageUrl;
+    TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName;
     private Libs libs;
-    private static ProgressDialog progressDialog;
 
     public static UpcomingFragment newInstance(ActivityListModel _activityListModel) {
         UpcomingFragment fragment = new UpcomingFragment();
@@ -73,8 +74,9 @@ public class UpcomingFragment extends Fragment {
             txtViewMSG.setText(activityListModel.getStrDesc());
 
             strCarlaImageName=libs.replaceSpace(activityListModel.getStrPerson());
+            strCarlaImageUrl = libs.replaceSpace(activityListModel.getStrImageUrl());
 
-            Libs.log(strCarlaImageName+ " 1 ", " 0 ");
+            Libs.log(strCarlaImageUrl + " 1 ", " 0 ");
         }
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
@@ -101,8 +103,6 @@ public class UpcomingFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Libs.log(" On Resumse ", " 0 ");
-
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
@@ -110,6 +110,16 @@ public class UpcomingFragment extends Fragment {
         progressDialog.setMessage(getResources().getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
         progressDialog.show();
+    }
+
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            progressDialog.dismiss();
+
+            if (bitmap != null)
+                imageViewCarla.setImageBitmap(bitmap);
+        }
     }
 
     public class BackgroundThread extends Thread {
@@ -120,26 +130,19 @@ public class UpcomingFragment extends Fragment {
                 if(strCarlaImageName!=null&&!strCarlaImageName.equalsIgnoreCase("")) {
 
                     File f = libs.getInternalFileImages(strCarlaImageName);
-                    Libs.log(" 3 ", " IN ");
+
+                    if (!f.exists()) {
+                        if (strCarlaImageUrl != null && !strCarlaImageUrl.equalsIgnoreCase(""))
+                            libs.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
+                    }
+
                     bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
-                    Libs.log(" 4 ", " IN ");
-                    //bitmap = libs.roundedBitmap(bitmap);
                 }
-                Libs.log(" 5 ", " IN ");
+
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            progressDialog.dismiss();
-
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
         }
     }
 

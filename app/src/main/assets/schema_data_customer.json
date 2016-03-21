@@ -6,9 +6,9 @@
       "services": [
         {
           "service_id": 14700,
-          "unit": 10,
+          "unit": 25,
           "updated_date": "2016-03-12T16:09:57.491Z",
-          "unit_consumed": 1,
+          "unit_consumed": 0,
           "service_desc": "Buy and Delivery of Required Grocery items",
           "service_name": "Grocery Service",
           "service_features": [
@@ -26,8 +26,30 @@
         {
           "service_id": 14700,
           "unit": 5,
-          "service_desc": "Buy and Delivery of Required Grocery items",
           "purchased_date": "2016-03-12T16:09:57.491Z",
+          "service_desc": "Buy and Delivery of Required Grocery items",
+          "service_name": "Grocery Service",
+          "service_features": [
+            "potato",
+            "corn"
+          ]
+        },
+        {
+          "service_id": 14700,
+          "unit": 5,
+          "purchased_date": "2016-03-12T16:17:49.020Z",
+          "service_desc": "Buy and Delivery of Required Grocery items",
+          "service_name": "Grocery Service",
+          "service_features": [
+            "potato",
+            "corn"
+          ]
+        },
+        {
+          "service_id": 14700,
+          "unit": 5,
+          "purchased_date": "2016-03-14T11:47:30.053Z",
+          "service_desc": "Buy and Delivery of Required Grocery items",
           "service_name": "Grocery Service",
           "service_features": [
             "potato",
@@ -38,7 +60,18 @@
           "service_id": 14700,
           "unit": 5,
           "service_desc": "Buy and Delivery of Required Grocery items",
-          "purchased_date": "2016-03-12T16:17:49.020Z",
+          "purchased_date": "2016-03-21T16:45:45.154Z",
+          "service_name": "Grocery Service",
+          "service_features": [
+            "potato",
+            "corn"
+          ]
+        },
+        {
+          "service_id": 14700,
+          "unit": 5,
+          "service_desc": "Buy and Delivery of Required Grocery items",
+          "purchased_date": "2016-03-21T17:25:00.073Z",
           "service_name": "Grocery Service",
           "service_features": [
             "potato",
@@ -70,8 +103,6 @@
       "dependent_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/6ab454893564502587769da6bd9d927c38054a13/komu.jpeg",
       "dependent_email": "komagan09@gmail.com",
       "dependent_age": 65,
-      "activities": [
-      ],
       "health_status": [
         {
           "bp": 80,
@@ -88,6 +119,9 @@
           "heart_rate": 232,
           "time_taken": "2016-03-06T10:15:16.181Z"
         }
+      ],
+      "activities": [
+
       ]
     },
     {
@@ -96,9 +130,9 @@
       "services": [
         {
           "service_id": 14700,
-          "unit": 10,
+          "unit": 25,
           "updated_date": "2016-03-12T16:09:57.491Z",
-          "unit_consumed": 3,
+          "unit_consumed": 0,
           "service_desc": "Buy and Delivery of Required Grocery items",
           "service_name": "Grocery Service",
           "service_features": [
@@ -116,8 +150,30 @@
         {
           "service_id": 14700,
           "unit": 5,
-          "service_desc": "Buy and Delivery of Required Grocery items",
           "purchased_date": "2016-03-12T16:09:57.491Z",
+          "service_desc": "Buy and Delivery of Required Grocery items",
+          "service_name": "Grocery Service",
+          "service_features": [
+            "potato",
+            "corn"
+          ]
+        },
+        {
+          "service_id": 14700,
+          "unit": 5,
+          "purchased_date": "2016-03-12T16:17:49.020Z",
+          "service_desc": "Buy and Delivery of Required Grocery items",
+          "service_name": "Grocery Service",
+          "service_features": [
+            "potato",
+            "corn"
+          ]
+        },
+        {
+          "service_id": 14700,
+          "unit": 5,
+          "purchased_date": "2016-03-14T11:47:30.053Z",
+          "service_desc": "Buy and Delivery of Required Grocery items",
           "service_name": "Grocery Service",
           "service_features": [
             "potato",
@@ -128,7 +184,18 @@
           "service_id": 14700,
           "unit": 5,
           "service_desc": "Buy and Delivery of Required Grocery items",
-          "purchased_date": "2016-03-12T16:17:49.020Z",
+          "purchased_date": "2016-03-21T16:45:45.154Z",
+          "service_name": "Grocery Service",
+          "service_features": [
+            "potato",
+            "corn"
+          ]
+        },
+        {
+          "service_id": 14700,
+          "unit": 5,
+          "service_desc": "Buy and Delivery of Required Grocery items",
+          "purchased_date": "2016-03-21T17:25:00.073Z",
           "service_name": "Grocery Service",
           "service_features": [
             "potato",
@@ -160,8 +227,6 @@
       "dependent_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/4bf7564e8907f46ba145b5547ae0639cdc72b9c8/Kovendan_V.jpeg",
       "dependent_email": "emailkove@gmail.com",
       "dependent_age": 65,
-      "activities": [
-      ],
       "health_status": [
         {
           "bp": 80,
@@ -178,13 +243,15 @@
           "heart_rate": 232,
           "time_taken": "2016-03-06T10:15:16.181Z"
         }
+      ],
+      "activities": [
       ]
     }
   ],
   "paytm_account": "paytm_account",
   "customer_address": "address",
-  "customer_name": "Balamurugan G",
   "customer_email": "balamscint@gmail.com",
+  "customer_name": "Balamurugan G",
   "customer_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/8874814b7d8bd18fd549e131f73b725ea45c5534/customer_image.jpeg",
   "customer_contact_no": "9789863136"
 }

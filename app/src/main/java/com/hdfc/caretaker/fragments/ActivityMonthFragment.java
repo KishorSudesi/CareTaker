@@ -115,12 +115,17 @@ public class ActivityMonthFragment extends Fragment {
 
                                 activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
 
+                                activityListModel.setStrActualDate(jsonObjectNotification.getString("activity_date"));
+
                                 activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                                activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
+
+                                //activityListModel.setStr(jsonObjectNotification.getString("activity_name"));
+                                activityListModel.setStrMessage(jsonObjectNotification.getString("activity_message"));
+
                                 activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
                                 activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
+                                activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
 
-                                activitiesModelArrayList.add(activityListModel);
 
                                 ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
                                 ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
@@ -135,9 +140,9 @@ public class ActivityMonthFragment extends Fragment {
 
                                         FeedBackModel feedBackModel = new FeedBackModel(
                                                 jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                jsonObjectFeedback.getInt("feedback_raring"), 0,
+                                                jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("report"),
                                                 jsonObjectFeedback.getString("feedback_time"),
-                                                jsonObjectFeedback.getString("feedback_raring")
+                                                jsonObjectFeedback.getString("feedback_rating")
                                         );
 
                                         feedBackModels.add(feedBackModel);
@@ -164,8 +169,10 @@ public class ActivityMonthFragment extends Fragment {
                                     }
                                 }
 
+                                activitiesModelArrayList.add(activityListModel);
+
                                 ActivityModel activityModel = new ActivityModel(
-                                        jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
+                                        jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
                                         jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
                                         jsonObjectNotification.getString("status"),
                                         jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
@@ -270,7 +277,7 @@ public class ActivityMonthFragment extends Fragment {
 
                 ActivityModel activityModel;
 
-                if (position < activityModels.size()) {
+                if (position <= activityModels.size()) {
                     activityModel = activityModels.get(position);
                 } else activityModel = null;
 

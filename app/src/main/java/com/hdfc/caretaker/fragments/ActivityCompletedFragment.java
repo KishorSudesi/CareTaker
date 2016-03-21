@@ -11,9 +11,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.R;
 import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
-import com.hdfc.caretaker.R;
 
 public class ActivityCompletedFragment extends Fragment {
 
@@ -167,7 +167,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToAddRating() {
         setMenuInitView();
         imageButtonAdd.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        AddRatingCompletedActivityFragment newFragment = new AddRatingCompletedActivityFragment();
+        AddRatingCompletedActivityFragment newFragment = AddRatingCompletedActivityFragment.newInstance(getActivity(), _activityListModel, _activityModel);
         //Bundle args = new Bundle();
         //args.putInt(ArticleFragment.ARG_POSITION, position);
         // newFragment.setArguments(args);

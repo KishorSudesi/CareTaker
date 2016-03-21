@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.fragments.ActivityFragment;
+import com.hdfc.caretaker.fragments.AddRatingCompletedActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
@@ -196,6 +197,10 @@ public class DashboardActivity extends AppCompatActivity {
         //super.onBackPressed();
         //moveTaskToBack(true);
         finish();
+    }
+
+    public void setRating(View v) {
+        AddRatingCompletedActivityFragment.setRating(v);
     }
 
     public class BackgroundThread extends Thread {

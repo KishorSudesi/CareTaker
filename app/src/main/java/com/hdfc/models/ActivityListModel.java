@@ -9,6 +9,7 @@ public class ActivityListModel implements Serializable {
     private String strDate = "";
     private String strDateTime = "";
     private String strDateNumber = "";
+    private String strActualDate = "";
     private String strMessage = "";
     private String strPerson = "";
     private String strStatus = "";
@@ -22,6 +23,14 @@ public class ActivityListModel implements Serializable {
 
     public void setStrDependentName(String strDependentName) {
         this.strDependentName = strDependentName;
+    }
+
+    public String getStrActualDate() {
+        return strActualDate;
+    }
+
+    public void setStrActualDate(String strActualDate) {
+        this.strActualDate = strActualDate;
     }
 
     public String getStrImageUrl() {

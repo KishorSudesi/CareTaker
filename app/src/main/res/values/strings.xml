@@ -76,6 +76,7 @@
     <string name="service_added">Services Added Successfully</string>
     <string name="register_success">Account Registered Successfully</string>
     <string name="update_profile_image">Profile Image Updated Successfully</string>
+    <string name="rating_added">Rating Added</string>
 
     <!--Process Strings-->
     <string name="uploading">Uploading…</string>
@@ -115,6 +116,7 @@
     <!--Warning Strings-->
     <string name="warning_profile_pic">We need a Profile Picture</string>
     <string name="warning_internet">Please check your internet connection and try again</string>
+    <string name="select_rating">Select a Rating</string>
 
     <!--Permission Strings-->
     <string name="permission_contact_rationale">We need access to Contacts to Proceed Further</string>

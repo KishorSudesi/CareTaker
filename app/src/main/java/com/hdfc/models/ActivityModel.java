@@ -21,22 +21,11 @@ public class ActivityModel implements Serializable {
 
     private String strProviderImageUrl;
 
-
-
-
     private ArrayList<ImageModel> imageModels = new ArrayList<>();
     private ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
     private ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
 
     public ActivityModel() {
-    }
-
-    public String getStrProviderImageUrl() {
-        return strProviderImageUrl;
-    }
-
-    public void setStrProviderImageUrl(String strProviderImageUrl) {
-        this.strProviderImageUrl = strProviderImageUrl;
     }
 
     public ActivityModel(String strActivityName, String strActivityMessage,
@@ -59,7 +48,7 @@ public class ActivityModel implements Serializable {
         this.imageModels = imageModels;
         this.activityVideoModels = activityVideoModels;
         this.feedBackModels = feedBackModels;
-        this.strProviderImageUrl=strProviderImageUrl;
+        this.strProviderImageUrl = strProviderImageUrl;
     }
 
     public ActivityModel(String strActivityName, String strActivityMessage,
@@ -80,6 +69,14 @@ public class ActivityModel implements Serializable {
         this.activityVideoModels = activityVideoModels;
         this.feedBackModels = feedBackModels;
         //this.strProviderImageUrl=strProviderImageUrl;
+    }
+
+    public String getStrProviderImageUrl() {
+        return strProviderImageUrl;
+    }
+
+    public void setStrProviderImageUrl(String strProviderImageUrl) {
+        this.strProviderImageUrl = strProviderImageUrl;
     }
 
     public String getStrActivityProviderEmail() {

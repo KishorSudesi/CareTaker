@@ -1304,10 +1304,15 @@ public class Libs {
                                         activityListModel.setStrDateNumber(strDisplayDate.substring(0, 2));//date
                                         //
 
+                                        activityListModel.setStrActualDate(jsonObjectNotification.getString("activity_date"));
+
+                                        activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
+
                                         activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                                        activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
+                                        activityListModel.setStrMessage(jsonObjectNotification.getString("activity_message"));
                                         activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
                                         activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
+                                        activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
 
                                         ActivityListFragment.activitiesModelArrayList.add(activityListModel);
 
@@ -1329,9 +1334,9 @@ public class Libs {
 
                                                 FeedBackModel feedBackModel = new FeedBackModel(
                                                         jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                        jsonObjectFeedback.getInt("feedback_raring"), 0,
+                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("report"),
                                                         jsonObjectFeedback.getString("feedback_time"),
-                                                        jsonObjectFeedback.getString("feedback_raring")
+                                                        jsonObjectFeedback.getString("feedback_rating")
                                                 );
 
                                                 feedBackModels.add(feedBackModel);
@@ -1362,7 +1367,7 @@ public class Libs {
                                         }
 
                                         ActivityModel activityModel = new ActivityModel(
-                                                jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
+                                                jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
                                                 jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
                                                 jsonObjectNotification.getString("status"),
                                                 jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
@@ -1443,10 +1448,13 @@ public class Libs {
 
                                         activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
 
+                                        activityListModel.setStrActualDate(jsonObjectNotification.getString("activity_date"));
+
                                         activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                                        activityListModel.setStrMessage(jsonObjectNotification.getString("activity_name"));
+                                        activityListModel.setStrMessage(jsonObjectNotification.getString("activity_message"));
                                         activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
                                         activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
+                                        activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
 
                                         ActivityMonthFragment.activitiesModelArrayList.add(activityListModel);
                                         //
@@ -1465,9 +1473,9 @@ public class Libs {
 
                                                 FeedBackModel feedBackModel = new FeedBackModel(
                                                         jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                        jsonObjectFeedback.getInt("feedback_raring"), 0,
+                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("report"),
                                                         jsonObjectFeedback.getString("feedback_time"),
-                                                        jsonObjectFeedback.getString("feedback_raring")
+                                                        jsonObjectFeedback.getString("feedback_rating")
                                                 );
 
                                                 feedBackModels.add(feedBackModel);
@@ -1498,7 +1506,7 @@ public class Libs {
                                         }
 
                                         ActivityModel activityModel = new ActivityModel(
-                                                jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_name"),
+                                                jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
                                                 jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
                                                 jsonObjectNotification.getString("status"),
                                                 jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
@@ -1548,7 +1556,7 @@ public class Libs {
 
                 //fetch Customer data
                 Config.customerModel = new CustomerModel(Config.jsonObject.getString("customer_name"),
-                        Config.jsonObject.getString("paytm_account"), "URL",
+                        Config.jsonObject.getString("paytm_account"), Config.jsonObject.getString("customer_profile_url"),
                         Config.jsonObject.getString("customer_address"),
                         Config.jsonObject.getString("customer_contact_no"),
                         Config.jsonObject.getString("customer_email"));
@@ -1952,10 +1960,10 @@ public class Libs {
     }
 
     /*Calendar c = Calendar.getInstance();
-System.out.println("Current time => " + c.getTime());
+    System.out.println("Current time => " + c.getTime());
 
-SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-String formattedDate = df.format(c.getTime());*/
+    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+    String formattedDate = df.format(c.getTime());*/
 
     //Application Specig=fic End
 
