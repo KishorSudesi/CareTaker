@@ -10,13 +10,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
-import com.hdfc.models.FileModel;
 import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
+import com.hdfc.config.Config;
+import com.hdfc.libs.Libs;
+import com.hdfc.models.FileModel;
 
 /**
  * Created by user on 08-01-2016.
@@ -194,7 +194,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        moveTaskToBack(true);
+        //moveTaskToBack(true);
         finish();
     }
 
