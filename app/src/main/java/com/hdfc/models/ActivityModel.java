@@ -56,7 +56,8 @@ public class ActivityModel implements Serializable {
                          String strActivityProviderEmail, String strActivityProviderContactNo,
                          String strActivityProviderDesc, String strActivityProviderName,
                          ArrayList<ActivityVideoModel> activityVideoModels,
-                         ArrayList<FeedBackModel> feedBackModels) {
+                         ArrayList<FeedBackModel> feedBackModels,
+                         ArrayList<ImageModel> imageModels) {
         this.strActivityName = strActivityName;
         this.strActivityMessage = strActivityMessage;
         this.strAtivityProvider = strAtivityProvider;
@@ -68,6 +69,7 @@ public class ActivityModel implements Serializable {
         this.strActivityProviderName = strActivityProviderName;
         this.activityVideoModels = activityVideoModels;
         this.feedBackModels = feedBackModels;
+        this.imageModels = imageModels;
         //this.strProviderImageUrl=strProviderImageUrl;
     }
 

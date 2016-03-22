@@ -18,6 +18,7 @@ import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.GalleryModel;
+import com.hdfc.models.ImageModel;
 
 import junit.framework.Assert;
 
@@ -56,7 +57,7 @@ public class GalleryFragment extends Fragment {
     }
 
 
-    public static GalleryFragment newInstance(String param1, String param2) {
+    public static GalleryFragment newInstance(ArrayList<ImageModel> imageModels) {
         GalleryFragment fragment = new GalleryFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);

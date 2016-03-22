@@ -151,7 +151,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToImage() {
         setMenuInitView();
         imageButtonImage.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        GalleryFragment newFragment = new GalleryFragment();
+        GalleryFragment newFragment = GalleryFragment.newInstance(_activityModel.getImageModels());
         //Bundle args = new Bundle();
         //args.putInt(ArticleFragment.ARG_POSITION, position);
         // newFragment.setArguments(args);

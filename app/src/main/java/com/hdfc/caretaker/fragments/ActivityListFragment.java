@@ -18,6 +18,7 @@ import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ActivityVideoModel;
 import com.hdfc.models.FeedBackModel;
+import com.hdfc.models.ImageModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,6 +106,7 @@ public class ActivityListFragment extends Fragment {
 
                                 ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
                                 ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+                                ArrayList<ImageModel> imageModels = new ArrayList<>();
 
                                 if (jsonObjectNotification.has("feedbacks")) {
 
@@ -146,13 +148,32 @@ public class ActivityListFragment extends Fragment {
                                     }
                                 }
 
+                                if (jsonObjectNotification.has("images")) {
+
+                                    JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("images");
+
+                                    for (int k = 0; k < jsonArrayVideos.length(); k++) {
+
+                                        JSONObject jsonObjectImage = jsonArrayVideos.getJSONObject(k);
+
+                                        ImageModel imageModel = new ImageModel(
+                                                jsonObjectImage.getString("image_name"),
+                                                jsonObjectImage.getString("image_description"),
+                                                jsonObjectImage.getString("image_taken"),
+                                                jsonObjectImage.getString("image_url")
+                                        );
+
+                                        imageModels.add(imageModel);
+                                    }
+                                }
+
                                 ActivityModel activityModel = new ActivityModel(
                                         jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
                                         jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
                                         jsonObjectNotification.getString("status"),
                                         jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
                                         jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                        activityVideoModels, feedBackModels);
+                                        activityVideoModels, feedBackModels,imageModels);
 
                                 activityModels.add(activityModel);
                             }
