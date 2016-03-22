@@ -1,5 +1,8 @@
 package com.hdfc.models;
 
+
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Admin on 19-03-2016.
  */
@@ -9,6 +12,7 @@ public class GalleryModel {
     private String strImageUrl;
     private String strImageDesc;
     private String strImageTime;
+
 
     public String getStrImageName() {
         return strImageName;
@@ -41,6 +45,7 @@ public class GalleryModel {
     public void setStrImageTime(String strImageTime) {
         this.strImageTime = strImageTime;
     }
+
 
 
 }
