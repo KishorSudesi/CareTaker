@@ -116,9 +116,9 @@ public class ActivityListFragment extends Fragment {
 
                                         FeedBackModel feedBackModel = new FeedBackModel(
                                                 jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("report"),
+                                                jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
                                                 jsonObjectFeedback.getString("feedback_time"),
-                                                jsonObjectFeedback.getString("feedback_rating")
+                                                jsonObjectFeedback.getString("feedback_by_url")
                                         );
 
                                         feedBackModels.add(feedBackModel);

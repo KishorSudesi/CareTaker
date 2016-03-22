@@ -1258,6 +1258,7 @@ public class Libs {
             try {
 
                 ActivityListFragment.activitiesModelArrayList.clear();
+                ActivityListFragment.activityModels.clear();
 
                 log(" 1 ", " IN0 ");
 
@@ -1316,7 +1317,7 @@ public class Libs {
 
                                         ActivityListFragment.activitiesModelArrayList.add(activityListModel);
 
-                                        ActivityListFragment.activityModels.clear();
+
 
                                         //
                                         ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
@@ -1334,9 +1335,9 @@ public class Libs {
 
                                                 FeedBackModel feedBackModel = new FeedBackModel(
                                                         jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("report"),
+                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
                                                         jsonObjectFeedback.getString("feedback_time"),
-                                                        jsonObjectFeedback.getString("feedback_rating")
+                                                        jsonObjectFeedback.getString("feedback_by_url")
                                                 );
 
                                                 feedBackModels.add(feedBackModel);
@@ -1402,6 +1403,7 @@ public class Libs {
             try {
 
                 ActivityMonthFragment.activitiesModelArrayList.clear();
+                ActivityMonthFragment.activityModels.clear();
 
                 log(" 1 ", " IN1 ");
 
@@ -1473,9 +1475,9 @@ public class Libs {
 
                                                 FeedBackModel feedBackModel = new FeedBackModel(
                                                         jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("report"),
+                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
                                                         jsonObjectFeedback.getString("feedback_time"),
-                                                        jsonObjectFeedback.getString("feedback_rating")
+                                                        jsonObjectFeedback.getString("feedback_by_url")
                                                 );
 
                                                 feedBackModels.add(feedBackModel);

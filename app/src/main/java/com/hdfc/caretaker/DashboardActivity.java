@@ -213,7 +213,7 @@ public class DashboardActivity extends AppCompatActivity {
                     FileModel fileModel = Config.fileModels.get(i);
 
                     if (fileModel != null && fileModel.getStrFileUrl() != null && !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
-                        libs.loadImageFromWeb(libs.replaceSpace(fileModel.getStrFileName()), fileModel.getStrFileUrl());
+                        libs.loadImageFromWeb(fileModel.getStrFileName(), fileModel.getStrFileUrl());
                     }
                 }
 

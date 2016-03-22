@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
+import com.hdfc.models.FeedBackModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
@@ -28,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -41,6 +44,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
     private static ActivityListModel _activityListModel;
     private static ActivityModel _activityModel;
     private static JSONObject jsonObject;
+    private static JSONArray jsonArrayFeatures;
     private EditText editFeedBack;
     private CheckBox checkReport;
     private boolean checked = false;
@@ -88,7 +92,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
         _activityListModel = (ActivityListModel) this.getArguments().getSerializable("ACTIVITY");
         _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
 
-        Libs.log(_activityModel.toString(), " OBJ ");
+        //Libs.log(_activityModel.toString(), " OBJ ");
 
         context = getActivity();
 
@@ -142,7 +146,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                 jsonObject.put("feedback_message", editFeedBack.getText().toString().trim());
                 jsonObject.put("feedback_rating", iRating);
                 jsonObject.put("feedback_by", Config.customerModel.getStrName());
-                jsonObject.put("report", String.valueOf(checked));
+                jsonObject.put("feedback_report", String.valueOf(checked));
                 jsonObject.put("feedback_time", strDoneDate);
                 jsonObject.put("feedback_by_url", Config.customerModel.getStrImgUrl());
 
@@ -178,11 +182,11 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                         JSONObject jsonObjectActivities = dependantsA.
                                                 getJSONObject(i);
 
-                                        Libs.log(_activityListModel.getStrDependentName().toString() + " S " + jsonObjectActivities.getString("dependent_name"), " NAME ");
+                                        //Libs.log(_activityListModel.getStrDependentName().toString() + " S " + jsonObjectActivities.getString("dependent_name"), " NAME ");
 
                                         if (jsonObjectActivities.getString("dependent_name").equalsIgnoreCase(_activityListModel.getStrDependentName())) {
 
-                                            Libs.log(" 1 ", " IN ");
+                                            // Libs.log(" 1 ", " IN ");
 
                                             if (jsonObjectActivities.has("activities")) {
 
@@ -193,7 +197,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                                                     JSONObject jsonObjectActivity = dependantsActivities.getJSONObject(j);
 
-                                                    Libs.log(jsonObjectActivity.getString("activity_date") + " ~ " +
+                                                    /*Libs.log(jsonObjectActivity.getString("activity_date") + " ~ " +
                                                             jsonObjectActivity.getString("activity_name") +
                                                             " L " +
                                                             jsonObjectActivity.getString("activity_message"), " NAME1 ");
@@ -201,15 +205,15 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                     Libs.log(_activityListModel.getStrActualDate() + " ~ " +
                                                             _activityModel.getStrActivityName() +
                                                             " L " +
-                                                            _activityModel.getStrActivityMessage(), " NAME2 ");
+                                                            _activityModel.getStrActivityMessage(), " NAME2 ");*/
 
                                                     if (jsonObjectActivity.getString("activity_date").equalsIgnoreCase(_activityListModel.getStrActualDate()) &&
                                                             jsonObjectActivity.getString("activity_name").equalsIgnoreCase(_activityModel.getStrActivityName()) &&
                                                             jsonObjectActivity.getString("activity_message").equalsIgnoreCase(_activityModel.getStrActivityMessage())) {
 
-                                                        JSONArray jsonArrayFeatures = jsonObjectActivity.getJSONArray("feedbacks");
+                                                        jsonArrayFeatures = jsonObjectActivity.getJSONArray("feedbacks");
 
-                                                        Libs.log(" 2 ", " IN ");
+                                                        // Libs.log(" 2 ", " IN ");
 
                                                         jsonArrayFeatures.put(jsonObject);
                                                     }
@@ -253,11 +257,13 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                         try {
                                                             responseJSONDoc = new JSONObject(response.getJsonDocList().get(0).getJsonDoc());
 
-                                                            if (responseJSONDoc.has("activities")) {
+                                                            if (responseJSONDoc.has("feedbacks")) {
                                                                 JSONArray dependantsA = responseJSONDoc.
-                                                                        getJSONArray("activities");
+                                                                        getJSONArray("feedbacks");
 
-                                                                for (int i = 0; i < dependantsA.length(); i++) {
+                                                                dependantsA.put(jsonObject);
+
+                                                               /* for (int i = 0; i < dependantsA.length(); i++) {
 
                                                                     JSONObject jsonObjectActivity = dependantsA.getJSONObject(i);
 
@@ -269,7 +275,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                                                                         jsonArrayImages.put(jsonObject);
                                                                     }
-                                                                }
+                                                                }*/
                                                             }
 
                                                         } catch (JSONException e) {
@@ -282,17 +288,20 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                                                                 if (o != null) {
 
-                                                                    if (progressDialog.isShowing())
-                                                                        progressDialog.dismiss();
-
-                                                                    jsonObject = new JSONObject();
+                                                                    /*jsonObject = new JSONObject();
                                                                     iRating = 0;
                                                                     editFeedBack.setText("");
+                                                                    checkReport.setChecked(false);*/
 
                                                                     if (previousViewButton != null) {
                                                                         previousViewButton.setBackgroundDrawable(null);
                                                                         previousViewButton = null;
                                                                     }
+
+                                                                    populateFeedbacks();
+
+                                                                    if (progressDialog.isShowing())
+                                                                        progressDialog.dismiss();
 
                                                                     libs.toast(2, 2, getString(R.string.rating_added));
 
@@ -381,5 +390,41 @@ public class AddRatingCompletedActivityFragment extends Fragment {
         } else {
             libs.toast(2, 2, getString(R.string.warning_internet));
         }
+    }
+
+    public void populateFeedbacks() {
+
+        try {
+
+            ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
+
+            for (int k = 0; k < jsonArrayFeatures.length(); k++) {
+
+                JSONObject jsonObjectFeedback = jsonArrayFeatures.getJSONObject(k);
+
+                FeedBackModel feedBackModel = new FeedBackModel(
+                        jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
+                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
+                        jsonObjectFeedback.getString("feedback_time"),
+                        jsonObjectFeedback.getString("feedback_by_url")
+                );
+
+                feedBackModels.add(feedBackModel);
+
+                ActivityCompletedFragment.setMenuInitView();
+                ActivityCompletedFragment.imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance(feedBackModels);
+
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_completed_activity, newFragment);
+                transaction.addToBackStack(null);
+
+                transaction.commit();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

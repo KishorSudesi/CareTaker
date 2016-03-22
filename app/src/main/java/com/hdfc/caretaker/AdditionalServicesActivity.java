@@ -262,10 +262,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent dashboardIntent = new Intent(AdditionalServicesActivity.this, DashboardActivity.class);
-                Config.intSelectedMenu=Config.intAccountScreen;
-                startActivity(dashboardIntent);
-                finish();
+                goBack();
             }
         });
 
@@ -306,10 +303,16 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         });
     }
 
+    public void goBack() {
+        Intent dashboardIntent = new Intent(AdditionalServicesActivity.this, DashboardActivity.class);
+        Config.intSelectedMenu = Config.intAccountScreen;
+        startActivity(dashboardIntent);
+        finish();
+    }
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        //do nothing
+        goBack();
     }
 
     @Override

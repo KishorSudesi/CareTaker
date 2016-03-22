@@ -25,6 +25,7 @@
     <string name="logout">Logout</string>
     <string name="at">at</string>
     <string name="image">Image</string>
+    <string name="by">By&#160;</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
@@ -69,6 +70,7 @@
     <string name="will_assist">&#160;will Assist in</string>
     <string name="assisted_in">&#160;Assisted In&#160;</string>
     <string name="select_date">Select a Date</string>
+    <string name="no_ratings">No Ratings</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

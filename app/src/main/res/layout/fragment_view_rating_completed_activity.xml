@@ -9,22 +9,27 @@
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="No Ratings"
+        android:text="@string/no_ratings"
         android:visibility="gone" />
 
     <ListView
         android:id="@+id/listViewRatings"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="50dp" />
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:padding="@dimen/padding_general"
-        android:text="Add Your Feedback"
-        android:textAlignment="center" />
+    <!-- <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="30dp"
+         android:padding="@dimen/padding_general"
+         android:text="Add Your Feedback"
+         android:textAlignment="center" />-->
 
 </LinearLayout>

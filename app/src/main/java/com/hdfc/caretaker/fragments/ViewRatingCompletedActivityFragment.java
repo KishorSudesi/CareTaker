@@ -1,7 +1,11 @@
 package com.hdfc.caretaker.fragments;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.RatingCompletedAdapter;
-import com.hdfc.models.FeedBackModel;
-import com.hdfc.models.ActivityModel;
-import com.hdfc.models.RatingCompletedModel;
 import com.hdfc.caretaker.R;
+import com.hdfc.libs.Libs;
+import com.hdfc.models.FeedBackModel;
 
 import java.util.ArrayList;
 
@@ -22,17 +25,20 @@ import java.util.ArrayList;
  */
 public class ViewRatingCompletedActivityFragment extends Fragment {
 
-    ListView listView;
-    TextView emptyTextView;
-    ArrayList<RatingCompletedModel> ratingCompletedModels = new ArrayList<RatingCompletedModel>();
-    private ActivityModel activityListModel;
-    private RatingCompletedAdapter ratingCompletedAdapter;
+    private static ArrayList<FeedBackModel> _activityModel;
+    private static Libs libs;
+    private static ListView listView;
+    private static RatingCompletedAdapter ratingCompletedAdapter;
+    private static Handler threadHandler;
+    private static ProgressDialog progressDialog;
+    private static Context context;
+    private static TextView emptyTextView;
 
     public ViewRatingCompletedActivityFragment() {
         // Required empty public constructor
     }
 
-    public static ViewRatingCompletedActivityFragment newInstance(ActivityModel _activityModel) {
+    public static ViewRatingCompletedActivityFragment newInstance(ArrayList<FeedBackModel> _activityModel) {
         ViewRatingCompletedActivityFragment fragment = new ViewRatingCompletedActivityFragment();
         Bundle args = new Bundle();
         args.putSerializable("ACTIVITY_COMPLETE", _activityModel);
@@ -46,38 +52,60 @@ public class ViewRatingCompletedActivityFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_rating_completed_activity, container, false);
         listView = (ListView) view.findViewById(R.id.listViewRatings);
-
         emptyTextView = (TextView) view.findViewById(android.R.id.empty);
 
-        activityListModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
+        libs = new Libs(getActivity());
 
-        ratingCompletedModels.clear();
+        context = getActivity();
 
-        ratingCompletedAdapter = new RatingCompletedAdapter(getActivity(), ratingCompletedModels);
-        listView.setAdapter(ratingCompletedAdapter);
-        listView.setEmptyView(emptyTextView);
+        _activityModel = (ArrayList<FeedBackModel>) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
+        progressDialog = new ProgressDialog(getActivity());
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (activityListModel != null) {
 
-            for (int i = 0; i < activityListModel.getFeedBackModels().size(); i++) {
+        progressDialog.setMessage(getResources().getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
-                FeedBackModel feedBackModel = activityListModel.getFeedBackModels().get(i);
+        threadHandler = new ThreadHandler();
+        Thread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
 
-                RatingCompletedModel ratingCompletedModel = new RatingCompletedModel();
-                ratingCompletedModel.setImg(R.drawable.hungal_circle);
-                ratingCompletedModel.setPersonName(feedBackModel.getStrFeedBackBy());
-                ratingCompletedModel.setFeedback(feedBackModel.getStrFeedBackMess());
-                ratingCompletedModel.setTimeDate(feedBackModel.getStrFeedBackTime());
-                ratingCompletedModel.setRatingSmiley(R.drawable.smiley_icon_32);
+    }
 
-                ratingCompletedModels.add(ratingCompletedModel);
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+
+            ratingCompletedAdapter = new RatingCompletedAdapter(context, _activityModel);
+            listView.setAdapter(ratingCompletedAdapter);
+            listView.setEmptyView(emptyTextView);
+            //ratingCompletedAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                if (_activityModel != null) {
+                    for (int i = 0; i < _activityModel.size(); i++) {
+                        //Libs.log(_activityModel.get(i).getStrFeedBackByUrl(), " URL ");
+                        libs.loadImageFromWeb(_activityModel.get(i).getStrFeedBackBy(), _activityModel.get(i).getStrFeedBackByUrl());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            ratingCompletedAdapter.notifyDataSetChanged();
+            threadHandler.sendEmptyMessage(0);
         }
     }
 }

@@ -22,9 +22,9 @@ import android.widget.TextView;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
+import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.caretaker.R;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -43,26 +43,22 @@ import java.util.GregorianCalendar;
 
 public class MyAccountEditFragment extends Fragment {
 
-    private EditText name, number, city, editTextOldPassword, editTextPassword, editTextConfirmPassword;
+    public static String strCustomerImgNameCamera;
+    public static String strCustomerImgName = "";
+    public static Bitmap bitmap = null;
+    public static Uri uri;
     private static Libs libs;
-
+    private static RoundedImageView roundedImageView;
+    private static Handler threadHandler;
+    private static ProgressDialog progressDialog;
+    private static boolean isImageChanged = false;
+    private EditText name, number, city, editTextOldPassword, editTextPassword, editTextConfirmPassword;
     private String strName;
     private String strContactNo;
     private String strPass;
     private String strAddress;
     private String strOldPass;
     private String strCustomerImagePath="";
-
-    private static RoundedImageView roundedImageView;
-    private static Handler threadHandler;
-    private static ProgressDialog progressDialog;
-    public static String strCustomerImgNameCamera;
-    public static String strCustomerImgName = "";
-
-    private static boolean isImageChanged=false;
-
-    public static Bitmap bitmap = null;
-    public static Uri uri;
 
     public static MyAccountEditFragment newInstance() {
         MyAccountEditFragment fragment = new MyAccountEditFragment();
@@ -312,86 +308,6 @@ public class MyAccountEditFragment extends Fragment {
         }
     }
 
-    public class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
-
-            if(!isImageChanged){
-                if (bitmap != null)
-                    roundedImageView.setImageBitmap(bitmap);
-                else
-                    libs.toast(2, 2, getString(R.string.error));
-            }
-
-            if(isImageChanged&&bitmap != null) {
-                try {
-                    checkImage();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-            //loadingPanel.setVisibility(View.GONE);
-        }
-    }
-
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                File f = libs.getInternalFileImages(Config.strCustomerImageName);
-                Libs.log(f.getAbsolutePath(), " FP ");
-                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //
-    public class BackgroundThreadGallery extends Thread {
-        @Override
-        public void run() {
-
-            try {
-                if (uri != null) {
-                    Calendar calendar = new GregorianCalendar();
-                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                    File galleryFile = libs.createFileInternalImage(strFileName);
-                    strCustomerImgName = galleryFile.getAbsolutePath();
-                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
-                    libs.copyInputStreamToFile(is, galleryFile);
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-                    isImageChanged=true;
-                }
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public class BackgroundThreadCamera extends Thread {
-        @Override
-        public void run() {
-
-            try {
-                if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-                    isImageChanged=true;
-                }
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void checkImage() {
 
         try {
@@ -467,50 +383,93 @@ public class MyAccountEditFragment extends Fragment {
                         public void onSuccess(Object response) {
 
                             if(response!=null) {
-                               // Libs.log(response.toString(), "response");
+
                                 Upload upload = (Upload) response;
                                 ArrayList<Upload.File> fileList = upload.getFileList();
 
-                                if (fileList.size() > 0) {
+                                if (fileList.size() > 0 && bitmap != null) {
 
-                                    /*Upload.File file = fileList.get(0);
+                                    Upload.File file = fileList.get(0);
 
-                                    String url = file.getUrl();*/
+                                    final String url = file.getUrl();
 
-                                    if (bitmap != null) {
-                                        roundedImageView.setImageBitmap(bitmap);
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        libs.toast(2, 2, getString(R.string.update_profile_image));
-                                        isImageChanged = false;
+                                    JSONObject jsonToUpdate = new JSONObject();
 
-                                        try {
-                                            File f = libs.getInternalFileImages(Config.strCustomerImageName);
+                                    try {
+                                        jsonToUpdate.put("customer_profile_url", url);
 
-                                            if (f.exists())
-                                                f.delete();
+                                        StorageService storageService = new StorageService(getActivity());
 
-                                            File newFile = new File(strCustomerImgName);
-                                            File renameFile = new File(strCustomerImagePath);
+                                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionName, new App42CallBack() {
 
-                                            libs.moveFile(newFile, renameFile);
-                                            //TODO Check Logic
-                                        }catch (Exception e){
+                                            @Override
+                                            public void onSuccess(Object o) {
+
+                                                if (o != null) {
+
+                                                    try {
+                                                        File f = libs.getInternalFileImages(Config.strCustomerImageName);
+
+                                                        if (f.exists())
+                                                            f.delete();
+
+                                                        File newFile = new File(strCustomerImgName);
+                                                        File renameFile = new File(strCustomerImagePath);
+
+                                                        libs.moveFile(newFile, renameFile);
+
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    roundedImageView.setImageBitmap(bitmap);
+
+                                                    if (progressDialog.isShowing())
+                                                        progressDialog.dismiss();
+
+                                                    libs.toast(2, 2, getString(R.string.update_profile_image));
+
+                                                    if (Config.jsonObject.has("customer_profile_url")) {
+
+                                                        try {
+                                                            Config.jsonObject.put("customer_profile_url", url);
+
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                    isImageChanged = false;
+
+                                                } else {
+                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onException(Exception e) {
+                                                if (progressDialog.isShowing())
+                                                    progressDialog.dismiss();
+
+                                                if (e != null) {
+                                                    Libs.log(e.toString(), "response");
+                                                    libs.toast(2, 2, e.getMessage());
+                                                } else {
+                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                }
+                                            }
+                                        });
+                                        //
+
+                                    } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
 
-                                    }
-                                    else {
+                                    //TODO Check Logic
+                                } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
                                         libs.toast(2, 2, getString(R.string.error));
                                     }
-
-                                } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    libs.toast(2, 2, ((Upload) response).getStrResponse());
-                                }
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
@@ -543,6 +502,86 @@ public class MyAccountEditFragment extends Fragment {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
             libs.toast(2, 2, getString(R.string.error));
+        }
+    }
+
+    public class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+
+            if (!isImageChanged) {
+                if (bitmap != null)
+                    roundedImageView.setImageBitmap(bitmap);
+                else
+                    libs.toast(2, 2, getString(R.string.error));
+            }
+
+            if (isImageChanged && bitmap != null) {
+                try {
+                    checkImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //loadingPanel.setVisibility(View.GONE);
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+
+                File f = libs.getInternalFileImages(Config.strCustomerImageName);
+                Libs.log(f.getAbsolutePath(), " FP ");
+                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //
+    public class BackgroundThreadGallery extends Thread {
+        @Override
+        public void run() {
+
+            try {
+                if (uri != null) {
+                    Calendar calendar = new GregorianCalendar();
+                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+                    File galleryFile = libs.createFileInternalImage(strFileName);
+                    strCustomerImgName = galleryFile.getAbsolutePath();
+                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
+                    libs.copyInputStreamToFile(is, galleryFile);
+                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                    isImageChanged = true;
+                }
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class BackgroundThreadCamera extends Thread {
+        @Override
+        public void run() {
+
+            try {
+                if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
+                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                    isImageChanged = true;
+                }
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

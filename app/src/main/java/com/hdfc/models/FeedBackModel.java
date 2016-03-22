@@ -7,24 +7,24 @@ import java.io.Serializable;
  */
 public class FeedBackModel implements Serializable {
 
-    private String strFeedBackMess;
+    private String strFeedBackMessage;
     private String strFeedBackBy;
     private int intFeedBackRating;
-    private boolean intFeedBackReport;
+    private boolean bFeedBackReport;
     private String strFeedBackTime;
     private String strFeedBackByUrl;
 
-    public FeedBackModel(String strFeedBackMess, String strFeedBackBy, int intFeedBackRating, boolean intFeedBackReport, String strFeedBackTime, String strFeedBackByUrl) {
-        this.strFeedBackMess = strFeedBackMess;
+    public FeedBackModel(String strFeedBackMessage, String strFeedBackBy, int intFeedBackRating, boolean bFeedBackReport, String strFeedBackTime, String strFeedBackByUrl) {
+        this.strFeedBackMessage = strFeedBackMessage;
         this.strFeedBackBy = strFeedBackBy;
         this.intFeedBackRating = intFeedBackRating;
-        this.intFeedBackReport = intFeedBackReport;
+        this.bFeedBackReport = bFeedBackReport;
         this.strFeedBackTime = strFeedBackTime;
         this.strFeedBackByUrl = strFeedBackByUrl;
     }
 
-    public String getStrFeedBackMess() {
-        return strFeedBackMess;
+    public String getStrFeedBackMessage() {
+        return strFeedBackMessage;
     }
 
     public String getStrFeedBackBy() {
@@ -35,8 +35,8 @@ public class FeedBackModel implements Serializable {
         return intFeedBackRating;
     }
 
-    public boolean getIntFeedBackReport() {
-        return intFeedBackReport;
+    public boolean getBoolFeedBackReport() {
+        return bFeedBackReport;
     }
 
     public String getStrFeedBackByUrl() {
@@ -45,7 +45,5 @@ public class FeedBackModel implements Serializable {
 
     public String getStrFeedBackTime() {
         return strFeedBackTime;
-
-
     }
 }

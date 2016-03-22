@@ -17,10 +17,9 @@ import com.hdfc.models.ActivityModel;
 
 public class ActivityCompletedFragment extends Fragment {
 
+    public static ImageButton imageButtonDesc, imageButtonVideo, imageButtonImage, imageButtonRating, imageButtonAdd;
     private static ActivityListModel _activityListModel;
     private static ActivityModel _activityModel;
-
-    private static ImageButton imageButtonDesc, imageButtonVideo, imageButtonImage, imageButtonRating, imageButtonAdd;
 
     public static ActivityCompletedFragment newInstance(ActivityListModel activityListModel, ActivityModel activityModels) {
         ActivityCompletedFragment fragment = new ActivityCompletedFragment();
@@ -29,6 +28,15 @@ public class ActivityCompletedFragment extends Fragment {
         args.putSerializable("ACTIVITY_COMPLETE", activityModels);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void setMenuInitView() {
+
+        imageButtonDesc.setBackgroundColor(Color.TRANSPARENT);
+        imageButtonVideo.setBackgroundColor(Color.TRANSPARENT);
+        imageButtonImage.setBackgroundColor(Color.TRANSPARENT);
+        imageButtonRating.setBackgroundColor(Color.TRANSPARENT);
+        imageButtonAdd.setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -109,15 +117,6 @@ public class ActivityCompletedFragment extends Fragment {
         return view;
     }
 
-    public void setMenuInitView() {
-
-        imageButtonDesc.setBackgroundColor(Color.TRANSPARENT);
-        imageButtonVideo.setBackgroundColor(Color.TRANSPARENT);
-        imageButtonImage.setBackgroundColor(Color.TRANSPARENT);
-        imageButtonRating.setBackgroundColor(Color.TRANSPARENT);
-        imageButtonAdd.setBackgroundColor(Color.TRANSPARENT);
-    }
-
     public void goToCarlaDescription() {
         setMenuInitView();
         imageButtonDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -183,7 +182,7 @@ public class ActivityCompletedFragment extends Fragment {
         // if(_activityModel!=null) {
         setMenuInitView();
         imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance(_activityModel);
+        ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance(_activityModel.getFeedBackModels());
         //Bundle args = new Bundle();
         //args.putInt(ArticleFragment.ARG_POSITION, position);
         // newFragment.setArguments(args);

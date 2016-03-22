@@ -2,82 +2,17 @@
   "dependents": [
     {
       "dependent_illness": "Illness",
-      "health_bp": 0,
+      "health_bp": 76,
       "services": [
-        {
-          "service_id": 14700,
-          "unit": 25,
-          "updated_date": "2016-03-12T16:09:57.491Z",
-          "unit_consumed": 0,
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        }
+
       ],
       "dependent_relation": "brother",
       "dependent_address": "Address",
       "dependent_notes": "Note",
-      "health_heart_rate": 0,
+      "health_heart_rate": 70,
       "dependent_contact_no": "8998907769",
       "services_history": [
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "purchased_date": "2016-03-12T16:09:57.491Z",
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "purchased_date": "2016-03-12T16:17:49.020Z",
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "purchased_date": "2016-03-14T11:47:30.053Z",
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "purchased_date": "2016-03-21T16:45:45.154Z",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "purchased_date": "2016-03-21T17:25:00.073Z",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        }
+
       ],
       "dependent_name": "komu",
       "notifications": [
@@ -126,82 +61,15 @@
     },
     {
       "dependent_illness": "Illness",
-      "health_bp": 0,
+      "health_bp": 90,
       "services": [
-        {
-          "service_id": 14700,
-          "unit": 25,
-          "updated_date": "2016-03-12T16:09:57.491Z",
-          "unit_consumed": 0,
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        }
       ],
       "dependent_relation": "friend",
       "dependent_address": "Address",
       "dependent_notes": "Notes",
-      "health_heart_rate": 0,
+      "health_heart_rate": 67,
       "dependent_contact_no": "09619449616",
       "services_history": [
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "purchased_date": "2016-03-12T16:09:57.491Z",
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "purchased_date": "2016-03-12T16:17:49.020Z",
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "purchased_date": "2016-03-14T11:47:30.053Z",
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "purchased_date": "2016-03-21T16:45:45.154Z",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        },
-        {
-          "service_id": 14700,
-          "unit": 5,
-          "service_desc": "Buy and Delivery of Required Grocery items",
-          "purchased_date": "2016-03-21T17:25:00.073Z",
-          "service_name": "Grocery Service",
-          "service_features": [
-            "potato",
-            "corn"
-          ]
-        }
       ],
       "dependent_name": "Kovendan V",
       "notifications": [

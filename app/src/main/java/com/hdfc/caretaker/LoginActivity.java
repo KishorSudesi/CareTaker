@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
 
             //CareTaker.dbCon = DbCon.getInstance(LoginActivity.this);
-        } catch (Exception e) {
+        } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
         }
 
