@@ -55,9 +55,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
-                startActivity(newIntent);
-                finish();
+                goBack();
             }
         });
 
@@ -95,6 +93,12 @@ public class AddNewActivityActivity extends AppCompatActivity {
         // listView.setO
     }
 
+    public void goBack() {
+        Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
+        startActivity(newIntent);
+        finish();
+    }
+
     public void addNewActivityStep2(View v) {
 
         if (selectedDependentServiceModels.size() > 0) {
@@ -114,6 +118,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+        //finish();
+        goBack();
     }
 
     @Override

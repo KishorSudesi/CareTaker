@@ -73,6 +73,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,10 +92,11 @@ public class Libs {
     //application specific
     public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
     public final static SimpleDateFormat writeFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
-    //private static SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()); //check the format and standardize it
     public final static SimpleDateFormat writeFormatActivity = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
     public final static SimpleDateFormat writeFormatActivityMonthYear = new SimpleDateFormat("MMM yyyy", Locale.US);
     public static Uri customerImageUri;
+    //
+
     private static Context _ctxt;
 
     static {
@@ -154,11 +156,12 @@ public class Libs {
         return scaledBitmap;
     }
 
-    /*public static boolean isImageFile(String path) {
+    public static boolean isImageFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
         return mimeType != null && mimeType.indexOf("image") == 0;
     }
 
+    /*
     public static boolean isVideoFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
         return mimeType != null && mimeType.indexOf("video") == 0;
@@ -531,6 +534,101 @@ public class Libs {
         return isEmpty;
     }
 
+    public static File createFileInternal(String strFileName) {
+
+        File file = null;
+        try {
+            file = new File(_ctxt.getFilesDir(), strFileName);
+            file.getParentFile().mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+   /* public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(_ctxt)
+                .setMessage(message)
+                .setPositiveButton(_ctxt.getString(R.string.ok), okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }*/
+
+   /* public String getUUID() {
+        final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
+
+        final String tmDevice, tmSerial, androidId;
+
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(_ctxt.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String deviceId = deviceUuid.toString();
+
+        return deviceId;
+    }*/
+
+    /*public void createAlertDialog(String msg) {
+        AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
+        alertbox.setTitle(_ctxt.getString(R.string.app_name));
+        alertbox.setMessage(msg);
+        alertbox.setPositiveButton(_ctxt.getString(R.string.ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+            }
+        });
+        alertbox.show();
+    }*/
+
+    public static boolean deleteAllFiles(File directory) {
+
+        final File[] files = directory.listFiles();
+
+        try {
+
+            if (files != null) {
+                for (File file : files) {
+                    if (file != null) {
+                        if (file.isDirectory()) {  // it is a folder.
+                            deleteAllFiles(file);
+                        } else {
+                            if (file.exists() && file.canRead() && file.canWrite()) {
+                                file.delete();
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+   /* public void createFolder(String path) {
+        File root = new File(path);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+    }*/
+
+   /* public void setExifData(String pathName) throws Exception {
+
+        try {
+            //working for Exif defined attributes
+            ExifInterface exif = new ExifInterface(pathName);
+            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
+            exif.saveAttributes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+
     public static void logout() {
         try {
             Config.jsonObject = null;
@@ -555,11 +653,15 @@ public class Libs {
 
             Config.bitmaps.clear();
 
-            //todo files delete and  clear shared pref.
+            //todo clear shared pref.
+
+            File fileImage = createFileInternal("images/");
+            deleteAllFiles(fileImage);
 
             Intent dashboardIntent = new Intent(_ctxt, LoginActivity.class);
-            _ctxt.startActivity(dashboardIntent);
             ((Activity) _ctxt).finish();
+            _ctxt.startActivity(dashboardIntent);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -582,73 +684,6 @@ public class Libs {
 
     }
 
-   /* public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(_ctxt)
-                .setMessage(message)
-                .setPositiveButton(_ctxt.getString(R.string.ok), okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
-    }*/
-
-    public void toast(int type, int duration, String message) {
-
-        String strColor = "#ffffff";
-
-        if (type == 2)
-            strColor = "#fcc485";
-
-        try {
-            LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
-            View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).findViewById(R.id.toast_layout_root));
-
-            TextView text = (TextView) layout.findViewById(R.id.text);
-            text.setText(message);
-            text.setTextColor(Color.parseColor(strColor));
-
-            Toast toast = new Toast(_ctxt);
-            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-
-            /*if (duration == 1)*/
-                toast.setDuration(Toast.LENGTH_SHORT);
-
-            /*if (duration == 2)
-                toast.setDuration(Toast.LENGTH_LONG);*/
-
-            toast.setView(layout);
-            toast.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(_ctxt, message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-   /* public String getUUID() {
-        final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
-
-        final String tmDevice, tmSerial, androidId;
-
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(_ctxt.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
-        String deviceId = deviceUuid.toString();
-
-        return deviceId;
-    }*/
-
-    public void createAlertDialog(String msg) {
-        AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-        alertbox.setTitle(_ctxt.getString(R.string.app_name));
-        alertbox.setMessage(msg);
-        alertbox.setPositiveButton(_ctxt.getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-            }
-        });
-        alertbox.show();
-    }
-
     public boolean isEmailValid(String email) {
         boolean b;
 
@@ -663,26 +698,6 @@ public class Libs {
         return b;
     }
 
-   /* public void createFolder(String path) {
-        File root = new File(path);
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-    }*/
-
-   /* public void setExifData(String pathName) throws Exception {
-
-        try {
-            //working for Exif defined attributes
-            ExifInterface exif = new ExifInterface(pathName);
-            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
-            exif.saveAttributes();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
     public int getMemory() {
         Runtime rt = Runtime.getRuntime();
         int maxMemory = (int) rt.maxMemory() / 1024;
@@ -691,6 +706,27 @@ public class Libs {
 
         return maxMemory;
     }
+
+    /*public void setupUI(View view) {
+        //Set up touch listener for non-text box views to hide keyboard.
+        //if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard((Activity) _ctxt);
+                    return false;
+                }
+            });
+        // }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
+    }*/
 
     public String convertDateToString(Date dtDate) {
 
@@ -730,31 +766,6 @@ public class Libs {
         }
         return false;
     }
-
-    public boolean isPasswordValid(String password) {
-        return password.length() > 1;
-    }
-
-    /*public void setupUI(View view) {
-        //Set up touch listener for non-text box views to hide keyboard.
-        //if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    hideSoftKeyboard((Activity) _ctxt);
-                    return false;
-                }
-            });
-        // }
-
-        //If a layout container, iterate over children and seed recursion.
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                View innerView = ((ViewGroup) view).getChildAt(i);
-                setupUI(innerView);
-            }
-        }
-    }*/
 
     /**
      * Shows the progress UI and hides the login form.
@@ -803,19 +814,6 @@ public class Libs {
         File file = null;
         try {
             file = new File(_ctxt.getExternalFilesDir(Environment.DIRECTORY_PICTURES), strFileName);
-            file.getParentFile().mkdirs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
-    public File createFileInternal(String strFileName) {
-
-        File file = null;
-        try {
-            file = new File(_ctxt.getFilesDir(), strFileName);
             file.getParentFile().mkdirs();
         } catch (Exception e) {
             e.printStackTrace();
@@ -890,6 +888,17 @@ public class Libs {
         }
     }
 
+    /*private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
+
+        if (v == null)
+            return;
+
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
+    }*/
+
     public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current, EditText editCurrent) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
@@ -911,31 +920,6 @@ public class Libs {
         return invalid;
     }
 
-    public void setEditTextDrawable(EditText editText, Drawable drw) {
-        if (Build.VERSION.SDK_INT <= 16)
-            editText.setBackgroundDrawable(drw);
-        else
-            editText.setBackground(drw);
-    }
-
-    /*private void updateView(int index, ListView listView) {
-        View v = listView.getChildAt(index -
-                listView.getFirstVisiblePosition());
-
-        if (v == null)
-            return;
-
-        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
-        //someText.setText("Hi! I updated you manually!");
-    }*/
-
-    public void setDrawable(View v, Drawable drw) {
-        if (Build.VERSION.SDK_INT <= 16)
-            v.setBackgroundDrawable(drw);
-        else
-            v.setBackground(drw);
-    }
-
     /*public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
@@ -947,6 +931,20 @@ public class Libs {
     }*/
 
     //Application Specigfic Start
+
+    public void setEditTextDrawable(EditText editText, Drawable drw) {
+        if (Build.VERSION.SDK_INT <= 16)
+            editText.setBackgroundDrawable(drw);
+        else
+            editText.setBackground(drw);
+    }
+
+    public void setDrawable(View v, Drawable drw) {
+        if (Build.VERSION.SDK_INT <= 16)
+            v.setBackgroundDrawable(drw);
+        else
+            v.setBackground(drw);
+    }
 
     public void setStatusBarColor(String strColor) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -1032,44 +1030,6 @@ public class Libs {
         return output;
     }
 
-    public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap original = null;
-        if (strPath != null && !strPath.equalsIgnoreCase("")) {
-            try {
-                options.inJustDecodeBounds = true;
-                original = BitmapFactory.decodeFile(strPath, options);
-                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
-                options.inJustDecodeBounds = false;
-                original = BitmapFactory.decodeFile(strPath, options);
-            } catch (OutOfMemoryError | Exception oOm) {
-                oOm.printStackTrace();
-            }
-        }
-        return original;
-    }
-
-    public int getBitmapHeightFromFile(String strPath) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        //Bitmap original;
-        int intSampleHeight = 0;
-        if (strPath != null && !strPath.equalsIgnoreCase("")) {
-            try {
-                //
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(strPath, options);
-                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, Config.intWidth, Config.intHeight);
-                options.inJustDecodeBounds = false;
-                intSampleHeight = options.outHeight / options.inSampleSize;
-                //original.recycle();
-                //original=null;
-            } catch (OutOfMemoryError | Exception oOm) {
-                oOm.printStackTrace();
-            }
-        }
-        return intSampleHeight;
-    }
-
     /*public void fetchServices(){
         StorageService storageService = new StorageService(_ctxt);
 
@@ -1140,6 +1100,44 @@ public class Libs {
             }
         });
     }*/
+
+    public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap original = null;
+        if (strPath != null && !strPath.equalsIgnoreCase("")) {
+            try {
+                options.inJustDecodeBounds = true;
+                original = BitmapFactory.decodeFile(strPath, options);
+                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
+                options.inJustDecodeBounds = false;
+                original = BitmapFactory.decodeFile(strPath, options);
+            } catch (OutOfMemoryError | Exception oOm) {
+                oOm.printStackTrace();
+            }
+        }
+        return original;
+    }
+
+    public int getBitmapHeightFromFile(String strPath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        //Bitmap original;
+        int intSampleHeight = 0;
+        if (strPath != null && !strPath.equalsIgnoreCase("")) {
+            try {
+                //
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(strPath, options);
+                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, Config.intWidth, Config.intHeight);
+                options.inJustDecodeBounds = false;
+                intSampleHeight = options.outHeight / options.inSampleSize;
+                //original.recycle();
+                //original=null;
+            } catch (OutOfMemoryError | Exception oOm) {
+                oOm.printStackTrace();
+            }
+        }
+        return intSampleHeight;
+    }
 
     public void populateHeaderDependents(final LinearLayout dynamicUserTab, final int intWhichScreen) {
 
@@ -1557,7 +1555,7 @@ public class Libs {
                                                 activityVideoModels, feedBackModels,imageModels);
                                         //, jsonObjectNotification.getString("provider_image_url")
 
-                                        ActivityListFragment.activityModels.add(activityModel);
+                                        ActivityMonthFragment.activityModels.add(activityModel);
                                         ///
                                     }
                                 }
@@ -1659,6 +1657,14 @@ public class Libs {
         return file;
     }
 
+   /* SimpleDateFormat original = new SimpleDateFormat("yyyy-MM-ddThh:mm:sssZ");
+    SimpleDateFormat output= new SimpleDateFormat("yyyy/MM/dd");
+    String isoFormat = original.format(result.get("_id"));
+    Date d = original.parse(isoFormat);
+    String formattedTime = output.format(d);
+
+    System.out.println(formattedTime);*/
+
     public int retrieveDependants() {
 
         int count = SignupActivity.dependentModels.size();
@@ -1731,14 +1737,6 @@ public class Libs {
 
         return count;
     }
-
-   /* SimpleDateFormat original = new SimpleDateFormat("yyyy-MM-ddThh:mm:sssZ");
-    SimpleDateFormat output= new SimpleDateFormat("yyyy/MM/dd");
-    String isoFormat = original.format(result.get("_id"));
-    Date d = original.parse(isoFormat);
-    String formattedTime = output.format(d);
-
-    System.out.println(formattedTime);*/
 
     public boolean prepareData(String strCustomerImageUrl) {
 
@@ -1974,6 +1972,12 @@ public class Libs {
         return strDisplayDate;
     }
 
+    /*Calendar c = Calendar.getInstance();
+    System.out.println("Current time => " + c.getTime());
+
+    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+    String formattedDate = df.format(c.getTime());*/
+
     public String formatDateActivity(String strDate){
 
         String strDisplayDate="06-03-2016 20:55:00";
@@ -2002,11 +2006,43 @@ public class Libs {
         return strDisplayDate;
     }
 
-    /*Calendar c = Calendar.getInstance();
-    System.out.println("Current time => " + c.getTime());
+    public void toast(int type, int duration, String message) {
 
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-    String formattedDate = df.format(c.getTime());*/
+        String strColor = "#ffffff";
+
+        if (type == 2)
+            strColor = "#fcc485";
+
+        try {
+            LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
+            View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).findViewById(R.id.toast_layout_root));
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText(message);
+            text.setTextColor(Color.parseColor(strColor));
+
+            Toast toast = new Toast(_ctxt);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+
+            /*if (duration == 1)*/
+
+
+            if (duration == 2)
+                toast.setDuration(Toast.LENGTH_LONG);
+            else
+                toast.setDuration(Toast.LENGTH_SHORT);
+
+            toast.setView(layout);
+            toast.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(_ctxt, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean isPasswordValid(String password) {
+        return password.length() > 1;
+    }
 
     //Application Specig=fic End
 

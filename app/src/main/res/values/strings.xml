@@ -23,7 +23,7 @@
     <string name="activity_month">Monthly</string>
     <string name="activity_list">List</string>
     <string name="logout">Logout</string>
-    <string name="at">at</string>
+    <string name="at">&#160;at&#160;</string>
     <string name="image">Image</string>
     <string name="by">By&#160;</string>
 

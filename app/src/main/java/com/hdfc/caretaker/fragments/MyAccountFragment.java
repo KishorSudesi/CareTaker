@@ -16,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
 import com.hdfc.caretaker.AdditionalServicesActivity;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
+import com.hdfc.libs.Libs;
 import com.hdfc.views.RoundedImageView;
 
 import java.io.File;
@@ -29,11 +29,10 @@ public class MyAccountFragment extends Fragment {
     private static Bitmap bitmap;
     private static RoundedImageView roundedImageView;
     private static Handler threadHandler;
-    TextView txtviewBuyServices;
-    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
    // private RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
-
+    TextView txtviewBuyServices;
+    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
     private Libs libs;
 
     public static MyAccountFragment newInstance() {
@@ -134,6 +133,18 @@ public class MyAccountFragment extends Fragment {
         return view;
     }
 
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            progressDialog.dismiss();
+
+            if (bitmap != null)
+                roundedImageView.setImageBitmap(bitmap);
+
+            //loadingPanel.setVisibility(View.GONE);
+        }
+    }
+
     public class BackgroundThread extends Thread {
         @Override
         public void run() {
@@ -148,18 +159,6 @@ public class MyAccountFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            progressDialog.dismiss();
-
-            if (bitmap != null)
-                roundedImageView.setImageBitmap(bitmap);
-
-            //loadingPanel.setVisibility(View.GONE);
         }
     }
 }
