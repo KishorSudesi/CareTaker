@@ -4,7 +4,6 @@
       "dependent_illness": "Illness",
       "health_bp": 76,
       "services": [
-
       ],
       "dependent_relation": "brother",
       "dependent_address": "Address",
@@ -39,24 +38,8 @@
       "dependent_email": "komagan09@gmail.com",
       "dependent_age": 65,
       "health_status": [
-        {
-          "bp": 80,
-          "heart_rate": 230,
-          "time_taken": "2016-03-06T10:15:16.181Z"
-        },
-        {
-          "bp": 81,
-          "heart_rate": 231,
-          "time_taken": "2016-03-06T10:15:16.181Z"
-        },
-        {
-          "bp": 82,
-          "heart_rate": 232,
-          "time_taken": "2016-03-06T10:15:16.181Z"
-        }
       ],
       "activities": [
-
       ]
     },
     {
@@ -96,21 +79,6 @@
       "dependent_email": "emailkove@gmail.com",
       "dependent_age": 65,
       "health_status": [
-        {
-          "bp": 80,
-          "heart_rate": 230,
-          "time_taken": "2016-03-06T10:15:16.181Z"
-        },
-        {
-          "bp": 81,
-          "heart_rate": 231,
-          "time_taken": "2016-03-06T10:15:16.181Z"
-        },
-        {
-          "bp": 82,
-          "heart_rate": 232,
-          "time_taken": "2016-03-06T10:15:16.181Z"
-        }
       ],
       "activities": [
       ]

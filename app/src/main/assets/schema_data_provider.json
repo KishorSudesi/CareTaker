@@ -48,21 +48,6 @@
   ],
   "provider_contact_no": "8956231853",
   "feedbacks": [
-    {
-      "feedback_message": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-      "feedback_raring": 3,
-      "feedback_by": "komu",
-      "report": 1,
-      "feedback_time": "19-01-2016 18:00:00",
-      "feedback_by_url": "komu"
-    },
-    {
-      "feedback_message": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-      "feedback_raring": 3,
-      "feedback_by": "Kovendan V",
-      "feedback_time": "19-01-2016 18:00:00",
-      "feedback_by_url": "Bala"
-    }
   ],
   "provider_profile_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/87fe98886aae3fd0587dd8d5dfc732d5b332114c/provider_image.jpeg",
   "activities": [],

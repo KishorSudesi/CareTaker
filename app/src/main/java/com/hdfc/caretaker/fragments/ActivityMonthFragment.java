@@ -300,7 +300,7 @@ public class ActivityMonthFragment extends Fragment {
                 ActivityModel activityModel;
 
                 if (position <= activityModels.size()) {
-                    activityModel = activityModels.get(position);
+                    activityModel = activityModels.get(position);//TODO java.lang.IndexOutOfBoundsException
                 } else activityModel = null;
 
                 if (activityListModel.getStrStatus().equalsIgnoreCase("upcoming")) {
