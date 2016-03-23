@@ -410,17 +410,17 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                 );
 
                 feedBackModels.add(feedBackModel);
-
-                ActivityCompletedFragment.setMenuInitView();
-                ActivityCompletedFragment.imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance(feedBackModels);
-
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_completed_activity, newFragment);
-                transaction.addToBackStack(null);
-
-                transaction.commit();
             }
+
+            ActivityCompletedFragment.setMenuInitView();
+            ActivityCompletedFragment.imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance(feedBackModels);
+
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_completed_activity, newFragment);
+            transaction.addToBackStack(null);
+
+            transaction.commit();
 
         } catch (JSONException e) {
             e.printStackTrace();

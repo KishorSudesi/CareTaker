@@ -62,6 +62,7 @@ public class ActivityListFragment extends Fragment {
         try {
 
             activitiesModelArrayList.clear();
+            activityModels.clear();
 
             if (Config.jsonObject != null && Config.jsonObject.has("customer_name")) {
 

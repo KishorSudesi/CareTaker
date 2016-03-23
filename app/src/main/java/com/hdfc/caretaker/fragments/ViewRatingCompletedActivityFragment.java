@@ -99,7 +99,7 @@ public class ViewRatingCompletedActivityFragment extends Fragment {
                 if (_activityModel != null) {
                     for (int i = 0; i < _activityModel.size(); i++) {
                         //Libs.log(_activityModel.get(i).getStrFeedBackByUrl(), " URL ");
-                        libs.loadImageFromWeb(_activityModel.get(i).getStrFeedBackBy(), _activityModel.get(i).getStrFeedBackByUrl());
+                        libs.loadImageFromWeb(_activityModel.get(i).getStrFeedBackBy().trim(), _activityModel.get(i).getStrFeedBackByUrl().trim());
                     }
                 }
             } catch (Exception e) {
