@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
+import com.hdfc.models.ActivityModel;
 import com.hdfc.models.GalleryModel;
 import com.hdfc.models.ImageModel;
 
@@ -40,6 +41,7 @@ public class GalleryFragment extends Fragment {
     private Handler backgroundThreadHandler;
     private Libs libs;
     private ProgressDialog progressDialog;
+    private static ArrayList<ImageModel> imageModels;
 
 
     public GalleryFragment() {
@@ -47,9 +49,10 @@ public class GalleryFragment extends Fragment {
     }
 
 
-    public static GalleryFragment newInstance(ArrayList<ImageModel> imageModels) {
+    public static GalleryFragment newInstance(ArrayList<ImageModel> _imageModels) {
         GalleryFragment fragment = new GalleryFragment();
         Bundle args = new Bundle();
+        args.putSerializable("IMAGE_MODEL", _imageModels);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,11 +69,11 @@ public class GalleryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-
+        imageModels = (ArrayList<ImageModel>) this.getArguments().getSerializable("IMAGE_MODEL");
 
 
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
-       // ButterKnife.inject(getActivity());
+
 
         _gallery = (ImageView) view.findViewById(R.id.imageviewThumbnails);
         _thumbnails = (LinearLayout) view.findViewById(R.id.thumbnails);
@@ -82,18 +85,15 @@ public class GalleryFragment extends Fragment {
         backgroundThread.start();
         progressDialog = new ProgressDialog(getActivity());
 
-        //threadHandler = new ThreadHandler();
 
 
-        // progressDialog.setMessage(getString(R.string.loading));
-        //  progressDialog.setCancelable(false);
-        //  progressDialog.show();
+
+        progressDialog.setMessage(getString(R.string.loading));
+          progressDialog.setCancelable(false);
+          progressDialog.show();
         // _images = (ArrayList<String>;
 
 
-      /*  _adapter = new GalleryPagerAdapter(getActivity(),getChildFragmentManager());
-        _pager.setAdapter(_adapter);
-        _pager.setOffscreenPageLimit(6);*/ // how many images to load into memory
 
 
         return view;
@@ -103,8 +103,7 @@ public class GalleryFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // _adapter = new GalleryPagerAdapter(getActivity());
-        // how many images to load into memory
+
 
     }
 
@@ -119,56 +118,45 @@ public class GalleryFragment extends Fragment {
     public class BackgroundThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            //  mProgress.dismiss();
-
-            // bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.carla1);
+            progressDialog.dismiss();
 
 
-            _gallery = new ImageView(getActivity());
+
 
             // if (bitmap != null)
             try {
 
+                _thumbnails.removeAllViews();
+
                 for ( int m = 0; m < bitmapimages.size(); m++) {
                   //  Libs.log(" 2 " + String.valueOf(bitmap.getHeight()), " IN ");
-                    _thumbnails.removeView(_gallery);
-                    _gallery.setPadding(0, 0, 10, 0);
-                   //
+
+                    _gallery = new ImageView(getActivity());
+
+                     _gallery.setPadding(0, 0, 10, 0);
+
                     _gallery.setImageBitmap(bitmapimages.get(m));
 
                     _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                    _thumbnails.addView(_gallery);
-
                     final int finalM = m;
+
                     _gallery.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             imageGallery.setImageBitmap(bitmapimages.get(finalM));
                         }
                     });
+
+                    _thumbnails.addView(_gallery);
+
+
                 //
                 }
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
 
-
-
-            /*for (int i = 0; i < 1; i++) {
-                imageView.setId(i);
-                imageView.setPadding(0, 0, 10, 0);
-                imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-                imageView.setImageBitmap(bitmap);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                layout.addView(imageView);
-            }
-
-*/
-            //System.out.println("helooooooooooooooo"+_gallery);
-
-
-            // }
         }
 
     }
@@ -182,70 +170,23 @@ public class GalleryFragment extends Fragment {
                     galleryModelArrayList.clear();
                     bitmapimages.clear();
 
-                    if (Config.jsonObject != null && Config.jsonObject.has("customer_name")) {
 
-                        if (Config.jsonObject.has("dependents")) {
-
-                            JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
-
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-                            if (jsonObject.has("activities")) {
-
-                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
-
-
-                                for (int i = 0; i < jsonArrayNotifications.length(); i++) {
-                                    JSONObject jsonImageObject = jsonArrayNotifications.getJSONObject(i);
-
-                                    if (jsonImageObject.has("images")) {
-
-                                        JSONArray jsonArrayImage = jsonImageObject.getJSONArray("images");
-
-                                        for (int j = 0; j < jsonArrayImage.length(); j++) {
-
-                                            JSONObject jsonObjectimages = jsonArrayImage.getJSONObject(j);
-
-
-                                            GalleryModel galleryModel = new GalleryModel();
-                                            galleryModel.setStrImageName(jsonObjectimages.getString("image_name"));
-                                            galleryModel.setStrImageDesc(jsonObjectimages.getString("image_description"));
-                                            galleryModel.setStrImageTime(jsonObjectimages.getString("image_taken"));
-                                            galleryModel.setStrImageUrl(jsonObjectimages.getString("image_url"));
-
-                                            galleryModelArrayList.add(galleryModel);
-                                        }
-
-                                    }
-                                }
-                            }
-
-
-                        }
-                    }
-                    //
-
-                    Libs.log(String.valueOf(galleryModelArrayList.size()), " 1 ");
+                    Libs.log(String.valueOf(imageModels.size()), " 1 ");
 
                     try {
 
-                        for (int i = 0; i < galleryModelArrayList.size(); i++) {
-                            GalleryModel galleryModel = galleryModelArrayList.get(i);
+                        for (int i = 0; i < imageModels.size(); i++) {
 
-                            if (galleryModel.getStrImageUrl() != null && !galleryModel.getStrImageUrl().equalsIgnoreCase("")) {
+                            ImageModel imageModel = imageModels.get(i);
 
-                                for (int p = 0; p < galleryModelArrayList.size(); p++) {
-                                    // System.out.println("XXXXXXXX : "+galleryModelArrayList);
-                                    libs.loadImageFromWeb(libs.replaceSpace(galleryModel.getStrImageName()), galleryModel.getStrImageUrl());
+                            if (imageModel.getStrImageUrl() != null && !imageModel.getStrImageUrl().equalsIgnoreCase("")) {
 
-                                    File file = libs.getInternalFileImages(libs.replaceSpace(galleryModel.getStrImageName()));
+                                    libs.loadImageFromWeb(imageModel.getStrImageName(),imageModel.getStrImageUrl());
 
-                                    // Bitmap bitmap =  ;
-                                    bitmapimages.add(libs.getBitmapFromFile(file.getAbsolutePath(), Config.intWidth, Config.intHeight));
+                                    File file = libs.getInternalFileImages(libs.replaceSpace(imageModel.getStrImageName()));
 
-                                    //System.out.println("anikkkkketkkkkkkkkkkkk"+bitmapimages);
-
-                                }
+                                    Bitmap bitmap = libs.getBitmapFromFile(file.getAbsolutePath(), Config.intWidth, Config.intHeight) ;
+                                    bitmapimages.add(bitmap);
                             }
 
                         }
@@ -253,10 +194,11 @@ public class GalleryFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    backgroundThreadHandler.sendEmptyMessage(0);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                backgroundThreadHandler.sendEmptyMessage(0);
             }
         }
     }

@@ -159,10 +159,12 @@ public class ActivityListFragment extends Fragment {
 
                                         ImageModel imageModel = new ImageModel(
                                                 jsonObjectImage.getString("image_name"),
+                                                jsonObjectImage.getString("image_url"),
                                                 jsonObjectImage.getString("image_description"),
-                                                jsonObjectImage.getString("image_taken"),
-                                                jsonObjectImage.getString("image_url")
+                                                jsonObjectImage.getString("image_taken")
                                         );
+
+
 
                                         imageModels.add(imageModel);
                                     }
