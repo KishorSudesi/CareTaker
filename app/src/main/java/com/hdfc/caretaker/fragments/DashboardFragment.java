@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.ActivitiesAdapter;
 import com.hdfc.adapters.CarouselPagerAdapter;
+import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.ActivitiesModel;
-import com.hdfc.caretaker.R;
 import com.hdfc.views.RoundedImageView;
 
 import org.json.JSONArray;

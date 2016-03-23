@@ -12,10 +12,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hdfc.libs.MultiBitmapLoader;
-import com.hdfc.models.DependentModel;
 import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
+import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.models.DependentModel;
 
 import java.util.ArrayList;
 
@@ -25,9 +25,9 @@ import java.util.ArrayList;
 public class DependentViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
+    public MultiBitmapLoader multiBitmapLoader;
     private Context _ctxt;
     private ArrayList data;
-    public MultiBitmapLoader multiBitmapLoader;
 
     public DependentViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;

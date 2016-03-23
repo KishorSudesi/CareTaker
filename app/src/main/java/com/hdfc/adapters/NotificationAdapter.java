@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.R;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.NotificationModel;
-import com.hdfc.caretaker.R;
 import com.hdfc.views.RoundedImageView;
 
 import java.util.ArrayList;

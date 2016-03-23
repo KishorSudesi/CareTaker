@@ -1,8 +1,6 @@
 package com.hdfc.models;
 
 
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by Admin on 19-03-2016.
  */

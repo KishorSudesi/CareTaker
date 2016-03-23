@@ -17,10 +17,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.hdfc.app42service.UserService;
-import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
+import com.hdfc.config.Config;
+import com.hdfc.libs.Libs;
 import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;

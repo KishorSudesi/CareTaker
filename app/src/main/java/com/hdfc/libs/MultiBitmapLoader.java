@@ -10,8 +10,8 @@ import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import android.widget.ImageView;
 
-import com.hdfc.config.Config;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 
 import java.lang.ref.WeakReference;
 
@@ -22,9 +22,9 @@ import java.lang.ref.WeakReference;
 public class MultiBitmapLoader {
 
     private static Context _context;
-    private LruCache<String, Bitmap> mMemoryCache;
     private static Bitmap preLoadBitmap;
     private static Libs libs;
+    private LruCache<String, Bitmap> mMemoryCache;
 
     public MultiBitmapLoader(Context context) {
         _context = context;
@@ -50,32 +50,6 @@ public class MultiBitmapLoader {
         Runtime rt = Runtime.getRuntime();
         return (int) rt.maxMemory() / 1024;
     }*/
-
-    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-        if (getBitmapFromMemCache(key) == null) {
-            mMemoryCache.put(key, bitmap);
-        }
-    }
-
-    public Bitmap getBitmapFromMemCache(String key) {
-        return mMemoryCache.get(key);
-    }
-
-    public void loadBitmap(String strPath, ImageView imgView) {
-        if (strPath != null && !strPath.equalsIgnoreCase("")) {
-            if (cancelPotentialWork(strPath, imgView)) {
-                final Bitmap bitmap = getBitmapFromMemCache(strPath);
-                if (bitmap != null) {
-                    imgView.setImageBitmap(bitmap);
-                } else {
-                    BitmapWorkerTask task = new BitmapWorkerTask(imgView);
-                    final AsyncDrawable asyncDrawable = new AsyncDrawable(_context.getResources(), preLoadBitmap, task);
-                    imgView.setImageDrawable(asyncDrawable);
-                    task.execute(strPath);
-                }
-            }
-        }
-    }
 
     public static boolean cancelPotentialWork(String data, ImageView imageView) {
         final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
@@ -104,6 +78,47 @@ public class MultiBitmapLoader {
             }
         }
         return null;
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
+    }
+
+    public void loadBitmap(String strPath, ImageView imgView) {
+        if (strPath != null && !strPath.equalsIgnoreCase("")) {
+            if (cancelPotentialWork(strPath, imgView)) {
+                final Bitmap bitmap = getBitmapFromMemCache(strPath);
+                if (bitmap != null) {
+                    imgView.setImageBitmap(bitmap);
+                } else {
+                    BitmapWorkerTask task = new BitmapWorkerTask(imgView);
+                    final AsyncDrawable asyncDrawable = new AsyncDrawable(_context.getResources(), preLoadBitmap, task);
+                    imgView.setImageDrawable(asyncDrawable);
+                    task.execute(strPath);
+                }
+            }
+        }
+    }
+
+    public static class AsyncDrawable extends BitmapDrawable {
+        private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
+
+        public AsyncDrawable(Resources res, Bitmap bitmap,
+                             BitmapWorkerTask bitmapWorkerTask) {
+            super(res, bitmap);
+            bitmapWorkerTaskReference =
+                    new WeakReference<>(bitmapWorkerTask);
+        }
+
+        public BitmapWorkerTask getBitmapWorkerTask() {
+            return bitmapWorkerTaskReference.get();
+        }
     }
 
     class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
@@ -140,21 +155,6 @@ public class MultiBitmapLoader {
                     imageView.setImageBitmap(bitmap);
                 }
             }
-        }
-    }
-
-    public static class AsyncDrawable extends BitmapDrawable {
-        private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
-
-        public AsyncDrawable(Resources res, Bitmap bitmap,
-                             BitmapWorkerTask bitmapWorkerTask) {
-            super(res, bitmap);
-            bitmapWorkerTaskReference =
-                    new WeakReference<>(bitmapWorkerTask);
-        }
-
-        public BitmapWorkerTask getBitmapWorkerTask() {
-            return bitmapWorkerTaskReference.get();
         }
     }
 

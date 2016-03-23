@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.hdfc.models.ServiceModel;
 import com.hdfc.caretaker.R;
+import com.hdfc.models.ServiceModel;
 
 import java.util.List;
 

@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.R;
 import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.models.ActivitiesModel;
-import com.hdfc.caretaker.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ import java.util.Date;
 public class ActivitiesAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
+    public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private ArrayList data;
     private Libs libs;
-    public MultiBitmapLoader multiBitmapLoader;
 
     public ActivitiesAdapter(Context context, ArrayList d) {
         _context = context;

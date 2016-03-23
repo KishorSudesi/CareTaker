@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
@@ -23,9 +22,9 @@ import java.util.List;
 public class ActivityMonthListAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
+    public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private List<ActivityListModel> data;
-    public MultiBitmapLoader multiBitmapLoader;
     private Libs libs;
 
     public ActivityMonthListAdapter(Context ctxt, List<ActivityListModel> y) {

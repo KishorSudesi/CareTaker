@@ -15,12 +15,8 @@ import android.widget.LinearLayout;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.ActivityModel;
 import com.hdfc.models.GalleryModel;
 import com.hdfc.models.ImageModel;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,16 +28,15 @@ public class GalleryFragment extends Fragment {
     public static final String TAG = "GalleryActivity";
     public static final String EXTRA_NAME = "images";
     static Bitmap bitmap = null;
+    private static ArrayList<ImageModel> imageModels;
     public List<Bitmap> bitmapimages = new ArrayList<>();
     public List<GalleryModel> galleryModelArrayList;
-
     public ImageView _gallery,imageGallery;
     ImageView thumbView;
     LinearLayout _thumbnails;
     private Handler backgroundThreadHandler;
     private Libs libs;
     private ProgressDialog progressDialog;
-    private static ArrayList<ImageModel> imageModels;
 
 
     public GalleryFragment() {

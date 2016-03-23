@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.hdfc.config.Config;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 import com.hdfc.views.MyLinearView;
 
 public class ImagesFragment extends Fragment {

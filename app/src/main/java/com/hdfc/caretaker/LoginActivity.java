@@ -54,6 +54,10 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(LoginActivity.this);
 
         try {
+
+           /* Libs.log(AESCrypt.encrypt(Config.string, "eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f"), " api ");
+            Libs.log(AESCrypt.encrypt(Config.string, "54ede75ec2cd4f20e366800b0755997be605e262c90de91bf705e5c770d4c483"), " secret ");*/
+
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
 

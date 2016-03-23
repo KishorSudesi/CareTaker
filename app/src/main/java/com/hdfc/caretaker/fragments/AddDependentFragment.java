@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.hdfc.adapters.DependentViewAdapter;
-import com.hdfc.libs.Libs;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
+import com.hdfc.libs.Libs;
 
 public class AddDependentFragment extends Fragment {
 

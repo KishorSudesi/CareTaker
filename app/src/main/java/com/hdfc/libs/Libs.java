@@ -1787,8 +1787,8 @@ public class Libs {
                                     jsonDependant.put("dependent_age", dependentModel.getIntAge());
                                     jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
 
-                                    jsonDependant.put("health_bp", 0);
-                                    jsonDependant.put("health_heart_rate", 0);
+                                    jsonDependant.put("health_bp", 70 + cursorIndex);
+                                    jsonDependant.put("health_heart_rate", 80 + cursorIndex);
 
                                     jsonDependant.put("dependent_profile_url", dependentModel.getStrImgServer());
 
@@ -1883,8 +1883,8 @@ public class Libs {
                                     for (int m = 0; m < 3; m++) {
 
                                         JSONObject pnObj0 = new JSONObject();
-                                        pnObj0.put("notification_message", "This is a Test Data from APP42 " + m);
-                                        pnObj0.put("author", "hungal");
+                                        pnObj0.put("notification_message", "This is a Test Data from APP42 server " + m);
+                                        pnObj0.put("author", "test");
                                         pnObj0.put("time", "2016-03-06T10:15:16.181Z");
                                         pnObj0.put("author_profile_url", "http://url.com/23e3WQE124");
                                         jsonArr0.put(pnObj0);

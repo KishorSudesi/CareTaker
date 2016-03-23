@@ -10,10 +10,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.VideoCompletedAdapter;
+import com.hdfc.caretaker.R;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ActivityVideoModel;
 import com.hdfc.models.VideoModel;
-import com.hdfc.caretaker.R;
 
 import java.util.ArrayList;
 

@@ -11,10 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.R;
 import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.models.ConfirmViewModel;
-import com.hdfc.caretaker.R;
 
 import java.util.ArrayList;
 
@@ -24,10 +24,9 @@ import java.util.ArrayList;
 public class ConfirmListViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
+    public MultiBitmapLoader multiBitmapLoader;
     private Context _ctxt;
     private ArrayList data;
-
-    public MultiBitmapLoader multiBitmapLoader;
 
     public ConfirmListViewAdapter(Context ctxt, ArrayList d) {
         _ctxt = ctxt;

@@ -11,9 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hdfc.libs.Libs;
 import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
+import com.hdfc.libs.Libs;
 
 public class DependentDetailsMedicalActivity extends AppCompatActivity {
 

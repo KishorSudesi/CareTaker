@@ -39,6 +39,8 @@ public class Config {
 
     public static final boolean isDebuggable = true;
 
+    public static final boolean release = false;
+
     public static int intNotificationScreen = 2;
     public static int intActivityScreen = 5;
     public static int intListActivityScreen = 6;

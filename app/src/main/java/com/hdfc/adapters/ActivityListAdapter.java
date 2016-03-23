@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hdfc.models.ActivityListModel;
 import com.hdfc.caretaker.R;
+import com.hdfc.models.ActivityListModel;
 
 import java.util.List;
 
