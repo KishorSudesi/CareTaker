@@ -2,12 +2,10 @@ package com.hdfc.caretaker.fragments;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +18,6 @@ import com.hdfc.libs.Libs;
 import com.hdfc.models.GalleryModel;
 import com.hdfc.models.ImageModel;
 
-import junit.framework.Assert;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,25 +25,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-
 
 public class GalleryFragment extends Fragment {
 
     public static final String TAG = "GalleryActivity";
     public static final String EXTRA_NAME = "images";
-    private Handler backgroundThreadHandler;
-
-
-
+    static Bitmap bitmap = null;
     public List<Bitmap> bitmapimages = new ArrayList<>();
     public List<GalleryModel> galleryModelArrayList;
 
     public ImageView _gallery,imageGallery;
     ImageView thumbView;
     LinearLayout _thumbnails;
-    static Bitmap bitmap = null;
-
+    private Handler backgroundThreadHandler;
     private Libs libs;
     private ProgressDialog progressDialog;
 
@@ -87,10 +77,11 @@ public class GalleryFragment extends Fragment {
         imageGallery = (ImageView)view.findViewById(R.id.imageViewGallery);
         libs = new Libs(getActivity());
 
+        backgroundThreadHandler = new BackgroundThreadHandler();
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
         progressDialog = new ProgressDialog(getActivity());
-        backgroundThreadHandler = new BackgroundThreadHandler();
+
         //threadHandler = new ThreadHandler();
 
 
