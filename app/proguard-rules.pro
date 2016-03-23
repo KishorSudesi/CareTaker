@@ -84,17 +84,17 @@
 
 #09.03.21016 10:30
 #dagger
-#-dontwarn com.google.dagger.**
-#-keep class com.google.dagger.** { *; }
-#-keep interface com.google.dagger.** { *; }
+-dontwarn com.google.dagger.**
+-keep class com.google.dagger.** { *; }
+-keep interface com.google.dagger.** { *; }
 
-#-keep class **$$ModuleAdapter { *; }
-#-keepnames class **$$InjectAdapter { *; }
+-keep class **$$ModuleAdapter { *; }
+-keepnames class **$$InjectAdapter { *; }
 
-#-keepclassmembers class * {
-#    @javax.inject.Inject <fields>;
-#    @javax.inject.Inject <init>(...);
-#}
+-keepclassmembers class * {
+    @javax.inject.Inject <fields>;
+    @javax.inject.Inject <init>(...);
+}
 
 #ignore duplicate libraries
 -dontnote android.net.http.*

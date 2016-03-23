@@ -22,7 +22,9 @@ public class Config {
     public static final String collectionNameServices = "services";
     public static final String collectionNameProviders = "providers";
     public static final String collectionName = "customer";
-    public static final String strServiceDocId = "56c70aefe4b0067c8c7658bf";//remove this
+    public static final String strServiceDocId = "56f280b0e4b003cbd56dcb38";//remove this
+    //for UAT 56f280b0e4b003cbd56dcb38
+    //for development 56c70aefe4b0067c8c7658bf
     public static final String string = Libs.getStringJni();
 
     public static final int START_CAMERA_REQUEST_CODE = 1;
@@ -37,9 +39,9 @@ public class Config {
 
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    public static final boolean isDebuggable = true;
+    public static final boolean isDebuggable = false;
 
-    public static final boolean release = false;
+    public static final boolean release = true;
 
     public static int intNotificationScreen = 2;
     public static int intActivityScreen = 5;
