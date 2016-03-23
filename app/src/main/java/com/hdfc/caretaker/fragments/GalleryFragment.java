@@ -75,7 +75,7 @@ public class GalleryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
 
-        _gallery = (ImageView) view.findViewById(R.id.imageviewThumbnails);
+        //_gallery = (ImageView) view.findViewById(R.id.imageviewThumbnails);
         _thumbnails = (LinearLayout) view.findViewById(R.id.thumbnails);
         imageGallery = (ImageView)view.findViewById(R.id.imageViewGallery);
         libs = new Libs(getActivity());
@@ -120,10 +120,6 @@ public class GalleryFragment extends Fragment {
         public void handleMessage(Message msg) {
             progressDialog.dismiss();
 
-
-
-
-            // if (bitmap != null)
             try {
 
                 _thumbnails.removeAllViews();
@@ -133,11 +129,14 @@ public class GalleryFragment extends Fragment {
 
                     _gallery = new ImageView(getActivity());
 
-                     _gallery.setPadding(0, 0, 10, 0);
+                     _gallery.setPadding(0, 0, 7, 0);
 
                     _gallery.setImageBitmap(bitmapimages.get(m));
 
-                    _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                  //  _gallery.setMaxWidth(200);
+                   // _gallery.setMaxHeight(200);
+                     _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                     final int finalM = m;
 
