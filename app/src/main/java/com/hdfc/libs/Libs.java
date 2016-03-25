@@ -1909,7 +1909,7 @@ public class Libs {
 
                                     jsonDependant.put("services_history", jsonArrServiceHistory);
 
-                                    JSONArray jsonArrHealth = new JSONArray();
+                                   /* JSONArray jsonArrHealth = new JSONArray();
 
                                     for (int o = 0; o < 3; o++) {
 
@@ -1920,7 +1920,7 @@ public class Libs {
                                         jsonArrHealth.put(pnObjHealth);
 
                                     }
-                                    jsonDependant.put("health_status", jsonArrHealth);
+                                    jsonDependant.put("health_status", jsonArrHealth);*/
 
                                     jsonArrayDependant.put(jsonDependant);
                                 }
