@@ -2,6 +2,7 @@
   "dependent_id": "1234567891",
   "customer_id": "232432432432",
   "provider_id": "213213213213",
+
   "activity_name": "activity name",
   "status": "completed",
   "activity_desc": "desc",
@@ -11,6 +12,9 @@
   "servcie_desc": "description",
   "activity_done_date": "2014-12-22T23:08:11.343Z",
   "activity_description": "Walk in garden",
+  "overdue": false,
+  "provider_status": "scheduled",
+
   "features_done": [
     "service1"
   ],
