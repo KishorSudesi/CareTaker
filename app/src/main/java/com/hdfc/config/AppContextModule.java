@@ -1,17 +1,11 @@
 package com.hdfc.config;
 
-import android.content.Context;
-import android.location.LocationManager;
-
-import dagger.Module;
-import dagger.Provides;
-
 /**
  * Created by Suhail on 3/12/2016.
  */
-@Module //a module could also include other modules
+//@Module //a module could also include other modules
 public class AppContextModule {
-    private final CareTaker application;
+   /* private final CareTaker application;
 
     public AppContextModule(CareTaker application) {
         this.application = application;
@@ -30,5 +24,5 @@ public class AppContextModule {
     @Provides
     public LocationManager locationService(Context context) {
         return (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-    }
+    }*/
 }

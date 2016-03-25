@@ -33,8 +33,8 @@
                     android:layout_height="120dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:src="@mipmap/camera_icon"
-                    android:padding="5dp" />
+                    android:padding="5dp"
+                    android:src="@mipmap/camera_icon" />
 
                 <com.hdfc.views.RoundedImageView
                     android:id="@+id/imageView51"
@@ -46,7 +46,6 @@
                     android:layout_marginRight="-50dp"
                     android:alpha="0.6"
                     android:padding="5dp"
-                    android:src="@drawable/hungal_circle"
                     android:visibility="invisible" />
 
                 <TextView
@@ -142,13 +141,13 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bottom_border_grey">
+                    android:background="@drawable/bottom_border_grey"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/editText34"

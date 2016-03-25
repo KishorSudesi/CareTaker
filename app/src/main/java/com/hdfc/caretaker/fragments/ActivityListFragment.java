@@ -208,7 +208,7 @@ public class ActivityListFragment extends Fragment {
 
                 if (activityListModel.getStrStatus().equalsIgnoreCase("upcoming")) {
 
-                    UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityListModel);
+                    UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityListModel, activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();

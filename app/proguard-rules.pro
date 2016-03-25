@@ -63,38 +63,38 @@
 #-keep interface com.fasterxml.jackson.** { *; }
 
 #gson
--dontwarn com.google.code.gson.**
--keep class com.google.code.gson.** { *; }
--keep interface com.google.code.gson.** { *; }
+#-dontwarn com.google.code.gson.**
+#-keep class com.google.code.gson.** { *; }
+#-keep interface com.google.code.gson.** { *; }
 
 #glide
--dontwarn com.github.bumptech.glide.**
--keep class com.github.bumptech.glide.** { *; }
--keep interface com.github.bumptech.glide.** { *; }
+#-dontwarn com.github.bumptech.glide.**
+#-keep class com.github.bumptech.glide.** { *; }
+#-keep interface com.github.bumptech.glide.** { *; }
 
 #davemorrissey
--dontwarn com.davemorrissey.labs.**
--keep class com.davemorrissey.labs.** { *; }
--keep interface com.davemorrissey.labs.** { *; }
+#-dontwarn com.davemorrissey.labs.**
+#-keep class com.davemorrissey.labs.** { *; }
+#-keep interface com.davemorrissey.labs.** { *; }
 
 #jakewharton
--dontwarn com.jakewharton.**
--keep class com.jakewharton.** { *; }
--keep interface com.jakewharton.** { *; }
+#-dontwarn com.jakewharton.**
+#-keep class com.jakewharton.** { *; }
+#-keep interface com.jakewharton.** { *; }
 
 #09.03.21016 10:30
 #dagger
--dontwarn com.google.dagger.**
--keep class com.google.dagger.** { *; }
--keep interface com.google.dagger.** { *; }
+#-dontwarn com.google.dagger.**
+#-keep class com.google.dagger.** { *; }
+#-keep interface com.google.dagger.** { *; }
 
--keep class **$$ModuleAdapter { *; }
--keepnames class **$$InjectAdapter { *; }
+#-keep class **$$ModuleAdapter { *; }
+#-keepnames class **$$InjectAdapter { *; }
 
--keepclassmembers class * {
-    @javax.inject.Inject <fields>;
-    @javax.inject.Inject <init>(...);
-}
+#-keepclassmembers class * {
+#    @javax.inject.Inject <fields>;
+#    @javax.inject.Inject <init>(...);
+#}
 
 #ignore duplicate libraries
 -dontnote android.net.http.*
@@ -102,13 +102,13 @@
 -dontnote org.apache.http.**
 
 #butterknife
--dontwarn butterknife.internal.**
--keep class **$$ViewInjector { *; }
--keepnames class * { @butterknife.InjectView *;}
+#-dontwarn butterknife.internal.**
+#-keep class **$$ViewInjector { *; }
+#-keepnames class * { @butterknife.InjectView *;}
 
 -keepattributes *Annotation*
 #-dontwarn
 -adaptclassstrings
 -repackageclasses 'obfuscated'
 
--keepattributes InnerClasses,Signature
+#-keepattributes InnerClasses,Signature

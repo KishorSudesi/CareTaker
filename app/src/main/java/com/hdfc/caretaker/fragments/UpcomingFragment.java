@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -22,6 +21,7 @@ import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.ActivityListModel;
+import com.hdfc.models.ActivityModel;
 
 import java.io.File;
 
@@ -37,10 +37,11 @@ public class UpcomingFragment extends Fragment {
     private String strCarlaImageName;
     private Libs libs;
 
-    public static UpcomingFragment newInstance(ActivityListModel _activityListModel) {
+    public static UpcomingFragment newInstance(ActivityListModel _activityListModel, ActivityModel activityModel) {
         UpcomingFragment fragment = new UpcomingFragment();
         Bundle args = new Bundle();
         args.putSerializable("ACTIVITY", _activityListModel);
+        args.putSerializable("ACTIVITY_COMPLETE", activityModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,6 +72,7 @@ public class UpcomingFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
 
         ActivityListModel activityListModel = (ActivityListModel) this.getArguments().getSerializable("ACTIVITY");
+        final ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
 
         if(activityListModel!=null) {
             txtViewHead2.setText(activityListModel.getStrMessage());
@@ -99,7 +101,8 @@ public class UpcomingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.putExtra("sms_body", "default content");
+                sendIntent.putExtra("sms_body", activityModel != null ? activityModel.getStrActivityName() : "Activity Name");
+                sendIntent.putExtra("address", activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
                 sendIntent.setType("vnd.android-dir/mms-sms");
                 startActivity(sendIntent);
             }
@@ -108,7 +111,7 @@ public class UpcomingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:8605547669"));
+                callIntent.setData(Uri.parse("tel:" + activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000"));
                 startActivity(callIntent);
             }
         });

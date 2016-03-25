@@ -54,7 +54,7 @@ public class VideoCompletedAdapter extends BaseAdapter {
             viewHolder.dateTime = (TextView) convertView.findViewById(R.id.dateTime);
             viewHolder.information = (TextView) convertView.findViewById(R.id.information);
             viewHolder.vid = (ImageView) convertView.findViewById(R.id.video);
-            viewHolder.vid.setImageResource(R.drawable.vidlink);
+            //viewHolder.vid.setImageResource(R.drawable.vidlink); todo add video thumbnail
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
