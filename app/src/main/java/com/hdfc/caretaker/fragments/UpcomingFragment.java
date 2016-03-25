@@ -29,6 +29,7 @@ import java.io.File;
 public class UpcomingFragment extends Fragment {
     private static Bitmap bitmap;
     private static ImageButton msg,call;
+
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
     private static ProgressDialog progressDialog;
@@ -66,7 +67,7 @@ public class UpcomingFragment extends Fragment {
         txtViewHead2 = (TextView) view.findViewById(R.id.textViewHead2);
         imageViewCarla = (ImageView) view.findViewById(R.id.imageViewCarla);
         msg = (ImageButton)view.findViewById(R.id.buttonMsg);
-        call = (ImageButton)view.findViewById(R.id.buttonCall);
+        call = (ImageButton)view.findViewById(R.id.buttonCallUpcoming);
 
         libs = new Libs(getActivity());
         progressDialog = new ProgressDialog(getActivity());
@@ -100,6 +101,8 @@ public class UpcomingFragment extends Fragment {
         msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                 sendIntent.putExtra("sms_body", activityModel != null ? activityModel.getStrActivityName() : "Activity Name");
                 sendIntent.putExtra("address", activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
@@ -110,9 +113,16 @@ public class UpcomingFragment extends Fragment {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000"));
-                startActivity(callIntent);
+
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    String strNo = "tel:" + String.valueOf(activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
+                    Libs.log(strNo," call intent ");
+                    callIntent.setData(Uri.parse(strNo));
+                    startActivity(callIntent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         return view;
