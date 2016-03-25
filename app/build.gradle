@@ -9,8 +9,8 @@ android {
         applicationId "com.hdfc.caretaker"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 4
-        versionName "0.4"
+        versionCode 5
+        versionName "0.6"
     }
 
     lintOptions {
