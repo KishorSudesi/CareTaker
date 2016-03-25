@@ -180,7 +180,6 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                                 jsonObjectAct.put("activity_date", _strDate);
                                 jsonObjectAct.put("activity_done_date", _strDate);
-                                jsonObjectAct.put("service_id", dependentServiceModel.getiServiceId());
 
 
                                 jsonObjectAct.put("feedbacks", jsonArray);
