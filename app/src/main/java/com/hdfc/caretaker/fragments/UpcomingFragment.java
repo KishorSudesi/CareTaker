@@ -1,16 +1,20 @@
 package com.hdfc.caretaker.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +28,7 @@ import java.io.File;
 
 public class UpcomingFragment extends Fragment {
     private static Bitmap bitmap;
+    private static ImageButton msg,call;
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
     private static ProgressDialog progressDialog;
@@ -59,6 +64,8 @@ public class UpcomingFragment extends Fragment {
         txtViewHead1 = (TextView) view.findViewById(R.id.textViewHead1);
         txtViewHead2 = (TextView) view.findViewById(R.id.textViewHead2);
         imageViewCarla = (ImageView) view.findViewById(R.id.imageViewCarla);
+        msg = (ImageButton)view.findViewById(R.id.buttonMsg);
+        call = (ImageButton)view.findViewById(R.id.buttonCall);
 
         libs = new Libs(getActivity());
         progressDialog = new ProgressDialog(getActivity());
@@ -86,6 +93,23 @@ public class UpcomingFragment extends Fragment {
             public void onClick(View v) {
                 goToList();
 
+            }
+        });
+        msg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.putExtra("sms_body", "default content");
+                sendIntent.setType("vnd.android-dir/mms-sms");
+                startActivity(sendIntent);
+            }
+        });
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:8605547669"));
+                startActivity(callIntent);
             }
         });
         return view;

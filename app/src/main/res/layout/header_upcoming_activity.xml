@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <ImageButton
-        android:id="@+id/buttonBack"
+        android:id="@+id/buttonMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -21,7 +21,7 @@
         android:id="@+id/buttonCall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/buttonBack"
+        android:layout_alignTop="@+id/buttonMsg"
         android:layout_centerHorizontal="true"
         android:background="@drawable/button_back_trans"
         android:src="@drawable/receiver_icon" />
