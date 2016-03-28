@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.GalleryModel;
 import com.hdfc.models.ImageModel;
 
 import java.io.File;

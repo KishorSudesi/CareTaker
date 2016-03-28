@@ -19,7 +19,6 @@ import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.FeedBackModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -155,7 +154,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            storageService.findDocsByIdApp42CallBack(Config.jsonDocId, Config.collectionName, new App42CallBack() {
+            storageService.findDocsByIdApp42CallBack(Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
                 @Override
                 public void onSuccess(Object o) {
 
@@ -229,7 +228,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                             //Libs.log(responseJSONDocCarla.toString()," responseJSONDocCarla ");
 
-                            storageService.updateDocs(responseJSONDocCarla, Config.jsonDocId, Config.collectionName, new App42CallBack() {
+                            storageService.updateDocs(responseJSONDocCarla, Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
                                 @Override
                                 public void onSuccess(Object o) {
 
@@ -237,7 +236,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                                         Config.jsonObject = responseJSONDocCarla;
 
-                                        storageService.findDocsByKeyValue(Config.collectionNameProviders, "provider_email", _activityModel.getStrAtivityProvider(), new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                                        storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email", _activityModel.getStrAtivityProvider(), new AsyncApp42ServiceApi.App42StorageServiceListener() {
                                             @Override
                                             public void onDocumentInserted(Storage response) {
                                             }
@@ -282,7 +281,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                             e.printStackTrace();
                                                         }
 
-                                                        storageService.updateDocs(responseJSONDoc, strCarlaJsonId, Config.collectionNameProviders, new App42CallBack() {
+                                                        storageService.updateDocs(responseJSONDoc, strCarlaJsonId, Config.collectionProvider, new App42CallBack() {
                                                             @Override
                                                             public void onSuccess(Object o) {
 

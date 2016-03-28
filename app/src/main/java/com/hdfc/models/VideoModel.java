@@ -3,34 +3,39 @@ package com.hdfc.models;
 import java.io.Serializable;
 
 /**
- * Created by Admin on 2/22/2016.
+ * Created by Suhail on 2/19/2016.
  */
 public class VideoModel implements Serializable {
-    private int iVideoId;
-    private String strDateTime;
-    private String strDescription;
 
-    public int getiVideoId() {
-        return iVideoId;
+    private String strVideoName;
+    private String strVideoUrl;
+    private String strVideoDesc;
+    private String strVideoTime;
+
+    private int iVideoID;
+
+    public VideoModel(String strVideoName, String strVideoUrl, String strVideoDesc,
+                      String strVideoTime, int iVideoID) {
+        this.strVideoName = strVideoName;
+        this.strVideoUrl = strVideoUrl;
+        this.strVideoDesc = strVideoDesc;
+        this.strVideoTime = strVideoTime;
+        this.iVideoID = iVideoID;
     }
 
-    public void setiVideoId(int iVideoId) {
-        this.iVideoId = iVideoId;
+    public String getStrVideoName() {
+        return strVideoName;
     }
 
-    public String getStrDateTime() {
-        return strDateTime;
+    public String getStrVideoUrl() {
+        return strVideoUrl;
     }
 
-    public void setStrDateTime(String strDateTime) {
-        this.strDateTime = strDateTime;
+    public String getStrVideoDesc() {
+        return strVideoDesc;
     }
 
-    public String getStrDescription() {
-        return strDescription;
-    }
-
-    public void setStrDescription(String strDescription) {
-        this.strDescription = strDescription;
+    public String getStrVideoTime() {
+        return strVideoTime;
     }
 }

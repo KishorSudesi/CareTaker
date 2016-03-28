@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.ActivityListModel;
 
 import java.io.File;
 

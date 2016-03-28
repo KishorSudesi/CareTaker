@@ -21,6 +21,7 @@ import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
+import com.hdfc.models.CustomerModel;
 import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -82,7 +83,8 @@ public class GuruDetailsFragment extends Fragment {
 
         mProgress = new ProgressDialog(getActivity());
 
-        strCustomerImgNameCamera = String.valueOf(new Date().getDate() + "" + new Date().getTime()) + ".jpeg";
+        strCustomerImgNameCamera = String.valueOf(new Date().getDate() + "" +
+                new Date().getTime()) + ".jpeg";
 
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,12 +107,13 @@ public class GuruDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (SignupActivity.strUserId != null && !SignupActivity.strUserId.equalsIgnoreCase("")) {
+        if (Config.customerModel.getStrName() != null
+                && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
 
-            editName.setText(SignupActivity.strCustomerName);
-            editEmail.setText(SignupActivity.strCustomerEmail);
-            editContactNo.setText(SignupActivity.strCustomerContactNo);
-            editAddress.setText(SignupActivity.strCustomerAddress);
+            editName.setText(Config.customerModel.getStrName());
+            editEmail.setText(Config.customerModel.getStrEmail());
+            editContactNo.setText(Config.customerModel.getStrContacts());
+            editAddress.setText(Config.customerModel.getStrAddress());
 
             backgroundThreadHandler = new BackgroundThreadHandler();
             backgroundThreadCamera = new BackgroundThreadCamera();
@@ -137,7 +140,8 @@ public class GuruDetailsFragment extends Fragment {
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strCustomerImgName) && SignupActivity.strUserId.equalsIgnoreCase("")) {
+        if (TextUtils.isEmpty(strCustomerImgName)
+                && Config.customerModel.getStrName().equalsIgnoreCase("")) {
             libs.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
@@ -160,7 +164,8 @@ public class GuruDetailsFragment extends Fragment {
             cancel = true;
         }
 */
-            if (!TextUtils.isEmpty(strPass) && libs.isPasswordValid(strPass) && !TextUtils.isEmpty(strConfirmPass) && libs.isPasswordValid(strConfirmPass)) {
+            if (!TextUtils.isEmpty(strPass) && libs.isPasswordValid(strPass)
+                    && !TextUtils.isEmpty(strConfirmPass) && libs.isPasswordValid(strConfirmPass)) {
 
                 if (!strPass.trim().equalsIgnoreCase(strConfirmPass.trim())) {
                     editConfirmPass.setError(getString(R.string.error_confirm_password));
@@ -231,22 +236,28 @@ public class GuruDetailsFragment extends Fragment {
 
                                 try {
                                     JSONObject jsonObject = new JSONObject(e.getMessage());
-                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                    JSONObject jsonObjectError =
+                                            jsonObject.getJSONObject("app42Fault");
                                     strMess = jsonObjectError.getString("message");
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
 
-                                if (!strMess.equalsIgnoreCase("")&&strMess.equalsIgnoreCase("Not Found")) {
+                                if (!strMess.equalsIgnoreCase("")
+                                        && strMess.equalsIgnoreCase("Not Found")) {
 
-                                    SignupActivity.strUserId = strEmail;
+                                    //SignupActivity.strUserId = strEmail;
                                     CustomViewPager.setPagingEnabled(true);
 
-                                    SignupActivity.strCustomerName = strName;
+                                    Config.customerModel = new CustomerModel(strName, "", "",
+                                            strAddress, strContactNo, strEmail, 0,
+                                            strCustomerImgName);
+
+                                  /*  SignupActivity.strCustomerName = strName;
                                     SignupActivity.strCustomerEmail = strEmail;
                                     SignupActivity.strCustomerContactNo = strContactNo;
                                     SignupActivity.strCustomerAddress = strAddress;
-                                    SignupActivity.strCustomerImg = strCustomerImgName;
+                                    SignupActivity.strCustomerImg = strCustomerImgName;*/
 
                                    /* String strPass = null;
                                     try {
@@ -332,7 +343,8 @@ public class GuruDetailsFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             mProgress.dismiss();
-            if (imgButtonCamera != null && strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("") && bitmap != null)
+            if (imgButtonCamera != null && strCustomerImgName != null
+                    && !strCustomerImgName.equalsIgnoreCase("") && bitmap != null)
                 imgButtonCamera.setImageBitmap(bitmap);
         }
     }
@@ -350,7 +362,8 @@ public class GuruDetailsFragment extends Fragment {
                     strCustomerImgName = galleryFile.getAbsolutePath();
                     InputStream is = getActivity().getContentResolver().openInputStream(uri);
                     libs.copyInputStreamToFile(is, galleryFile);
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth,
+                            Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
             } catch (Exception e) {
@@ -365,7 +378,8 @@ public class GuruDetailsFragment extends Fragment {
 
             try {
                 if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth,
+                            Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
             } catch (Exception e) {

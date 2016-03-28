@@ -3,43 +3,41 @@ package com.hdfc.models;
 /**
  * Created by balamurugan@adstringo.in on 01-01-2016.
  */
-public class CustomerModel {
+public class ProviderModel {
 
     private String strName = "";
-    private String strPaytm = "";
     private String strImgUrl = "";
     private String strImgPath = "";
     private String strAddress = "";
     private String strContacts = "";
     private String strEmail = "";
 
-    private int iCustomerID;
+    private int iProviderID;
 
-    public CustomerModel() {
+    public ProviderModel() {
     }
 
-    public CustomerModel(String strName, String strPaytm, String strImgUrl, String strAddress,
-                         String strContacts, String strEmail, int iCustomerID, String strImgPath) {
+    public ProviderModel(String strName, String strImgUrl, String strImgPath, String strAddress,
+                         String strContacts, String strEmail, int iProviderID) {
         this.strName = strName;
-        this.strPaytm = strPaytm;
         this.strImgUrl = strImgUrl;
+        this.strImgPath = strImgPath;
         this.strAddress = strAddress;
         this.strContacts = strContacts;
         this.strEmail = strEmail;
-        this.iCustomerID = iCustomerID;
-        this.strImgPath = strImgPath;
+        this.iProviderID = iProviderID;
     }
 
     public String getStrName() {
         return strName;
     }
 
-    public String getStrPaytm() {
-        return strPaytm;
-    }
-
     public String getStrImgUrl() {
         return strImgUrl;
+    }
+
+    public String getStrImgPath() {
+        return strImgPath;
     }
 
     public String getStrAddress() {
@@ -54,11 +52,7 @@ public class CustomerModel {
         return strEmail;
     }
 
-    public int getiCustomerID() {
-        return iCustomerID;
-    }
-
-    public String getStrImgPath() {
-        return strImgPath;
+    public int getiProviderID() {
+        return iProviderID;
     }
 }

@@ -69,21 +69,23 @@ public class DependentViewAdapter extends BaseAdapter {
 
             try {
 
-                DependentModel tempValues = (DependentModel) data.get(position);
+                DependentModel dependentModel = (DependentModel) data.get(position);
 
-                holder.textName.setText(tempValues.getStrName());
+                holder.textName.setText(dependentModel.getStrName());
 
-                if (!tempValues.getStrName().equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent)) && !tempValues.getStrRelation().equalsIgnoreCase("")) {
+                if (!dependentModel.getStrName().equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))
+                        && !dependentModel.getStrRelation().equalsIgnoreCase("")) {
                     holder.textRelation.setVisibility(View.VISIBLE);
-                    holder.textRelation.setText(tempValues.getStrRelation());
+                    holder.textRelation.setText(dependentModel.getStrRelation());
 
-                    if (!tempValues.getStrImg().equalsIgnoreCase("")) {
-                        multiBitmapLoader.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+                    if (!dependentModel.getStrImagePath().equalsIgnoreCase("")) {
+                        multiBitmapLoader.loadBitmap(dependentModel.getStrImagePath().trim(),
+                                holder.image);
                     }
-                        //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
 
                 } else {
-                    Bitmap imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(), R.drawable.plus_icon);
+                    Bitmap imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(),
+                            R.drawable.plus_icon);
 
                     holder.textRelation.setVisibility(View.GONE);
                     holder.image.setImageBitmap(imageBitmap);
@@ -99,7 +101,9 @@ public class DependentViewAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 try {
-                    String strName = ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
+                    String strName =
+                            ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
+
                     if (strName != null && strName.equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))) {
                         Intent selection = new Intent(_ctxt, DependentDetailPersonalActivity.class);
                         ((Activity) _ctxt).finish();
@@ -108,7 +112,6 @@ public class DependentViewAdapter extends BaseAdapter {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         };
 
@@ -122,5 +125,4 @@ public class DependentViewAdapter extends BaseAdapter {
         public TextView textRelation;
         public ImageView image;
     }
-
 }

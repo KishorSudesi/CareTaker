@@ -220,7 +220,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                     if (jsonObjectAct != null) {
 
                         storageService.findDocsByIdApp42CallBack(Config.jsonDocId,
-                                Config.collectionName, new App42CallBack() {
+                                Config.collectionCustomer, new App42CallBack() {
                             @Override
                             public void onSuccess(Object o) {
 
@@ -277,7 +277,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                     if (libs.isConnectingToInternet()) {
 
                                         storageService.updateDocs(responseJSONDoc,
-                                                Config.jsonDocId, Config.collectionName,
+                                                Config.jsonDocId, Config.collectionCustomer,
                                                 new App42CallBack() {
                                             @Override
                                             public void onSuccess(Object o) {
@@ -286,7 +286,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                                                     Config.jsonObject = responseJSONDoc;
 
-                                                    storageService.findDocsByKeyValue(Config.collectionNameProviders,"provider_email",getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                                                    storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email", getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
                                                         @Override
                                                         public void onDocumentInserted(Storage response) {
                                                         }
@@ -317,7 +317,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                                                         }
 
                                                                         //
-                                                                        storageService.updateDocs(responseJSONDocCarla, strCarlaJsonId, Config.collectionNameProviders, new App42CallBack() {
+                                                                        storageService.updateDocs(responseJSONDocCarla, strCarlaJsonId, Config.collectionProvider, new App42CallBack() {
                                                                             @Override
                                                                             public void onSuccess(Object o) {
 
@@ -445,7 +445,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         //
         StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-        storageService.findDocsByKeyValue(Config.collectionNameProviders, "provider_email",
+        storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email",
                 getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
             @Override
             public void onDocumentInserted(Storage response) {

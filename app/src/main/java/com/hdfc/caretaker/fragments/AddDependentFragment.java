@@ -11,11 +11,11 @@ import android.widget.ListView;
 import com.hdfc.adapters.DependentViewAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 
 public class AddDependentFragment extends Fragment {
 
-    //public static ArrayList<DependentModel> CustomListViewValuesArr = new ArrayList<DependentModel>();
     public static ListView list;
     public static DependentViewAdapter adapter;
     public static Button buttonContinue;
@@ -32,7 +32,8 @@ public class AddDependentFragment extends Fragment {
 
         int intCount = 0;
 
-        if (SignupActivity.strUserId != null && !SignupActivity.strUserId.equalsIgnoreCase(""))
+        if (Config.customerModel.getStrName() != null
+                && !Config.customerModel.getStrName().equalsIgnoreCase(""))
             intCount = libs.retrieveDependants();
 
         if (intCount > 1)
@@ -42,8 +43,6 @@ public class AddDependentFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-        }*/
     }
 
     @Override
@@ -72,7 +71,6 @@ public class AddDependentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Libs.log("AddDependentFragment", "onResume");
     }
 
     public void setListView() {

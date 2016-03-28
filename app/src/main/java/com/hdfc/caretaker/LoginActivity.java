@@ -54,14 +54,10 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(LoginActivity.this);
 
         try {
-
-           /* Libs.log(AESCrypt.encrypt(Config.string, "eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f"), " api ");
-            Libs.log(AESCrypt.encrypt(Config.string, "54ede75ec2cd4f20e366800b0755997be605e262c90de91bf705e5c770d4c483"), " secret ");*/
-
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
-            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
+            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(),
+                    R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
 
-            //CareTaker.dbCon = DbCon.getInstance(LoginActivity.this);
         } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
         }
@@ -78,14 +74,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 showPasswordfield();
-                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue), editPassword);
+                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text),
+                        getResources().getDrawable(R.drawable.edit_text_blue), editPassword);
             }
         });
 
         editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text), getResources().getDrawable(R.drawable.edit_text_blue), editEmail);
+                libs.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text),
+                        getResources().getDrawable(R.drawable.edit_text_blue), editEmail);
             }
         });
 
@@ -199,7 +197,9 @@ public class LoginActivity extends AppCompatActivity {
 
                             StorageService storageService = new StorageService(LoginActivity.this);
 
-                            storageService.findDocsByKeyValue(Config.collectionName, "customer_email", userName, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                            storageService.findDocsByKeyValue(Config.collectionCustomer,
+                                    "customer_email", userName,
+                                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
                                 @Override
                                 public void onDocumentInserted(Storage response) {
 
@@ -215,7 +215,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                     if (response.getJsonDocList().size() > 0) {
 
-                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                                        Storage.JSONDocument jsonDocument =
+                                                response.getJsonDocList().get(0);
 
                                         String strDocument = jsonDocument.getJsonDoc();
 
@@ -249,23 +250,27 @@ public class LoginActivity extends AppCompatActivity {
 
                                             //get all Images by user name start
 
-                                            UploadService uploadService = new UploadService(LoginActivity.this);
+                                            UploadService uploadService =
+                                                    new UploadService(LoginActivity.this);
 
-                                            uploadService.getAllFilesByUser(Config.strUserName, new App42CallBack() {
+                                            uploadService.getAllFilesByUser(Config.strUserName,
+                                                    new App42CallBack() {
                                                 public void onSuccess(Object response) {
 
-                                                    Libs.log(response.toString(), " Files Response ");
-
                                                     Upload upload = (Upload) response;
-                                                    ArrayList<Upload.File> fileList = upload.getFileList();
+                                                    ArrayList<Upload.File> fileList =
+                                                            upload.getFileList();
 
                                                     if (fileList.size() > 0) {
 
                                                         for (int i = 0; i < fileList.size(); i++) {
                                                             Config.fileModels.add(
-                                                                    new FileModel(fileList.get(i).getName()
-                                                                            , fileList.get(i).getUrl(),
-                                                                            fileList.get(i).getType()));
+                                                                    new FileModel(
+                                                                            fileList.get(i).getName(),
+                                                                            fileList.get(i).getUrl(),
+                                                                            fileList.get(i).getType()
+                                                                    )
+                                                            );
 
                                                         }
 
@@ -274,9 +279,12 @@ public class LoginActivity extends AppCompatActivity {
                                                         progressDialog.dismiss();
 
                                                         libs.toast(1, 1, getString(R.string.success_login));
-                                                        Intent dashboardIntent = new Intent(LoginActivity.this, DashboardActivity.class);
-                                                        //dashboardIntent.putExtra("WHICH_SCREEN", Config.intDashboardScreen);
-                                                        Config.intSelectedMenu=Config.intDashboardScreen;
+                                                        Intent dashboardIntent =
+                                                                new Intent(LoginActivity.this,
+                                                                        DashboardActivity.class);
+
+                                                        Config.intSelectedMenu =
+                                                                Config.intDashboardScreen;
                                                         Config.boolIsLoggedIn = true;
                                                         startActivity(dashboardIntent);
                                                         finish();
@@ -313,7 +321,8 @@ public class LoginActivity extends AppCompatActivity {
 
                                     try {
                                         JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                        JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                        JSONObject jsonObjectError =
+                                                jsonObject.getJSONObject("app42Fault");
                                         String strMess = jsonObjectError.getString("details");
 
                                         libs.toast(2, 2, strMess);

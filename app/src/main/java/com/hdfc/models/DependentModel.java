@@ -9,71 +9,126 @@ public class DependentModel {
 
     private String strName = "";
     private String strRelation = "";
-    private String strImg = "";
-    private String strImgServer = "";
-    private String strDesc = "";
+    private String strNotes = "";
     private String strAddress = "";
     private String strContacts = "";
     private String strEmail = "";
     private String strIllness = "";
+    private String strImagePath = "";
+    private String strImageUrl = "";
+
     private int intAge = 0;
     private int intHealthBp = 0;
     private int intHealthHeartRate = 0;
-    private ArrayList<ActivityModel> activityModels = new ArrayList<>();
-    private ArrayList<NotificationModel> dependentNotificationModels = new ArrayList<>();
-    private ArrayList<HealthModel> healthModels = new ArrayList<>();
-    private ArrayList<ServiceModel> dependentServiceModels = new ArrayList<>();
 
+    private int iDependentID;
+    private int iCustomerID;
+
+    private ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
     public DependentModel() {
     }
 
-    public DependentModel(String strName, String strRelation, String strImg, String strImgServer,
-                          String strDesc, String strAddress, String strContacts, String strEmail,
-                          String strIllness, int intAge) {
+    public DependentModel(String strName, String strRelation, String strNotes, String strAddress,
+                          String strContacts, String strEmail, String strIllness,
+                          String strImagePath, String strImageUrl, int intAge, int intHealthBp,
+                          int intHealthHeartRate, int iDependentID, int iCustomerID,
+                          ArrayList<ServiceModel> serviceModels) {
         this.strName = strName;
         this.strRelation = strRelation;
-        this.strImg = strImg;
-        this.strImgServer = strImgServer;
-        this.strDesc = strDesc;
+        this.strNotes = strNotes;
         this.strAddress = strAddress;
         this.strContacts = strContacts;
         this.strEmail = strEmail;
         this.strIllness = strIllness;
-        this.intAge = intAge;
-    }
-
-    public DependentModel(String strName, String strRelation, String strImg, String strImgServer,
-                          String strDesc, String strAddress, String strContacts, String strEmail,
-                          String strIllness, int intAge, int intHealthBp, int intHealthHeartRate,
-                          ArrayList<ActivityModel> activityModels,
-                          ArrayList<NotificationModel> dependentNotificationModels,
-                          ArrayList<HealthModel> healthModels,
-                          ArrayList<ServiceModel> dependentServiceModels) {
-        this.strName = strName;
-        this.strRelation = strRelation;
-        this.strImg = strImg;
-        this.strImgServer = strImgServer;
-        this.strDesc = strDesc;
-        this.strAddress = strAddress;
-        this.strContacts = strContacts;
-        this.strEmail = strEmail;
-        this.strIllness = strIllness;
+        this.strImagePath = strImagePath;
+        this.strImageUrl = strImageUrl;
         this.intAge = intAge;
         this.intHealthBp = intHealthBp;
         this.intHealthHeartRate = intHealthHeartRate;
-        this.activityModels = activityModels;
-        this.dependentNotificationModels = dependentNotificationModels;
-        this.healthModels = healthModels;
-        this.dependentServiceModels = dependentServiceModels;
+        this.iDependentID = iDependentID;
+        this.iCustomerID = iCustomerID;
+        this.serviceModels = serviceModels;
     }
 
-    public String getStrImgServer() {
-        return strImgServer;
+    public String getStrName() {
+        return strName;
     }
 
-    public void setStrImgServer(String strImgServer) {
-        this.strImgServer = strImgServer;
+    public void setStrName(String strName) {
+        this.strName = strName;
+    }
+
+    public String getStrRelation() {
+        return strRelation;
+    }
+
+    public void setStrRelation(String strRelation) {
+        this.strRelation = strRelation;
+    }
+
+    public String getStrNotes() {
+        return strNotes;
+    }
+
+    public void setStrNotes(String strNotes) {
+        this.strNotes = strNotes;
+    }
+
+    public String getStrAddress() {
+        return strAddress;
+    }
+
+    public void setStrAddress(String strAddress) {
+        this.strAddress = strAddress;
+    }
+
+    public String getStrContacts() {
+        return strContacts;
+    }
+
+    public void setStrContacts(String strContacts) {
+        this.strContacts = strContacts;
+    }
+
+    public String getStrEmail() {
+        return strEmail;
+    }
+
+    public void setStrEmail(String strEmail) {
+        this.strEmail = strEmail;
+    }
+
+    public String getStrIllness() {
+        return strIllness;
+    }
+
+    public void setStrIllness(String strIllness) {
+        this.strIllness = strIllness;
+    }
+
+    public String getStrImagePath() {
+        return strImagePath;
+    }
+
+    public void setStrImagePath(String strImagePath) {
+        this.strImagePath = strImagePath;
+    }
+
+    public String getStrImageUrl() {
+        return strImageUrl;
+    }
+
+    public void setStrImageUrl(String strImageUrl) {
+        this.strImageUrl = strImageUrl;
+    }
+
+    public int getIntAge() {
+        return intAge;
+    }
+
+    public void setIntAge(int intAge) {
+        this.intAge = intAge;
     }
 
     public int getIntHealthBp() {
@@ -92,109 +147,27 @@ public class DependentModel {
         this.intHealthHeartRate = intHealthHeartRate;
     }
 
-    public ArrayList<ActivityModel> getActivityModels() {
-        return activityModels;
+    public int getiDependentID() {
+        return iDependentID;
     }
 
-    public void setActivityModels(ArrayList<ActivityModel> activityModels) {
-        this.activityModels = activityModels;
+    public void setiDependentID(int iDependentID) {
+        this.iDependentID = iDependentID;
     }
 
-    public ArrayList<NotificationModel> getDependentNotificationModels() {
-        return dependentNotificationModels;
+    public int getiCustomerID() {
+        return iCustomerID;
     }
 
-    public void setDependentNotificationModels(ArrayList<NotificationModel> dependentNotificationModels) {
-        this.dependentNotificationModels = dependentNotificationModels;
+    public void setiCustomerID(int iCustomerID) {
+        this.iCustomerID = iCustomerID;
     }
 
-    public String getStrName() {
-        return strName;
+    public ArrayList<ServiceModel> getServiceModels() {
+        return serviceModels;
     }
 
-    public void setStrName(String strName) {
-        this.strName = strName;
-    }
-
-    public String getStrImg() {
-        return strImg;
-    }
-
-    public void setStrImg(String strImg) {
-        this.strImg = strImg;
-    }
-
-    public String getStrRelation() {
-
-        return strRelation;
-    }
-
-    public void setStrRelation(String strRelation) {
-        this.strRelation = strRelation;
-    }
-
-    public String getStrAddress() {
-        return strAddress;
-    }
-
-    public void setStrAddress(String strAddress) {
-        this.strAddress = strAddress;
-    }
-
-    public String getStrEmail() {
-        return strEmail;
-    }
-
-    public void setStrEmail(String strEmail) {
-        this.strEmail = strEmail;
-    }
-
-    public String getStrContacts() {
-        return strContacts;
-    }
-
-    public void setStrContacts(String strContacts) {
-        this.strContacts = strContacts;
-    }
-
-    public String getStrDesc() {
-
-        return strDesc;
-    }
-
-    public void setStrDesc(String strDesc) {
-        this.strDesc = strDesc;
-    }
-
-    public String getStrIllness() {
-        return strIllness;
-    }
-
-    public void setStrIllness(String strIllness) {
-        this.strIllness = strIllness;
-    }
-
-    public ArrayList<ServiceModel> getDependentServiceModels() {
-        return dependentServiceModels;
-    }
-
-    public void setDependentServiceModels(ArrayList<ServiceModel> dependentServiceModels) {
-        this.dependentServiceModels = dependentServiceModels;
-    }
-
-    public ArrayList<HealthModel> getHealthModels() {
-        return healthModels;
-    }
-
-    public void setHealthModels(ArrayList<HealthModel> healthModels) {
-        this.healthModels = healthModels;
-    }
-
-    public int getIntAge() {
-        return intAge;
-    }
-
-    public void setIntAge(int intAge) {
-        this.intAge = intAge;
+    public void setServiceModels(ArrayList<ServiceModel> serviceModels) {
+        this.serviceModels = serviceModels;
     }
 }

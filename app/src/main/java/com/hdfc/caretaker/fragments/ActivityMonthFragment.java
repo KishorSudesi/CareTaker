@@ -17,11 +17,10 @@ import com.hdfc.adapters.CalendarAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
-import com.hdfc.models.ActivityVideoModel;
 import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.ImageModel;
+import com.hdfc.models.VideoModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -130,7 +129,7 @@ public class ActivityMonthFragment extends Fragment {
 
 
                                 ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-                                ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+                                ArrayList<VideoModel> videoModels = new ArrayList<>();
                                 ArrayList<ImageModel> imageModels = new ArrayList<>();
 
                                 if (jsonObjectNotification.has("feedbacks")) {
@@ -161,14 +160,14 @@ public class ActivityMonthFragment extends Fragment {
 
                                         JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
 
-                                        ActivityVideoModel activityVideoModel = new ActivityVideoModel(
+                                        VideoModel videoModel = new VideoModel(
                                                 jsonObjectVideo.getString("video_name"),
                                                 jsonObjectVideo.getString("video_url"),
                                                 jsonObjectVideo.getString("video_description"),
                                                 jsonObjectVideo.getString("video_taken")
                                         );
 
-                                        activityVideoModels.add(activityVideoModel);
+                                        videoModels.add(videoModel);
                                     }
                                 }
 
@@ -199,7 +198,7 @@ public class ActivityMonthFragment extends Fragment {
                                         jsonObjectNotification.getString("status"),
                                         jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
                                         jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                        activityVideoModels, feedBackModels, imageModels);
+                                        videoModels, feedBackModels, imageModels);
 
                                 activityModels.add(activityModel);
                             }

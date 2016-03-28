@@ -19,10 +19,12 @@ import java.util.List;
 public class Config {
 
     public static final String dbName = "newzeal";
-    public static final String collectionNameServices = "services";
-    public static final String collectionNameProviders = "providers";
-    public static final String collectionName = "customer";
-    public static final String strServiceDocId = "56f280b0e4b003cbd56dcb38";//remove this
+
+    public static final String collectionServices = "services";
+    public static final String collectionProvider = "providers";
+    public static final String collectionCustomer = "customer";
+
+    //public static final String strServiceDocId = "56f280b0e4b003cbd56dcb38";//remove this
     //for UAT 56f280b0e4b003cbd56dcb38
     //for development 56c70aefe4b0067c8c7658bf
     public static final String string = Libs.getStringJni();
@@ -55,8 +57,9 @@ public class Config {
 
     //User Specific clear at logout or whenever needed
     public static JSONObject jsonObject = null;
-    //public static JSONObject jsonObjectCarla = null;
-    public static JSONObject jsonServer = null;
+    public static JSONObject jsonCustomer = null;
+
+    public static ArrayList<JSONObject> jsonDependents = new ArrayList<>();
     public static String jsonDocId = "";
 
     public static int intSelectedMenu = 0;
@@ -67,7 +70,6 @@ public class Config {
     public static ArrayList<ArrayList<NotificationModel>> notificationModels = new ArrayList<ArrayList<NotificationModel>>();
 
     public static int intSelectedDependent = 0;
-
     public static boolean boolIsLoggedIn = false;
 
     public static CustomerModel customerModel = null;
@@ -76,5 +78,4 @@ public class Config {
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
 
     public static List<Bitmap> bitmaps = new ArrayList<>();
-
 }

@@ -10,7 +10,6 @@ import android.widget.Button;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.models.ActivityListModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

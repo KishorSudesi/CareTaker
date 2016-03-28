@@ -28,10 +28,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.RoundedImageView;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,22 +126,20 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     }
 
     public void backToSelection() {
-        final AlertDialog.Builder alertbox = new AlertDialog.Builder(DependentDetailPersonalActivity.this);
+        final AlertDialog.Builder alertbox =
+                new AlertDialog.Builder(DependentDetailPersonalActivity.this);
         alertbox.setTitle(getString(R.string.app_name));
         alertbox.setMessage(getString(R.string.delete_info));
         alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-                //delete temp dependents
+
                 try {
-                    //CareTaker.dbCon.deleteTempDependants();
-                    Intent selection = new Intent(DependentDetailPersonalActivity.this, SignupActivity.class);
+                    Intent selection = new Intent(DependentDetailPersonalActivity.this,
+                            SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
 
-                    //
                     dependentModel = null;
                     SignupActivity.dependentNames.clear();
-                    //dependentModels.clear();
-                    //
 
                     arg0.dismiss();
                     startActivity(selection);
@@ -162,7 +162,6 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         editContactNo.setError(null);
         editAddress.setError(null);
         editRelation.setError(null);
-        //editDependantEmail.setError(null);
 
         strDependantName = editName.getText().toString().trim();
         String strContactNo = editContactNo.getText().toString().trim();
@@ -201,7 +200,11 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 cancel = true;
             }
 
-            if (!TextUtils.isEmpty(strEmail)) {
+            if (TextUtils.isEmpty(strEmail)) {
+                editDependantEmail.setError(getString(R.string.error_field_required));
+                focusView = editDependantEmail;
+                cancel = true;
+            } else {
                 if (!libs.isEmailValid(strEmail)) {
                     editDependantEmail.setError(getString(R.string.error_invalid_email));
                     focusView = editDependantEmail;
@@ -224,7 +227,18 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 boolean b = true;
 
                 if (!SignupActivity.dependentNames.contains(strDependantName)) {
-                    dependentModel = new DependentModel(strDependantName, strRelation, strImageName, "", "", strAddress, strContactNo, strEmail, "", 0);
+                    dependentModel = new DependentModel();
+
+                    //strDependantName, strRelation, strImageName, "", "",
+                    // strAddress, strContactNo, strEmail, "", 0
+
+                    dependentModel.setStrName(strDependantName);
+                    dependentModel.setStrRelation(strRelation);
+                    dependentModel.setStrImagePath(strImageName);
+                    dependentModel.setStrAddress(strAddress);
+                    dependentModel.setStrContacts(strContactNo);
+                    dependentModel.setStrEmail(strEmail);
+
                     SignupActivity.dependentNames.add(strDependantName);
                 } else {
                     if (dependentModel != null &&
@@ -232,7 +246,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                             && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
 
                         dependentModel.setStrRelation(strRelation);
-                        dependentModel.setStrImg(strImageName);
+                        dependentModel.setStrImagePath(strImageName);
                         dependentModel.setStrAddress(strAddress);
                         dependentModel.setStrContacts(strContactNo);
                         dependentModel.setStrEmail(strEmail);
@@ -240,27 +254,36 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 }
 
                 if (b) {
-                    libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
-                    //strImagePathToServer = strImageName;
-                    strImageName = "";
-                    Intent selection = new Intent(DependentDetailPersonalActivity.this, DependentDetailsMedicalActivity.class);
-                    startActivity(selection);
-                    finish();
+                    UserService userService = new UserService(DependentDetailPersonalActivity.this);
+
+                    userService.getUser(strEmail, new App42CallBack() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            if (o != null) {
+                                libs.toast(2, 2, getString(R.string.email_exists));
+                            } else {
+                                libs.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            if (e != null) {
+                                libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                                strImageName = "";
+                                Intent selection = new Intent(DependentDetailPersonalActivity.this,
+                                        DependentDetailsMedicalActivity.class);
+                                startActivity(selection);
+                                finish();
+                            } else {
+                                libs.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        }
+                    });
+
                 } else {
                     libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                 }
-
-                /*longDependantId = CareTaker.dbCon.insertDependant(strDependantName, strContactNo, strAddress, strRelation, SignupActivity.strUserId, strImageName, strEmail);
-                if (longDependantId > 0) {
-                    libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
-                    strImagePathToServer = strImageName;
-                    strImageName = "";
-                    Intent selection = new Intent(DependentDetailPersonalActivity.this, DependentDetailsMedicalActivity.class);
-                    startActivity(selection);
-                    finish();
-                } else {
-                    libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
-                }*/
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -308,10 +331,12 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
-        DependentDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        DependentDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this,
+                requestCode, grantResults);
     }
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
@@ -338,7 +363,10 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         try {
 
             ContentResolver cr = getContentResolver();
-            Cursor cur = cr.query(intent.getData(), new String[]{ContactsContract.Contacts._ID, ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_URI, ContactsContract.Contacts.HAS_PHONE_NUMBER}, null, null, null);
+            Cursor cur = cr.query(intent.getData(), new String[]{ContactsContract.Contacts._ID,
+                    ContactsContract.PhoneLookup.DISPLAY_NAME,
+                    ContactsContract.PhoneLookup.PHOTO_URI,
+                    ContactsContract.Contacts.HAS_PHONE_NUMBER}, null, null, null);
 
             String phone = "";
             String emailContact = null;
@@ -350,30 +378,40 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             editContactNo.setText("");
             editDependantEmail.setText("");
 
-            imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
+            imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                    R.mipmap.camera_icon));
 
             if (cur != null && cur.getCount() > 0) {
                 while (cur.moveToNext()) {
                     id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                     name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                    image_uri = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
+                    image_uri = cur.getString(cur.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
 
-                    if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                    if (Integer.parseInt(cur.getString(cur.getColumnIndex(
+                            ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                new String[]{id}, null);
                         if (pCur != null) {
                             while (pCur.moveToNext()) {
-                                phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                phone =
+                                        pCur.getString(pCur.getColumnIndex(
+                                                ContactsContract.CommonDataKinds.Phone.NUMBER));
                             }
                             pCur.close();
                         }
                     } else phone = "";
                 }
 
-                Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
+                Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id},
+                        null);
 
                 if (emailCur != null && emailCur.getCount() > 0) {
                     while (emailCur.moveToNext()) {
-                        emailContact = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        emailContact = emailCur.getString(emailCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Email.DATA));
                     }
                     emailCur.close();
                 }
@@ -390,7 +428,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
+                    imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                            R.mipmap.camera_icon));
                     strImageName = "";
                 }
 
@@ -425,10 +464,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!SignupActivity.strUserId.equalsIgnoreCase("") && !strDependantName.equalsIgnoreCase("")) {
-
-            //String strImgPath = CareTaker.dbCon.retrieveDependantPersonal(SignupActivity.strUserId,
-            // editName, editContactNo, editAddress, editRelation, strDependantName, editDependantEmail);
+        if (!Config.customerModel.getStrName().equalsIgnoreCase("")
+                && !strDependantName.equalsIgnoreCase("")) {
 
             if (dependentModel != null) {
                 editName.setText(dependentModel.getStrName());
@@ -438,7 +475,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 editDependantEmail.setText(dependentModel.getStrEmail());
 
                 if (!strDependantName.equalsIgnoreCase("") && !isCamera) {
-                    strImageName = dependentModel.getStrImg();
+                    strImageName = dependentModel.getStrImagePath();
                     backgroundThreadHandler = new BackgroundThreadHandler();
                     backgroundThreadCamera = new BackgroundThreadCamera();
                     backgroundThreadCamera.start();
@@ -478,7 +515,6 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         }
     }
 
-    //
     public class BackgroundThread extends Thread {
         @Override
         public void run() {
@@ -524,7 +560,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             if (imgButtonCamera != null && bitmap != null)
                 imgButtonCamera.setImageBitmap(bitmap);
             else if (bitmap != null)
-                imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.camera_icon));
+                imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                        R.mipmap.camera_icon));
         }
     }
 }

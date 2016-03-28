@@ -49,9 +49,7 @@ import com.hdfc.caretaker.fragments.ActivityMonthFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
-import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
-import com.hdfc.models.ActivityVideoModel;
 import com.hdfc.models.ConfirmViewModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
@@ -59,6 +57,7 @@ import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
 import com.hdfc.models.NotificationModel;
+import com.hdfc.models.VideoModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1033,7 +1032,7 @@ public class Libs {
     /*public void fetchServices(){
         StorageService storageService = new StorageService(_ctxt);
 
-        storageService.findDocsById("56c70aefe4b0067c8c7658bf", Config.collectionNameServices, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+        storageService.findDocsById("56c70aefe4b0067c8c7658bf", Config.collectionServices, new AsyncApp42ServiceApi.App42StorageServiceListener() {
             @Override
             public void onDocumentInserted(Storage response) {
 
@@ -1320,7 +1319,7 @@ public class Libs {
 
                                         //
                                         ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-                                        ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+                                        ArrayList<VideoModel> videoModels = new ArrayList<>();
                                         ArrayList<ImageModel> imageModels = new ArrayList<>();
 
                                         if (jsonObjectNotification.has("feedbacks")) {
@@ -1355,14 +1354,14 @@ public class Libs {
 
                                                 JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
 
-                                                ActivityVideoModel activityVideoModel = new ActivityVideoModel(
+                                                VideoModel videoModel = new VideoModel(
                                                         jsonObjectVideo.getString("video_name"),
                                                         jsonObjectVideo.getString("video_url"),
                                                         jsonObjectVideo.getString("video_description"),
                                                         jsonObjectVideo.getString("video_taken")
                                                 );
 
-                                                activityVideoModels.add(activityVideoModel);
+                                                videoModels.add(videoModel);
 
                                             }
                                         }
@@ -1392,7 +1391,7 @@ public class Libs {
                                                 jsonObjectNotification.getString("status"),
                                                 jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
                                                 jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                                activityVideoModels, feedBackModels,imageModels);
+                                                videoModels, feedBackModels, imageModels);
                                         //, jsonObjectNotification.getString("provider_image_url")
 
                                         ActivityListFragment.activityModels.add(activityModel);
@@ -1480,7 +1479,7 @@ public class Libs {
                                         ActivityMonthFragment.activitiesModelArrayList.add(activityListModel);
                                         //
                                         ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-                                        ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+                                        ArrayList<VideoModel> videoModels = new ArrayList<>();
                                         ArrayList<ImageModel> imageModels = new ArrayList<>();
 
                                         if (jsonObjectNotification.has("feedbacks")) {
@@ -1515,14 +1514,14 @@ public class Libs {
 
                                                 JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
 
-                                                ActivityVideoModel activityVideoModel = new ActivityVideoModel(
+                                                VideoModel videoModel = new VideoModel(
                                                         jsonObjectVideo.getString("video_name"),
                                                         jsonObjectVideo.getString("video_url"),
                                                         jsonObjectVideo.getString("video_description"),
                                                         jsonObjectVideo.getString("video_taken")
                                                 );
 
-                                                activityVideoModels.add(activityVideoModel);
+                                                videoModels.add(videoModel);
 
                                             }
                                         }
@@ -1552,7 +1551,7 @@ public class Libs {
                                                 jsonObjectNotification.getString("status"),
                                                 jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
                                                 jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                                activityVideoModels, feedBackModels,imageModels);
+                                                videoModels, feedBackModels, imageModels);
                                         //, jsonObjectNotification.getString("provider_image_url")
 
                                         ActivityMonthFragment.activityModels.add(activityModel);
@@ -1742,18 +1741,16 @@ public class Libs {
 
         boolean isFormed;
 
-        JSONObject jsonCustomer = new JSONObject();
-
-        Config.jsonServer = null;
+        Config.jsonCustomer = new JSONObject();
 
         try {
 
-            jsonCustomer.put("customer_name", SignupActivity.strCustomerName);
-            jsonCustomer.put("customer_address", SignupActivity.strCustomerAddress);
-            jsonCustomer.put("customer_contact_no", SignupActivity.strCustomerContactNo);
-            jsonCustomer.put("customer_email", SignupActivity.strCustomerEmail);
-            jsonCustomer.put("customer_profile_url", strCustomerImageUrl);
-            jsonCustomer.put("paytm_account", "paytm_account");
+            Config.jsonCustomer.put("customer_name", Config.customerModel.getStrName());
+            Config.jsonCustomer.put("customer_address", Config.customerModel.getStrAddress());
+            Config.jsonCustomer.put("customer_contact_no", Config.customerModel.getStrContacts());
+            Config.jsonCustomer.put("customer_email", Config.customerModel.getStrEmail());
+            Config.jsonCustomer.put("customer_profile_url", strCustomerImageUrl);
+            Config.jsonCustomer.put("paytm_account", "paytm_account");
 
             isFormed = true;
 
@@ -1783,144 +1780,17 @@ public class Libs {
                                     jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
                                     jsonDependant.put("dependent_address", dependentModel.getStrAddress());
                                     jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
-                                    jsonDependant.put("dependent_notes", dependentModel.getStrDesc());
+                                    jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
                                     jsonDependant.put("dependent_age", dependentModel.getIntAge());
                                     jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
 
                                     jsonDependant.put("health_bp", 70 + cursorIndex);
                                     jsonDependant.put("health_heart_rate", 80 + cursorIndex);
 
-                                    jsonDependant.put("dependent_profile_url", dependentModel.getStrImgServer());
-
-
-                                    JSONArray jsonArrAct = new JSONArray();
-
-                                    /*JSONObject pnObj2 = new JSONObject();
-
-                                    pnObj2.put("provider_email", "provider@gmail.com");
-                                    pnObj2.put("provider_contact_no", "321423423");
-                                    pnObj2.put("provider_description", "This is a Test Data from APP42");
-                                    pnObj2.put("provider_name", "Carla");
-                                    pnObj2.put("activity_date", "19-03-2016 18:00:00");
-                                    pnObj2.put("status", "upcoming");
-                                    pnObj2.put("activity_name", "Buy grocery and delivery");
-                                    pnObj2.put("author_profile_url", "http://url.com/23e3WQE124");
-
-                                    jsonArrAct.put(pnObj2);
-
-                                    for (int i = 0; i < 1; i++) {
-
-                                        JSONObject pnObj3 = new JSONObject();
-
-                                        pnObj3.put("provider_email", "provider@email.com");
-                                        pnObj3.put("provider_contact_no", "9842103278");
-                                        pnObj3.put("provider_description", "description");
-                                        pnObj3.put("provider_name", "carla1");
-                                        pnObj3.put("activity_date", i + "9-02-2016 18:00:00");
-                                        pnObj3.put("status", "completed");
-                                        pnObj3.put("activity_name", "Medical Checkups " + i);
-                                        pnObj3.put("author_profile_url", "url");
-
-                                        JSONArray jsonArrAct1 = new JSONArray();
-
-                                        for (int j = 0; j < 1; j++) {
-
-                                            JSONObject pnObj4 = new JSONObject();
-
-                                            pnObj4.put("feedback_message", "good service by carla " + j);
-                                            pnObj4.put("feedback_raring", 3);
-                                            pnObj4.put("feedback_by", "hungal");
-                                            pnObj4.put("report", 1);
-                                            pnObj4.put("feedback_time", "19-02-2016 12:00:00");
-                                            pnObj4.put("feedback_by_url", "url");
-
-                                            jsonArrAct1.put(pnObj4);
-                                        }
-
-                                        pnObj3.put("feedbacks", jsonArrAct1);
-
-                                        JSONArray jsonArrAct2 = new JSONArray();
-
-                                        for (int k = 0; k < 1; k++) {
-
-                                            JSONObject pnObj5 = new JSONObject();
-
-                                            pnObj5.put("video_taken", "19-01-2016 18:00:00");
-                                            pnObj5.put("video_description", "Video taken on hungal house");
-                                            pnObj5.put("video_name", "Video name " + k);
-                                            pnObj5.put("video_url", "url");
-
-                                            jsonArrAct2.put(pnObj5);
-                                        }
-
-                                        pnObj3.put("videos", jsonArrAct2);
-
-                                        JSONArray jsonArrAct3 = new JSONArray();
-
-                                        for (int l = 0; l < 1; l++) {
-
-                                            JSONObject pnObj6 = new JSONObject();
-
-                                            pnObj6.put("image_name", "abc.jpg ");
-                                            pnObj6.put("image_url", "http://url");
-                                            pnObj6.put("image_description", "This is a Test Data from APP42");
-                                            pnObj6.put("image_taken", "19-01-2016 18:00:00");
-
-                                            jsonArrAct3.put(pnObj6);
-                                        }
-
-                                        pnObj3.put("images", jsonArrAct3);
-
-                                        jsonArrAct.put(pnObj3);
-                                    }
-
-                                    */
-
-                                    jsonDependant.put("activities", jsonArrAct);
-
-                                    JSONArray jsonArr0 = new JSONArray();
-
-                                    for (int m = 0; m < 3; m++) {
-
-                                        JSONObject pnObj0 = new JSONObject();
-                                        pnObj0.put("notification_message", "This is a Test Data from APP42 server " + m);
-                                        pnObj0.put("author", "test");
-                                        pnObj0.put("time", "2016-03-06T10:15:16.181Z");
-                                        pnObj0.put("author_profile_url", "http://url.com/23e3WQE124");
-                                        jsonArr0.put(pnObj0);
-                                    }
-
-                                    jsonDependant.put("notifications", jsonArr0);
+                                    jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
 
                                     JSONArray jsonArr = new JSONArray();
-
-                                    /*for (int n = 0; n < 3; n++) {
-
-                                        JSONObject pnObj = new JSONObject();
-                                        pnObj.put("service_name", "Medical Checkups and Health checkups" + n);
-                                        pnObj.put("service_features", "BP, Heart Rate, etc");
-                                        pnObj.put("unit", 3);
-                                        pnObj.put("unit_consumed", 10);
-                                        jsonArr.put(pnObj);
-                                    }*/
                                     jsonDependant.put("services", jsonArr);
-
-                                    JSONArray jsonArrServiceHistory = new JSONArray();
-
-                                    jsonDependant.put("services_history", jsonArrServiceHistory);
-
-                                   /* JSONArray jsonArrHealth = new JSONArray();
-
-                                    for (int o = 0; o < 3; o++) {
-
-                                        JSONObject pnObjHealth = new JSONObject();
-                                        pnObjHealth.put("bp", 80 + o);
-                                        pnObjHealth.put("heart_rate", 230 + o);
-                                        pnObjHealth.put("time_taken", "2016-03-06T10:15:16.181Z");
-                                        jsonArrHealth.put(pnObjHealth);
-
-                                    }
-                                    jsonDependant.put("health_status", jsonArrHealth);*/
 
                                     jsonArrayDependant.put(jsonDependant);
                                 }

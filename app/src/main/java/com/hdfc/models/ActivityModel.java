@@ -8,121 +8,164 @@ import java.util.ArrayList;
  */
 public class ActivityModel implements Serializable {
 
+    private int iActivityID;
+    private int iCustomerID;
+    private int iDependentID;
+    private int iProviderID;
+    private int iServcieID;
+
     private String strActivityName;
+    private String strActivityDesc;
     private String strActivityMessage;
-    private String strAtivityProvider;
-    private String strActivityDate;
     private String strActivityStatus;
+    private String strServiceName;
+    private String strServiceDesc;
+    private String strActivityDate;
+    private String strActivityDoneDate;
+    private String strActivityProviderStatus;
 
-    private String strActivityProviderEmail;
-    private String strActivityProviderContactNo;
-    private String strActivityProviderDesc;
-    private String strActivityProviderName;
+    private boolean bActivityOverdue;
 
-    private String strProviderImageUrl;
+    private String[] strFeatures;
+    private String[] strFeaturesDone;
 
     private ArrayList<ImageModel> imageModels = new ArrayList<>();
-    private ArrayList<ActivityVideoModel> activityVideoModels = new ArrayList<>();
+    private ArrayList<VideoModel> videoModels = new ArrayList<>();
     private ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
 
     public ActivityModel() {
     }
 
-    public ActivityModel(String strActivityName, String strActivityMessage,
-                         String strAtivityProvider, String strActivityDate, String strActivityStatus,
-                         String strActivityProviderEmail, String strActivityProviderContactNo,
-                         String strActivityProviderDesc, String strActivityProviderName,
-                         ArrayList<ImageModel> imageModels,
-                         ArrayList<ActivityVideoModel> activityVideoModels,
-                         ArrayList<FeedBackModel> feedBackModels,
-                         String strProviderImageUrl) {
+
+    public ActivityModel(int iActivityID, int iCustomerID, int iDependentID, int iProviderID,
+                         String strActivityName,
+                         String strActivityDesc, String strActivityMessage,
+                         String strActivityStatus, int iServcieID, String strServiceName,
+                         String strServiceDesc, String strActivityDate, String strActivityDoneDate,
+                         String strActivityProviderStatus, boolean bActivityOverdue,
+                         String[] strFeatures, String[] strFeaturesDone,
+                         ArrayList<ImageModel> imageModels, ArrayList<VideoModel> videoModels,
+                         ArrayList<FeedBackModel> feedBackModels) {
+        this.iActivityID = iActivityID;
+        this.iCustomerID = iCustomerID;
+        this.iDependentID = iDependentID;
+        this.iProviderID = iProviderID;
         this.strActivityName = strActivityName;
+        this.strActivityDesc = strActivityDesc;
         this.strActivityMessage = strActivityMessage;
-        this.strAtivityProvider = strAtivityProvider;
-        this.strActivityDate = strActivityDate;
         this.strActivityStatus = strActivityStatus;
-        this.strActivityProviderEmail = strActivityProviderEmail;
-        this.strActivityProviderContactNo = strActivityProviderContactNo;
-        this.strActivityProviderDesc = strActivityProviderDesc;
-        this.strActivityProviderName = strActivityProviderName;
+        this.iServcieID = iServcieID;
+        this.strServiceName = strServiceName;
+        this.strServiceDesc = strServiceDesc;
+        this.strActivityDate = strActivityDate;
+        this.strActivityDoneDate = strActivityDoneDate;
+        this.strActivityProviderStatus = strActivityProviderStatus;
+        this.bActivityOverdue = bActivityOverdue;
+        this.strFeatures = strFeatures;
+        this.strFeaturesDone = strFeaturesDone;
         this.imageModels = imageModels;
-        this.activityVideoModels = activityVideoModels;
+        this.videoModels = videoModels;
         this.feedBackModels = feedBackModels;
-        this.strProviderImageUrl = strProviderImageUrl;
     }
 
-    public ActivityModel(String strActivityName, String strActivityMessage,
-                         String strAtivityProvider, String strActivityDate, String strActivityStatus,
-                         String strActivityProviderEmail, String strActivityProviderContactNo,
-                         String strActivityProviderDesc, String strActivityProviderName,
-                         ArrayList<ActivityVideoModel> activityVideoModels,
-                         ArrayList<FeedBackModel> feedBackModels,
-                         ArrayList<ImageModel> imageModels) {
+    public ActivityModel(int iActivityID, int iCustomerID, int iDependentID, int iProviderID,
+                         String strActivityName,
+                         String strActivityDesc, String strActivityMessage,
+                         String strActivityStatus, int iServcieID, String strServiceName,
+                         String strServiceDesc, String strActivityDate,
+                         String strActivityProviderStatus, boolean bActivityOverdue,
+                         String[] strFeatures) {
+        this.iActivityID = iActivityID;
+        this.iCustomerID = iCustomerID;
+        this.iDependentID = iDependentID;
+        this.iProviderID = iProviderID;
         this.strActivityName = strActivityName;
+        this.strActivityDesc = strActivityDesc;
         this.strActivityMessage = strActivityMessage;
-        this.strAtivityProvider = strAtivityProvider;
-        this.strActivityDate = strActivityDate;
         this.strActivityStatus = strActivityStatus;
-        this.strActivityProviderEmail = strActivityProviderEmail;
-        this.strActivityProviderContactNo = strActivityProviderContactNo;
-        this.strActivityProviderDesc = strActivityProviderDesc;
-        this.strActivityProviderName = strActivityProviderName;
-        this.activityVideoModels = activityVideoModels;
-        this.feedBackModels = feedBackModels;
-        this.imageModels = imageModels;
-        //this.strProviderImageUrl=strProviderImageUrl;
+        this.iServcieID = iServcieID;
+        this.strServiceName = strServiceName;
+        this.strServiceDesc = strServiceDesc;
+        this.strActivityDate = strActivityDate;
+        this.strActivityProviderStatus = strActivityProviderStatus;
+        this.bActivityOverdue = bActivityOverdue;
+        this.strFeatures = strFeatures;
     }
 
-    public String getStrProviderImageUrl() {
-        return strProviderImageUrl;
+    public int getiActivityID() {
+        return iActivityID;
     }
 
-    public void setStrProviderImageUrl(String strProviderImageUrl) {
-        this.strProviderImageUrl = strProviderImageUrl;
+    public int getiCustomerID() {
+        return iCustomerID;
     }
 
-    public String getStrActivityProviderEmail() {
-        return strActivityProviderEmail;
+    public int getiDependentID() {
+        return iDependentID;
     }
 
-    public String getStrActivityProviderContactNo() {
-        return strActivityProviderContactNo;
+    public int getiProviderID() {
+        return iProviderID;
     }
 
-    public String getStrActivityProviderDesc() {
-        return strActivityProviderDesc;
-    }
-
-    public String getStrActivityProviderName() {
-        return strActivityProviderName;
+    public int getiServcieID() {
+        return iServcieID;
     }
 
     public String getStrActivityName() {
         return strActivityName;
     }
 
+    public String getStrActivityDesc() {
+        return strActivityDesc;
+    }
+
     public String getStrActivityMessage() {
         return strActivityMessage;
-    }
-
-    public String getStrAtivityProvider() {
-        return strAtivityProvider;
-    }
-
-    public String getStrActivityDate() {
-        return strActivityDate;
     }
 
     public String getStrActivityStatus() {
         return strActivityStatus;
     }
 
+    public String getStrServiceName() {
+        return strServiceName;
+    }
+
+    public String getStrServiceDesc() {
+        return strServiceDesc;
+    }
+
+    public String getStrActivityDate() {
+        return strActivityDate;
+    }
+
+    public String getStrActivityDoneDate() {
+        return strActivityDoneDate;
+    }
+
+    public String getStrActivityProviderStatus() {
+        return strActivityProviderStatus;
+    }
+
+    public boolean isbActivityOverdue() {
+        return bActivityOverdue;
+    }
+
+    public String[] getStrFeatures() {
+        return strFeatures;
+    }
+
+    public String[] getStrFeaturesDone() {
+        return strFeaturesDone;
+    }
+
     public ArrayList<ImageModel> getImageModels() {
         return imageModels;
     }
 
-    public ArrayList<ActivityVideoModel> getActivityVideoModels() {
-        return activityVideoModels;
+    public ArrayList<VideoModel> getVideoModels() {
+        return videoModels;
     }
 
     public ArrayList<FeedBackModel> getFeedBackModels() {

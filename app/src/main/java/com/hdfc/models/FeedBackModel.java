@@ -9,18 +9,23 @@ public class FeedBackModel implements Serializable {
 
     private String strFeedBackMessage;
     private String strFeedBackBy;
-    private int intFeedBackRating;
-    private boolean bFeedBackReport;
     private String strFeedBackTime;
-    private String strFeedBackByUrl;
+    private String strFeedBackByType;
 
-    public FeedBackModel(String strFeedBackMessage, String strFeedBackBy, int intFeedBackRating, boolean bFeedBackReport, String strFeedBackTime, String strFeedBackByUrl) {
+    private int intFeedBackRating;
+    private int iFeedBackID;
+
+    private boolean bFeedBackReport;
+
+    public FeedBackModel(String strFeedBackMessage, String strFeedBackBy, int intFeedBackRating,
+                         boolean bFeedBackReport, String strFeedBackTime, String strFeedBackByType, int iFeedBackID) {
         this.strFeedBackMessage = strFeedBackMessage;
         this.strFeedBackBy = strFeedBackBy;
         this.intFeedBackRating = intFeedBackRating;
         this.bFeedBackReport = bFeedBackReport;
         this.strFeedBackTime = strFeedBackTime;
-        this.strFeedBackByUrl = strFeedBackByUrl;
+        this.strFeedBackByType = strFeedBackByType;
+        this.iFeedBackID = iFeedBackID;
     }
 
     public String getStrFeedBackMessage() {
@@ -39,11 +44,19 @@ public class FeedBackModel implements Serializable {
         return bFeedBackReport;
     }
 
-    public String getStrFeedBackByUrl() {
-        return strFeedBackByUrl;
+    public String getStrFeedBackByType() {
+        return strFeedBackByType;
     }
 
     public String getStrFeedBackTime() {
         return strFeedBackTime;
+    }
+
+    public int getiFeedBackID() {
+        return iFeedBackID;
+    }
+
+    public boolean isbFeedBackReport() {
+        return bFeedBackReport;
     }
 }

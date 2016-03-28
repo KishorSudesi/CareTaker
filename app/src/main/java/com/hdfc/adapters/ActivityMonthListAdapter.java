@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.hdfc.caretaker.R;
 import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
-import com.hdfc.models.ActivityListModel;
 
 import java.io.File;
 import java.util.List;

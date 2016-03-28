@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.models.ActivityListModel;
+import com.hdfc.models.ActivityModel;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ public class ActivityListAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
     private Context _context;
-    private List<ActivityListModel> data;
+    private List<ActivityModel> data;
 
-    public ActivityListAdapter(Context ctxt, List<ActivityListModel> y) {
+    public ActivityListAdapter(Context ctxt, List<ActivityModel> y) {
         _context = ctxt;
         data = y;
     }
@@ -68,9 +68,9 @@ public class ActivityListAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            ActivityListModel activityListModel = data.get(position);
+            ActivityModel activityListModel = data.get(position);
 
-            if (activityListModel.getStrStatus().equalsIgnoreCase("upcoming"))
+            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming"))
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().getColor(R.color.colorWhite));
 
             viewHolder.dateNumber.setText(activityListModel.getStrDateNumber());

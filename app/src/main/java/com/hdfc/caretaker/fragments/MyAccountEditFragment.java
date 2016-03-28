@@ -208,7 +208,7 @@ public class MyAccountEditFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionName, new App42CallBack() {
+                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
                             @Override
                             public void onSuccess(Object o) {
 
@@ -400,7 +400,7 @@ public class MyAccountEditFragment extends Fragment {
 
                                         StorageService storageService = new StorageService(getActivity());
 
-                                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionName, new App42CallBack() {
+                                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
 
                                             @Override
                                             public void onSuccess(Object o) {

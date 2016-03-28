@@ -118,16 +118,17 @@ public class ConfirmFragment extends Fragment {
         if(!jsonDocId.equalsIgnoreCase(""))
             Config.jsonDocId = jsonDocId;
 
-        Config.strUserName = SignupActivity.strCustomerEmail;
+        Config.strUserName = Config.customerModel.getStrEmail();
 
         Config.jsonServer = null;
 
-        SignupActivity.strCustomerName = "";
+       /* SignupActivity.strCustomerName = "";
         SignupActivity.strCustomerEmail = "";
         SignupActivity.strCustomerContactNo = "";
         SignupActivity.strCustomerAddress = "";
         SignupActivity.strCustomerImg = "";
-        SignupActivity.strUserId = "";
+        SignupActivity.strUserId = "";*/
+
         SignupActivity.dependentModels = null;
         SignupActivity.dependentNames = null;
 
@@ -156,7 +157,8 @@ public class ConfirmFragment extends Fragment {
                             }
 
                             Config.boolIsLoggedIn = true;
-                            Intent dashboardIntent = new Intent(getActivity(), AccountSuccessActivity.class);
+                            Intent dashboardIntent = new Intent(getActivity(),
+                                    AccountSuccessActivity.class);
                             libs.parseData();
 
                             if (progressDialog.isShowing())
@@ -183,7 +185,7 @@ public class ConfirmFragment extends Fragment {
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
                     libs.toast(2, 2, getString(R.string.error));
-                    Libs.log(ex.getMessage(), " 123 ");
+                    //Libs.log(ex.getMessage(), " 123 ");
                     logout();
                 }
             });
@@ -201,6 +203,7 @@ public class ConfirmFragment extends Fragment {
         Config.jsonObject = null;
         Config.jsonDocId = "";
         Config.strUserName = "";
+        Config.customerModel = null;
         Libs.logout();
     }
 
@@ -212,7 +215,8 @@ public class ConfirmFragment extends Fragment {
 
                 if (libs.isConnectingToInternet()) {
 
-                    DependentModel dependentModel = SignupActivity.dependentModels.get(uploadingCount);
+                    DependentModel dependentModel = SignupActivity.dependentModels.
+                            get(uploadingCount);
 
                     final int progress = uploadingCount;
 
@@ -224,9 +228,9 @@ public class ConfirmFragment extends Fragment {
                     if (!dependentModel.getStrName().equalsIgnoreCase(
                             getActivity().getResources().getString(R.string.add_dependent))) {
 
-                        uploadService.uploadImageCommon(dependentModel.getStrImg(),
+                        uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
                                 libs.replaceSpace(dependentModel.getStrName()), "Profile Picture",
-                                SignupActivity.strCustomerEmail,
+                                Config.customerModel.getStrEmail(),
                                 UploadFileType.IMAGE, new App42CallBack() {
 
                                     public void onSuccess(Object response) {
@@ -239,7 +243,7 @@ public class ConfirmFragment extends Fragment {
                                             if (fileList.size() > 0) {
                                                 String strImagePath = fileList.get(0).getUrl();
                                                 SignupActivity.dependentModels.get(progress)
-                                                        .setStrImgServer(strImagePath);
+                                                        .setStrImageUrl(strImagePath);
                                                 uploadingCount++;
                                             }
                                             if (uploadingCount == uploadSize) {
@@ -309,7 +313,10 @@ public class ConfirmFragment extends Fragment {
                 if (pDialog.isShowing())
                     pDialog.setProgress(uploadSize+1);
 
-                uploadService.uploadImageCommon(SignupActivity.strCustomerImg, Config.strCustomerImageName, "Profile Picture", SignupActivity.strCustomerEmail, UploadFileType.IMAGE, new App42CallBack() {
+                uploadService.uploadImageCommon(Config.customerModel.getStrImgPath(),
+                        Config.strCustomerImageName, "Profile Picture",
+                        Config.customerModel.getStrEmail(),
+                        UploadFileType.IMAGE, new App42CallBack() {
                     public void onSuccess(Object response) {
 
                         if(response!=null) {
@@ -379,7 +386,9 @@ public class ConfirmFragment extends Fragment {
 
                 StorageService storageService = new StorageService(getActivity());
 
-                storageService.findDocsByKeyValue(Config.collectionName, "customer_email", SignupActivity.strCustomerEmail, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                storageService.findDocsByKeyValue(Config.collectionCustomer, "customer_email",
+                        Config.customerModel.getStrEmail(),
+                        new AsyncApp42ServiceApi.App42StorageServiceListener() {
                     @Override
                     public void onDocumentInserted(Storage response) {
 
@@ -465,7 +474,8 @@ public class ConfirmFragment extends Fragment {
 
                 StorageService storageService = new StorageService(getActivity());
 
-                storageService.insertDocs(Config.jsonServer, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                storageService.insertDocs(Config.jsonServer,
+                        new AsyncApp42ServiceApi.App42StorageServiceListener() {
 
                     @Override
                     public void onDocumentInserted(Storage response) {
@@ -516,7 +526,7 @@ public class ConfirmFragment extends Fragment {
                     public void onUpdateDocFailed(App42Exception ex) {
 
                     }
-                });
+                        }, Config.collectionCustomer);
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -535,7 +545,9 @@ public class ConfirmFragment extends Fragment {
 
             UserService userService = new UserService(getActivity());
 
-            userService.onCreateUser(SignupActivity.strCustomerEmail, SignupActivity.strCustomerPass, SignupActivity.strCustomerEmail, new App42CallBack() {
+            userService.onCreateUser(Config.customerModel.getStrEmail(),
+                    SignupActivity.strCustomerPass, Config.customerModel.getStrEmail(),
+                    new App42CallBack() {
                 @Override
                 public void onSuccess(Object o) {
 
@@ -585,7 +597,9 @@ public class ConfirmFragment extends Fragment {
 
             final StorageService storageService = new StorageService(getActivity());
 
-            storageService.findDocsByKeyValue(Config.collectionNameProviders, "provider_email", "carla1@gmail.com", new AsyncApp42ServiceApi.App42StorageServiceListener() {
+            storageService.findDocsByKeyValue(Config.collectionProvider,
+                    "provider_email", "carla1@gmail.com",
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
                 @Override
                 public void onDocumentInserted(Storage response) {
                 }
@@ -603,7 +617,8 @@ public class ConfirmFragment extends Fragment {
 
                             Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
 
-                            final String strCarlaJsonId = response.getJsonDocList().get(0).getDocId();
+                            final String strCarlaJsonId = response.getJsonDocList().get(0).
+                                    getDocId();
 
                             String strDocument = jsonDocument.getJsonDoc();
 
@@ -611,7 +626,8 @@ public class ConfirmFragment extends Fragment {
                                 final JSONObject responseJSONDocCarla = new JSONObject(strDocument);
 
                                 if (responseJSONDocCarla.has("dependents")) {
-                                    JSONArray dependantsA = responseJSONDocCarla.getJSONArray("dependents");
+                                    JSONArray dependantsA = responseJSONDocCarla.
+                                            getJSONArray("dependents");
 
                                     //
                                     int intCount = SignupActivity.dependentModels.size();
@@ -620,9 +636,13 @@ public class ConfirmFragment extends Fragment {
 
                                         try {
 
-                                            DependentModel dependentModel = SignupActivity.dependentModels.get(cursorIndex);
+                                            DependentModel dependentModel = SignupActivity.
+                                                    dependentModels.get(cursorIndex);
 
-                                            if(!dependentModel.getStrName().equalsIgnoreCase(getActivity().getResources().getString(R.string.add_dependent))) {
+                                            if (!dependentModel.getStrName().
+                                                    equalsIgnoreCase(getActivity().
+                                                            getResources().
+                                                            getString(R.string.add_dependent))) {
 
                                                 JSONObject jsonDependant = new JSONObject();
                                                 jsonDependant.put("dependent_name", dependentModel.getStrName());
@@ -630,12 +650,12 @@ public class ConfirmFragment extends Fragment {
                                                 jsonDependant.put("dependent_address", dependentModel.getStrAddress());
                                                 jsonDependant.put("dependent_email", dependentModel.getStrEmail());
 
-                                                jsonDependant.put("dependent_notes", dependentModel.getStrDesc());
+                                                jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
                                                 jsonDependant.put("dependent_age", dependentModel.getIntAge());
                                                 jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
 
-                                                jsonDependant.put("dependent_profile_url", dependentModel.getStrImgServer());
-                                                jsonDependant.put("customer_email", SignupActivity.strCustomerEmail);
+                                                jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
+                                                jsonDependant.put("customer_email", Config.customerModel.getStrEmail());
 
                                                 dependantsA.put(jsonDependant);
                                             }
@@ -648,7 +668,8 @@ public class ConfirmFragment extends Fragment {
 
                                 //
                                 if (libs.isConnectingToInternet()) {
-                                    storageService.updateDocs(responseJSONDocCarla, strCarlaJsonId, Config.collectionNameProviders, new App42CallBack() {
+                                    storageService.updateDocs(responseJSONDocCarla, strCarlaJsonId,
+                                            Config.collectionProvider, new App42CallBack() {
                                         @Override
                                         public void onSuccess(Object o) {
 
@@ -661,7 +682,8 @@ public class ConfirmFragment extends Fragment {
                                             }else {
                                                 if(progressDialog.isShowing())
                                                     progressDialog.dismiss();
-                                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                                libs.toast(2, 2,
+                                                        getString(R.string.warning_internet));
                                             }
                                         }
 
@@ -672,7 +694,8 @@ public class ConfirmFragment extends Fragment {
                                             if(e!=null) {
                                                 libs.toast(2, 2, e.getMessage());
                                             }else{
-                                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                                libs.toast(2, 2,
+                                                        getString(R.string.warning_internet));
                                             }
                                         }
                                     });
@@ -730,7 +753,8 @@ public class ConfirmFragment extends Fragment {
 
         int intCount = 0;
 
-        if (SignupActivity.strUserId != null && !SignupActivity.strUserId.equalsIgnoreCase(""))
+        if (Config.customerModel.getStrName() != null
+                && !Config.customerModel.getStrName().equalsIgnoreCase(""))
             intCount = libs.retrieveConfirmDependants();
 
         if (intCount > 1)
@@ -746,7 +770,8 @@ public class ConfirmFragment extends Fragment {
     public void setListView() {
         try {
             setListData();
-            adapter = new ConfirmListViewAdapter(getContext(), ConfirmFragment.CustomListViewValuesArr);
+            adapter = new ConfirmListViewAdapter(getContext(),
+                    ConfirmFragment.CustomListViewValuesArr);
             list.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();

@@ -38,19 +38,23 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backToSelection();
-            }
-        });
+        if (buttonBack != null) {
+            buttonBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    backToSelection();
+                }
+            });
+        }
 
-        buttonContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateDependantMedicalData();
-            }
-        });
+        if (buttonContinue != null) {
+            buttonContinue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    validateDependantMedicalData();
+                }
+            });
+        }
 
         libs.setStatusBarColor("#cccccc");
 
@@ -115,8 +119,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
             DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
-            DependentDetailPersonalActivity.dependentModel.setStrDesc(strNotes);
-            DependentDetailPersonalActivity.dependentModel.setStrImgServer("");
+            DependentDetailPersonalActivity.dependentModel.setStrNotes(strNotes);
+            DependentDetailPersonalActivity.dependentModel.setStrImageUrl("");
 
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
@@ -147,7 +151,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     }
 
     public void backToSelection() {
-        Intent selection = new Intent(DependentDetailsMedicalActivity.this, DependentDetailPersonalActivity.class);
+        Intent selection = new Intent(DependentDetailsMedicalActivity.this,
+                DependentDetailPersonalActivity.class);
         startActivity(selection);
         finish();
     }

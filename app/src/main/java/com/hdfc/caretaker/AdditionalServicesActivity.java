@@ -105,7 +105,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     if (jsonObjectAct != null) {
 
                         storageService.findDocsByIdApp42CallBack(Config.jsonDocId,
-                                Config.collectionName, new App42CallBack() {
+                                Config.collectionCustomer, new App42CallBack() {
                             @Override
                             public void onSuccess(Object o) {
 
@@ -191,7 +191,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                     if (libs.isConnectingToInternet()) {
 
                                         storageService.updateDocs(responseJSONDoc,
-                                                Config.jsonDocId, Config.collectionName,
+                                                Config.jsonDocId, Config.collectionCustomer,
                                                 new App42CallBack() {
                                             @Override
                                             public void onSuccess(Object o) {
@@ -325,7 +325,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
         StorageService storageService = new StorageService(AdditionalServicesActivity.this);
 
-        storageService.findDocsById(Config.strServiceDocId, Config.collectionNameServices, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+        storageService.findDocsById(Config.strServiceDocId, Config.collectionServices, new AsyncApp42ServiceApi.App42StorageServiceListener() {
             @Override
             public void onDocumentInserted(Storage response) {
 

@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.hdfc.adapters.VideoCompletedAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.models.ActivityModel;
-import com.hdfc.models.ActivityVideoModel;
 import com.hdfc.models.VideoModel;
 
 import java.util.ArrayList;
@@ -70,8 +69,8 @@ public class VideoCompletedActivityFragment extends Fragment {
 
         if (activityListModel != null) {
 
-            for (int i = 0; i < activityListModel.getActivityVideoModels().size(); i++) {
-                ActivityVideoModel activityFeedBackModel = activityListModel.getActivityVideoModels().get(i);
+            for (int i = 0; i < activityListModel.getVideoModels().size(); i++) {
+                VideoModel activityFeedBackModel = activityListModel.getVideoModels().get(i);
 
                 VideoModel activityCompletedModel = new VideoModel();
                 activityCompletedModel.setStrDateTime(activityFeedBackModel.getStrVideoTime());

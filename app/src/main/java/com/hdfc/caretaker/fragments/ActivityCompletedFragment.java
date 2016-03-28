@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.models.ActivityListModel;
 import com.hdfc.models.ActivityModel;
 
 public class ActivityCompletedFragment extends Fragment {

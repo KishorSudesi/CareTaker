@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.models.VideoModel;
 
 import java.util.List;
 

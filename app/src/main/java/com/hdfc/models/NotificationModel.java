@@ -5,44 +5,52 @@ package com.hdfc.models;
  */
 public class NotificationModel {
 
-    private String strCarlaImagePath = "";
     private String strMessage = "";
     private String strDateTime = "";
-    private String strAuthor = "";
+    private String strUserType;
+    private String strCreatedByType;
 
-    public NotificationModel(String strCarlaImagePath, String strMessage, String strDateTime, String strAuthor) {
-        this.strCarlaImagePath = strCarlaImagePath;
+    private int iUserID;
+    private int iCreatedByID;
+    private int iNotificationID;
+
+    public NotificationModel(String strMessage, String strDateTime, String strUserType,
+                             String strCreatedByType, int iUserID, int iCreatedByID,
+                             int iNotificationID) {
         this.strMessage = strMessage;
         this.strDateTime = strDateTime;
-        this.strAuthor = strAuthor;
+        this.strUserType = strUserType;
+        this.strCreatedByType = strCreatedByType;
+        this.iUserID = iUserID;
+        this.iCreatedByID = iCreatedByID;
+        this.iNotificationID = iNotificationID;
     }
 
     public String getStrMessage() {
         return strMessage;
     }
 
-    public String getStrAuthor() {
-        return strAuthor;
-    }
-
-    public void setStrAuthor(String strAuthor) {
-        this.strAuthor = strAuthor;
-    }
-
-    public String getStrCarlaImagePath() {
-        return strCarlaImagePath;
-    }
-
-    public void setStrCarlaImagePath(String strCarlaImagePath) {
-        this.strCarlaImagePath = strCarlaImagePath;
-    }
-
     public String getStrDateTime() {
         return strDateTime;
     }
 
-    public void setStrDateTime(String strDateTime) {
-        this.strDateTime = strDateTime;
+    public String getStrUserType() {
+        return strUserType;
     }
 
+    public String getStrCreatedByType() {
+        return strCreatedByType;
+    }
+
+    public int getiUserID() {
+        return iUserID;
+    }
+
+    public int getiCreatedByID() {
+        return iCreatedByID;
+    }
+
+    public int getiNotificationID() {
+        return iNotificationID;
+    }
 }
