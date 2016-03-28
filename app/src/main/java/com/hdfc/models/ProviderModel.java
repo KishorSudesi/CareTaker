@@ -12,20 +12,21 @@ public class ProviderModel {
     private String strContacts = "";
     private String strEmail = "";
 
-    private int iProviderID;
+    private String strProviderId;
 
     public ProviderModel() {
     }
 
+
     public ProviderModel(String strName, String strImgUrl, String strImgPath, String strAddress,
-                         String strContacts, String strEmail, int iProviderID) {
+                         String strContacts, String strEmail, String strProviderId) {
         this.strName = strName;
         this.strImgUrl = strImgUrl;
         this.strImgPath = strImgPath;
         this.strAddress = strAddress;
         this.strContacts = strContacts;
         this.strEmail = strEmail;
-        this.iProviderID = iProviderID;
+        this.strProviderId = strProviderId;
     }
 
     public String getStrName() {
@@ -52,7 +53,7 @@ public class ProviderModel {
         return strEmail;
     }
 
-    public int getiProviderID() {
-        return iProviderID;
+    public String getStrProviderId() {
+        return strProviderId;
     }
 }

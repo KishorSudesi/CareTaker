@@ -21,8 +21,8 @@ public class DependentModel {
     private int intHealthBp = 0;
     private int intHealthHeartRate = 0;
 
-    private int iDependentID;
-    private int iCustomerID;
+    private String strDependentID;
+    private String strCustomerID;
 
     private ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class DependentModel {
     public DependentModel(String strName, String strRelation, String strNotes, String strAddress,
                           String strContacts, String strEmail, String strIllness,
                           String strImagePath, String strImageUrl, int intAge, int intHealthBp,
-                          int intHealthHeartRate, int iDependentID, int iCustomerID,
+                          int intHealthHeartRate, String strDependentID, String strCustomerID,
                           ArrayList<ServiceModel> serviceModels) {
         this.strName = strName;
         this.strRelation = strRelation;
@@ -46,8 +46,8 @@ public class DependentModel {
         this.intAge = intAge;
         this.intHealthBp = intHealthBp;
         this.intHealthHeartRate = intHealthHeartRate;
-        this.iDependentID = iDependentID;
-        this.iCustomerID = iCustomerID;
+        this.strDependentID = strDependentID;
+        this.strCustomerID = strCustomerID;
         this.serviceModels = serviceModels;
     }
 
@@ -147,20 +147,12 @@ public class DependentModel {
         this.intHealthHeartRate = intHealthHeartRate;
     }
 
-    public int getiDependentID() {
-        return iDependentID;
+    public String getStrDependentID() {
+        return strDependentID;
     }
 
-    public void setiDependentID(int iDependentID) {
-        this.iDependentID = iDependentID;
-    }
-
-    public int getiCustomerID() {
-        return iCustomerID;
-    }
-
-    public void setiCustomerID(int iCustomerID) {
-        this.iCustomerID = iCustomerID;
+    public String getStrCustomerID() {
+        return strCustomerID;
     }
 
     public ArrayList<ServiceModel> getServiceModels() {

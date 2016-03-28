@@ -20,9 +20,10 @@ public class Config {
 
     public static final String dbName = "newzeal";
 
-    public static final String collectionServices = "services";
-    public static final String collectionProvider = "providers";
+    public static final String collectionServices = "service";
+    public static final String collectionProvider = "provider";
     public static final String collectionCustomer = "customer";
+    public static final String collectionDependent = "dependent";
 
     //public static final String strServiceDocId = "56f280b0e4b003cbd56dcb38";//remove this
     //for UAT 56f280b0e4b003cbd56dcb38
@@ -59,7 +60,6 @@ public class Config {
     public static JSONObject jsonObject = null;
     public static JSONObject jsonCustomer = null;
 
-    public static ArrayList<JSONObject> jsonDependents = new ArrayList<>();
     public static String jsonDocId = "";
 
     public static int intSelectedMenu = 0;

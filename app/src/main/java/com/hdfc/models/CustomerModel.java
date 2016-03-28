@@ -13,20 +13,21 @@ public class CustomerModel {
     private String strContacts = "";
     private String strEmail = "";
 
-    private int iCustomerID;
+    private String strCustomerID;
 
     public CustomerModel() {
     }
 
     public CustomerModel(String strName, String strPaytm, String strImgUrl, String strAddress,
-                         String strContacts, String strEmail, int iCustomerID, String strImgPath) {
+                         String strContacts, String strEmail, String strCustomerID,
+                         String strImgPath) {
         this.strName = strName;
         this.strPaytm = strPaytm;
         this.strImgUrl = strImgUrl;
         this.strAddress = strAddress;
         this.strContacts = strContacts;
         this.strEmail = strEmail;
-        this.iCustomerID = iCustomerID;
+        this.strCustomerID = strCustomerID;
         this.strImgPath = strImgPath;
     }
 
@@ -54,8 +55,8 @@ public class CustomerModel {
         return strEmail;
     }
 
-    public int getiCustomerID() {
-        return iCustomerID;
+    public String getStrCustomerID() {
+        return strCustomerID;
     }
 
     public String getStrImgPath() {

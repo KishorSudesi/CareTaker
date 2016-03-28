@@ -12,15 +12,15 @@ public class ImageModel implements Serializable {
     private String strImageDesc;
     private String strImageTime;
 
-    private int iImageID;
+    private String strImageID;
 
     public ImageModel(String strImageName, String strImageUrl, String strImageDesc,
-                      String strImageTime, int iImageID) {
+                      String strImageTime, String strImageID) {
         this.strImageName = strImageName;
         this.strImageUrl = strImageUrl;
         this.strImageDesc = strImageDesc;
         this.strImageTime = strImageTime;
-        this.iImageID = iImageID;
+        this.strImageID = strImageID;
     }
 
     public String getStrImageName() {
@@ -39,7 +39,7 @@ public class ImageModel implements Serializable {
         return strImageTime;
     }
 
-    public int getiImageID() {
-        return iImageID;
+    public String getStrImageID() {
+        return strImageID;
     }
 }

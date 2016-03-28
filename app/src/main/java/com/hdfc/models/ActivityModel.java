@@ -8,11 +8,11 @@ import java.util.ArrayList;
  */
 public class ActivityModel implements Serializable {
 
-    private int iActivityID;
-    private int iCustomerID;
-    private int iDependentID;
-    private int iProviderID;
-    private int iServcieID;
+    private String strActivityID;
+    private String strustomerID;
+    private String strDependentID;
+    private String strProviderID;
+    private String strServcieID;
 
     private String strActivityName;
     private String strActivityDesc;
@@ -36,25 +36,23 @@ public class ActivityModel implements Serializable {
     public ActivityModel() {
     }
 
-
-    public ActivityModel(int iActivityID, int iCustomerID, int iDependentID, int iProviderID,
-                         String strActivityName,
-                         String strActivityDesc, String strActivityMessage,
-                         String strActivityStatus, int iServcieID, String strServiceName,
-                         String strServiceDesc, String strActivityDate, String strActivityDoneDate,
-                         String strActivityProviderStatus, boolean bActivityOverdue,
-                         String[] strFeatures, String[] strFeaturesDone,
+    public ActivityModel(String strActivityID, String strustomerID, String strDependentID,
+                         String strProviderID, String strServcieID, String strActivityName,
+                         String strActivityDesc, String strActivityMessage, String strActivityStatus,
+                         String strServiceName, String strServiceDesc, String strActivityDate,
+                         String strActivityDoneDate, String strActivityProviderStatus,
+                         boolean bActivityOverdue, String[] strFeatures, String[] strFeaturesDone,
                          ArrayList<ImageModel> imageModels, ArrayList<VideoModel> videoModels,
                          ArrayList<FeedBackModel> feedBackModels) {
-        this.iActivityID = iActivityID;
-        this.iCustomerID = iCustomerID;
-        this.iDependentID = iDependentID;
-        this.iProviderID = iProviderID;
+        this.strActivityID = strActivityID;
+        this.strustomerID = strustomerID;
+        this.strDependentID = strDependentID;
+        this.strProviderID = strProviderID;
+        this.strServcieID = strServcieID;
         this.strActivityName = strActivityName;
         this.strActivityDesc = strActivityDesc;
         this.strActivityMessage = strActivityMessage;
         this.strActivityStatus = strActivityStatus;
-        this.iServcieID = iServcieID;
         this.strServiceName = strServiceName;
         this.strServiceDesc = strServiceDesc;
         this.strActivityDate = strActivityDate;
@@ -68,48 +66,24 @@ public class ActivityModel implements Serializable {
         this.feedBackModels = feedBackModels;
     }
 
-    public ActivityModel(int iActivityID, int iCustomerID, int iDependentID, int iProviderID,
-                         String strActivityName,
-                         String strActivityDesc, String strActivityMessage,
-                         String strActivityStatus, int iServcieID, String strServiceName,
-                         String strServiceDesc, String strActivityDate,
-                         String strActivityProviderStatus, boolean bActivityOverdue,
-                         String[] strFeatures) {
-        this.iActivityID = iActivityID;
-        this.iCustomerID = iCustomerID;
-        this.iDependentID = iDependentID;
-        this.iProviderID = iProviderID;
-        this.strActivityName = strActivityName;
-        this.strActivityDesc = strActivityDesc;
-        this.strActivityMessage = strActivityMessage;
-        this.strActivityStatus = strActivityStatus;
-        this.iServcieID = iServcieID;
-        this.strServiceName = strServiceName;
-        this.strServiceDesc = strServiceDesc;
-        this.strActivityDate = strActivityDate;
-        this.strActivityProviderStatus = strActivityProviderStatus;
-        this.bActivityOverdue = bActivityOverdue;
-        this.strFeatures = strFeatures;
+    public String getStrActivityID() {
+        return strActivityID;
     }
 
-    public int getiActivityID() {
-        return iActivityID;
+    public String getStrustomerID() {
+        return strustomerID;
     }
 
-    public int getiCustomerID() {
-        return iCustomerID;
+    public String getStrDependentID() {
+        return strDependentID;
     }
 
-    public int getiDependentID() {
-        return iDependentID;
+    public String getStrProviderID() {
+        return strProviderID;
     }
 
-    public int getiProviderID() {
-        return iProviderID;
-    }
-
-    public int getiServcieID() {
-        return iServcieID;
+    public String getStrServcieID() {
+        return strServcieID;
     }
 
     public String getStrActivityName() {

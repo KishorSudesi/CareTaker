@@ -171,7 +171,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 jsonObjectAct.put("activity_name",dependentServiceModel.getStrServiceName());
 
                                 jsonObjectAct.put("activity_description",dependentServiceModel.getStrServiceDesc());
-                                jsonObjectAct.put("service_id",dependentServiceModel.getiServiceId());
+                                jsonObjectAct.put("service_id", dependentServiceModel.getStrServiceId());
                                 jsonObjectAct.put("features",dependentServiceModel.getJsonArrayFeatures());
 
                                 JSONArray jsonArray = new JSONArray();
@@ -192,7 +192,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 jsonObjectActCarla.put("activity_name",dependentServiceModel.getStrServiceName());
 
                                 jsonObjectActCarla.put("activity_description",dependentServiceModel.getStrServiceDesc());
-                                jsonObjectActCarla.put("service_id",dependentServiceModel.getiServiceId());
+                                jsonObjectActCarla.put("service_id", dependentServiceModel.getStrServiceId());
 
                                 jsonObjectActCarla.put("features_done", jsonArray);
 

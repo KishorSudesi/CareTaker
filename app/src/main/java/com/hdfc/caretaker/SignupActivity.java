@@ -95,17 +95,17 @@ public class SignupActivity extends FragmentActivity {
 
     public void setButton(Button btn) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Libs.setBtnDrawable(_btn1, getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn2, getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn3, getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setDrawable(_btn1, getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setDrawable(_btn2, getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setDrawable(_btn3, getDrawable(R.drawable.rounded_cell_blue));
 
-            Libs.setBtnDrawable(btn, getDrawable(R.drawable.rounded_cell));
+            Libs.setDrawable(btn, getDrawable(R.drawable.rounded_cell));
         } else {
-            Libs.setBtnDrawable(_btn1, getResources().getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn2, getResources().getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setBtnDrawable(_btn3, getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setDrawable(_btn1, getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setDrawable(_btn2, getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Libs.setDrawable(_btn3, getResources().getDrawable(R.drawable.rounded_cell_blue));
 
-            Libs.setBtnDrawable(btn, getResources().getDrawable(R.drawable.rounded_cell));
+            Libs.setDrawable(btn, getResources().getDrawable(R.drawable.rounded_cell));
         }
     }
 

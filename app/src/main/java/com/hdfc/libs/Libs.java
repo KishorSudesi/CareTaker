@@ -56,7 +56,6 @@ import com.hdfc.models.DependentModel;
 import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
-import com.hdfc.models.NotificationModel;
 import com.hdfc.models.VideoModel;
 
 import org.json.JSONArray;
@@ -89,10 +88,14 @@ import java.util.regex.Pattern;
 public class Libs {
 
     //application specific
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-    public final static SimpleDateFormat writeFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
-    public final static SimpleDateFormat writeFormatActivity = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
-    public final static SimpleDateFormat writeFormatActivityMonthYear = new SimpleDateFormat("MMM yyyy", Locale.US);
+    public final static SimpleDateFormat readFormat =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+    public final static SimpleDateFormat writeFormat =
+            new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+    public final static SimpleDateFormat writeFormatActivity =
+            new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
+    public final static SimpleDateFormat writeFormatActivityMonthYear =
+            new SimpleDateFormat("MMM yyyy", Locale.US);
     public static Uri customerImageUri;
     //
 
@@ -136,13 +139,16 @@ public class Libs {
     //creating scaled bitmap with required width and height
     public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
 
-        Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
-        Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(), dstWidth, dstHeight);
+        Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(),
+                dstWidth, dstHeight);
+        Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(),
+                dstWidth, dstHeight);
 
         Bitmap scaledBitmap = null;
 
         try {
-            scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(), Bitmap.Config.ARGB_8888);
+            scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(),
+                    Bitmap.Config.ARGB_8888);
         } catch (OutOfMemoryError oom) {
             oom.printStackTrace();
         }
@@ -212,13 +218,15 @@ public class Libs {
             BitmapFactory.decodeResource(res, resId, options);
 
             // Calculate inSampleSize
-            options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, reqWidth, reqHeight);
+            options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight,
+                    reqWidth, reqHeight);
 
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
             options.inDither = false;
 
-            bmp = createScaledBitmap(BitmapFactory.decodeResource(res, resId, options), reqWidth, reqHeight);
+            bmp = createScaledBitmap(BitmapFactory.decodeResource(res, resId, options), reqWidth,
+                    reqHeight);
 
         } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
@@ -314,8 +322,10 @@ public class Libs {
     public static void hideSoftKeyboard(Activity activity) {
         try {
             if (activity.getCurrentFocus() != null) {
-                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().
+                        getWindowToken(), 0);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -452,13 +462,6 @@ public class Libs {
         return encryptedValue;
     }*/
 
-    public static void setBtnDrawable(Button btn, Drawable drw) {
-        if (Build.VERSION.SDK_INT <= 16)
-            btn.setBackgroundDrawable(drw);
-        else
-            btn.setBackground(drw);
-    }
-
    /* public static String decrypt(String encryptedData) {
         String decryptedValue = null;
         Cipher c = null;
@@ -518,7 +521,6 @@ public class Libs {
 
         if (Config.isDebuggable)
             Log.e(tag, message);
-
     }
 
     public static boolean isEmpty(String strInput) {
@@ -546,15 +548,6 @@ public class Libs {
         return file;
     }
 
-   /* public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(_ctxt)
-                .setMessage(message)
-                .setPositiveButton(_ctxt.getString(R.string.ok), okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
-    }*/
-
    /* public String getUUID() {
         final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -568,17 +561,6 @@ public class Libs {
         String deviceId = deviceUuid.toString();
 
         return deviceId;
-    }*/
-
-    /*public void createAlertDialog(String msg) {
-        AlertDialog.Builder alertbox = new AlertDialog.Builder(_ctxt);
-        alertbox.setTitle(_ctxt.getString(R.string.app_name));
-        alertbox.setMessage(msg);
-        alertbox.setPositiveButton(_ctxt.getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-            }
-        });
-        alertbox.show();
     }*/
 
     public static boolean deleteAllFiles(File directory) {
@@ -628,10 +610,17 @@ public class Libs {
         }
     }*/
 
+    public static void setDrawable(View v, Drawable drw) {
+        if (Build.VERSION.SDK_INT <= 16)
+            v.setBackgroundDrawable(drw);
+        else
+            v.setBackground(drw);
+    }
+
     public static void logout() {
         try {
             Config.jsonObject = null;
-            Config.jsonServer = null;
+            //Config.jsonServer = null;
             Config.jsonDocId = "";
 
             Config.intSelectedMenu = 0;
@@ -683,29 +672,6 @@ public class Libs {
 
     }
 
-    public boolean isEmailValid(String email) {
-        boolean b;
-
-        b = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-
-        if (b) {
-            Pattern p = Pattern.compile("^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[A-Z]{2,4}$", Pattern.CASE_INSENSITIVE);
-            Matcher m = p.matcher(email);
-            b = m.matches();
-        }
-
-        return b;
-    }
-
-    public int getMemory() {
-        Runtime rt = Runtime.getRuntime();
-        int maxMemory = (int) rt.maxMemory() / 1024;
-
-        //int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
-
-        return maxMemory;
-    }
-
     /*public void setupUI(View view) {
         //Set up touch listener for non-text box views to hide keyboard.
         //if (!(view instanceof EditText)) {
@@ -726,6 +692,30 @@ public class Libs {
             }
         }
     }*/
+
+    public boolean isEmailValid(String email) {
+        boolean b;
+
+        b = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+
+        if (b) {
+            Pattern p = Pattern.compile("^[\\w\\-]([\\.\\w])+[\\w]+@([\\w\\-]+\\.)+[A-Z]{2,4}$",
+                    Pattern.CASE_INSENSITIVE);
+            Matcher m = p.matcher(email);
+            b = m.matches();
+        }
+
+        return b;
+    }
+
+    public int getMemory() {
+        Runtime rt = Runtime.getRuntime();
+        int maxMemory = (int) rt.maxMemory() / 1024;
+
+        //int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
+
+        return maxMemory;
+    }
 
     public String convertDateToString(Date dtDate) {
 
@@ -754,7 +744,8 @@ public class Libs {
     }
 
     public boolean isConnectingToInternet() {
-        ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();
             if (info != null)
@@ -845,9 +836,13 @@ public class Libs {
                     intent.setAction(Intent.ACTION_GET_CONTENT);
 
                     if (fragment != null && fragment.isVisible())
-                        fragment.startActivityForResult(Intent.createChooser(intent, _ctxt.getResources().getString(R.string.select_picture)), Config.START_GALLERY_REQUEST_CODE);
+                        fragment.startActivityForResult(Intent.createChooser(intent,
+                                _ctxt.getResources().getString(R.string.select_picture)),
+                                Config.START_GALLERY_REQUEST_CODE);
                     else if (activity != null && !activity.isFinishing())
-                        activity.startActivityForResult(Intent.createChooser(intent, _ctxt.getResources().getString(R.string.select_picture)), Config.START_GALLERY_REQUEST_CODE);
+                        activity.startActivityForResult(Intent.createChooser(intent,
+                                _ctxt.getResources().getString(R.string.select_picture)),
+                                Config.START_GALLERY_REQUEST_CODE);
 
                 } else if (items[item].equals(_ctxt.getResources().getString(R.string.cancel))) {
                     dialog.dismiss();
@@ -856,6 +851,17 @@ public class Libs {
         });
         builder.show();
     }
+
+    /*private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
+
+        if (v == null)
+            return;
+
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
+    }*/
 
     public void openCamera(String strFileName, Fragment fragment, final Activity activity) {
 
@@ -872,6 +878,16 @@ public class Libs {
         }
     }
 
+    /*public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }*/
+
     public void copyInputStreamToFile(InputStream in, File file) {
         try {
             OutputStream out = new FileOutputStream(file);
@@ -887,17 +903,6 @@ public class Libs {
         }
     }
 
-    /*private void updateView(int index, ListView listView) {
-        View v = listView.getChildAt(index -
-                listView.getFirstVisiblePosition());
-
-        if (v == null)
-            return;
-
-        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
-        //someText.setText("Hi! I updated you manually!");
-    }*/
-
     public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current, EditText editCurrent) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
@@ -910,7 +915,7 @@ public class Libs {
                 else
                     setEditTextDrawable(e, all);
             } else if (child instanceof ViewGroup) {
-                invalid = traverseEditTexts((ViewGroup) child, all, current, editCurrent);  // Recursive call.
+                invalid = traverseEditTexts((ViewGroup) child, all, current, editCurrent);
                 if (invalid != null) {
                     break;
                 }
@@ -919,30 +924,11 @@ public class Libs {
         return invalid;
     }
 
-    /*public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }*/
-
-    //Application Specigfic Start
-
     public void setEditTextDrawable(EditText editText, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
             editText.setBackgroundDrawable(drw);
         else
             editText.setBackground(drw);
-    }
-
-    public void setDrawable(View v, Drawable drw) {
-        if (Build.VERSION.SDK_INT <= 16)
-            v.setBackgroundDrawable(drw);
-        else
-            v.setBackground(drw);
     }
 
     public void setStatusBarColor(String strColor) {
@@ -960,23 +946,21 @@ public class Libs {
     }
 
     //load image from url
-    public void loadImageFromWeb(String strFileName, String strFileUrl){
+    public void loadImageFromWeb(String strFileName, String strFileUrl) {
 
         strFileName = replaceSpace(strFileName);
         strFileUrl = replaceSpace(strFileUrl);
 
         File fileImage = createFileInternal("images/" + strFileName);
 
-        log(strFileName+" ~ "+strFileUrl, " paths ");
+        log(strFileName + " ~ " + strFileUrl, " path ");
         //fileImage.
         if (fileImage.length() <= 0) {
 
             InputStream input;
             try {
 
-                log(" 1 ", " IN ");
-
-                URL url = new URL(strFileUrl); //URLEncoder.encode(fileModel.getStrFileUrl(), "UTF-8")
+                URL url = new URL(strFileUrl);//URLEncoder.encode(fileModel.getStrFileUrl(), "UTF-8")
                 input = url.openStream();
                 byte[] buffer = new byte[1500];
                 OutputStream output = new FileOutputStream(fileImage);
@@ -985,15 +969,11 @@ public class Libs {
                     while ((bytesRead = input.read(buffer, 0, buffer.length)) >= 0) {
                         output.write(buffer, 0, bytesRead);
                     }
-                    log(" 2.0 ", " IN ");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     output.close();
                 }
-
-                log(" 2.1 ", " IN ");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1001,11 +981,11 @@ public class Libs {
         }
     }
 
-    public Bitmap roundedBitmap(Bitmap bmp){
+    public Bitmap roundedBitmap(Bitmap bmp) {
         Bitmap output = null;
 
         try {
-            if(bmp!=null) {
+            if (bmp != null) {
                 output = Bitmap.createBitmap(bmp.getWidth(),
                         bmp.getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(output);
@@ -1029,76 +1009,7 @@ public class Libs {
         return output;
     }
 
-    /*public void fetchServices(){
-        StorageService storageService = new StorageService(_ctxt);
-
-        storageService.findDocsById("56c70aefe4b0067c8c7658bf", Config.collectionServices, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-            @Override
-            public void onDocumentInserted(Storage response) {
-
-            }
-
-            @Override
-            public void onUpdateDocSuccess(Storage response) {
-
-            }
-
-            @Override
-            public void onFindDocSuccess(Storage response) {
-
-                log(response.toString(), "");
-
-                if (response.getJsonDocList().size() > 0) {
-
-                    Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-
-                    String strDocument = jsonDocument.getJsonDoc();
-
-                    try {
-
-                        JSONObject jsonObjectServices = new JSONObject(strDocument);
-
-                        if (jsonObjectServices.has("services")) {
-
-                            Config.serviceModels.clear();
-
-                            JSONArray jsonArray = jsonObjectServices.getJSONArray("services");
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                                ServiceModel serviceModel = new ServiceModel(jsonObject.getString("service_name"),
-                                        jsonObject.getString("service_features"),
-                                        jsonObject.getDouble("unit"),
-                                        jsonObject.getDouble("cost"));
-
-                                Config.serviceModels.add(serviceModel);
-                            }
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onInsertionFailed(App42Exception ex) {
-
-            }
-
-            @Override
-            public void onFindDocFailed(App42Exception ex) {
-                Libs.log(ex.getMessage(), "");
-            }
-
-            @Override
-            public void onUpdateDocFailed(App42Exception ex) {
-
-            }
-        });
-    }*/
+    //Application Specigfic Start
 
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -1107,7 +1018,8 @@ public class Libs {
             try {
                 options.inJustDecodeBounds = true;
                 original = BitmapFactory.decodeFile(strPath, options);
-                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
+                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight,
+                        intWidth, intHeight);
                 options.inJustDecodeBounds = false;
                 original = BitmapFactory.decodeFile(strPath, options);
             } catch (OutOfMemoryError | Exception oOm) {
@@ -1126,7 +1038,8 @@ public class Libs {
                 //
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(strPath, options);
-                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, Config.intWidth, Config.intHeight);
+                options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight,
+                        Config.intWidth, Config.intHeight);
                 options.inJustDecodeBounds = false;
                 intSampleHeight = options.outHeight / options.inSampleSize;
                 //original.recycle();
@@ -1217,12 +1130,14 @@ public class Libs {
 
                         JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
 
-                        for (int i = Config.intSelectedDependent; i < Config.intSelectedDependent + 1; i++) {
+                        for (int i = Config.intSelectedDependent;
+                             i < Config.intSelectedDependent + 1;
+                             i++) {
 
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                             //Notifications
-                            if (jsonObject.has("notifications")) {
+                           /* if (jsonObject.has("notifications")) {
 
                                 JSONArray jsonArrayNotifications = jsonObject.getJSONArray("notifications");
 
@@ -1237,7 +1152,7 @@ public class Libs {
 
                                     NotificationFragment.staticNotificationModels.add(notificationModel);
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
@@ -1514,6 +1429,7 @@ public class Libs {
 
                                                 JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
 
+
                                                 VideoModel videoModel = new VideoModel(
                                                         jsonObjectVideo.getString("video_name"),
                                                         jsonObjectVideo.getString("video_url"),
@@ -1594,12 +1510,15 @@ public class Libs {
 
             if (Config.jsonObject.has("customer_name")) {
 
-                //fetch Customer data
-                Config.customerModel = new CustomerModel(Config.jsonObject.getString("customer_name"),
-                        Config.jsonObject.getString("paytm_account"), Config.jsonObject.getString("customer_profile_url"),
+                Config.customerModel = new CustomerModel(
+                        Config.jsonObject.getString("customer_name"),
+                        Config.jsonObject.getString("paytm_account"), "",
                         Config.jsonObject.getString("customer_address"),
                         Config.jsonObject.getString("customer_contact_no"),
-                        Config.jsonObject.getString("customer_email"));
+                        Config.jsonObject.getString("customer_email"),
+                        Config.jsonObject.getString("customer_profile_url"),
+                        Config.jsonObject.getString("customer_profile_url")
+                );
                 //
 
                 if (Config.jsonObject.has("dependents")) {
@@ -1656,14 +1575,6 @@ public class Libs {
         return file;
     }
 
-   /* SimpleDateFormat original = new SimpleDateFormat("yyyy-MM-ddThh:mm:sssZ");
-    SimpleDateFormat output= new SimpleDateFormat("yyyy/MM/dd");
-    String isoFormat = original.format(result.get("_id"));
-    Date d = original.parse(isoFormat);
-    String formattedTime = output.format(d);
-
-    System.out.println(formattedTime);*/
-
     public int retrieveDependants() {
 
         int count = SignupActivity.dependentModels.size();
@@ -1672,8 +1583,8 @@ public class Libs {
             DependentModel dpndntModel = new DependentModel();
             dpndntModel.setStrName(_ctxt.getResources().getString(R.string.add_dependent));
             dpndntModel.setStrRelation("");
-            dpndntModel.setStrImg("");
-            dpndntModel.setStrDesc("");
+            dpndntModel.setStrImagePath("");
+            dpndntModel.setStrNotes("");
             dpndntModel.setStrAddress("");
             dpndntModel.setStrContacts("");
             dpndntModel.setStrEmail("");
@@ -1693,21 +1604,19 @@ public class Libs {
 
         int count = 0;
 
-        if (!SignupActivity.strCustomerEmail.equalsIgnoreCase("")) {
+        if (!Config.customerModel.getStrEmail().equalsIgnoreCase("")) {
 
             try {
 
                 confirmViewModel = new ConfirmViewModel();
-                confirmViewModel.setStrName(SignupActivity.strCustomerName);
+                confirmViewModel.setStrName(Config.customerModel.getStrName());
                 confirmViewModel.setStrDesc("");
-                confirmViewModel.setStrAddress(SignupActivity.strCustomerAddress);
-                confirmViewModel.setStrContacts(SignupActivity.strCustomerContactNo);
-                confirmViewModel.setStrEmail(SignupActivity.strCustomerEmail);
-                confirmViewModel.setStrImg(SignupActivity.strCustomerImg);
+                confirmViewModel.setStrAddress(Config.customerModel.getStrAddress());
+                confirmViewModel.setStrContacts(Config.customerModel.getStrContacts());
+                confirmViewModel.setStrEmail(Config.customerModel.getStrEmail());
+                confirmViewModel.setStrImg(Config.customerModel.getStrImgPath());
 
                 count++;
-
-                Libs.log(SignupActivity.strCustomerImg + " 4", "Image 4");
 
                 ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
 
@@ -1716,13 +1625,11 @@ public class Libs {
                     if (!dependentModel.getStrName().equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))) {
                         confirmViewModel = new ConfirmViewModel();
                         confirmViewModel.setStrName(dependentModel.getStrName());
-                        confirmViewModel.setStrDesc(dependentModel.getStrDesc());
+                        confirmViewModel.setStrDesc(dependentModel.getStrNotes());
                         confirmViewModel.setStrAddress(dependentModel.getStrAddress());
                         confirmViewModel.setStrContacts(dependentModel.getStrContacts());
                         confirmViewModel.setStrEmail(dependentModel.getStrEmail());
-                        confirmViewModel.setStrImg(dependentModel.getStrImg());
-
-                        Libs.log(dependentModel.getStrImg() + " 5", "Image 5");
+                        confirmViewModel.setStrImg(dependentModel.getStrImagePath());
 
                         ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
                         count++;
@@ -1735,97 +1642,6 @@ public class Libs {
         }
 
         return count;
-    }
-
-    public boolean prepareData(String strCustomerImageUrl) {
-
-        boolean isFormed;
-
-        Config.jsonCustomer = new JSONObject();
-
-        try {
-
-            Config.jsonCustomer.put("customer_name", Config.customerModel.getStrName());
-            Config.jsonCustomer.put("customer_address", Config.customerModel.getStrAddress());
-            Config.jsonCustomer.put("customer_contact_no", Config.customerModel.getStrContacts());
-            Config.jsonCustomer.put("customer_email", Config.customerModel.getStrEmail());
-            Config.jsonCustomer.put("customer_profile_url", strCustomerImageUrl);
-            Config.jsonCustomer.put("paytm_account", "paytm_account");
-
-            isFormed = true;
-
-            if (isFormed) {
-
-                try {
-
-                    int intCount = SignupActivity.dependentModels.size();
-
-                    if (intCount > 0) {
-
-                        JSONArray jsonArrayDependant = new JSONArray();
-
-                        int intDependantCount = 0;
-
-                        for (int cursorIndex = 0; cursorIndex < intCount; cursorIndex++) {
-
-                            try {
-
-                                DependentModel dependentModel = SignupActivity.dependentModels.get(cursorIndex);
-
-                                if (!dependentModel.getStrName().equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))) {
-
-                                    JSONObject jsonDependant = new JSONObject();
-                                    jsonDependant.put("dependent_name", dependentModel.getStrName());
-                                    jsonDependant.put("dependent_email", dependentModel.getStrEmail());
-                                    jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
-                                    jsonDependant.put("dependent_address", dependentModel.getStrAddress());
-                                    jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
-                                    jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
-                                    jsonDependant.put("dependent_age", dependentModel.getIntAge());
-                                    jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
-
-                                    jsonDependant.put("health_bp", 70 + cursorIndex);
-                                    jsonDependant.put("health_heart_rate", 80 + cursorIndex);
-
-                                    jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
-
-                                    JSONArray jsonArr = new JSONArray();
-                                    jsonDependant.put("services", jsonArr);
-
-                                    jsonArrayDependant.put(jsonDependant);
-                                }
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                            intDependantCount++;
-                        }
-
-                        jsonCustomer.put("dependents", jsonArrayDependant);
-
-                        if (intCount != intDependantCount) {
-                            isFormed = false;
-                        } else {
-                            Config.jsonServer = jsonCustomer;
-                            Libs.log(jsonCustomer.toString(), "");
-                            //
-                            isFormed = true;
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    isFormed = false;
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            isFormed = false;
-        }
-
-        return isFormed;
     }
 
     public String formatDate(String strDate){
@@ -1885,7 +1701,8 @@ public class Libs {
 
         try {
             LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
-            View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).findViewById(R.id.toast_layout_root));
+            View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).
+                    findViewById(R.id.toast_layout_root));
 
             TextView text = (TextView) layout.findViewById(R.id.text);
             text.setText(message);

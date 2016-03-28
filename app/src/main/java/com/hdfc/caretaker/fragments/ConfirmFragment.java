@@ -113,14 +113,14 @@ public class ConfirmFragment extends Fragment {
 
         SignupActivity.strCustomerPass = "";
 
-        Config.jsonObject = Config.jsonServer;
+        //Config.jsonObject = Config.jsonServer;
 
         if(!jsonDocId.equalsIgnoreCase(""))
             Config.jsonDocId = jsonDocId;
 
         Config.strUserName = Config.customerModel.getStrEmail();
 
-        Config.jsonServer = null;
+        //Config.jsonServer = null;
 
        /* SignupActivity.strCustomerName = "";
         SignupActivity.strCustomerEmail = "";
@@ -136,7 +136,8 @@ public class ConfirmFragment extends Fragment {
 
         if (libs.isConnectingToInternet()) {
 
-            progressDialog.setMessage(getActivity().getResources().getString(R.string.process_login));
+            progressDialog.setMessage(getActivity().getResources().getString(
+                    R.string.process_login));
 
             UploadService uploadService = new UploadService(getActivity());
 
@@ -230,7 +231,7 @@ public class ConfirmFragment extends Fragment {
 
                         uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
                                 libs.replaceSpace(dependentModel.getStrName()), "Profile Picture",
-                                Config.customerModel.getStrEmail(),
+                                dependentModel.getStrEmail(),
                                 UploadFileType.IMAGE, new App42CallBack() {
 
                                     public void onSuccess(Object response) {
@@ -464,9 +465,33 @@ public class ConfirmFragment extends Fragment {
 
     }
 
+    public boolean prepareData(String strCustomerImageUrl) {
+
+        boolean isFormed;
+
+        try {
+
+            Config.jsonCustomer.put("customer_name", Config.customerModel.getStrName());
+            Config.jsonCustomer.put("customer_address", Config.customerModel.getStrAddress());
+            Config.jsonCustomer.put("customer_contact_no", Config.customerModel.getStrContacts());
+            Config.jsonCustomer.put("customer_email", Config.customerModel.getStrEmail());
+            Config.jsonCustomer.put("customer_profile_url", strCustomerImageUrl);
+            Config.jsonCustomer.put("paytm_account", "paytm_account");
+
+            isFormed = true;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            isFormed = false;
+        }
+
+        return isFormed;
+    }
+
+
     public void uploadData() {
 
-        boolean isRegistered = libs.prepareData(strCustomerImageUrl);
+        boolean isRegistered = prepareData(strCustomerImageUrl);
 
         if (libs.isConnectingToInternet()) {
 
@@ -474,7 +499,7 @@ public class ConfirmFragment extends Fragment {
 
                 StorageService storageService = new StorageService(getActivity());
 
-                storageService.insertDocs(Config.jsonServer,
+                storageService.insertDocs(Config.jsonCustomer,
                         new AsyncApp42ServiceApi.App42StorageServiceListener() {
 
                     @Override
@@ -551,9 +576,9 @@ public class ConfirmFragment extends Fragment {
                 @Override
                 public void onSuccess(Object o) {
 
-                    if(o!=null)
-                        assignToDependent(jsonDocId);
-                    else{
+                    if (o != null) {
+                        createDependent(jsonDocId);
+                    } else {
                         if (progressDialog.isShowing())
                             progressDialog.dismiss();
                         libs.toast(2, 2, getString(R.string.warning_internet));
@@ -568,9 +593,9 @@ public class ConfirmFragment extends Fragment {
 
                         int appErrorCode = ((App42Exception)e).getAppErrorCode();
 
-                        if (appErrorCode == 2005)
-                            assignToDependent(jsonDocId);
-                        else{
+                        if (appErrorCode == 2005) {
+                            createDependent(jsonDocId);
+                        } else {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
                             libs.toast(2, 2, getString(R.string.error));
@@ -591,161 +616,184 @@ public class ConfirmFragment extends Fragment {
         }
     }
 
-    public void assignToDependent(final String jsonDocId){
+    public void createDependent(final String jsonDocId) {
 
-        if (libs.isConnectingToInternet()) {
+        int intCount = SignupActivity.dependentModels.size();
 
-            final StorageService storageService = new StorageService(getActivity());
+        for (int cursorIndex = 0; cursorIndex < intCount; cursorIndex++) {
 
-            storageService.findDocsByKeyValue(Config.collectionProvider,
-                    "provider_email", "carla1@gmail.com",
-                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                @Override
-                public void onDocumentInserted(Storage response) {
-                }
+            try {
 
-                @Override
-                public void onUpdateDocSuccess(Storage response) {
-                }
+                DependentModel dependentModel = SignupActivity.
+                        dependentModels.get(cursorIndex);
 
-                @Override
-                public void onFindDocSuccess(Storage response) {
+                if (!dependentModel.getStrName().
+                        equalsIgnoreCase(getActivity().
+                                getResources().
+                                getString(R.string.add_dependent))) {
 
-                    if(response!=null) {
+                    if (libs.isConnectingToInternet()) {
 
-                        if (response.getJsonDocList().size() > 0) {
+                        UserService userService = new UserService(getActivity());
 
-                            Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                        userService.onCreateUser(dependentModel.getStrEmail(),
+                                "we", dependentModel.getStrEmail(),//todo generate random password and send mail
+                                new App42CallBack() {
+                                    @Override
+                                    public void onSuccess(Object o) {
 
-                            final String strCarlaJsonId = response.getJsonDocList().get(0).
-                                    getDocId();
+                                        if (o != null) {
 
-                            String strDocument = jsonDocument.getJsonDoc();
-
-                            try {
-                                final JSONObject responseJSONDocCarla = new JSONObject(strDocument);
-
-                                if (responseJSONDocCarla.has("dependents")) {
-                                    JSONArray dependantsA = responseJSONDocCarla.
-                                            getJSONArray("dependents");
-
-                                    //
-                                    int intCount = SignupActivity.dependentModels.size();
-
-                                    for (int cursorIndex = 0; cursorIndex < intCount; cursorIndex++) {
-
-                                        try {
-
-                                            DependentModel dependentModel = SignupActivity.
-                                                    dependentModels.get(cursorIndex);
-
-                                            if (!dependentModel.getStrName().
-                                                    equalsIgnoreCase(getActivity().
-                                                            getResources().
-                                                            getString(R.string.add_dependent))) {
-
-                                                JSONObject jsonDependant = new JSONObject();
-                                                jsonDependant.put("dependent_name", dependentModel.getStrName());
-                                                jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
-                                                jsonDependant.put("dependent_address", dependentModel.getStrAddress());
-                                                jsonDependant.put("dependent_email", dependentModel.getStrEmail());
-
-                                                jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
-                                                jsonDependant.put("dependent_age", dependentModel.getIntAge());
-                                                jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
-
-                                                jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
-                                                jsonDependant.put("customer_email", Config.customerModel.getStrEmail());
-
-                                                dependantsA.put(jsonDependant);
-                                            }
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
+                                        } else {
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            libs.toast(2, 2, getString(R.string.warning_internet));
                                         }
                                     }
+
+                                    @Override
+                                    public void onException(Exception e) {
+
+                                        if (e != null) {
+                                            Libs.log(e.getMessage(), "");
+
+                                            int appErrorCode = ((App42Exception) e).getAppErrorCode();
+
+                                            if (appErrorCode == 2005) {
+
+                                            } else {
+                                                if (progressDialog.isShowing())
+                                                    progressDialog.dismiss();
+                                                libs.toast(2, 2, getString(R.string.error));
+                                            }
+
+                                        } else {
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            libs.toast(2, 2, getString(R.string.warning_internet));
+                                        }
+                                    }
+                                });
+
+                        ////
+
+                        JSONObject jsonDependant = new JSONObject();
+                        jsonDependant.put("dependent_name", dependentModel.getStrName());
+                        jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
+                        jsonDependant.put("dependent_address", dependentModel.getStrAddress());
+                        jsonDependant.put("dependent_email", dependentModel.getStrEmail());
+
+                        jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
+                        jsonDependant.put("dependent_age", dependentModel.getIntAge());
+                        jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
+
+                        jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
+                        jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
+                        jsonDependant.put("customer_id", jsonDocId);
+
+                        jsonDependant.put("health_bp", 70 + cursorIndex);
+                        jsonDependant.put("health_heart_rate", 80 + cursorIndex);
+
+                        jsonDependant.put("services", new JSONArray());
+
+                        ///
+
+                    } else {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        libs.toast(2, 2, getString(R.string.warning_internet));
+                    }
+                    ///
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void checkDependentStorage(final String strDependentEmail) {
+        try {
+
+            if (libs.isConnectingToInternet()) {
+
+                //
+                StorageService storageService = new StorageService(getActivity());
+
+                storageService.findDocsByKeyValue(Config.collectionDependent,
+                        "dependent_email",
+                        dependentModel.getStrEmail(),
+                        new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                            @Override
+                            public void onDocumentInserted(Storage response) {
+
+                            }
+
+                            @Override
+                            public void onUpdateDocSuccess(Storage response) {
+
+                            }
+
+                            @Override
+                            public void onFindDocSuccess(Storage response) {
+
+                                if (response != null) {
+
+                                    if (response.getJsonDocList().size() <= 0) {
+
+                                    } else {
+                                        Storage.JSONDocument jsonDocument =
+                                                response.getJsonDocList().get(0);
+
+                                    }
+                                } else {
+                                    if (pDialog.isShowing())
+                                        pDialog.dismiss();
+                                    libs.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
-                                //
-                                if (libs.isConnectingToInternet()) {
-                                    storageService.updateDocs(responseJSONDocCarla, strCarlaJsonId,
-                                            Config.collectionProvider, new App42CallBack() {
-                                        @Override
-                                        public void onSuccess(Object o) {
+                            }
 
-                                            if (o != null) {
-                                               /* if(progressDialog.isShowing())
-                                                    progressDialog.dismiss();*/
+                            @Override
+                            public void onInsertionFailed(App42Exception ex) {
 
-                                                callSuccess(jsonDocId);
+                            }
 
-                                            }else {
-                                                if(progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-                                                libs.toast(2, 2,
-                                                        getString(R.string.warning_internet));
-                                            }
-                                        }
+                            @Override
+                            public void onFindDocFailed(App42Exception ex) {
 
-                                        @Override
-                                        public void onException(Exception e) {
-                                            if(progressDialog.isShowing())
-                                                progressDialog.dismiss();
-                                            if(e!=null) {
-                                                libs.toast(2, 2, e.getMessage());
-                                            }else{
-                                                libs.toast(2, 2,
-                                                        getString(R.string.warning_internet));
-                                            }
-                                        }
-                                    });
+                                if (ex != null) {
 
+                                    int appErrorCode = ex.getAppErrorCode();
+
+                                    if (appErrorCode == 2601) {
+
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        libs.toast(2, 2, ex.getMessage());
+                                    }
                                 }else{
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
                                     libs.toast(2, 2, getString(R.string.warning_internet));
                                 }
-
-                            } catch (JSONException e) {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
-                                libs.toast(2, 2, getString(R.string.error));
-                                e.printStackTrace();
                             }
-                        }
 
-                    }else{
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
-                        libs.toast(2, 2, getString(R.string.warning_internet));
-                    }
-                }
+                            @Override
+                            public void onUpdateDocFailed(App42Exception ex) {
 
-                @Override
-                public void onInsertionFailed(App42Exception ex) {
-                }
+                            }
+                        });
+                //
+            } else {
+                libs.toast(2, 2, getString(R.string.warning_internet));
+            }
 
-                @Override
-                public void onFindDocFailed(App42Exception ex) {
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-
-                    if(ex!=null) {
-                        libs.toast(2, 2, ex.getMessage());
-                    }else{
-                        libs.toast(2, 2, getString(R.string.warning_internet));
-                    }
-                }
-
-                @Override
-                public void onUpdateDocFailed(App42Exception ex) {
-                }
-            });
-
-        }else {
-            if(progressDialog.isShowing())
+        } catch (Exception e) {
+            if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            libs.toast(2, 2, getString(R.string.warning_internet));
+            libs.toast(2, 2, getString(R.string.error));
         }
     }
 

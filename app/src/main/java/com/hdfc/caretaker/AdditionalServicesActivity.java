@@ -80,7 +80,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             jsonObjectAct.put("service_name", serviceModel.getStrServiceName());
                             jsonObjectAct.put("service_desc",
                                     serviceModel.getStrServiceDesc());
-                            jsonObjectAct.put("service_id", serviceModel.getiServiceId());
+                            jsonObjectAct.put("service_id", serviceModel.getStrServiceId());
 
                             String strDate = libs.convertDateToString(new Date());
 

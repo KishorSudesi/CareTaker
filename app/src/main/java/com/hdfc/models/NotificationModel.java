@@ -10,20 +10,20 @@ public class NotificationModel {
     private String strUserType;
     private String strCreatedByType;
 
-    private int iUserID;
-    private int iCreatedByID;
-    private int iNotificationID;
+    private String strUserID;
+    private String strCreatedByID;
+    private String strNotificationID;
 
     public NotificationModel(String strMessage, String strDateTime, String strUserType,
-                             String strCreatedByType, int iUserID, int iCreatedByID,
-                             int iNotificationID) {
+                             String strCreatedByType, String strUserID, String strCreatedByID,
+                             String strNotificationID) {
         this.strMessage = strMessage;
         this.strDateTime = strDateTime;
         this.strUserType = strUserType;
         this.strCreatedByType = strCreatedByType;
-        this.iUserID = iUserID;
-        this.iCreatedByID = iCreatedByID;
-        this.iNotificationID = iNotificationID;
+        this.strUserID = strUserID;
+        this.strCreatedByID = strCreatedByID;
+        this.strNotificationID = strNotificationID;
     }
 
     public String getStrMessage() {
@@ -42,15 +42,15 @@ public class NotificationModel {
         return strCreatedByType;
     }
 
-    public int getiUserID() {
-        return iUserID;
+    public String getStrUserID() {
+        return strUserID;
     }
 
-    public int getiCreatedByID() {
-        return iCreatedByID;
+    public String getStrCreatedByID() {
+        return strCreatedByID;
     }
 
-    public int getiNotificationID() {
-        return iNotificationID;
+    public String getStrNotificationID() {
+        return strNotificationID;
     }
 }

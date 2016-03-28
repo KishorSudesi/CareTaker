@@ -16,14 +16,15 @@ public class ServiceModel {
 
     private int iUnit;
     private int iUnitUsed;
-    private int iServiceId;
-    private int iServiceHistoryId;
-    private int iDependentID;
+
+    private String strServiceId;
+    private String strServiceHistoryId;
+    private String strDependentId;
 
     public ServiceModel(String strServiceName, String strServiceDesc, String strUpdatedDate,
                         String[] strFeatures, String[] strFeaturesDone, double doubleCost,
-                        int iUnit, int iUnitUsed, int iServiceId, int iServiceHistoryId,
-                        int iDependentID) {
+                        int iUnit, int iUnitUsed, String strServiceId, String strServiceHistoryId,
+                        String strDependentId) {
         this.strServiceName = strServiceName;
         this.strServiceDesc = strServiceDesc;
         this.strUpdatedDate = strUpdatedDate;
@@ -32,9 +33,9 @@ public class ServiceModel {
         this.doubleCost = doubleCost;
         this.iUnit = iUnit;
         this.iUnitUsed = iUnitUsed;
-        this.iServiceId = iServiceId;
-        this.iServiceHistoryId = iServiceHistoryId;
-        this.iDependentID = iDependentID;
+        this.strServiceId = strServiceId;
+        this.strServiceHistoryId = strServiceHistoryId;
+        this.strDependentId = strDependentId;
     }
 
     public String getStrServiceName() {
@@ -65,19 +66,19 @@ public class ServiceModel {
         return iUnitUsed;
     }
 
-    public int getiServiceId() {
-        return iServiceId;
-    }
-
-    public int getiDependentID() {
-        return iDependentID;
-    }
-
     public String[] getStrFeaturesDone() {
         return strFeaturesDone;
     }
 
-    public int getiServiceHistoryId() {
-        return iServiceHistoryId;
+    public String getStrServiceId() {
+        return strServiceId;
+    }
+
+    public String getStrServiceHistoryId() {
+        return strServiceHistoryId;
+    }
+
+    public String getStrDependentId() {
+        return strDependentId;
     }
 }
