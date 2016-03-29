@@ -10,12 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.config.Config;
 import com.hdfc.views.MyLinearView;
 
 public class ImagesFragment extends Fragment {
-
-    //private static Bitmap bitmap;
 
     public static Fragment newInstance(Context context, int pos,
                                        float scale) {
@@ -36,16 +33,15 @@ public class ImagesFragment extends Fragment {
         LinearLayout l = (LinearLayout)
                 inflater.inflate(R.layout.fragment_images, container, false);
 
-        // progressDialog = new ProgressDialog(getActivity());
-
-        //libs = new Libs(getActivity());
-
         ImageView imageView = (ImageView) l.findViewById(R.id.content);
 
         int intPosition = this.getArguments().getInt("pos");
 
         try {
-            imageView.setImageBitmap(Config.bitmaps.get(intPosition));
+            /*libs.getBitmapFromFile(libs.getInternalFileImages(
+                                libs.replaceSpace(Config.dependentNames.get(i))).getAbsolutePath(),
+                                Config.intWidth, Config.intHeight)*/
+            imageView.setImageBitmap();
         } catch (OutOfMemoryError | Exception e) {
             e.printStackTrace();
         }
@@ -61,43 +57,5 @@ public class ImagesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-       /* threadHandler = new ThreadHandler();
-        backgroundThread = new BackgroundThread();
-        backgroundThread.start();
-
-        progressDialog.setMessage(getResources().getString(R.string.loading));
-        progressDialog.setCancelable(false);
-        progressDialog.show();*/
     }
-
-    /*public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            progressDialog.dismiss();
-
-            if (bitmap != null)
-                imageView.setImageBitmap(bitmap);
-
-            //loadingPanel.setVisibility(View.GONE);
-        }
-    }*/
-
-    /*public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                Libs.log(Config.dependentNames.get(intPosition), " FILE ");
-
-                File f = libs.getInternalFileImages(Config.dependentNames.get(intPosition));
-
-                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 }

@@ -3,7 +3,6 @@ package com.hdfc.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,14 +80,16 @@ public class DependentViewAdapter extends BaseAdapter {
                     if (!dependentModel.getStrImagePath().equalsIgnoreCase("")) {
                         multiBitmapLoader.loadBitmap(dependentModel.getStrImagePath().trim(),
                                 holder.image);
+                    } else {
+                        holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
+                                R.drawable.person_icon));
                     }
 
                 } else {
-                    Bitmap imageBitmap = BitmapFactory.decodeResource(_ctxt.getResources(),
-                            R.drawable.plus_icon);
 
                     holder.textRelation.setVisibility(View.GONE);
-                    holder.image.setImageBitmap(imageBitmap);
+                    holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
+                            R.drawable.plus_icon));
                 }
 
             } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,7 +99,6 @@ public class ConfirmListViewAdapter extends BaseAdapter {
 
             try {
 
-                //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
                 if (!tempValues.getStrImg().equalsIgnoreCase("")) {
 
                     Libs libs = new Libs(_ctxt);
@@ -106,22 +106,26 @@ public class ConfirmListViewAdapter extends BaseAdapter {
                     int intImgHeight = libs.getBitmapHeightFromFile(tempValues.getStrImg().trim());
 
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
                     holder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
 
                     if (Build.VERSION.SDK_INT <= 16)
-                        holder.linearLayoutRoot.setBackgroundDrawable(_ctxt.getResources().getDrawable(R.drawable.confirm_view));
+                        holder.linearLayoutRoot.setBackgroundDrawable(_ctxt.getResources().
+                                getDrawable(R.drawable.confirm_view));
                     else
-                        holder.linearLayoutRoot.setBackground(_ctxt.getResources().getDrawable(R.drawable.confirm_view));
+                        holder.linearLayoutRoot.setBackground(_ctxt.getResources().
+                                getDrawable(R.drawable.confirm_view));
 
                     layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
                     holder.linearLayoutRoot.setLayoutParams(layoutParams);
-                    //SignupActivity.loadBitmap(tempValues.getStrImg().trim(), holder.image);
 
                     multiBitmapLoader.loadBitmap(tempValues.getStrImg().trim(), holder.image);
+                } else {
+                    holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
+                            R.drawable.person_icon));
                 }
 
-                //holder.image.setImageBitmap(imageBitmap);
             } catch (Exception e) {
                 e.printStackTrace();
             }

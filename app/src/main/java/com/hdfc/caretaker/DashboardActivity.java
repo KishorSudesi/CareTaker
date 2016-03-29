@@ -35,9 +35,6 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_layout);
 
-       /* Bundle b = getIntent().getExtras();
-        intWhichScreen = b.getInt("WHICH_SCREEN", Config.intDashboardScreen);*/
-
         progressDialog = new ProgressDialog(DashboardActivity.this);
 
         ImageButton buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
@@ -52,66 +49,81 @@ public class DashboardActivity extends AppCompatActivity {
         ImageButton buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
         TextView textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
 
-        //txtViewActivity.setBackground();
+        if (txtViewActivity != null) {
+            txtViewActivity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Config.intSelectedMenu = Config.intActivityScreen;
+                    goToActivity();
+                }
+            });
+        }
 
-        txtViewActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Config.intSelectedMenu=Config.intActivityScreen;
-                goToActivity();
-            }
-        });
+        if (buttonActivity != null) {
+            buttonActivity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Config.intSelectedMenu = Config.intActivityScreen;
+                    goToActivity();
+                }
+            });
+        }
 
-        buttonActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Config.intSelectedMenu=Config.intActivityScreen;
-                goToActivity();
-            }
-        });
+        if (textViewNotifications != null) {
+            textViewNotifications.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToNotifications();
+                }
+            });
+        }
 
-        textViewNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
+        if (buttonNotifications != null) {
+            buttonNotifications.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToNotifications();
+                }
+            });
+        }
 
-        buttonNotifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToNotifications();
-            }
-        });
+        if (buttonAccount != null) {
+            buttonAccount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToAccount();
+                }
+            });
+        }
 
-        buttonAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
+        if (textViewAccount != null) {
+            textViewAccount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToAccount();
+                }
+            });
+        }
 
-        textViewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToAccount();
-            }
-        });
+        if (buttonSeniors != null) {
+            buttonSeniors.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Config.intSelectedMenu = 0;
+                    goToDashboard();
+                }
+            });
+        }
 
-        buttonSeniors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Config.intSelectedMenu = 0;
-                goToDashboard();
-            }
-        });
-        textViewSeniors.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Config.intSelectedMenu = 0;
-                goToDashboard();
-            }
-        });
+        if (textViewSeniors != null) {
+            textViewSeniors.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Config.intSelectedMenu = 0;
+                    goToDashboard();
+                }
+            });
+        }
 
         if (Config.intSelectedMenu == Config.intNotificationScreen) {
             Config.intSelectedMenu = 0;
@@ -123,14 +135,13 @@ public class DashboardActivity extends AppCompatActivity {
             goToAccount();
         }
 
-        if (Config.intSelectedMenu == Config.intActivityScreen || Config.intSelectedMenu == Config.intListActivityScreen) {
+        if (Config.intSelectedMenu == Config.intActivityScreen ||
+                Config.intSelectedMenu == Config.intListActivityScreen) {
            // Config.intSelectedMenu = 0;
             goToActivity();
         }
 
         libs = new Libs(DashboardActivity.this);
-
-        //libs.loadImages();
 
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -146,8 +157,6 @@ public class DashboardActivity extends AppCompatActivity {
         if (Config.intSelectedMenu != Config.intNotificationScreen) {
             Config.intSelectedMenu = Config.intNotificationScreen;
             NotificationFragment fragment = NotificationFragment.newInstance();
-            Bundle args = new Bundle();
-            fragment.setArguments(args);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
@@ -159,8 +168,6 @@ public class DashboardActivity extends AppCompatActivity {
         if (Config.intSelectedMenu != Config.intAccountScreen) {
             Config.intSelectedMenu = Config.intAccountScreen;
             MyAccountFragment fragment = MyAccountFragment.newInstance();
-            Bundle args = new Bundle();
-            fragment.setArguments(args);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
@@ -170,7 +177,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void goToActivity() {
 
-        if (Config.intSelectedMenu == Config.intListActivityScreen || Config.intSelectedMenu == Config.intActivityScreen) {
+        if (Config.intSelectedMenu == Config.intListActivityScreen ||
+                Config.intSelectedMenu == Config.intActivityScreen) {
             //Config.intSelectedMenu = Config.intActivityScreen;
             ActivityFragment fragment = ActivityFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -184,9 +192,6 @@ public class DashboardActivity extends AppCompatActivity {
         if (Config.intSelectedMenu != Config.intDashboardScreen) {
             Config.intSelectedMenu = Config.intDashboardScreen;
             DashboardFragment newFragment = DashboardFragment.newInstance();
-           /* Bundle args = new Bundle();
-            //args.putInt(ArticleFragment.ARG_POSITION, position);
-            newFragment.setArguments(args);*/
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, newFragment);
             transaction.addToBackStack(null);
@@ -215,7 +220,6 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
         builder.show();
-        //finish();
     }
 
     public void setRating(View v) {
@@ -231,14 +235,18 @@ public class DashboardActivity extends AppCompatActivity {
 
                     FileModel fileModel = Config.fileModels.get(i);
 
-                    if (fileModel != null && fileModel.getStrFileUrl() != null && !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
-                        libs.loadImageFromWeb(fileModel.getStrFileName(), fileModel.getStrFileUrl());
+                    if (fileModel != null && fileModel.getStrFileUrl() != null &&
+                            !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
+                        libs.loadImageFromWeb(fileModel.getStrFileName(),
+                                fileModel.getStrFileUrl());
                     }
                 }
 
                 for (int i = 0; i < Config.dependentNames.size(); i++) {
                     try {
-                        Config.bitmaps.add(libs.getBitmapFromFile(libs.getInternalFileImages(libs.replaceSpace(Config.dependentNames.get(i))).getAbsolutePath(), Config.intWidth, Config.intHeight));
+                        Config.bitmaps.add(libs.getBitmapFromFile(libs.getInternalFileImages(
+                                libs.replaceSpace(Config.dependentNames.get(i))).getAbsolutePath(),
+                                Config.intWidth, Config.intHeight));
                     } catch (OutOfMemoryError | Exception e) {
                         e.printStackTrace();
                     }

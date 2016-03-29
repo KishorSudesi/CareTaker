@@ -63,9 +63,6 @@ public class RoundedImageView extends ImageView {
 
         Bitmap roundBitmap = getCroppedBitmap(b);
 
-       /* final MultiBitmapLoader.AsyncDrawable asyncDrawable = new MultiBitmapLoader.AsyncDrawable(_context.getResources(), roundBitmap, task);
-        imgView.setImageDrawable(asyncDrawable);*/
-
         super.setImageDrawable(new BitmapDrawable(getResources(), roundBitmap));
     }
 
@@ -73,12 +70,4 @@ public class RoundedImageView extends ImageView {
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(getCroppedBitmap(bm));
     }
-
-    /*public Drawable getDrawable() {
-        if (mDrawable == mRecycleableBitmapDrawable) {
-            // Consider our cached version dirty since app code now has a reference to it
-            mRecycleableBitmapDrawable = null;
-        }
-        return mDrawable;
-    }*/
 }

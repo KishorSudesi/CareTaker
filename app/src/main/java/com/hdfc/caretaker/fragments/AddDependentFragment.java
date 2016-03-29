@@ -73,6 +73,12 @@ public class AddDependentFragment extends Fragment {
         super.onResume();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter = null;
+    }
+
     public void setListView() {
         try {
             setListData();

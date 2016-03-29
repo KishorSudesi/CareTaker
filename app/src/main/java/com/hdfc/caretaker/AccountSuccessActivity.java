@@ -22,9 +22,11 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
-            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(), R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
+            if (imgBg != null) {
+                imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(),
+                        R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
+            }
 
-            //CareTaker.dbCon = DbCon.getInstance(AccountSuccessActivity.this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,7 +41,6 @@ public class AccountSuccessActivity extends AppCompatActivity {
     public void goToDashboard(View v) {
         Intent dashboardIntent = new Intent(AccountSuccessActivity.this, DashboardActivity.class);
         Config.intSelectedMenu=Config.intDashboardScreen;
-        //dashboardIntent.putExtra("WHICH_SCREEN", Config.intDashboardScreen);
         Config.boolIsLoggedIn = true;
         startActivity(dashboardIntent);
         finish();

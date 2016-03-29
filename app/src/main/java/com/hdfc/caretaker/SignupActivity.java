@@ -35,14 +35,14 @@ public class SignupActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_steps);
-        //libs = new Libs(SignupActivity.this);
         setUpView();
         setTab();
     }
 
     private void setUpView() {
         _mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        ViewPagerAdapter _adapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
+        ViewPagerAdapter _adapter = new ViewPagerAdapter(getApplicationContext(),
+                getSupportFragmentManager());
         _mViewPager.setAdapter(_adapter);
         _mViewPager.setCurrentItem(0);
         _mViewPager.setOffscreenPageLimit(3);

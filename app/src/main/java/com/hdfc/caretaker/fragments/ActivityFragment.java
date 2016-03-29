@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,11 @@ import com.hdfc.caretaker.AddNewActivityActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
+import com.hdfc.models.ActivityModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -35,13 +37,13 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     private static final String dateTemplate = "MMMM yyyy";
     public static int month, year;
+    public static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     private static TextView currentMonth;
     private static Context _context;
     private static Calendar calendar;
     private Button buttonActivity;
     private  Libs libs;
     private LinearLayout dynamicUserTab;
-
     //public static int iSelectedDependent=0;
     private ImageView prevMonth;
     private ImageView nextMonth;
@@ -74,7 +76,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         if (ActivityMonthFragment.adapter != null) {
 
-            ActivityMonthFragment.adapter = new CalendarAdapter(_context, month, year, ActivityMonthFragment.activitiesModelArrayList);
+            ActivityMonthFragment.adapter = new CalendarAdapter(_context, month, year,
+                    ActivityFragment.activitiesModelArrayList);
             ActivityMonthFragment.calendarView.setAdapter(ActivityMonthFragment.adapter);
             ActivityMonthFragment.adapter.notifyDataSetChanged();
 
@@ -102,9 +105,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         month = calendar.get(Calendar.MONTH) + 1;
         year = calendar.get(Calendar.YEAR);
 
-        Log.d(" TAG ", "Calendar Instance:= " + "Month: " + month + " " + "Year: "
-                + year);
-
         TextView selectedDayMonthYearButton = (TextView) view.findViewById(R.id.currentMonth);
         selectedDayMonthYearButton.setText("Selected: ");
 
@@ -116,13 +116,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         nextMonth = (ImageView) view.findViewById(R.id.nextMonth);
         nextMonth.setOnClickListener(this);
-        //
-
-        /*TextView textViewHeader = (TextView) view.findViewById(R.id.header);
-
-        String strCurrentPeriod = Config.months[month - 1] + "-" + year;
-
-        textViewHeader.setText(strCurrentPeriod);*/
 
         buttonActivity = (Button) view.findViewById(R.id.buttonActivity);
 
@@ -152,14 +145,16 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         if(Config.intSelectedMenu==Config.intListActivityScreen){
             buttonActivity.setText(getActivity().getResources().getString(R.string.activity_month));
             ActivityListFragment fragment1 = ActivityListFragment.newInstance();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().
+                    beginTransaction();
             transaction.replace(R.id.frameLayoutActivity, fragment1);
             transaction.addToBackStack(null);
             transaction.commit();
         }else {
             buttonActivity.setText(getActivity().getResources().getString(R.string.activity_list));
             ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().
+                    beginTransaction();
             transaction.replace(R.id.frameLayoutActivity, fragment1);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -176,7 +171,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             Config.intSelectedMenu = Config.intListActivityScreen;
 
             ActivityListFragment fragment = ActivityListFragment.newInstance();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().
+                    beginTransaction();
             transaction.replace(R.id.frameLayoutActivity, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -187,7 +183,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             Config.intSelectedMenu = Config.intActivityScreen;
 
             ActivityMonthFragment fragment = ActivityMonthFragment.newInstance();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().
+                    beginTransaction();
             transaction.replace(R.id.frameLayoutActivity, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -206,7 +203,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             } else {
                 month--;
             }
-            Log.d(" 1 ", "Setting Prev Month in GridCellAdapter: " + "Month: " + month + " Year: " + year);
             setGridCellAdapterToDate(month, year);
         }
 
@@ -216,9 +212,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             } else {
                 month++;
             }
-            Log.d(" 2 ", "Setting Next Month in GridCellAdapter: " + "Month: " + month + " Year: " + year);
             setGridCellAdapterToDate(month, year);
         }
     }
-
 }

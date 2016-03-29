@@ -13,21 +13,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.hdfc.app42service.StorageService;
-import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Libs;
-import com.hdfc.models.FileModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
-import com.shephertz.app42.paas.sdk.android.upload.Upload;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -55,8 +50,10 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
-            imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(),
-                    R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
+            if (imgBg != null) {
+                imgBg.setImageBitmap(Libs.decodeSampledBitmapFromResource(getResources(),
+                        R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
+            }
 
         } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
@@ -195,147 +192,84 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Object o) {
 
-                            StorageService storageService = new StorageService(LoginActivity.this);
+                            if (o != null) {
 
-                            storageService.findDocsByKeyValue(Config.collectionCustomer,
+                                StorageService storageService =
+                                        new StorageService(LoginActivity.this);
+
+                                storageService.findDocsByKeyValue(Config.collectionCustomer,
                                     "customer_email", userName,
                                     new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                                @Override
-                                public void onDocumentInserted(Storage response) {
-
-                                }
-
-                                @Override
-                                public void onUpdateDocSuccess(Storage response) {
-
-                                }
-
-                                @Override
-                                public void onFindDocSuccess(Storage response) {
-
-                                    if (response.getJsonDocList().size() > 0) {
-
-                                        Storage.JSONDocument jsonDocument =
-                                                response.getJsonDocList().get(0);
-
-                                        String strDocument = jsonDocument.getJsonDoc();
-
-                                        Config.jsonDocId = jsonDocument.getDocId();
-
-                                        try {
-                                            Config.jsonObject = new JSONObject(strDocument);
-
-                                            Config.strUserName = userName;
-
-                                           /* try {
-                                                Gson gson = new Gson();
-                                                CustomerModel customer1 = gson.fromJson(String.valueOf(Config.jsonObject), new TypeToken<CustomerModel>(){}.getType());
-
-                                                Libs.log(String.valueOf(customer1.getStrEmail()+" ! "+ customer1.getDependentModels().size()), "");
-
-                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getIntHealthBp()+" @ "+ customer1.getDependentModels().get(0).getHealthModels().size()), "");
-
-                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getDependentNotificationModels().size()+" # "+
-                                                        customer1.getDependentModels().get(0).getDependentNotificationModels().get(0).getStrNotificationTime()), "");
-
-                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getActivityModels().size()+" $ "+
-                                                        customer1.getDependentModels().get(0).getActivityModels().get(0).getStrActivityDate()), "");
-
-                                                Libs.log(String.valueOf(customer1.getDependentModels().get(0).getActivityModels().get(0).getFeedBackModels().size()+" % "+
-                                                        customer1.getDependentModels().get(0).getActivityModels().get(0).getFeedBackModels().get(0).getIntFeedBackRating()), "");
-
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }*/
-
-                                            //get all Images by user name start
-
-                                            UploadService uploadService =
-                                                    new UploadService(LoginActivity.this);
-
-                                            uploadService.getAllFilesByUser(Config.strUserName,
-                                                    new App42CallBack() {
-                                                public void onSuccess(Object response) {
-
-                                                    Upload upload = (Upload) response;
-                                                    ArrayList<Upload.File> fileList =
-                                                            upload.getFileList();
-
-                                                    if (fileList.size() > 0) {
-
-                                                        for (int i = 0; i < fileList.size(); i++) {
-                                                            Config.fileModels.add(
-                                                                    new FileModel(
-                                                                            fileList.get(i).getName(),
-                                                                            fileList.get(i).getUrl(),
-                                                                            fileList.get(i).getType()
-                                                                    )
-                                                            );
-
-                                                        }
-
-                                                        libs.parseData();
-
-                                                        progressDialog.dismiss();
-
-                                                        libs.toast(1, 1, getString(R.string.success_login));
-                                                        Intent dashboardIntent =
-                                                                new Intent(LoginActivity.this,
-                                                                        DashboardActivity.class);
-
-                                                        Config.intSelectedMenu =
-                                                                Config.intDashboardScreen;
-                                                        Config.boolIsLoggedIn = true;
-                                                        startActivity(dashboardIntent);
-                                                        finish();
-
-                                                    } else {
-                                                        progressDialog.dismiss();
-                                                        libs.toast(2, 2, getString(R.string.error_load_images));
-                                                    }
-                                                }
-
-                                                public void onException(Exception ex) {
-                                                    progressDialog.dismiss();
-                                                    libs.toast(2, 2, getString(R.string.error_load_images));
-                                                    Libs.log(ex.getMessage(), " ");
-                                                }
-                                            });
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
+                                        @Override
+                                        public void onDocumentInserted(Storage response) {
                                         }
 
-                                    } else libs.toast(2, 2, getString(R.string.error));
+                                        @Override
+                                        public void onUpdateDocSuccess(Storage response) {
+                                        }
 
-                                }
+                                        @Override
+                                        public void onFindDocSuccess(Storage response) {
 
-                                @Override
-                                public void onInsertionFailed(App42Exception ex) {
+                                            if (response != null &&
+                                                    response.getJsonDocList().size() > 0) {
 
-                                }
+                                                Storage.JSONDocument jsonDocument =
+                                                        response.getJsonDocList().get(0);
 
-                                @Override
-                                public void onFindDocFailed(App42Exception ex) {
+                                                String strDocument = jsonDocument.getJsonDoc();
+
+                                                Config.jsonDocId = jsonDocument.getDocId();
+
+                                                try {
+                                                    Config.jsonCustomer = new JSONObject(strDocument);
+
+                                                    Config.strUserName = userName;
+
+                                                    libs.fetchDependents(Config.jsonDocId,
+                                                            progressDialog);
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {
+                                                if (progressDialog.isShowing())
+                                                    progressDialog.dismiss();
+                                                libs.toast(2, 2, getString(R.string.error));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onInsertionFailed(App42Exception ex) {
+                                        }
+
+                                        @Override
+                                        public void onFindDocFailed(App42Exception ex) {
+                                            progressDialog.dismiss();
+
+                                            try {
+                                                JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                                JSONObject jsonObjectError =
+                                                        jsonObject.getJSONObject("app42Fault");
+                                                String strMess = jsonObjectError.getString("details");
+
+                                                libs.toast(2, 2, strMess);
+                                            } catch (JSONException e1) {
+                                                e1.printStackTrace();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onUpdateDocFailed(App42Exception ex) {
+
+                                        }
+                                    });
+                            } else {
+                                if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                        JSONObject jsonObjectError =
-                                                jsonObject.getJSONObject("app42Fault");
-                                        String strMess = jsonObjectError.getString("details");
-
-                                        libs.toast(2, 2, strMess);
-                                    } catch (JSONException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-
-                                @Override
-                                public void onUpdateDocFailed(App42Exception ex) {
-
-                                }
-                            });
+                                libs.toast(2, 2, getString(R.string.warning_internet));
+                            }
                         }
 
                         @Override
@@ -410,4 +344,24 @@ public class LoginActivity extends AppCompatActivity {
         }
     }*/
 
+    /* try {
+            Gson gson = new Gson();
+            CustomerModel customer1 = gson.fromJson(String.valueOf(Config.jsonObject), new TypeToken<CustomerModel>(){}.getType());
+
+            Libs.log(String.valueOf(customer1.getStrEmail()+" ! "+ customer1.getDependentModels().size()), "");
+
+            Libs.log(String.valueOf(customer1.getDependentModels().get(0).getIntHealthBp()+" @ "+ customer1.getDependentModels().get(0).getHealthModels().size()), "");
+
+            Libs.log(String.valueOf(customer1.getDependentModels().get(0).getDependentNotificationModels().size()+" # "+
+            customer1.getDependentModels().get(0).getDependentNotificationModels().get(0).getStrNotificationTime()), "");
+
+            Libs.log(String.valueOf(customer1.getDependentModels().get(0).getActivityModels().size()+" $ "+
+            customer1.getDependentModels().get(0).getActivityModels().get(0).getStrActivityDate()), "");
+
+            Libs.log(String.valueOf(customer1.getDependentModels().get(0).getActivityModels().get(0).getFeedBackModels().size()+" % "+
+            customer1.getDependentModels().get(0).getActivityModels().get(0).getFeedBackModels().get(0).getIntFeedBackRating()), "");
+
+        } catch (Exception e) {
+        e.printStackTrace();
+        }*/
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
+import com.hdfc.models.ActivityModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,24 +24,24 @@ public class CalendarAdapter extends BaseAdapter {
     public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy",
+            Locale.US);
     private static final int DAY_OFFSET = 1;
     private final Context _context;
     private final List<String> list;
-    public List<ActivityListModel> _activityListModels = new ArrayList<>();
-    //private final HashMap<String, Integer> eventsPerMonthMap;
+    public List<ActivityModel> activityModels = new ArrayList<>();
     private int currentDayOfMonth;
     private int currentWeekDay;
 
     // Days in Current Month
-    public CalendarAdapter(Context context, int month, int year, List<ActivityListModel> activityListModels) {
+    public CalendarAdapter(Context context, int month, int year, List<ActivityModel> _activityModels) {
         super();
         this._context = context;
         this.list = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         setCurrentDayOfMonth(calendar.get(Calendar.DAY_OF_MONTH));
         setCurrentWeekDay(calendar.get(Calendar.DAY_OF_WEEK));
-        _activityListModels = activityListModels;
+        activityModels = _activityModels;
 
         // Print Month
         printMonth(month, year);
@@ -106,57 +107,34 @@ public class CalendarAdapter extends BaseAdapter {
             ++daysInMonth;
         }
 
-        // Daya
+        // weeks
         for (int i = 0; i < Config.weekNames.length; i++) {
-            list.add(Config.weekNames[i] + "-WHITE" + "-" + getMonthAsString(currentMonth) + "-" + yy);
+            list.add(Config.weekNames[i] + "-WHITE" + "-" + getMonthAsString(currentMonth) + "-" +
+                    yy);
         }
-
 
         // Trailing Month days
         for (int i = 0; i < trailingSpaces; i++) {
-            list.add(String.valueOf((daysInPrevMonth - trailingSpaces + DAY_OFFSET) + i) + "-GREY" + "-" + getMonthAsString(prevMonth) + "-" + prevYear);
+            list.add(String.valueOf((daysInPrevMonth - trailingSpaces + DAY_OFFSET) + i) + "-GREY" +
+                    "-" + getMonthAsString(prevMonth) + "-" + prevYear);
         }
 
         // Current Month Days
         for (int i = 1; i <= daysInMonth; i++) {
             if (i == getCurrentDayOfMonth())
-                list.add(String.valueOf(i) + "-GREEN" + "-" + getMonthAsString(currentMonth) + "-" + yy);
+                list.add(String.valueOf(i) + "-GREEN" + "-" + getMonthAsString(currentMonth) + "-" +
+                        yy);
             else
-                list.add(String.valueOf(i) + "-WHITE" + "-" + getMonthAsString(currentMonth) + "-" + yy);
+                list.add(String.valueOf(i) + "-WHITE" + "-" + getMonthAsString(currentMonth) + "-" +
+                        yy);
         }
 
         // Leading Month days
         for (int i = 0; i < list.size() % 7; i++) {
-            list.add(String.valueOf(i + 1) + "-GREY" + "-" + getMonthAsString(nextMonth) + "-" + nextYear);
+            list.add(String.valueOf(i + 1) + "-GREY" + "-" + getMonthAsString(nextMonth) + "-" +
+                    nextYear);
         }
     }
-
-   /* private HashMap<String, Integer> findNumberOfEventsPerMonth(int year, int month) {
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-
-     try {
-         for (ActivityListModel activityModel : ActivityMonthFragment.activitiesModelArrayList) {
-
-             //formatDateActivity(activityModel.getStrActivityDate());
-
-             Date date = readFormat.parse(activityModel.getStrDate());
-             //libs.convertStringToDate(activityModel.getStrActivityDate());
-
-             int iMonth = Integer.parseInt(writeFormatMonth.format(date));
-             int iYear = Integer.parseInt(writeFormatYear.format(date));
-             int iDate = Integer.parseInt(writeFormatDate.format(date));
-
-             if (iMonth == month && year == iYear) {
-                 map.put(String.valueOf(iDate), iDate);
-                 activitiesModelCalendar.add(activityModel);
-             }
-         }
-     }catch (Exception e){
-         e.printStackTrace();
-     }
-
-        return map;
-    }*/
 
     @Override
     public long getItemId(int position) {
@@ -167,15 +145,13 @@ public class CalendarAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         if (row == null) {
-            LayoutInflater inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) _context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(R.layout.calendar_cell_view, parent, false);
         }
 
         // Get a reference to the Day gridcell
         Button gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
-        //TextView num_events_per_day = (TextView) row.findViewById(R.id.num_events_per_day);
-        //gridcell.setOnClickListener(this);
-
         String[] day_color = list.get(position).split("-");
 
         String theday = day_color[0];
@@ -199,17 +175,8 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         if (day_color[1].equals("GREEN")) {
-            //gridcell.setBackgroundColor(_context.getResources().getColor(R.color.colorPrimaryDark));
             gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimary));
         }
-
-       /* if ((!eventsPerMonthMap.isEmpty()) && (eventsPerMonthMap != null)) {
-            if (eventsPerMonthMap.containsKey(theday)) {
-                Integer numEvents = eventsPerMonthMap.get(theday);
-                Libs.log(String.valueOf(numEvents), " EVE ");
-                gridcell.setTextColor(Color.RED);
-            }
-        }*/
 
         if(position>6) {
 
@@ -217,20 +184,19 @@ public class CalendarAdapter extends BaseAdapter {
             int iYear = Integer.parseInt(day_color[3]);
 
             try {
-                for (ActivityListModel activityModel : _activityListModels) {
+                for (ActivityModel activityModel : activityModels) {
 
-                    Date date = readFormat.parse(activityModel.getStrDateTime());
+                    Date date = readFormat.parse(activityModel.getStrActivityDate());
 
                     String strActivityMonth = writeFormatMonth.format(date);
                     int iActivityYear = Integer.parseInt(writeFormatYear.format(date));
                     int iActivityDate = Integer.parseInt(writeFormatDate.format(date));
 
-                    //Libs.log(String.valueOf(iActivityYear + " == " + iYear + " && " + strActivityMonth + " EQS " + themonth + " && " + iActivityDate + " == " + iDay), " Compare ");
-
-                    if (iActivityYear == iYear && strActivityMonth.trim().equalsIgnoreCase(themonth) && iActivityDate == iDay) {
-                        //gridcell.setTextColor(Color.RED);
-                        gridcell.setBackground(_context.getResources().getDrawable(R.drawable.bottom_border_grey));
-
+                    if (iActivityYear == iYear &&
+                            strActivityMonth.trim().equalsIgnoreCase(themonth) &&
+                            iActivityDate == iDay) {
+                        gridcell.setBackground(_context.getResources().
+                                getDrawable(R.drawable.bottom_border_grey));
                     }
                 }
             } catch (Exception e) {
@@ -240,15 +206,6 @@ public class CalendarAdapter extends BaseAdapter {
 
         return row;
     }
-
-    /*@Override
-    public void onClick(View view) {
-        date_month_year = (String) view.getTag();
-        flag = "Date selected ...";
-        Libs.log(date_month_year, flag);
-
-        view.setBackgroundColor(_context.getResources().getColor(R.color.colorPrimary));
-    }*/
 
     public int getCurrentDayOfMonth() {
         return currentDayOfMonth;

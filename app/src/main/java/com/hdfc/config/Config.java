@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import com.hdfc.libs.Libs;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.FileModel;
-import com.hdfc.models.NotificationModel;
 import com.hdfc.models.ServiceModel;
 
 import org.json.JSONObject;
@@ -67,7 +66,6 @@ public class Config {
 
     public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     public static ArrayList<String> dependentNames = new ArrayList<>();
-    public static ArrayList<ArrayList<NotificationModel>> notificationModels = new ArrayList<ArrayList<NotificationModel>>();
 
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;

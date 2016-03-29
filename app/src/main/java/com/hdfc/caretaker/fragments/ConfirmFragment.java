@@ -37,9 +37,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ConfirmFragment extends Fragment {
 
     public static ArrayList<ConfirmViewModel> CustomListViewValuesArr = new ArrayList<>();
@@ -47,6 +44,7 @@ public class ConfirmFragment extends Fragment {
     public static ConfirmListViewAdapter adapter;
     public static int uploadSize, uploadingCount=0;
     private static ProgressDialog progressDialog, pDialog;
+    private static String jsonDocId;
     public Button buttonContinue;
     private Libs libs;
     private String strCustomerImageUrl = "";
@@ -59,6 +57,12 @@ public class ConfirmFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter = null;
     }
 
     @Override
@@ -109,7 +113,7 @@ public class ConfirmFragment extends Fragment {
         return addFragment;
     }
 
-    public void callSuccess(String jsonDocId) {
+    public void callSuccess() {
 
         SignupActivity.strCustomerPass = "";
 
@@ -139,6 +143,7 @@ public class ConfirmFragment extends Fragment {
             progressDialog.setMessage(getActivity().getResources().getString(
                     R.string.process_login));
 
+            //todo change logic for new schema
             UploadService uploadService = new UploadService(getActivity());
 
             uploadService.getAllFilesByUser(Config.strUserName, new App42CallBack() {
@@ -186,7 +191,6 @@ public class ConfirmFragment extends Fragment {
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
                     libs.toast(2, 2, getString(R.string.error));
-                    //Libs.log(ex.getMessage(), " 123 ");
                     logout();
                 }
             });
@@ -392,12 +396,10 @@ public class ConfirmFragment extends Fragment {
                         new AsyncApp42ServiceApi.App42StorageServiceListener() {
                     @Override
                     public void onDocumentInserted(Storage response) {
-
                     }
 
                     @Override
                     public void onUpdateDocSuccess(Storage response) {
-
                     }
 
                     @Override
@@ -411,7 +413,8 @@ public class ConfirmFragment extends Fragment {
                                 uploadData();
                             else {
                                 Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-                                createUser(jsonDocument.getDocId());
+                                jsonDocId = jsonDocument.getDocId();
+                                createUser();
                             }
                         }else{
                             if (pDialog.isShowing())
@@ -509,7 +512,8 @@ public class ConfirmFragment extends Fragment {
                             Libs.log(response.toString(), "");
                             if (response.isResponseSuccess()) {
                                 Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-                                createUser(jsonDocument.getDocId());
+                                jsonDocId = jsonDocument.getDocId();
+                                createUser();
                             }
                         }else{
                             if (progressDialog.isShowing())
@@ -564,11 +568,14 @@ public class ConfirmFragment extends Fragment {
         }
     }
 
-    public void createUser(final String jsonDocId) {
+    public void createUser() {
 
         if (libs.isConnectingToInternet()) {
 
             UserService userService = new UserService(getActivity());
+
+            ArrayList<String> roleList = new ArrayList<>();
+            roleList.add("customer");
 
             userService.onCreateUser(Config.customerModel.getStrEmail(),
                     SignupActivity.strCustomerPass, Config.customerModel.getStrEmail(),
@@ -577,7 +584,7 @@ public class ConfirmFragment extends Fragment {
                 public void onSuccess(Object o) {
 
                     if (o != null) {
-                        createDependent(jsonDocId);
+                        createDependent();
                     } else {
                         if (progressDialog.isShowing())
                             progressDialog.dismiss();
@@ -594,7 +601,7 @@ public class ConfirmFragment extends Fragment {
                         int appErrorCode = ((App42Exception)e).getAppErrorCode();
 
                         if (appErrorCode == 2005) {
-                            createDependent(jsonDocId);
+                            createDependent();
                         } else {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
@@ -607,7 +614,7 @@ public class ConfirmFragment extends Fragment {
                         libs.toast(2, 2, getString(R.string.warning_internet));
                     }
                 }
-            });
+                    }, roleList);
 
         } else {
             if (progressDialog.isShowing())
@@ -616,7 +623,7 @@ public class ConfirmFragment extends Fragment {
         }
     }
 
-    public void createDependent(final String jsonDocId) {
+    public void createDependent() {
 
         int intCount = SignupActivity.dependentModels.size();
 
@@ -632,18 +639,79 @@ public class ConfirmFragment extends Fragment {
                                 getResources().
                                 getString(R.string.add_dependent))) {
 
+                    final int iSelectedDependent = cursorIndex;
+
+                    JSONObject jsonDependant = new JSONObject();
+                    jsonDependant.put("dependent_name", dependentModel.getStrName());
+                    jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
+                    jsonDependant.put("dependent_address", dependentModel.getStrAddress());
+                    jsonDependant.put("dependent_email", dependentModel.getStrEmail());
+
+                    jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
+                    jsonDependant.put("dependent_age", dependentModel.getIntAge());
+                    jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
+
+                    jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
+                    jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
+                    jsonDependant.put("customer_id", jsonDocId);
+
+                    jsonDependant.put("health_bp", 70 + cursorIndex);
+                    jsonDependant.put("health_heart_rate", 80 + cursorIndex);
+
+                    jsonDependant.put("services", new JSONArray());
+
                     if (libs.isConnectingToInternet()) {
 
-                        UserService userService = new UserService(getActivity());
+                        StorageService storageService = new StorageService(getActivity());
 
-                        userService.onCreateUser(dependentModel.getStrEmail(),
-                                "we", dependentModel.getStrEmail(),//todo generate random password and send mail
-                                new App42CallBack() {
+                        final String strDependentEmail = dependentModel.getStrEmail();
+                        final JSONObject object = jsonDependant;
+
+                        storageService.findDocsByKeyValue(Config.collectionDependent,
+                                "dependent_email",
+                                strDependentEmail,
+                                new AsyncApp42ServiceApi.App42StorageServiceListener() {
                                     @Override
-                                    public void onSuccess(Object o) {
+                                    public void onDocumentInserted(Storage response) {
+                                    }
 
-                                        if (o != null) {
+                                    @Override
+                                    public void onUpdateDocSuccess(Storage response) {
+                                    }
 
+                                    @Override
+                                    public void onFindDocSuccess(Storage response) {
+
+                                        if (response != null) {
+
+                                            if (response.getJsonDocList().size() <= 0) {
+                                                insertDependent(strDependentEmail, object, iSelectedDependent);
+                                        } else {
+                                                createDependentUser(strDependentEmail, iSelectedDependent);
+                                        }
+                                        } else {
+                                            if (pDialog.isShowing())
+                                                pDialog.dismiss();
+                                            libs.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+
+                                    }
+
+                                    @Override
+                                    public void onInsertionFailed(App42Exception ex) {
+                                    }
+
+                                    @Override
+                                    public void onFindDocFailed(App42Exception ex) {
+
+                                        if (ex != null) {
+                                            int appErrorCode = ex.getAppErrorCode();
+
+                                            if (appErrorCode == 2601) {
+                                                insertDependent(strDependentEmail, object, iSelectedDependent);
+                                            } else {
+                                                createDependentUser(strDependentEmail, iSelectedDependent);
+                                            }
                                         } else {
                                             if (progressDialog.isShowing())
                                                 progressDialog.dismiss();
@@ -652,81 +720,53 @@ public class ConfirmFragment extends Fragment {
                                     }
 
                                     @Override
-                                    public void onException(Exception e) {
-
-                                        if (e != null) {
-                                            Libs.log(e.getMessage(), "");
-
-                                            int appErrorCode = ((App42Exception) e).getAppErrorCode();
-
-                                            if (appErrorCode == 2005) {
-
-                                            } else {
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-                                                libs.toast(2, 2, getString(R.string.error));
-                                            }
-
-                                        } else {
-                                            if (progressDialog.isShowing())
-                                                progressDialog.dismiss();
-                                            libs.toast(2, 2, getString(R.string.warning_internet));
-                                        }
+                                    public void onUpdateDocFailed(App42Exception ex) {
                                     }
                                 });
-
-                        ////
-
-                        JSONObject jsonDependant = new JSONObject();
-                        jsonDependant.put("dependent_name", dependentModel.getStrName());
-                        jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
-                        jsonDependant.put("dependent_address", dependentModel.getStrAddress());
-                        jsonDependant.put("dependent_email", dependentModel.getStrEmail());
-
-                        jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
-                        jsonDependant.put("dependent_age", dependentModel.getIntAge());
-                        jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
-
-                        jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
-                        jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
-                        jsonDependant.put("customer_id", jsonDocId);
-
-                        jsonDependant.put("health_bp", 70 + cursorIndex);
-                        jsonDependant.put("health_heart_rate", 80 + cursorIndex);
-
-                        jsonDependant.put("services", new JSONArray());
-
-                        ///
 
                     } else {
                         if (progressDialog.isShowing())
                             progressDialog.dismiss();
                         libs.toast(2, 2, getString(R.string.warning_internet));
                     }
-                    ///
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                libs.toast(2, 2, getString(R.string.error));
             }
         }
     }
 
-    public void checkDependentStorage(final String strDependentEmail) {
+    public void insertDependent(final String strDependentEmail, JSONObject jsonObject,
+                                final int iSelectedDependent) {
         try {
 
             if (libs.isConnectingToInternet()) {
 
-                //
                 StorageService storageService = new StorageService(getActivity());
 
-                storageService.findDocsByKeyValue(Config.collectionDependent,
-                        "dependent_email",
-                        dependentModel.getStrEmail(),
+                storageService.insertDocs(jsonObject,
                         new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
                             @Override
                             public void onDocumentInserted(Storage response) {
 
+                                if (response != null) {
+                                    if (response.isResponseSuccess()) {
+                                        createDependentUser(strDependentEmail, iSelectedDependent);
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        libs.toast(2, 2, getString(R.string.error));
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                            }
                             }
 
                             @Override
@@ -737,56 +777,106 @@ public class ConfirmFragment extends Fragment {
                             @Override
                             public void onFindDocSuccess(Storage response) {
 
-                                if (response != null) {
-
-                                    if (response.getJsonDocList().size() <= 0) {
-
-                                    } else {
-                                        Storage.JSONDocument jsonDocument =
-                                                response.getJsonDocList().get(0);
-
-                                    }
-                                } else {
-                                    if (pDialog.isShowing())
-                                        pDialog.dismiss();
-                                    libs.toast(2, 2, getString(R.string.warning_internet));
-                                }
-
                             }
 
                             @Override
                             public void onInsertionFailed(App42Exception ex) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
 
+                                if (ex != null) {
+                                    Libs.log(ex.getMessage(), "");
+                                    libs.toast(2, 2, getString(R.string.error_register));
+                                } else {
+                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                            }
                             }
 
                             @Override
                             public void onFindDocFailed(App42Exception ex) {
-
-                                if (ex != null) {
-
-                                    int appErrorCode = ex.getAppErrorCode();
-
-                                    if (appErrorCode == 2601) {
-
-                                    } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        libs.toast(2, 2, ex.getMessage());
-                                    }
-                                }else{
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    libs.toast(2, 2, getString(R.string.warning_internet));
-                                }
                             }
 
                             @Override
                             public void onUpdateDocFailed(App42Exception ex) {
-
                             }
-                        });
-                //
+                        }, Config.collectionDependent);
+
             } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                libs.toast(2, 2, getString(R.string.warning_internet));
+            }
+
+        } catch (Exception e) {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            libs.toast(2, 2, getString(R.string.error));
+        }
+    }
+
+    public void createDependentUser(final String strDependentEmail, final int iSelectedDependent) {
+
+        try {
+
+            if (libs.isConnectingToInternet()) {
+
+                UserService userService = new UserService(getActivity());
+
+                ArrayList<String> roleList = new ArrayList<>();
+                roleList.add("dependent");
+
+                userService.onCreateUser(strDependentEmail,
+                        //todo generate random password and send mail
+                        SignupActivity.strCustomerPass, strDependentEmail,
+                        new App42CallBack() {
+                            @Override
+                            public void onSuccess(Object o) {
+
+                                if (o != null) {
+                                    SignupActivity.dependentModels.remove(iSelectedDependent);
+                                    if (SignupActivity.dependentModels.size() > 0)
+                                        createDependent();
+                                    else
+                                        callSuccess();
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+
+                                if (e != null) {
+                                    Libs.log(e.getMessage(), "");
+
+                                    int appErrorCode = ((App42Exception) e).getAppErrorCode();
+
+                                    if (appErrorCode == 2005) {
+                                        SignupActivity.dependentModels.remove(iSelectedDependent);
+
+                                        if (SignupActivity.dependentModels.size() > 0)
+                                            createDependent();
+                                        else
+                                            callSuccess();
+                                    } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                        libs.toast(2, 2, getString(R.string.error));
+                                }
+
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                            }
+                        }, roleList);
+
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
                 libs.toast(2, 2, getString(R.string.warning_internet));
             }
 

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 public class UserService/* implements
         AsyncApp42ServiceApi.App42UserServiceListener*/ {
 
-    private ArrayList<String> roleList = new ArrayList<>();
     private AsyncApp42ServiceApi asyncService;
    /* private Context _ctxt;
     private Libs libs;
@@ -21,8 +20,6 @@ public class UserService/* implements
         //this._ctxt = context;
         asyncService = AsyncApp42ServiceApi.instance(context);
         // libs = new Libs(context);
-
-        roleList.add("Customer");
     }
 
     public void authenticate(String userName, String password, App42CallBack app42CallBack) {
@@ -136,7 +133,7 @@ public class UserService/* implements
         });
     }*/
 
-    public void onCreateUser(String userName, String password, String email, App42CallBack app42CallBack) {
+    public void onCreateUser(String userName, String password, String email, App42CallBack app42CallBack, ArrayList<String> roleList) {
         asyncService.createUser(userName, password, email, roleList, app42CallBack);
     }
 

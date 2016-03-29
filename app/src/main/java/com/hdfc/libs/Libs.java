@@ -1,6 +1,7 @@
 package com.hdfc.libs;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,12 +41,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hdfc.app42service.StorageService;
+import com.hdfc.app42service.UploadService;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.caretaker.fragments.ActivityFragment;
-import com.hdfc.caretaker.fragments.ActivityListFragment;
-import com.hdfc.caretaker.fragments.ActivityMonthFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
@@ -57,6 +58,10 @@ import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
 import com.hdfc.models.VideoModel;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
+import com.shephertz.app42.paas.sdk.android.upload.Upload;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -628,7 +633,6 @@ public class Libs {
 
             Config.serviceModels.clear();
             Config.dependentNames.clear();
-            Config.notificationModels.clear();
 
             Config.intSelectedDependent = 0;
 
@@ -903,7 +907,8 @@ public class Libs {
         }
     }
 
-    public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current, EditText editCurrent) {
+    public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current,
+                                      EditText editCurrent) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
@@ -1164,330 +1169,109 @@ public class Libs {
             }
         }
 
-        //
-        if (intWhichScreen == Config.intListActivityScreen) {
+        if (intWhichScreen == Config.intListActivityScreen ||
+                intWhichScreen == Config.intActivityScreen) {
 
-            /////
             try {
-
-                ActivityListFragment.activitiesModelArrayList.clear();
-                ActivityListFragment.activityModels.clear();
-
-                log(" 1 ", " IN0 ");
-
-                if (Config.jsonObject.has("customer_name")) {
-
-                    log(" 2 ", " IN0 ");
-
-                    if (Config.jsonObject.has("dependents")) {
-
-                        log(" 3 ", " IN0 ");
-
-                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
-
-                        for (int index = Config.intSelectedDependent; index < Config.intSelectedDependent + 1; index++) {
-
-
-                            JSONObject jsonObject = jsonArray.getJSONObject(index);
-
-                            log(" 4 " + jsonObject.getString("dependent_name"), " IN 0 ");
-
-                            //Notifications
-                            if (jsonObject.has("activities")) {
-
-                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
-
-                                log(" 5 ", " IN0 ");
-
-                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
-
-                                    log(" 6 ", " IN0 ");
-
-                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
-
-                                    if (jsonObjectNotification.has("activity_date")) {
-
-                                        ActivityListModel activityListModel = new ActivityListModel();
-                                        //
-                                        String strDisplayDateTime = formatDate(jsonObjectNotification.getString("activity_date"));
-                                        String strDisplayDate = formatDateActivity(jsonObjectNotification.getString("activity_date"));
-                                        String strDisplayDateMonthYear = formatDateActivityMonthYear(jsonObjectNotification.getString("activity_date"));
-
-                                        activityListModel.setStrDate(strDisplayDateMonthYear);//month-year
-                                        activityListModel.setStrDateTime(strDisplayDateTime);
-                                        activityListModel.setStrDateNumber(strDisplayDate.substring(0, 2));//date
-                                        //
-
-                                        activityListModel.setStrActualDate(jsonObjectNotification.getString("activity_date"));
-
-                                        activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
-
-                                        activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                                        activityListModel.setStrMessage(jsonObjectNotification.getString("activity_message"));
-                                        activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
-                                        activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
-                                        activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
-
-                                        ActivityListFragment.activitiesModelArrayList.add(activityListModel);
-
-
-
-                                        //
-                                        ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-                                        ArrayList<VideoModel> videoModels = new ArrayList<>();
-                                        ArrayList<ImageModel> imageModels = new ArrayList<>();
-
-                                        if (jsonObjectNotification.has("feedbacks")) {
-
-                                            JSONArray jsonArrayFeedback = jsonObjectNotification.getJSONArray("feedbacks");
-
-                                            for (int k = 0; k < jsonArrayFeedback.length(); k++) {
-
-                                                log(" 8", " IN0 ");
-
-                                                JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
-
-                                                FeedBackModel feedBackModel = new FeedBackModel(
-                                                        jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
-                                                        jsonObjectFeedback.getString("feedback_time"),
-                                                        jsonObjectFeedback.getString("feedback_by_url")
-                                                );
-
-                                                feedBackModels.add(feedBackModel);
-
-                                            }
-                                        }
-
-                                        if (jsonObjectNotification.has("videos")) {
-
-                                            JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("videos");
-
-                                            for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                                log(" 9 ", " IN0 ");
-
-                                                JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
-
-                                                VideoModel videoModel = new VideoModel(
-                                                        jsonObjectVideo.getString("video_name"),
-                                                        jsonObjectVideo.getString("video_url"),
-                                                        jsonObjectVideo.getString("video_description"),
-                                                        jsonObjectVideo.getString("video_taken")
-                                                );
-
-                                                videoModels.add(videoModel);
-
-                                            }
-                                        }
-                                        if (jsonObjectNotification.has("images")) {
-
-                                            JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("images");
-
-                                            for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                                JSONObject jsonObjectImage = jsonArrayVideos.getJSONObject(k);
-
-                                                ImageModel imageModel = new ImageModel(
-                                                        jsonObjectImage.getString("image_name"),
-                                                        jsonObjectImage.getString("image_url"),
-                                                        jsonObjectImage.getString("image_description"),
-                                                        jsonObjectImage.getString("image_taken")
-                                                );
-
-                                                imageModels.add(imageModel);
-                                            }
-                                        }
-
-
-                                        ActivityModel activityModel = new ActivityModel(
-                                                jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
-                                                jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
-                                                jsonObjectNotification.getString("status"),
-                                                jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
-                                                jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                                videoModels, feedBackModels, imageModels);
-                                        //, jsonObjectNotification.getString("provider_image_url")
-
-                                        ActivityListFragment.activityModels.add(activityModel);
-                                        ///
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                log(" 7 ", " IN0 ");
-
-                ActivityListFragment.activityListAdapter.notifyDataSetChanged();
-
-            }catch (JSONException e){
+                populateActivity();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-                /////
         }
+    }
 
-        //for month
-        if (intWhichScreen == Config.intActivityScreen) {
+    public void populateActivity() {
 
-            /////
-            /////
-            try {
+        try {
 
-                ActivityMonthFragment.activitiesModelArrayList.clear();
-                ActivityMonthFragment.activityModels.clear();
+            ActivityFragment.activitiesModelArrayList.clear();
 
-                log(" 1 ", " IN1 ");
+            if (Config.jsonObject.has("customer_name")) {
 
-                if (Config.jsonObject.has("customer_name")) {
+                if (Config.jsonObject.has("dependents")) {
 
-                    log(" 2 ", " IN1 ");
+                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
 
-                    if (Config.jsonObject.has("dependents")) {
+                    for (int index = Config.intSelectedDependent;
+                         index < Config.intSelectedDependent + 1; index++) {
 
-                        log(" 3 ", " IN1 ");
+                        JSONObject jsonObject = jsonArray.getJSONObject(index);
 
-                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
+                        if (jsonObject.has("activities")) {
 
-                        for (int index = Config.intSelectedDependent; index < Config.intSelectedDependent + 1; index++) {
+                            JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
 
-                            JSONObject jsonObject = jsonArray.getJSONObject(index);
+                            for (int j = 0; j < jsonArrayNotifications.length(); j++) {
 
-                            log(" 4 "+jsonObject.getString("dependent_name"), " IN1 ");
+                                JSONObject jsonObjectNotification =
+                                        jsonArrayNotifications.getJSONObject(j);
 
-                            //Notifications
-                            if (jsonObject.has("activities")) {
+                                if (jsonObjectNotification.has("activity_date")) {
 
-                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
+                                    ActivityModel activityModel = new ActivityModel();
 
-                                log(" 5 ", " IN1 ");
+                                    activityModel.setStrActivityDate(
+                                            jsonObjectNotification.getString("activity_date"));
+                                    //month-year
 
-                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
+                                    activityModel.setStrActivityMessage(
+                                            jsonObjectNotification.getString("activity_message"));
+                                    activityModel.setStrActivityStatus(
+                                            jsonObjectNotification.getString("status"));
+                                    activityModel.setStrActivityDesc(
+                                            jsonObjectNotification.getString("provider_description"));
 
-                                    log(" 6 ", " IN1 ");
+                                    ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
+                                    ArrayList<VideoModel> videoModels = new ArrayList<>();
+                                    ArrayList<ImageModel> imageModels = new ArrayList<>();
 
-                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
+                                    if (jsonObjectNotification.has("feedbacks")) {
 
-                                    if (jsonObjectNotification.has("activity_date")) {
+                                        JSONArray jsonArrayFeedback = jsonObjectNotification.
+                                                getJSONArray("feedbacks");
 
-                                        ActivityListModel activityListModel = new ActivityListModel();
+                                        for (int k = 0; k < jsonArrayFeedback.length(); k++) {
 
-                                        String strDisplayDateTime = formatDate(jsonObjectNotification.getString("activity_date"));
-                                        String strDisplayDate = formatDateActivity(jsonObjectNotification.getString("activity_date"));
-                                        String strDisplayDateMonthYear = formatDateActivityMonthYear(jsonObjectNotification.getString("activity_date"));
+                                            JSONObject jsonObjectFeedback =
+                                                    jsonArrayFeedback.getJSONObject(k);
 
-                                        activityListModel.setStrDate(strDisplayDateMonthYear);//month-year
-                                        activityListModel.setStrDateTime(strDisplayDateTime);
-                                        activityListModel.setStrDateNumber(strDisplayDate.substring(0, 2));//date
-
-                                        activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
-
-                                        activityListModel.setStrActualDate(jsonObjectNotification.getString("activity_date"));
-
-                                        activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-                                        activityListModel.setStrMessage(jsonObjectNotification.getString("activity_message"));
-                                        activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
-                                        activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
-                                        activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
-
-                                        ActivityMonthFragment.activitiesModelArrayList.add(activityListModel);
-                                        //
-                                        ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-                                        ArrayList<VideoModel> videoModels = new ArrayList<>();
-                                        ArrayList<ImageModel> imageModels = new ArrayList<>();
-
-                                        if (jsonObjectNotification.has("feedbacks")) {
-
-                                            JSONArray jsonArrayFeedback = jsonObjectNotification.getJSONArray("feedbacks");
-
-                                            for (int k = 0; k < jsonArrayFeedback.length(); k++) {
-
-                                                log(" 8", " IN1 ");
-
-                                                JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
-
-                                                FeedBackModel feedBackModel = new FeedBackModel(
-                                                        jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
-                                                        jsonObjectFeedback.getString("feedback_time"),
-                                                        jsonObjectFeedback.getString("feedback_by_url")
-                                                );
-
-                                                feedBackModels.add(feedBackModel);
-
-                                            }
                                         }
-
-                                        if (jsonObjectNotification.has("videos")) {
-
-                                            JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("videos");
-
-                                            for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                                log(" 9 ", " IN1 ");
-
-                                                JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
-
-
-                                                VideoModel videoModel = new VideoModel(
-                                                        jsonObjectVideo.getString("video_name"),
-                                                        jsonObjectVideo.getString("video_url"),
-                                                        jsonObjectVideo.getString("video_description"),
-                                                        jsonObjectVideo.getString("video_taken")
-                                                );
-
-                                                videoModels.add(videoModel);
-
-                                            }
-                                        }
-
-                                        if (jsonObjectNotification.has("images")) {
-
-                                            JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("images");
-
-                                            for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                                JSONObject jsonObjectImage = jsonArrayVideos.getJSONObject(k);
-
-                                                ImageModel imageModel = new ImageModel(
-                                                        jsonObjectImage.getString("image_name"),
-                                                        jsonObjectImage.getString("image_url"),
-                                                        jsonObjectImage.getString("image_description"),
-                                                        jsonObjectImage.getString("image_taken")
-                                                );
-
-                                                imageModels.add(imageModel);
-                                            }
-                                        }
-
-                                        ActivityModel activityModel = new ActivityModel(
-                                                jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
-                                                jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
-                                                jsonObjectNotification.getString("status"),
-                                                jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
-                                                jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                                videoModels, feedBackModels, imageModels);
-                                        //, jsonObjectNotification.getString("provider_image_url")
-
-                                        ActivityMonthFragment.activityModels.add(activityModel);
-                                        ///
                                     }
+
+                                    if (jsonObjectNotification.has("videos")) {
+
+                                        JSONArray jsonArrayVideos = jsonObjectNotification.
+                                                getJSONArray("videos");
+
+                                        for (int k = 0; k < jsonArrayVideos.length(); k++) {
+
+                                            JSONObject jsonObjectVideo = jsonArrayVideos.
+                                                    getJSONObject(k);
+
+                                        }
+                                    }
+
+                                    if (jsonObjectNotification.has("images")) {
+
+                                        JSONArray jsonArrayVideos = jsonObjectNotification.
+                                                getJSONArray("images");
+
+                                        for (int k = 0; k < jsonArrayVideos.length(); k++) {
+
+                                            JSONObject jsonObjectImage = jsonArrayVideos.
+                                                    getJSONObject(k);
+                                        }
+                                    }
+
+                                    ActivityFragment.activitiesModelArrayList.add(activityModel);
                                 }
                             }
                         }
                     }
                 }
-
-                log(" 7 ", " IN1 ");
-
-                ActivityFragment.setGridCellAdapterToDate(ActivityFragment.month, ActivityFragment.year);
-
-
-            }catch ( JSONException e){
-                e.printStackTrace();
             }
-            /////
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -1512,14 +1296,12 @@ public class Libs {
 
                 Config.customerModel = new CustomerModel(
                         Config.jsonObject.getString("customer_name"),
-                        Config.jsonObject.getString("paytm_account"), "",
+                        Config.jsonObject.getString("paytm_account"),
+                        Config.jsonObject.getString("customer_profile_url"),
                         Config.jsonObject.getString("customer_address"),
                         Config.jsonObject.getString("customer_contact_no"),
                         Config.jsonObject.getString("customer_email"),
-                        Config.jsonObject.getString("customer_profile_url"),
-                        Config.jsonObject.getString("customer_profile_url")
-                );
-                //
+                        Config.jsonObject.getString("customer_profile_url"), "");
 
                 if (Config.jsonObject.has("dependents")) {
 
@@ -1622,7 +1404,8 @@ public class Libs {
 
                 for (DependentModel dependentModel : SignupActivity.dependentModels) {
 
-                    if (!dependentModel.getStrName().equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))) {
+                    if (!dependentModel.getStrName().equalsIgnoreCase(_ctxt.getResources().
+                            getString(R.string.add_dependent))) {
                         confirmViewModel = new ConfirmViewModel();
                         confirmViewModel.setStrName(dependentModel.getStrName());
                         confirmViewModel.setStrDesc(dependentModel.getStrNotes());
@@ -1711,9 +1494,6 @@ public class Libs {
             Toast toast = new Toast(_ctxt);
             toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 
-            /*if (duration == 1)*/
-
-
             if (duration == 2)
                 toast.setDuration(Toast.LENGTH_LONG);
             else
@@ -1731,6 +1511,85 @@ public class Libs {
         return password.length() > 1;
     }
 
-    //Application Specig=fic End
+    public void fetchDependents(String strCustomerId, ProgressDialog progressDialog) {
 
+        StorageService storageService = new StorageService(_ctxt);
+
+        storageService.findDocsByKeyValue(Config.collectionDependent, "customer_id", strCustomerId,
+                new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                    @Override
+                    public void onDocumentInserted(Storage response) {
+                    }
+
+                    @Override
+                    public void onUpdateDocSuccess(Storage response) {
+                    }
+
+                    @Override
+                    public void onFindDocSuccess(Storage response) {
+
+                    }
+
+                    @Override
+                    public void onInsertionFailed(App42Exception ex) {
+
+                    }
+
+                    @Override
+                    public void onFindDocFailed(App42Exception ex) {
+
+                    }
+
+                    @Override
+                    public void onUpdateDocFailed(App42Exception ex) {
+
+                    }
+                }
+        );
+    }
+
+    public void fetchFiles(final ProgressDialog progressDialog) {
+
+        UploadService uploadService = new UploadService(_ctxt);
+
+        uploadService.getAllFilesByUser(Config.strUserName, new App42CallBack() {
+
+            public void onSuccess(Object response) {
+
+                Upload upload = (Upload) response;
+                ArrayList<Upload.File> fileList = upload.getFileList();
+
+                if (fileList.size() > 0) {
+
+                    for (int i = 0; i < fileList.size(); i++) {
+                        Config.fileModels.add(new FileModel(fileList.get(i).getName(),
+                                fileList.get(i).getUrl(), fileList.get(i).getType())
+                        );
+                    }
+
+                    parseData();
+
+                    progressDialog.dismiss();
+
+                    toast(1, 1, _ctxt.getString(R.string.success_login));
+
+                    Config.intSelectedMenu = Config.intDashboardScreen;
+                    Config.boolIsLoggedIn = true;
+
+
+                } else {
+                    progressDialog.dismiss();
+                    toast(2, 2, _ctxt.getString(R.string.error_load_images));
+                }
+            }
+
+            public void onException(Exception ex) {
+                progressDialog.dismiss();
+                toast(2, 2, _ctxt.getString(R.string.error_load_images));
+                Libs.log(ex.getMessage(), " ");
+            }
+        });
+    }
+    //Application Specig=fic End
 }

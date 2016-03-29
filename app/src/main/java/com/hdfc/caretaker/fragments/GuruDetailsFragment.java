@@ -61,6 +61,12 @@ public class GuruDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bitmap = null;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         libs = new Libs(getActivity());
@@ -250,7 +256,7 @@ public class GuruDetailsFragment extends Fragment {
                                     CustomViewPager.setPagingEnabled(true);
 
                                     Config.customerModel = new CustomerModel(strName, "", "",
-                                            strAddress, strContactNo, strEmail, 0,
+                                            strAddress, strContactNo, strEmail, "",
                                             strCustomerImgName);
 
                                   /*  SignupActivity.strCustomerName = strName;

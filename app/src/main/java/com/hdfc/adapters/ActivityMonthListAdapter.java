@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.hdfc.caretaker.R;
 import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.models.ActivityModel;
 
 import java.io.File;
 import java.util.List;
@@ -23,10 +24,10 @@ public class ActivityMonthListAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
-    private List<ActivityListModel> data;
+    private List<ActivityModel> data;
     private Libs libs;
 
-    public ActivityMonthListAdapter(Context ctxt, List<ActivityListModel> y) {
+    public ActivityMonthListAdapter(Context ctxt, List<ActivityModel> y) {
         _context = ctxt;
         data = y;
         multiBitmapLoader = new MultiBitmapLoader(ctxt);
@@ -70,16 +71,16 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            ActivityListModel activityListModel = data.get(position);
+            ActivityModel activityModel = data.get(position);
 
-            viewHolder.textViewActivity.setText(activityListModel.getStrMessage());
-            viewHolder.textViewDescription.setText(activityListModel.getStrDesc());
+            viewHolder.textViewActivity.setText(activityModel.getStrActivityName());
+            viewHolder.textViewDescription.setText(activityModel.getStrActivityDesc());
 
-            multiBitmapLoader.loadBitmap(activityListModel.getStrDependentName(), viewHolder.imageViewPerson);
+            //multiBitmapLoader.loadBitmap(activityModel.getStrDependentName(), viewHolder.imageViewPerson);
 
             try {
 
-                File f = libs.getInternalFileImages(libs.replaceSpace(activityListModel.getStrDependentName()));
+                File f = libs.getInternalFileImages(libs.replaceSpace(activityModel.getStrDependentID()));
 
                 if(f.exists())
                     multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);

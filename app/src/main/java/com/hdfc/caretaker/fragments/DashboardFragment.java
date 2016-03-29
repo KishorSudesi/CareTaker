@@ -19,6 +19,7 @@ import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Libs;
+import com.hdfc.models.ActivityModel;
 import com.hdfc.views.RoundedImageView;
 
 import org.json.JSONArray;
@@ -41,7 +42,7 @@ public class DashboardFragment extends Fragment {
     public final static float SMALL_SCALE = 0.7f; //0.7f
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
     public static ViewPager pager;
-    public static ArrayList<ActivitiesModel> activitiesModelArrayList = new ArrayList<>();
+    public static ArrayList<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     public static RoundedImageView roundedImageView;
     private static ListView listViewActivities;
     private static ActivitiesAdapter activitiesAdapter;
@@ -115,13 +116,13 @@ public class DashboardFragment extends Fragment {
 
                                 if (jsonObjectActivity.has("activity_name")) {
 
-                                    ActivitiesModel activitiesModel = new ActivitiesModel(jsonObjectActivity.getString("provider_image_url"),
+                                  /*  ActivityModel activityModel = new ActivityModel(jsonObjectActivity.getString("provider_image_url"),
                                             jsonObjectActivity.getString("activity_name"),
                                             jsonObjectActivity.getString("activity_date"),
                                             "feedback",//jsonObjectActivity.getString("activity_name"),//feedback
                                             jsonObjectActivity.getString("provider_name"));
 
-                                    activitiesModelArrayList.add(activitiesModel);
+                                    activitiesModelArrayList.add(activityModel);*/
                                 }
                             }
 
@@ -145,6 +146,11 @@ public class DashboardFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

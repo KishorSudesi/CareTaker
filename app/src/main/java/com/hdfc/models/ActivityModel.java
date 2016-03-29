@@ -70,79 +70,159 @@ public class ActivityModel implements Serializable {
         return strActivityID;
     }
 
+    public void setStrActivityID(String strActivityID) {
+        this.strActivityID = strActivityID;
+    }
+
     public String getStrustomerID() {
         return strustomerID;
+    }
+
+    public void setStrustomerID(String strustomerID) {
+        this.strustomerID = strustomerID;
     }
 
     public String getStrDependentID() {
         return strDependentID;
     }
 
+    public void setStrDependentID(String strDependentID) {
+        this.strDependentID = strDependentID;
+    }
+
     public String getStrProviderID() {
         return strProviderID;
+    }
+
+    public void setStrProviderID(String strProviderID) {
+        this.strProviderID = strProviderID;
     }
 
     public String getStrServcieID() {
         return strServcieID;
     }
 
+    public void setStrServcieID(String strServcieID) {
+        this.strServcieID = strServcieID;
+    }
+
     public String getStrActivityName() {
         return strActivityName;
+    }
+
+    public void setStrActivityName(String strActivityName) {
+        this.strActivityName = strActivityName;
     }
 
     public String getStrActivityDesc() {
         return strActivityDesc;
     }
 
+    public void setStrActivityDesc(String strActivityDesc) {
+        this.strActivityDesc = strActivityDesc;
+    }
+
     public String getStrActivityMessage() {
         return strActivityMessage;
+    }
+
+    public void setStrActivityMessage(String strActivityMessage) {
+        this.strActivityMessage = strActivityMessage;
     }
 
     public String getStrActivityStatus() {
         return strActivityStatus;
     }
 
+    public void setStrActivityStatus(String strActivityStatus) {
+        this.strActivityStatus = strActivityStatus;
+    }
+
     public String getStrServiceName() {
         return strServiceName;
+    }
+
+    public void setStrServiceName(String strServiceName) {
+        this.strServiceName = strServiceName;
     }
 
     public String getStrServiceDesc() {
         return strServiceDesc;
     }
 
+    public void setStrServiceDesc(String strServiceDesc) {
+        this.strServiceDesc = strServiceDesc;
+    }
+
     public String getStrActivityDate() {
         return strActivityDate;
+    }
+
+    public void setStrActivityDate(String strActivityDate) {
+        this.strActivityDate = strActivityDate;
     }
 
     public String getStrActivityDoneDate() {
         return strActivityDoneDate;
     }
 
+    public void setStrActivityDoneDate(String strActivityDoneDate) {
+        this.strActivityDoneDate = strActivityDoneDate;
+    }
+
     public String getStrActivityProviderStatus() {
         return strActivityProviderStatus;
+    }
+
+    public void setStrActivityProviderStatus(String strActivityProviderStatus) {
+        this.strActivityProviderStatus = strActivityProviderStatus;
     }
 
     public boolean isbActivityOverdue() {
         return bActivityOverdue;
     }
 
+    public void setbActivityOverdue(boolean bActivityOverdue) {
+        this.bActivityOverdue = bActivityOverdue;
+    }
+
     public String[] getStrFeatures() {
         return strFeatures;
+    }
+
+    public void setStrFeatures(String[] strFeatures) {
+        this.strFeatures = strFeatures;
     }
 
     public String[] getStrFeaturesDone() {
         return strFeaturesDone;
     }
 
+    public void setStrFeaturesDone(String[] strFeaturesDone) {
+        this.strFeaturesDone = strFeaturesDone;
+    }
+
     public ArrayList<ImageModel> getImageModels() {
         return imageModels;
+    }
+
+    public void setImageModels(ArrayList<ImageModel> imageModels) {
+        this.imageModels = imageModels;
     }
 
     public ArrayList<VideoModel> getVideoModels() {
         return videoModels;
     }
 
+    public void setVideoModels(ArrayList<VideoModel> videoModels) {
+        this.videoModels = videoModels;
+    }
+
     public ArrayList<FeedBackModel> getFeedBackModels() {
         return feedBackModels;
+    }
+
+    public void setFeedBackModels(ArrayList<FeedBackModel> feedBackModels) {
+        this.feedBackModels = feedBackModels;
     }
 }
