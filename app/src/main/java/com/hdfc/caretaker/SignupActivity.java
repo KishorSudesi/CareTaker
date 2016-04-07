@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ViewPagerAdapter;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.CustomViewPager;
 
@@ -27,7 +27,7 @@ public class SignupActivity extends FragmentActivity {
     public static String strCustomerPass = "";
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
     public static ArrayList<String> dependentNames = new ArrayList<>();
-    //private static Libs libs;
+    //private static Utils utils;
     private Button _btn1, _btn2, _btn3;
     private TextView texViewHeader;
 
@@ -95,17 +95,17 @@ public class SignupActivity extends FragmentActivity {
 
     public void setButton(Button btn) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Libs.setDrawable(_btn1, getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setDrawable(_btn2, getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setDrawable(_btn3, getDrawable(R.drawable.rounded_cell_blue));
+            Utils.setDrawable(_btn1, getDrawable(R.drawable.rounded_cell_blue));
+            Utils.setDrawable(_btn2, getDrawable(R.drawable.rounded_cell_blue));
+            Utils.setDrawable(_btn3, getDrawable(R.drawable.rounded_cell_blue));
 
-            Libs.setDrawable(btn, getDrawable(R.drawable.rounded_cell));
+            Utils.setDrawable(btn, getDrawable(R.drawable.rounded_cell));
         } else {
-            Libs.setDrawable(_btn1, getResources().getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setDrawable(_btn2, getResources().getDrawable(R.drawable.rounded_cell_blue));
-            Libs.setDrawable(_btn3, getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Utils.setDrawable(_btn1, getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Utils.setDrawable(_btn2, getResources().getDrawable(R.drawable.rounded_cell_blue));
+            Utils.setDrawable(_btn3, getResources().getDrawable(R.drawable.rounded_cell_blue));
 
-            Libs.setDrawable(btn, getResources().getDrawable(R.drawable.rounded_cell));
+            Utils.setDrawable(btn, getResources().getDrawable(R.drawable.rounded_cell));
         }
     }
 

@@ -1,18 +1,31 @@
 package com.hdfc.caretaker.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
+import com.hdfc.libs.Utils;
 import com.hdfc.views.MyLinearView;
 
 public class ImagesFragment extends Fragment {
+
+    private static Bitmap bitmap;
+    private static Utils utils;
+    private static int intPosition;
+    private static Handler threadHandler;
+    private static ImageView imageView;
+    private static RelativeLayout loadingPanel;
 
     public static Fragment newInstance(Context context, int pos,
                                        float scale) {
@@ -33,16 +46,23 @@ public class ImagesFragment extends Fragment {
         LinearLayout l = (LinearLayout)
                 inflater.inflate(R.layout.fragment_images, container, false);
 
-        ImageView imageView = (ImageView) l.findViewById(R.id.content);
+        loadingPanel = (RelativeLayout) l.findViewById(R.id.loadingPanel);
 
-        int intPosition = this.getArguments().getInt("pos");
+        imageView = (ImageView) l.findViewById(R.id.content);
+
+        utils = new Utils(getActivity());
+
+        intPosition = this.getArguments().getInt("pos");
 
         try {
-            /*libs.getBitmapFromFile(libs.getInternalFileImages(
-                                libs.replaceSpace(Config.dependentNames.get(i))).getAbsolutePath(),
-                                Config.intWidth, Config.intHeight)*/
-            imageView.setImageBitmap();
-        } catch (OutOfMemoryError | Exception e) {
+
+            loadingPanel.setVisibility(View.VISIBLE);
+
+            threadHandler = new ThreadHandler();
+            Thread backgroundThread = new BackgroundThread();
+            backgroundThread.start();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -57,5 +77,30 @@ public class ImagesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            loadingPanel.setVisibility(View.GONE);
+            if (bitmap != null)
+                imageView.setImageBitmap(bitmap);
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+
+                bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+                        utils.replaceSpace(Config.dependentNames.get(intPosition))).getAbsolutePath(),
+                        Config.intWidth, Config.intHeight);
+
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception | OutOfMemoryError e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

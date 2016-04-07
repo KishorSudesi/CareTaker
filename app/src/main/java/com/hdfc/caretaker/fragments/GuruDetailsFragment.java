@@ -20,7 +20,7 @@ import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
@@ -32,8 +32,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class GuruDetailsFragment extends Fragment {
 
@@ -48,7 +46,7 @@ public class GuruDetailsFragment extends Fragment {
     private static String strName, strEmail, strConfirmPass, strContactNo, strAddress;
     private static ProgressDialog mProgress = null;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editAddress;
-    private Libs libs;
+    private Utils utils;
 
     public GuruDetailsFragment() {
     }
@@ -69,7 +67,7 @@ public class GuruDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
     }
 
     @Override
@@ -89,13 +87,14 @@ public class GuruDetailsFragment extends Fragment {
 
         mProgress = new ProgressDialog(getActivity());
 
-        strCustomerImgNameCamera = String.valueOf(new Date().getDate() + "" +
-                new Date().getTime()) + ".jpeg";
+        Calendar calendar = Calendar.getInstance();
+
+        strCustomerImgNameCamera = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
 
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                libs.selectImage(strCustomerImgNameCamera, GuruDetailsFragment.this, null);
+                utils.selectImage(strCustomerImgNameCamera, GuruDetailsFragment.this, null);
             }
         });
 
@@ -148,7 +147,7 @@ public class GuruDetailsFragment extends Fragment {
 
         if (TextUtils.isEmpty(strCustomerImgName)
                 && Config.customerModel.getStrName().equalsIgnoreCase("")) {
-            libs.toast(1, 1, getString(R.string.warning_profile_pic));
+            utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
 
@@ -158,7 +157,7 @@ public class GuruDetailsFragment extends Fragment {
                 editContactNo.setError(getString(R.string.error_field_required));
                 focusView = editContactNo;
                 cancel = true;
-            } else if (!libs.validCellPhone(strContactNo)) {
+            } else if (!utils.validCellPhone(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_invalid_contact_no));
                 focusView = editContactNo;
                 cancel = true;
@@ -170,8 +169,8 @@ public class GuruDetailsFragment extends Fragment {
             cancel = true;
         }
 */
-            if (!TextUtils.isEmpty(strPass) && libs.isPasswordValid(strPass)
-                    && !TextUtils.isEmpty(strConfirmPass) && libs.isPasswordValid(strConfirmPass)) {
+            if (!TextUtils.isEmpty(strPass) && utils.isPasswordValid(strPass)
+                    && !TextUtils.isEmpty(strConfirmPass) && utils.isPasswordValid(strConfirmPass)) {
 
                 if (!strPass.trim().equalsIgnoreCase(strConfirmPass.trim())) {
                     editConfirmPass.setError(getString(R.string.error_confirm_password));
@@ -196,7 +195,7 @@ public class GuruDetailsFragment extends Fragment {
                 editEmail.setError(getString(R.string.error_field_required));
                 focusView = editEmail;
                 cancel = true;
-            } else if (!libs.isEmailValid(strEmail)) {
+            } else if (!utils.isEmailValid(strEmail)) {
                 editEmail.setError(getString(R.string.error_invalid_email));
                 focusView = editEmail;
                 cancel = true;
@@ -214,7 +213,7 @@ public class GuruDetailsFragment extends Fragment {
         } else {
             try {
                 //
-                if (libs.isConnectingToInternet()) {
+                if (utils.isConnectingToInternet()) {
 
                     mProgress.setMessage(getResources().getString(R.string.loading));
                     mProgress.setCancelable(false);
@@ -228,9 +227,9 @@ public class GuruDetailsFragment extends Fragment {
                             if (mProgress.isShowing())
                                 mProgress.dismiss();
                             if(o!=null) {
-                                libs.toast(2, 2, getString(R.string.email_exists));
+                                utils.toast(2, 2, getString(R.string.email_exists));
                             }else{
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -276,35 +275,36 @@ public class GuruDetailsFragment extends Fragment {
                                         SignupActivity.strCustomerPass = strConfirmPass;
 
                                     //chk this
-                                    libs.retrieveDependants();//strEmail
+                                    utils.retrieveDependants();//strEmail
                                     AddDependentFragment.adapter.notifyDataSetChanged();
 
-                                    libs.retrieveConfirmDependants();
+                                    utils.retrieveConfirmDependants();
                                     ConfirmFragment.adapter.notifyDataSetChanged();
+
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
 
-                                    libs.toast(1, 1, getString(R.string.your_details_saved));
+                                    utils.toast(1, 1, getString(R.string.your_details_saved));
 
                                     SignupActivity._mViewPager.setCurrentItem(1);
 
-                                    Libs.log(e.getMessage(), "");
+                                    //Utils.log(e.getMessage(), "");
                                 }else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
-                                    libs.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                 }
                             }else{
                                 if (mProgress.isShowing())
                                     mProgress.dismiss();
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
                 } else {
                     if (mProgress.isShowing())
                         mProgress.dismiss();
-                    libs.toast(2, 2, getString(R.string.warning_internet));
+                    utils.toast(2, 2, getString(R.string.warning_internet));
                 }
 
             } catch (Exception e) {
@@ -321,12 +321,12 @@ public class GuruDetailsFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
                 backgroundThreadHandler = new BackgroundThreadHandler();
-                //Libs.toast(1, 1, "Getting Image...");
+                //Utils.toast(1, 1, "Getting Image...");
                 mProgress.setMessage(getString(R.string.loading));
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        strCustomerImgName = Libs.customerImageUri.getPath();
+                        strCustomerImgName = Utils.customerImageUri.getPath();
                         backgroundThreadCamera = new BackgroundThreadCamera();
                         backgroundThreadCamera.start();
                         break;
@@ -362,13 +362,15 @@ public class GuruDetailsFragment extends Fragment {
 
             try {
                 if (uri != null) {
-                    Calendar calendar = new GregorianCalendar();
+
+                    Calendar calendar = Calendar.getInstance();
                     String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                    File galleryFile = libs.createFileInternalImage(strFileName);
+
+                    File galleryFile = utils.createFileInternalImage(strFileName);
                     strCustomerImgName = galleryFile.getAbsolutePath();
                     InputStream is = getActivity().getContentResolver().openInputStream(uri);
-                    libs.copyInputStreamToFile(is, galleryFile);
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth,
+                    utils.copyInputStreamToFile(is, galleryFile);
+                    bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth,
                             Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
@@ -384,7 +386,7 @@ public class GuruDetailsFragment extends Fragment {
 
             try {
                 if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth,
+                    bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth,
                             Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);

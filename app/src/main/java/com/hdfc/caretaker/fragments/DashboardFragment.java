@@ -1,8 +1,10 @@
 package com.hdfc.caretaker.fragments;
 
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -18,13 +20,9 @@ import com.hdfc.adapters.ActivitiesAdapter;
 import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.views.RoundedImageView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -47,9 +45,11 @@ public class DashboardFragment extends Fragment {
     private static ListView listViewActivities;
     private static ActivitiesAdapter activitiesAdapter;
     private static TextView textView1, textView2, textView3, textView4, emptyTextView;
+    private static Bitmap bitmap;
+    private static Handler threadHandler;
+    private static int iPosition;
     public CarouselPagerAdapter adapter;
-    private Libs libs;
-
+    private Utils utils;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -64,86 +64,20 @@ public class DashboardFragment extends Fragment {
 
     public static void loadData(int intIndex) {
 
-        Libs.log(String.valueOf(intIndex), "");
-
-        JSONArray jsonArrayDependant, jsonArrayActivities;
-        JSONObject jsonObjectActivity;
+        Utils.log(String.valueOf(intIndex), "");
 
         try {
 
             activitiesModelArrayList.clear();
+            activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
+            activitiesAdapter.notifyDataSetChanged();
 
-            if (Config.jsonObject != null) {
+            textView1.setText(Config.dependentModels.get(intIndex).getIntHealthBp());
+            textView2.setText(Config.dependentModels.get(intIndex).getIntHealthHeartRate());
+            textView3.setText(Config.dependentModels.get(intIndex).getIntHealthBp());
+            textView4.setText(Config.dependentModels.get(intIndex).getIntHealthHeartRate());
 
-                jsonArrayDependant = Config.jsonObject.getJSONArray("dependents");
-
-                String strBp;
-                String strHeartRate;
-                if (jsonArrayDependant.length() > 0 && intIndex <= jsonArrayDependant.length()) {
-
-                    if (jsonArrayDependant.getJSONObject(intIndex).has("activities")) {
-
-                        strBp = jsonArrayDependant.getJSONObject(intIndex).getString("health_bp");
-                        strHeartRate = jsonArrayDependant.getJSONObject(intIndex).getString("health_heart_rate");
-                        //String strTime = "";
-
-                    } else {
-                        strBp = "0";
-                        strHeartRate = "0";
-                    }
-
-                   /* if (jsonArrayDependant.getJSONObject(intIndex).has("health_status")) {
-
-                        jsonObjectHealth = jsonArrayDependant.getJSONObject(intIndex).getJSONArray("health_status").getJSONObject(0);
-
-                        strBp = jsonObjectHealth.getString("bp");
-                        strHeartRate = jsonObjectHealth.getString("heart_rate");
-                        strTime = jsonObjectHealth.getString("time_taken");
-                    } else {
-                        strBp = "0";
-                        strHeartRate = "0";
-                    }
-*/
-                    if (jsonArrayDependant.getJSONObject(intIndex).has("activities")) {
-
-                        jsonArrayActivities = jsonArrayDependant.getJSONObject(intIndex).getJSONArray("activities");
-
-                        if (jsonArrayActivities.length() > 0) {
-
-                            for (int i = 0; i < jsonArrayActivities.length(); i++) {
-
-                                jsonObjectActivity = jsonArrayActivities.getJSONObject(i);
-
-                                if (jsonObjectActivity.has("activity_name")) {
-
-                                  /*  ActivityModel activityModel = new ActivityModel(jsonObjectActivity.getString("provider_image_url"),
-                                            jsonObjectActivity.getString("activity_name"),
-                                            jsonObjectActivity.getString("activity_date"),
-                                            "feedback",//jsonObjectActivity.getString("activity_name"),//feedback
-                                            jsonObjectActivity.getString("provider_name"));
-
-                                    activitiesModelArrayList.add(activityModel);*/
-                                }
-                            }
-
-                        }
-                    } else activitiesModelArrayList.clear();
-
-                } else {
-                    strBp = "0";
-                    strHeartRate = "0";
-                    activitiesModelArrayList.clear();
-                }
-
-                activitiesAdapter.notifyDataSetChanged();
-
-                textView1.setText(strBp);
-                textView2.setText(strHeartRate);
-                textView3.setText(strBp);
-                textView4.setText(strHeartRate);
-            }
-
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -157,14 +91,13 @@ public class DashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivities);
@@ -188,10 +121,14 @@ public class DashboardFragment extends Fragment {
                 if (Config.dependentNames.size() > 1)
                     intPosition = 1;
 
-                roundedImageView.setImageBitmap(BitmapFactory.decodeFile(libs.getInternalFileImages(
-                        libs.replaceSpace(Config.dependentNames.get(intPosition))).getAbsolutePath()));
+                iPosition = intPosition;
+
+                threadHandler = new ThreadHandler();
+                Thread backgroundThread = new BackgroundThread();
+                backgroundThread.start();
+
             }
-        } catch (Exception | OutOfMemoryError e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -216,12 +153,13 @@ public class DashboardFragment extends Fragment {
                             intReversePosition < 0)
                         intReversePosition = 0;
 
-                    roundedImageView.setImageBitmap(BitmapFactory.decodeFile(
-                            libs.getInternalFileImages(libs.replaceSpace(
-                                    Config.dependentNames.get(intReversePosition)))
-                                    .getAbsolutePath()));
+                    iPosition = intReversePosition;
 
-                } catch (Exception | OutOfMemoryError e) {
+                    threadHandler = new ThreadHandler();
+                    Thread backgroundThread = new BackgroundThread();
+                    backgroundThread.start();
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -253,6 +191,15 @@ public class DashboardFragment extends Fragment {
         new setAdapterTask().execute();
     }
 
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (bitmap != null)
+                roundedImageView.setImageBitmap(bitmap);
+        }
+    }
+
     private class setAdapterTask extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
             return null;
@@ -275,6 +222,22 @@ public class DashboardFragment extends Fragment {
             // Set margin for pages as a negative number, so a part of next and
             // previous pages will be showed
             //pager.setPageMargin(-200); //-200
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+
+                bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+                        utils.replaceSpace(Config.dependentNames.get(iPosition))).getAbsolutePath(),
+                        Config.intWidth, Config.intHeight);
+
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception | OutOfMemoryError e) {
+                e.printStackTrace();
+            }
         }
     }
 }

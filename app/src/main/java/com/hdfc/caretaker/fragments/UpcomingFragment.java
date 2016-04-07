@@ -3,7 +3,6 @@ package com.hdfc.caretaker.fragments;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,7 +18,7 @@ import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
 import java.io.File;
@@ -27,7 +26,6 @@ import java.io.File;
 
 public class UpcomingFragment extends Fragment {
     private static Bitmap bitmap;
-    private static ImageButton msg,call;
 
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
@@ -35,13 +33,12 @@ public class UpcomingFragment extends Fragment {
     private static String strCarlaImageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName;
-    private Libs libs;
+    private Utils utils;
 
-    public static UpcomingFragment newInstance(ActivityListModel _activityListModel, ActivityModel activityModel) {
+    public static UpcomingFragment newInstance(ActivityModel activityModel) {
         UpcomingFragment fragment = new UpcomingFragment();
         Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY", _activityListModel);
-        args.putSerializable("ACTIVITY_COMPLETE", activityModel);
+        args.putSerializable("ACTIVITY", activityModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,27 +62,26 @@ public class UpcomingFragment extends Fragment {
         txtViewHead1 = (TextView) view.findViewById(R.id.textViewHead1);
         txtViewHead2 = (TextView) view.findViewById(R.id.textViewHead2);
         imageViewCarla = (ImageView) view.findViewById(R.id.imageViewCarla);
-        msg = (ImageButton)view.findViewById(R.id.buttonMsg);
-        call = (ImageButton)view.findViewById(R.id.buttonCallUpcoming);
+        ImageButton msg = (ImageButton) view.findViewById(R.id.buttonMsg);
+        ImageButton call = (ImageButton) view.findViewById(R.id.buttonCallUpcoming);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
-        ActivityListModel activityListModel = (ActivityListModel) this.getArguments().getSerializable("ACTIVITY");
-        final ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
+        final ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
-        if(activityListModel!=null) {
-            txtViewHead2.setText(activityListModel.getStrMessage());
-            String strHead = activityListModel.getStrPerson() + getActivity().getResources().getString(R.string.will_assist);
+        if (activityModel != null) {
+            txtViewHead2.setText(activityModel.getStrActivityName());
+            String strHead = activityModel.getStrProviderID() + getActivity().getResources().getString(R.string.will_assist);
             txtViewHead1.setText(strHead);
-            String strDate = getActivity().getResources().getString(R.string.at) + activityListModel.getStrDateTime();
+            String strDate = getActivity().getResources().getString(R.string.at) + activityModel.getStrActivityDate();
             txtViewDate.setText(strDate);
-            txtViewMSG.setText(activityListModel.getStrDesc());
+            txtViewMSG.setText(activityModel.getStrActivityDesc());
 
-            strCarlaImageName=libs.replaceSpace(activityListModel.getStrPerson());
-            strCarlaImageUrl = libs.replaceSpace(activityListModel.getStrImageUrl());
+            strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
+            strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
 
-            Libs.log(strCarlaImageUrl + " 1 ", " 0 ");
+            Utils.log(strCarlaImageUrl + " 1 ", " 0 ");
         }
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
@@ -103,10 +99,12 @@ public class UpcomingFragment extends Fragment {
 
 
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.putExtra("sms_body", activityModel != null ? activityModel.getStrActivityName() : "Activity Name");
-                sendIntent.putExtra("address", activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
+                sendIntent.putExtra("sms_body",
+                        activityModel != null ? activityModel.getStrActivityName() : "Activity Name");
+                //sendIntent.putExtra("address",
+                // activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
                 sendIntent.setType("vnd.android-dir/mms-sms");
-                startActivity(sendIntent);
+                //startActivity(sendIntent);
             }
         });
         call.setOnClickListener(new View.OnClickListener() {
@@ -115,9 +113,9 @@ public class UpcomingFragment extends Fragment {
 
                 try {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    String strNo = "tel:" + String.valueOf(activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
-                    Libs.log(strNo," call intent ");
-                    callIntent.setData(Uri.parse(strNo));
+                    //String strNo = "tel:" + String.valueOf(activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
+                    //Utils.log(strNo," call intent ");
+                    //callIntent.setData(Uri.parse(strNo));
                     startActivity(callIntent);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -165,14 +163,15 @@ public class UpcomingFragment extends Fragment {
 
                 if(strCarlaImageName!=null&&!strCarlaImageName.equalsIgnoreCase("")) {
 
-                    File f = libs.getInternalFileImages(strCarlaImageName);
+                    File f = utils.getInternalFileImages(strCarlaImageName);
 
                     if (!f.exists()) {
                         if (strCarlaImageUrl != null && !strCarlaImageUrl.equalsIgnoreCase(""))
-                            libs.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
+                            utils.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
                     }
 
-                    bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
+                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
+                            Config.intHeight);
                 }
 
                 threadHandler.sendEmptyMessage(0);

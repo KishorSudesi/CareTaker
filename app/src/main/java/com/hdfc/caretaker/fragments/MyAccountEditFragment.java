@@ -24,7 +24,7 @@ import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -47,12 +47,13 @@ public class MyAccountEditFragment extends Fragment {
     public static String strCustomerImgName = "";
     public static Bitmap bitmap = null;
     public static Uri uri;
-    private static Libs libs;
+    private static Utils utils;
     private static RoundedImageView roundedImageView;
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static boolean isImageChanged = false;
-    private EditText name, number, city, editTextOldPassword, editTextPassword, editTextConfirmPassword;
+    private EditText name, number, city, editTextOldPassword, editTextPassword,
+            editTextConfirmPassword;
     private String strName;
     private String strContactNo;
     private String strPass;
@@ -96,12 +97,13 @@ public class MyAccountEditFragment extends Fragment {
         number = (EditText) view.findViewById(R.id.editTextNumber);
         city = (EditText) view.findViewById(R.id.editTextCity);
 
-        strCustomerImgNameCamera = String.valueOf(new Date().getDate() + "" + new Date().getTime()) + ".jpeg";
+        strCustomerImgNameCamera = String.valueOf(new Date().getDate() + "" + new Date().getTime())
+                + ".jpeg";
 
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                libs.selectImage(strCustomerImgNameCamera, MyAccountEditFragment.this, null);
+                utils.selectImage(strCustomerImgNameCamera, MyAccountEditFragment.this, null);
             }
         });
 
@@ -114,7 +116,7 @@ public class MyAccountEditFragment extends Fragment {
         txtViewHeader.setText(getActivity().getString(R.string.my_account_edit));
         Button goToDashBoard = (Button) view.findViewById(R.id.buttonSaveSetting);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
 
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -152,14 +154,14 @@ public class MyAccountEditFragment extends Fragment {
                     number.setError(getString(R.string.error_field_required));
                     focusView = number;
                     cancel = true;
-                } else if (!libs.validCellPhone(strContactNo)) {
+                } else if (!utils.validCellPhone(strContactNo)) {
                     number.setError(getString(R.string.error_invalid_contact_no));
                     focusView = number;
                     cancel = true;
                 }
 
-                if (!Libs.isEmpty(strOldPass) && !Libs.isEmpty(strPass) &&
-                        !Libs.isEmpty(strConfirmPass)) {
+                if (!Utils.isEmpty(strOldPass) && !Utils.isEmpty(strPass) &&
+                        !Utils.isEmpty(strConfirmPass)) {
 
                     if (!strPass.equalsIgnoreCase(strConfirmPass)) {
                         editTextConfirmPassword.setError(getString(R.string.error_confirm_password));
@@ -190,7 +192,7 @@ public class MyAccountEditFragment extends Fragment {
                     focusView.requestFocus();
                 } else {
 
-                    if (libs.isConnectingToInternet()) {
+                    if (utils.isConnectingToInternet()) {
 
                         progressDialog.setMessage(getActivity().getString(R.string.uploading));
                         progressDialog.setCancelable(false);
@@ -208,7 +210,9 @@ public class MyAccountEditFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
+                        storageService.updateDocs(jsonToUpdate,
+                                Config.customerModel.getStrCustomerID(),
+                                Config.collectionCustomer, new App42CallBack() {
                             @Override
                             public void onSuccess(Object o) {
 
@@ -218,7 +222,7 @@ public class MyAccountEditFragment extends Fragment {
 
                                 if (strPass != null && !strPass.equalsIgnoreCase("")) {
 
-                                    if (libs.isConnectingToInternet()) {
+                                    if (utils.isConnectingToInternet()) {
 
                                         progressDialog.setMessage(getActivity().getString(R.string.verify_identity));
 
@@ -231,26 +235,27 @@ public class MyAccountEditFragment extends Fragment {
 
                                         UserService userService = new UserService(getActivity());
 
-                                        userService.onChangePassword(Config.strUserName, strOldPass, strPass, new App42CallBack() {
+                                        userService.onChangePassword(Config.strUserName, strOldPass
+                                                , strPass, new App42CallBack() {
                                             @Override
                                             public void onSuccess(Object o) {
                                                 progressDialog.dismiss();
-                                                libs.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                                 goToAccount();
                                             }
 
                                             @Override
                                             public void onException(Exception e) {
                                                 progressDialog.dismiss();
-                                                libs.toast(2, 2, e.getMessage());
+                                                utils.toast(2, 2, e.getMessage());
                                             }
                                         });
 
-                                    } else libs.toast(2, 2, getString(R.string.warning_internet));
+                                    } else utils.toast(2, 2, getString(R.string.warning_internet));
 
                                 } else {
                                     progressDialog.dismiss();
-                                    libs.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                    utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                     goToAccount();
                                 }
                             }
@@ -258,11 +263,11 @@ public class MyAccountEditFragment extends Fragment {
                             @Override
                             public void onException(Exception e) {
                                 progressDialog.dismiss();
-                                libs.toast(2, 2, e.getMessage());
+                                utils.toast(2, 2, e.getMessage());
                             }
                         });
 
-                    } else libs.toast(2, 2, getString(R.string.warning_internet));
+                    } else utils.toast(2, 2, getString(R.string.warning_internet));
                 }
             }
         });
@@ -283,13 +288,13 @@ public class MyAccountEditFragment extends Fragment {
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
-                //Libs.toast(1, 1, "Getting Image...");
+                //Utils.toast(1, 1, "Getting Image...");
                 progressDialog.setMessage(getResources().getString(R.string.loading));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        strCustomerImgName = Libs.customerImageUri.getPath();
+                        strCustomerImgName = Utils.customerImageUri.getPath();
                         Thread backgroundThreadCamera = new BackgroundThreadCamera();
                         backgroundThreadCamera.start();
                         break;
@@ -312,7 +317,7 @@ public class MyAccountEditFragment extends Fragment {
 
         try {
 
-            if (libs.isConnectingToInternet()) {
+            if (utils.isConnectingToInternet()) {
 
                 progressDialog.setMessage(getResources().getString(R.string.uploading_image));
                 progressDialog.setCancelable(false);
@@ -323,7 +328,8 @@ public class MyAccountEditFragment extends Fragment {
                 if (progressDialog.isShowing())
                     progressDialog.setProgress(1);
 
-                    uploadService.removeImage(Config.strCustomerImageName, Config.customerModel.getStrEmail(),
+                uploadService.removeImage(Config.strCustomerImageName,
+                        Config.customerModel.getStrEmail(),
                             new App42CallBack() {
                         public void onSuccess(Object response) {
 
@@ -332,7 +338,7 @@ public class MyAccountEditFragment extends Fragment {
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                         @Override
@@ -346,25 +352,25 @@ public class MyAccountEditFragment extends Fragment {
                                 if (appErrorCode != 1401 ) {
                                     uploadImage();
                                 } else {
-                                    libs.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                 }
 
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
 
             } else {
-                libs.toast(2, 2, getString(R.string.warning_internet));
+                utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
             e.printStackTrace();
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            libs.toast(2, 2, getString(R.string.error));
+            utils.toast(2, 2, getString(R.string.error));
         }
     }
 
@@ -372,13 +378,14 @@ public class MyAccountEditFragment extends Fragment {
 
         try {
 
-            if (libs.isConnectingToInternet()) {
+            if (utils.isConnectingToInternet()) {
 
                 UploadService uploadService = new UploadService(getActivity());
 
                 uploadService.uploadImageCommon(
                         strCustomerImgName,
-                        Config.strCustomerImageName, "Profile Picture", Config.customerModel.getStrEmail(),
+                        Config.strCustomerImageName, "Profile Picture",
+                        Config.customerModel.getStrEmail(),
                     UploadFileType.IMAGE, new App42CallBack() {
                         public void onSuccess(Object response) {
 
@@ -398,9 +405,12 @@ public class MyAccountEditFragment extends Fragment {
                                     try {
                                         jsonToUpdate.put("customer_profile_url", url);
 
-                                        StorageService storageService = new StorageService(getActivity());
+                                        StorageService storageService =
+                                                new StorageService(getActivity());
 
-                                        storageService.updateDocs(jsonToUpdate, Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
+                                        storageService.updateDocs(jsonToUpdate,
+                                                Config.customerModel.getStrCustomerID(),
+                                                Config.collectionCustomer, new App42CallBack() {
 
                                             @Override
                                             public void onSuccess(Object o) {
@@ -408,15 +418,17 @@ public class MyAccountEditFragment extends Fragment {
                                                 if (o != null) {
 
                                                     try {
-                                                        File f = libs.getInternalFileImages(Config.strCustomerImageName);
+                                                        File f = utils.getInternalFileImages(
+                                                                Config.strCustomerImageName);
 
                                                         if (f.exists())
                                                             f.delete();
 
                                                         File newFile = new File(strCustomerImgName);
-                                                        File renameFile = new File(strCustomerImagePath);
+                                                        File renameFile = new File(
+                                                                strCustomerImagePath);
 
-                                                        libs.moveFile(newFile, renameFile);
+                                                        utils.moveFile(newFile, renameFile);
 
                                                     } catch (Exception e) {
                                                         e.printStackTrace();
@@ -427,21 +439,21 @@ public class MyAccountEditFragment extends Fragment {
                                                     if (progressDialog.isShowing())
                                                         progressDialog.dismiss();
 
-                                                    libs.toast(2, 2, getString(R.string.update_profile_image));
+                                                    utils.toast(2, 2, getString(R.string.update_profile_image));
 
-                                                    if (Config.jsonObject.has("customer_profile_url")) {
+                                                   /* if (Config.jsonObject.has("customer_profile_url")) {
 
                                                         try {
-                                                            Config.jsonObject.put("customer_profile_url", url);
+                                                            Config.customerModel.put("customer_profile_url", url);
 
                                                         } catch (JSONException e) {
                                                             e.printStackTrace();
                                                         }
-                                                    }
+                                                    }*/
                                                     isImageChanged = false;
 
                                                 } else {
-                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
 
@@ -451,10 +463,10 @@ public class MyAccountEditFragment extends Fragment {
                                                     progressDialog.dismiss();
 
                                                 if (e != null) {
-                                                    Libs.log(e.toString(), "response");
-                                                    libs.toast(2, 2, e.getMessage());
+                                                    Utils.log(e.toString(), "response");
+                                                    utils.toast(2, 2, e.getMessage());
                                                 } else {
-                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
                                         });
@@ -468,12 +480,12 @@ public class MyAccountEditFragment extends Fragment {
                                 } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
-                                        libs.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                     }
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -484,10 +496,10 @@ public class MyAccountEditFragment extends Fragment {
                                 progressDialog.dismiss();
 
                             if(e!=null) {
-                                Libs.log(e.toString(), "response");
-                                libs.toast(2, 2, e.getMessage());
+                                Utils.log(e.toString(), "response");
+                                utils.toast(2, 2, e.getMessage());
                             }else{
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
@@ -495,13 +507,13 @@ public class MyAccountEditFragment extends Fragment {
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
-                libs.toast(2, 2, getString(R.string.warning_internet));
+                utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
             e.printStackTrace();
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            libs.toast(2, 2, getString(R.string.error));
+            utils.toast(2, 2, getString(R.string.error));
         }
     }
 
@@ -515,7 +527,7 @@ public class MyAccountEditFragment extends Fragment {
                 if (bitmap != null)
                     roundedImageView.setImageBitmap(bitmap);
                 else
-                    libs.toast(2, 2, getString(R.string.error));
+                    utils.toast(2, 2, getString(R.string.error));
             }
 
             if (isImageChanged && bitmap != null) {
@@ -535,9 +547,9 @@ public class MyAccountEditFragment extends Fragment {
         public void run() {
             try {
 
-                File f = libs.getInternalFileImages(Config.strCustomerImageName);
-                Libs.log(f.getAbsolutePath(), " FP ");
-                bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+                File f = utils.getInternalFileImages(Config.strCustomerImageName);
+                Utils.log(f.getAbsolutePath(), " FP ");
+                bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
 
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception e) {
@@ -555,11 +567,11 @@ public class MyAccountEditFragment extends Fragment {
                 if (uri != null) {
                     Calendar calendar = new GregorianCalendar();
                     String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                    File galleryFile = libs.createFileInternalImage(strFileName);
+                    File galleryFile = utils.createFileInternalImage(strFileName);
                     strCustomerImgName = galleryFile.getAbsolutePath();
                     InputStream is = getActivity().getContentResolver().openInputStream(uri);
-                    libs.copyInputStreamToFile(is, galleryFile);
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                    utils.copyInputStreamToFile(is, galleryFile);
+                    bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
                     isImageChanged = true;
                 }
                 threadHandler.sendEmptyMessage(0);
@@ -575,7 +587,7 @@ public class MyAccountEditFragment extends Fragment {
 
             try {
                 if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
-                    bitmap = libs.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                    bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
                     isImageChanged = true;
                 }
                 threadHandler.sendEmptyMessage(0);

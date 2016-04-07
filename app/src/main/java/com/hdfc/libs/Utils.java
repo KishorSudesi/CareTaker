@@ -42,13 +42,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hdfc.app42service.StorageService;
-import com.hdfc.app42service.UploadService;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
-import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
-import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ConfirmViewModel;
@@ -57,11 +54,14 @@ import com.hdfc.models.DependentModel;
 import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
+import com.hdfc.models.ProviderModel;
+import com.hdfc.models.ServiceModel;
 import com.hdfc.models.VideoModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
+import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
-import com.shephertz.app42.paas.sdk.android.upload.Upload;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,7 +81,9 @@ import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -90,7 +92,7 @@ import java.util.regex.Pattern;
 /**
  * Created by balamurugan@adstringo.in on 23-12-2015.
  */
-public class Libs {
+public class Utils {
 
     //application specific
     public final static SimpleDateFormat readFormat =
@@ -102,6 +104,10 @@ public class Libs {
     public final static SimpleDateFormat writeFormatActivityMonthYear =
             new SimpleDateFormat("MMM yyyy", Locale.US);
     public static Uri customerImageUri;
+
+    private static int iActivityCount = 0;
+    private static int iProviderCount = 0;
+    private static ArrayList<ActivityModel> activityModels = new ArrayList<>();
     //
 
     private static Context _ctxt;
@@ -110,7 +116,7 @@ public class Libs {
         System.loadLibrary("stringGen");
     }
 
-    public Libs(Context context) {
+    public Utils(Context context) {
         _ctxt = context;
 
         WindowManager wm = (WindowManager) _ctxt.getSystemService(Context.WINDOW_SERVICE);
@@ -624,9 +630,9 @@ public class Libs {
 
     public static void logout() {
         try {
-            Config.jsonObject = null;
+            //Config.jsonObject = null;
             //Config.jsonServer = null;
-            Config.jsonDocId = "";
+            //Config.strCustomerDocId = "";
 
             Config.intSelectedMenu = 0;
             Config.intDependentsCount = 0;
@@ -642,8 +648,6 @@ public class Libs {
             Config.strUserName = "";
 
             Config.fileModels.clear();
-
-            Config.bitmaps.clear();
 
             //todo clear shared pref.
 
@@ -714,11 +718,10 @@ public class Libs {
 
     public int getMemory() {
         Runtime rt = Runtime.getRuntime();
-        int maxMemory = (int) rt.maxMemory() / 1024;
 
         //int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
 
-        return maxMemory;
+        return (int) rt.maxMemory() / 1024;
     }
 
     public String convertDateToString(Date dtDate) {
@@ -731,7 +734,7 @@ public class Libs {
             e.printStackTrace();
         }
 
-        //Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         return date; //
     }
 
@@ -740,7 +743,7 @@ public class Libs {
         Date date = null;
         try {
             date = readFormat.parse(strDate);
-            //Log.i("Libs", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+            //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -950,6 +953,25 @@ public class Libs {
         return string;
     }
 
+    public String[] jsonToStringArray(JSONArray jsonArray) {
+
+        String strings[] = new String[0];
+
+        try {
+            int iLength = jsonArray.length();
+
+            strings = new String[iLength];
+
+            for (int i = 0; i < iLength; i++) {
+                strings[i] = jsonArray.getString(i);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return strings;
+    }
+
     //load image from url
     public void loadImageFromWeb(String strFileName, String strFileUrl) {
 
@@ -1125,7 +1147,7 @@ public class Libs {
 
         if (intWhichScreen == Config.intNotificationScreen) {
 
-            NotificationFragment.staticNotificationModels.clear();
+            /*NotificationFragment.staticNotificationModels.clear();
 
             try {
 
@@ -1142,7 +1164,7 @@ public class Libs {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                             //Notifications
-                           /* if (jsonObject.has("notifications")) {
+                           *//* if (jsonObject.has("notifications")) {
 
                                 JSONArray jsonArrayNotifications = jsonObject.getJSONArray("notifications");
 
@@ -1157,7 +1179,7 @@ public class Libs {
 
                                     NotificationFragment.staticNotificationModels.add(notificationModel);
                                 }
-                            }*/
+                            }*//*
                         }
                     }
                 }
@@ -1166,7 +1188,7 @@ public class Libs {
 
             }catch (JSONException e){
                 e.printStackTrace();
-            }
+            }*/
         }
 
         if (intWhichScreen == Config.intListActivityScreen ||
@@ -1184,7 +1206,7 @@ public class Libs {
 
         try {
 
-            ActivityFragment.activitiesModelArrayList.clear();
+            /*ActivityFragment.activitiesModelArrayList.clear();
 
             if (Config.jsonObject.has("customer_name")) {
 
@@ -1269,8 +1291,8 @@ public class Libs {
                         }
                     }
                 }
-            }
-        } catch (JSONException e) {
+            }*/
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1292,7 +1314,7 @@ public class Libs {
 
         try {
 
-            if (Config.jsonObject.has("customer_name")) {
+          /*  if (Config.jsonCustomer.has("customer_name")) {
 
                 Config.customerModel = new CustomerModel(
                         Config.jsonObject.getString("customer_name"),
@@ -1301,9 +1323,9 @@ public class Libs {
                         Config.jsonObject.getString("customer_address"),
                         Config.jsonObject.getString("customer_contact_no"),
                         Config.jsonObject.getString("customer_email"),
-                        Config.jsonObject.getString("customer_profile_url"), "");
+                        Config.strCustomerDocId, "");*/
 
-                if (Config.jsonObject.has("dependents")) {
+                /*if (Config.jsonObject.has("dependents")) {
 
                     Config.intDependentsCount = Config.jsonObject.getJSONArray("dependents").length();
 
@@ -1338,10 +1360,10 @@ public class Libs {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-            }
+                }*/
+            //}
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1441,12 +1463,6 @@ public class Libs {
         return strDisplayDate;
     }
 
-    /*Calendar c = Calendar.getInstance();
-    System.out.println("Current time => " + c.getTime());
-
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-    String formattedDate = df.format(c.getTime());*/
-
     public String formatDateActivity(String strDate){
 
         String strDisplayDate="06-03-2016 20:55:00";
@@ -1511,13 +1527,16 @@ public class Libs {
         return password.length() > 1;
     }
 
-    public void fetchDependents(String strCustomerId, ProgressDialog progressDialog) {
+    public void fetchCustomer(final ProgressDialog progressDialog) {
 
-        StorageService storageService = new StorageService(_ctxt);
+        if (isConnectingToInternet()) {
 
-        storageService.findDocsByKeyValue(Config.collectionDependent, "customer_id", strCustomerId,
-                new AsyncApp42ServiceApi.App42StorageServiceListener() {
+            Config.fileModels.clear();
 
+            StorageService storageService = new StorageService(_ctxt);
+
+            storageService.findDocsByKeyValue(Config.collectionCustomer, "customer_email",
+                    Config.strUserName, new AsyncApp42ServiceApi.App42StorageServiceListener() {
                     @Override
                     public void onDocumentInserted(Storage response) {
                     }
@@ -1529,67 +1548,658 @@ public class Libs {
                     @Override
                     public void onFindDocSuccess(Storage response) {
 
+                        if (response != null) {
+
+                            if (response.getJsonDocList().size() > 0) {
+
+                                Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+
+                                String strDocument = jsonDocument.getJsonDoc();
+
+                                try {
+                                    Config.jsonCustomer = new JSONObject(strDocument);
+                                    createCustomerModel(jsonDocument.getDocId());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                fetchDependents(Config.customerModel.getStrCustomerID(),
+                                        progressDialog);
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                toast(2, 2, _ctxt.getString(R.string.error));
+                            }
+                        } else {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                        }
                     }
 
                     @Override
                     public void onInsertionFailed(App42Exception ex) {
-
                     }
 
                     @Override
                     public void onFindDocFailed(App42Exception ex) {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
 
+                        try {
+                            JSONObject jsonObject = new JSONObject(ex.getMessage());
+                            JSONObject jsonObjectError =
+                                    jsonObject.getJSONObject("app42Fault");
+                            String strMess = jsonObjectError.getString("details");
+
+                            toast(2, 2, strMess);
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onUpdateDocFailed(App42Exception ex) {
-
                     }
-                }
-        );
-    }
-
-    public void fetchFiles(final ProgressDialog progressDialog) {
-
-        UploadService uploadService = new UploadService(_ctxt);
-
-        uploadService.getAllFilesByUser(Config.strUserName, new App42CallBack() {
-
-            public void onSuccess(Object response) {
-
-                Upload upload = (Upload) response;
-                ArrayList<Upload.File> fileList = upload.getFileList();
-
-                if (fileList.size() > 0) {
-
-                    for (int i = 0; i < fileList.size(); i++) {
-                        Config.fileModels.add(new FileModel(fileList.get(i).getName(),
-                                fileList.get(i).getUrl(), fileList.get(i).getType())
-                        );
-                    }
-
-                    parseData();
-
-                    progressDialog.dismiss();
-
-                    toast(1, 1, _ctxt.getString(R.string.success_login));
-
-                    Config.intSelectedMenu = Config.intDashboardScreen;
-                    Config.boolIsLoggedIn = true;
-
-
-                } else {
-                    progressDialog.dismiss();
-                    toast(2, 2, _ctxt.getString(R.string.error_load_images));
-                }
-            }
-
-            public void onException(Exception ex) {
+                    });
+        } else {
+            if (progressDialog.isShowing())
                 progressDialog.dismiss();
-                toast(2, 2, _ctxt.getString(R.string.error_load_images));
-                Libs.log(ex.getMessage(), " ");
-            }
-        });
+            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+        }
     }
+
+    public void createCustomerModel(String strDocumentId) {
+        try {
+            if (Config.jsonCustomer.has("customer_name")) {
+
+                Config.customerModel = new CustomerModel(
+                        Config.jsonCustomer.getString("customer_name"),
+                        Config.jsonCustomer.getString("paytm_account"),
+                        Config.jsonCustomer.getString("customer_profile_url"),
+                        Config.jsonCustomer.getString("customer_address"),
+                        Config.jsonCustomer.getString("customer_contact_no"),
+                        Config.jsonCustomer.getString("customer_email"),
+                        strDocumentId, "");
+
+                Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(),
+                        Config.jsonCustomer.getString("customer_profile_url"), "IMAGE"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createProviderModel(String strDocumentId, String strDocument) {
+        try {
+
+            JSONObject jsonObjectProvider = new JSONObject(strDocument);
+
+            if (jsonObjectProvider.has("provider_name")) {
+
+                ProviderModel providerModel = new ProviderModel(
+                        jsonObjectProvider.getString("provider_name"),
+                        jsonObjectProvider.getString("provider_profile_url"), "",
+                        jsonObjectProvider.getString("provider_address"),
+                        jsonObjectProvider.getString("provider_contact_no"),
+                        jsonObjectProvider.getString("provider_email"), strDocumentId);
+
+                Config.providerModels.add(providerModel);
+
+                Config.fileModels.add(new FileModel(strDocumentId,
+                        jsonObjectProvider.getString("provider_profile_url"), "IMAGE"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createDependentModel(String strDependentDocId, String strDocument) {
+
+        try {
+
+            JSONObject jsonObjectDependent = new JSONObject(strDocument);
+
+            if (jsonObjectDependent.has("dependent_name")) {
+
+                DependentModel dependentModel = new DependentModel();
+
+                dependentModel.setStrIllness(jsonObjectDependent.getString("dependent_illness"));
+                dependentModel.setIntHealthBp(jsonObjectDependent.getInt("health_bp"));
+                dependentModel.setIntHealthHeartRate(jsonObjectDependent.getInt("health_heart_rate"));
+
+                dependentModel.setStrRelation(jsonObjectDependent.getString("dependent_relation"));
+                dependentModel.setStrAddress(jsonObjectDependent.getString("dependent_address"));
+                dependentModel.setStrNotes(jsonObjectDependent.getString("dependent_notes"));
+                dependentModel.setStrContacts(jsonObjectDependent.getString("dependent_contact_no"));
+                dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
+                dependentModel.setStrIllness(jsonObjectDependent.getString("dependent_profile_url"));
+                dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
+                dependentModel.setIntAge(jsonObjectDependent.getInt("dependent_age"));
+
+                dependentModel.setStrCustomerID(jsonObjectDependent.getString("customer_id"));
+
+                dependentModel.setStrDependentID(strDependentDocId);
+
+                Config.strDependentIds.add(strDependentDocId);
+                Config.dependentNames.add(jsonObjectDependent.getString("dependent_name"));
+
+                ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+
+                if (jsonObjectDependent.has("services")) {
+
+                    JSONArray jsonArrayServices = jsonObjectDependent.getJSONArray("services");
+
+                    for (int j = 0; j < jsonArrayServices.length(); j++) {
+
+                        JSONObject jsonObjectService = jsonArrayServices.getJSONObject(j);
+
+                        String strFeatures[] = jsonToStringArray(jsonObjectService.
+                                getJSONArray("service_features"));
+
+                        ServiceModel serviceModel = new ServiceModel(
+                                jsonObjectService.getString("service_name"),
+                                jsonObjectService.getString("service_desc"),
+                                jsonObjectService.getString("updated_date"),
+                                strFeatures,
+                                jsonObjectService.getInt("unit"),
+                                jsonObjectService.getInt("unit_consumed"),
+                                jsonObjectService.getString("service_id"),
+                                jsonObjectService.getString("service_history_id")
+                        );
+
+                        serviceModels.add(serviceModel);
+                    }
+                    dependentModel.setServiceModels(serviceModels);
+                }
+
+                Config.dependentModels.add(dependentModel);
+
+                Config.fileModels.add(new FileModel(strDependentDocId,
+                        dependentModel.getStrImageUrl(), "IMAGE"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createActivityModel(String strActivityId, String strDocument) {
+        try {
+
+            JSONObject jsonObjectActivity =
+                    new JSONObject(strDocument);
+
+            log(strDocument, " Activity");
+
+            if (jsonObjectActivity.has("activity_name")) {
+
+                ActivityModel activityModel = new ActivityModel();
+
+                activityModel.setStrActivityName(jsonObjectActivity.getString("activity_name"));
+                activityModel.setStrActivityID(strActivityId);
+                activityModel.setStrProviderID(jsonObjectActivity.getString("provider_id"));
+                activityModel.setStrActivityStatus(jsonObjectActivity.getString("status"));
+                activityModel.setStrActivityDesc(jsonObjectActivity.getString("activity_desc"));
+                activityModel.setStrActivityMessage(jsonObjectActivity.
+                        getString("activity_message"));
+
+                if (!Config.strProviderIds.contains(jsonObjectActivity.getString("provider_id")))
+                    Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
+
+                activityModel.setStrServcieID(jsonObjectActivity.getString("service_id"));
+                activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
+                activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));
+
+                activityModel.setStrActivityDate(jsonObjectActivity.getString("activity_date"));
+                activityModel.setStrActivityDoneDate(jsonObjectActivity.
+                        getString("activity_done_date"));
+
+                activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
+
+                activityModel.setStrActivityProviderStatus(jsonObjectActivity.
+                        getString("provider_status"));
+
+                String strFeatures[] = jsonToStringArray(jsonObjectActivity.
+                        getJSONArray("features"));
+
+                activityModel.setStrFeatures(strFeatures);
+
+                String strFeaturesDone[] = jsonToStringArray(jsonObjectActivity.
+                        getJSONArray("features"));
+
+                activityModel.setStrFeaturesDone(strFeaturesDone);
+
+                ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
+                ArrayList<VideoModel> videoModels = new ArrayList<>();
+                ArrayList<ImageModel> imageModels = new ArrayList<>();
+
+                if (jsonObjectActivity.has("feedbacks")) {
+
+                    JSONArray jsonArrayFeedback = jsonObjectActivity.
+                            getJSONArray("feedbacks");
+
+                    for (int k = 0; k < jsonArrayFeedback.length(); k++) {
+
+                        JSONObject jsonObjectFeedback =
+                                jsonArrayFeedback.getJSONObject(k);
+
+                        FeedBackModel feedBackModel = new FeedBackModel(
+                                jsonObjectFeedback.getString("feedback_message"),
+                                jsonObjectFeedback.getString("feedback_by"),
+                                jsonObjectFeedback.getInt("feedback_rating"),
+                                jsonObjectFeedback.getBoolean("feedback_report"),
+                                jsonObjectFeedback.getString("feedback_time"),
+                                jsonObjectFeedback.getString("feedback_by_type"));
+
+                        feedBackModels.add(feedBackModel);
+                    }
+                    activityModel.setFeedBackModels(feedBackModels);
+                }
+
+                if (jsonObjectActivity.has("videos")) {
+
+                    JSONArray jsonArrayVideos = jsonObjectActivity.
+                            getJSONArray("videos");
+
+                    for (int k = 0; k < jsonArrayVideos.length(); k++) {
+
+                        JSONObject jsonObjectVideo = jsonArrayVideos.
+                                getJSONObject(k);
+
+                        VideoModel videoModel = new VideoModel(
+                                jsonObjectVideo.getString("video_name"),
+                                jsonObjectVideo.getString("video_url"),
+                                jsonObjectVideo.getString("video_description"),
+                                jsonObjectVideo.getString("video_taken"));
+
+                        Config.fileModels.add(new FileModel(jsonObjectVideo.getString("video_name"),
+                                jsonObjectVideo.getString("video_url"), "VIDEO"));
+
+                        videoModels.add(videoModel);
+                    }
+                    activityModel.setVideoModels(videoModels);
+                }
+
+                if (jsonObjectActivity.has("images")) {
+
+                    JSONArray jsonArrayVideos = jsonObjectActivity.
+                            getJSONArray("images");
+
+                    for (int k = 0; k < jsonArrayVideos.length(); k++) {
+
+                        JSONObject jsonObjectImage = jsonArrayVideos.
+                                getJSONObject(k);
+
+                        ImageModel imageModel = new ImageModel(
+                                jsonObjectImage.getString("image_name"),
+                                jsonObjectImage.getString("image_url"),
+                                jsonObjectImage.getString("image_description"),
+                                jsonObjectImage.getString("image_taken"));
+
+                        Config.fileModels.add(new FileModel(jsonObjectImage.getString("image_name"),
+                                jsonObjectImage.getString("image_url"), "IMAGE"));
+
+                        imageModels.add(imageModel);
+                    }
+                    activityModel.setImageModels(imageModels);
+                }
+
+                activityModels.add(activityModel);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void fetchDependents(String strCustomerId, final ProgressDialog progressDialog) {
+
+        if (isConnectingToInternet()) {
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            storageService.findDocsByKeyValue(Config.collectionDependent, "customer_id",
+                    strCustomerId, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+
+                            if (response != null) {
+
+                                if (response.getJsonDocList().size() > 0) {
+
+                                    Config.strDependentIds.clear();
+                                    Config.dependentModels.clear();
+
+                                    for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().
+                                                get(i);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        String strDependentDocId = jsonDocument.getDocId();
+                                        createDependentModel(strDependentDocId, strDocument);
+                                    }
+
+                                    Config.dependentModels.get(iActivityCount).
+                                            setActivityModels(activityModels);
+
+                                    fetchLatestActivities(progressDialog);
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                }
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                JSONObject jsonObjectError =
+                                        jsonObject.getJSONObject("app42Fault");
+                                String strMess = jsonObjectError.getString("details");
+
+                                toast(2, 2, strMess);
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+        }
+    }
+
+    public Query generateQuery(StorageService storageService, String strKey1, String strStatus,
+                               QueryBuilder.Operator operator) {
+
+        Calendar calendar = Calendar.getInstance();
+        String value1 = convertDateToString(calendar.getTime());
+
+        String key2 = "dependent_id";
+        String value2 = Config.strDependentIds.get(iActivityCount);
+
+        Query q1 = QueryBuilder.build(strKey1, value1, operator);
+        // Build query q1 for key1 equal to name and value1 equal to Nick
+        Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
+        // Build query q2 for key2 equal to age and value2
+
+        Query q3 = QueryBuilder.build("status", strStatus, QueryBuilder.Operator.EQUALS);
+        Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
+
+        HashMap<String, String> otherMetaHeaders = new HashMap<String, String>();
+        otherMetaHeaders.put("orderByDescending", strKey1);// Use orderByDescending
+
+        Query query = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+
+        storageService.setOtherMetaHeaders(otherMetaHeaders);
+
+        return query;
+    }
+
+    public void fetchLatestActivities(final ProgressDialog progressDialog) {
+
+        if (iActivityCount < Config.strDependentIds.size()) {
+
+            log(String.valueOf(iActivityCount), " Activity Count");
+
+            activityModels.clear();
+
+            if (isConnectingToInternet()) {
+
+                StorageService storageService = new StorageService(_ctxt);
+
+                Query query = generateQuery(storageService, "activity_done_date", "completed",
+                        QueryBuilder.Operator.LESS_THAN_EQUALTO);
+
+                int max = 1;
+                int offset = 0;
+
+                storageService.findDocsByQuery(Config.collectionActivity, query, max, offset,
+                        new App42CallBack() {
+
+                            @Override
+                            public void onSuccess(Object o) {
+
+                                Storage response = (Storage) o;
+
+                                if (response != null) {
+
+                                    log(String.valueOf(response), " response ");
+
+                                    if (response.getJsonDocList().size() > 0) {
+
+                                        for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                            Storage.JSONDocument jsonDocument = response.getJsonDocList().
+                                                    get(i);
+
+                                            String strDocument = jsonDocument.getJsonDoc();
+                                            String strActivityId = jsonDocument.getDocId();
+                                            createActivityModel(strActivityId, strDocument);
+                                        }
+                                        fetchLatestActivitiesUpcoming(progressDialog);
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        toast(2, 2, _ctxt.getString(R.string.error));
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+
+                                try {
+                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                    JSONObject jsonObjectError =
+                                            jsonObject.getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    toast(2, 2, strMess);
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        });
+
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+            }
+        }
+    }
+    //
+
+    public void fetchProviders(final ProgressDialog progressDialog) {
+
+        if (iProviderCount < Config.strProviderIds.size()) {
+
+            if (isConnectingToInternet()) {
+
+                StorageService storageService = new StorageService(_ctxt);
+
+                storageService.findDocsByIdApp42CallBack(Config.strProviderIds.get(iProviderCount),
+                        Config.collectionDependent, new App42CallBack() {
+                            @Override
+                            public void onSuccess(Object o) {
+
+                                Storage storage = (Storage) o;
+
+                                if (storage != null) {
+
+                                    if (storage.getJsonDocList().size() > 0) {
+
+                                        Storage.JSONDocument jsonDocument = storage.getJsonDocList().
+                                                get(0);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        String strProviderDocId = jsonDocument.getDocId();
+                                        createProviderModel(strProviderDocId, strDocument);
+
+                                        iProviderCount++;
+
+                                        if (iProviderCount == Config.strProviderIds.size()) {
+
+                                            progressDialog.dismiss();
+                                            toast(1, 1, _ctxt.getString(R.string.success_login));
+
+                                            Config.intSelectedMenu = Config.intDashboardScreen;
+                                            Config.boolIsLoggedIn = true;
+
+                                        } else fetchProviders(progressDialog);
+
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        toast(2, 2, _ctxt.getString(R.string.error));
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+
+                                try {
+                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                    JSONObject jsonObjectError =
+                                            jsonObject.getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    toast(2, 2, strMess);
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                );
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+            }
+        }
+    }
+
+    public void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog) {
+
+        if (isConnectingToInternet()) {
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            Query query = generateQuery(storageService, "activity_date", "upcoming",
+                    QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+
+            int max = 1;
+            int offset = 0;
+
+            storageService.findDocsByQuery(Config.collectionActivity, query, max, offset,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+
+                            Storage response = (Storage) o;
+
+                            if (response != null) {
+
+                                log(" 1 ", " L ");
+
+                                if (response.getJsonDocList().size() > 0) {
+
+                                    for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().
+                                                get(i);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        String strActivityId = jsonDocument.getDocId();
+                                        createActivityModel(strActivityId, strDocument);
+                                    }
+                                    iActivityCount++;
+
+                                    if (iActivityCount == Config.strDependentIds.size())
+                                        fetchProviders(progressDialog);
+                                    else
+                                        fetchLatestActivities(progressDialog);
+
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                }
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(e.getMessage());
+                                JSONObject jsonObjectError =
+                                        jsonObject.getJSONObject("app42Fault");
+                                String strMess = jsonObjectError.getString("details");
+
+                                toast(2, 2, strMess);
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+            );
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+        }
+    }
+
     //Application Specig=fic End
 }

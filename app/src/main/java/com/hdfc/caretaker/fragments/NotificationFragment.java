@@ -13,12 +13,8 @@ import android.widget.TextView;
 import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.NotificationModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -36,7 +32,7 @@ public class NotificationFragment extends Fragment {
     public static NotificationAdapter notificationAdapter;
     public static LinearLayout dynamicUserTab;
     private static TextView emptyTextView;
-    private Libs libs;
+    private Utils utils;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -66,7 +62,7 @@ public class NotificationFragment extends Fragment {
         emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
         dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
 
         return rootView;
     }
@@ -87,6 +83,7 @@ public class NotificationFragment extends Fragment {
 
             staticNotificationModels.clear();
 
+/*
             if (Config.jsonObject!=null&&Config.jsonObject.has("customer_name")) {
 
                 if (Config.jsonObject.has("dependents")) {
@@ -104,18 +101,21 @@ public class NotificationFragment extends Fragment {
 
                             JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
 
-                            NotificationModel notificationModel = new NotificationModel("",
+                           */
+/* NotificationModel notificationModel = new NotificationModel("",
                                     jsonObjectNotification.getString("notification_message"),
                                     jsonObjectNotification.getString("time"),
                                     jsonObjectNotification.getString("author"));
 
-                            staticNotificationModels.add(notificationModel);
+                            staticNotificationModels.add(notificationModel);*//*
+
                         }
                     }
                     //
                 }
             }
-        } catch (JSONException e) {
+*/
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -123,7 +123,7 @@ public class NotificationFragment extends Fragment {
         listViewActivities.setAdapter(notificationAdapter);
         listViewActivities.setEmptyView(emptyTextView);
 
-        libs.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
 
     }
 }

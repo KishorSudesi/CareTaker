@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.models.VideoModel;
 
 import java.util.List;
 
@@ -58,9 +59,9 @@ public class VideoCompletedAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.dateTime.setText(data.get(position).getStrDateTime());
-        viewHolder.information.setText(data.get(position).getStrDescription());
-        viewHolder.vid.setImageResource(data.get(position).getiVideoId());
+        viewHolder.dateTime.setText(data.get(position).getStrVideoTime());
+        viewHolder.information.setText(data.get(position).getStrVideoDesc());
+        //viewHolder.vid.setImageResource(data.get(position).getStrVideoUrl());
         return convertView;
     }
 

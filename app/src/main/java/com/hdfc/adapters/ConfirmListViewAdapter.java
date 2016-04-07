@@ -13,8 +13,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ConfirmViewModel;
 
 import java.util.ArrayList;
@@ -101,9 +101,9 @@ public class ConfirmListViewAdapter extends BaseAdapter {
 
                 if (!tempValues.getStrImg().equalsIgnoreCase("")) {
 
-                    Libs libs = new Libs(_ctxt);
+                    Utils utils = new Utils(_ctxt);
 
-                    int intImgHeight = libs.getBitmapHeightFromFile(tempValues.getStrImg().trim());
+                    int intImgHeight = utils.getBitmapHeightFromFile(tempValues.getStrImg().trim());
 
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,

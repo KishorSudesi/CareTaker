@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.NotificationModel;
 import com.hdfc.views.RoundedImageView;
 
@@ -23,12 +23,12 @@ public class NotificationAdapter extends BaseAdapter {
     private LayoutInflater inflater = null;
     private Context _context;
     private ArrayList<NotificationModel> adapterNotificationModels;
-    private Libs libs;
+    private Utils utils;
 
     public NotificationAdapter(Context ctxt, ArrayList d) {
         _context = ctxt;
         adapterNotificationModels = d;
-        libs = new Libs(ctxt);
+        utils = new Utils(ctxt);
     }
 
     @Override
@@ -77,14 +77,14 @@ public class NotificationAdapter extends BaseAdapter {
             NotificationModel notificationModel = adapterNotificationModels.get(position);
 
             viewHolder.textViewText.setText(notificationModel.getStrMessage());
-            viewHolder.textViewName.setText(notificationModel.getStrAuthor());
+            viewHolder.textViewName.setText(notificationModel.getStrUserID());
 
             try {
                 String strDate = notificationModel.getStrDateTime();
                 String strDisplayDate = _context.getResources().getString(R.string.space)+
                          _context.getResources().getString(R.string.at)+
                         _context.getResources().getString(R.string.space)+
-                        libs.formatDate(strDate);
+                        utils.formatDate(strDate);
 
                 viewHolder.textViewTime.setText(strDisplayDate);
             }catch (Exception e){

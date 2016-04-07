@@ -12,15 +12,12 @@ public class VideoModel implements Serializable {
     private String strVideoDesc;
     private String strVideoTime;
 
-    private String strVideoID;
-
     public VideoModel(String strVideoName, String strVideoUrl, String strVideoDesc,
-                      String strVideoTime, String strVideoID) {
+                      String strVideoTime) {
         this.strVideoName = strVideoName;
         this.strVideoUrl = strVideoUrl;
         this.strVideoDesc = strVideoDesc;
         this.strVideoTime = strVideoTime;
-        this.strVideoID = strVideoID;
     }
 
     public String getStrVideoName() {
@@ -37,9 +34,5 @@ public class VideoModel implements Serializable {
 
     public String getStrVideoTime() {
         return strVideoTime;
-    }
-
-    public String getStrVideoID() {
-        return strVideoID;
     }
 }

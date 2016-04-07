@@ -51,7 +51,8 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
                                int positionOffsetPixels) {
         if (positionOffset >= 0f && positionOffset <= 1f) {
             cur = getRootView(position);
-            cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE * positionOffset);
+            cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE *
+                    positionOffset);
 
             /*if(Config.intDependentsCount<=position)*/
             DashboardFragment.loadData(position);
@@ -60,7 +61,8 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
 
             if (position < DashboardFragment.PAGES - 1) {
                 next = getRootView(position + 1);
-                next.setScaleBoth(DashboardFragment.SMALL_SCALE + DashboardFragment.DIFF_SCALE * positionOffset);
+                next.setScaleBoth(DashboardFragment.SMALL_SCALE + DashboardFragment.DIFF_SCALE *
+                        positionOffset);
             }
         }
     }

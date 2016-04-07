@@ -59,7 +59,8 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.Message = (TextView) convertView.findViewById(R.id.textViewkop);
             viewHolder.person = (TextView) convertView.findViewById(R.id.txtPerson);
-            viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.completedActivityOne);
+            viewHolder.linearLayout = (LinearLayout) convertView.findViewById(
+                    R.id.completedActivityOne);
 
             convertView.setTag(viewHolder);
         } else {
@@ -71,18 +72,19 @@ public class ActivityListAdapter extends BaseAdapter {
             ActivityModel activityListModel = data.get(position);
 
             if (activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming"))
-                viewHolder.linearLayout.setBackgroundColor(_context.getResources().getColor(R.color.colorWhite));
+                viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.colorWhite));
 
-            viewHolder.dateNumber.setText(activityListModel.getStrDateNumber());
-            viewHolder.date.setText(activityListModel.getStrDate());
+            viewHolder.dateNumber.setText(activityListModel.getStrActivityDate());
+            viewHolder.date.setText(activityListModel.getStrActivityDate());
 
-            String strTimeStamp = activityListModel.getStrDateTime();
+            String strTimeStamp = activityListModel.getStrActivityDate();
 
             viewHolder.dateTime.setText(strTimeStamp);
 
-            viewHolder.Message.setText(activityListModel.getStrMessage());
+            viewHolder.Message.setText(activityListModel.getStrActivityMessage());
 
-            String strAuthor = activityListModel.getStrPerson() + _context.getResources().getString(R.string.space)+  _context.getResources().getString(R.string.at)+_context.getResources().getString(R.string.space);
+            String strAuthor = activityListModel.getStrActivityName() + _context.getResources().getString(R.string.space) + _context.getResources().getString(R.string.at) + _context.getResources().getString(R.string.space);
 
             viewHolder.person.setText(strAuthor);
             // viewHolder.Message.setText(data.get(i).getStrMessage());

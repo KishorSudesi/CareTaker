@@ -10,12 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.libs.Utils;
+import com.hdfc.models.ActivityModel;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by balamurugan@adstringo.in on 2/17/2016.
@@ -26,12 +26,12 @@ public class ActivitiesAdapter extends BaseAdapter {
     public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private ArrayList data;
-    private Libs libs;
+    private Utils utils;
 
     public ActivitiesAdapter(Context context, ArrayList d) {
         _context = context;
         data = d;
-        libs = new Libs(context);
+        utils = new Utils(context);
         multiBitmapLoader = new MultiBitmapLoader(context);
     }
 
@@ -70,7 +70,6 @@ public class ActivitiesAdapter extends BaseAdapter {
             viewHolder.roundedImageView = (ImageView) convertView.findViewById(R.id.roundedImageView);
             viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.activityList);
 
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -78,54 +77,57 @@ public class ActivitiesAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            ActivitiesModel activitiesModel = (ActivitiesModel) data.get(position);
+            ActivityModel activityModel = (ActivityModel) data.get(position);
 
-            Date date = libs.convertStringToDate(activitiesModel.getStrDateTime()); //new Date();//
+            //Date date = utils.convertStringToDate(activityModel.getStrActivityDate()); //new Date();//
 
-            Date dateNow = new Date();
-
+            //Date dateNow = new Date();
 
             String strDisplayDate = _context.getResources().getString(R.string.space)+
                     _context.getResources().getString(R.string.at)+
                     _context.getResources().getString(R.string.space)+
-                    libs.formatDate(activitiesModel.getStrDateTime());
-
-            if (position % 2 == 0) {
-                libs.setDrawable(viewHolder.linearLayout, _context.getResources().getDrawable(R.drawable.header_gradient));
-                viewHolder.textViewTime.setTextColor(_context.getResources().getColor(R.color.colorWhite));
-                //viewHolder.roundedImageView.setImageResource(R.drawable.carla2);
-            } else {
-                viewHolder.linearLayout.setBackgroundColor(_context.getResources().getColor(R.color.colorWhite));
-                viewHolder.textViewTime.setTextColor(_context.getResources().getColor(R.color.colorAccentDark));
-                //viewHolder.roundedImageView.setImageResource(R.drawable.carla1);
-            }
+                    utils.formatDate(activityModel.getStrActivityDate());
 
             try {
-                if (!dateNow.after(date) && position == 0) {//
+                if (activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+
+                    viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                            getColor(R.color.colorWhite));
+                    viewHolder.textViewTime.setTextColor(_context.getResources().
+                            getColor(R.color.colorAccentDark));
+
                     viewHolder.textViewUpcoming.setVisibility(View.VISIBLE);
-                    viewHolder.textViewUpcoming.setText("UP Next");//TODO use strings.xml
-                    String strTemp=activitiesModel.getStrAuthor() + " " + strDisplayDate;
+                    viewHolder.textViewUpcoming.setText(_context.getString(R.string.up_next));
+                    String strTemp = activityModel.getStrDependentID() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
+
                 } else {
+
+                    Utils.setDrawable(viewHolder.linearLayout, _context.getResources().
+                            getDrawable(R.drawable.header_gradient));
+                    viewHolder.textViewTime.setTextColor(_context.getResources().
+                            getColor(R.color.colorWhite));
+
                     viewHolder.textViewUpcoming.setVisibility(View.GONE);
 
-                    String strTemp=activitiesModel.getStrAuthor() + " " + strDisplayDate;
+                    String strTemp = activityModel.getStrDependentID() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
-
-                    //viewHolder.textViewTime.setText(activitiesModel.getStrDateTime());
                 }
             }catch (Exception e){
                 e.printStackTrace();
             }
 
-            if (!activitiesModel.getStrActivityFeedback().equalsIgnoreCase(""))
-                viewHolder.textViewText.setText(activitiesModel.getStrActivityFeedback());
+            viewHolder.textViewText.setText(activityModel.getStrActivityName());
+
+            /*if (!activityModel.getStrActivityDesc().equalsIgnoreCase(""))
+                viewHolder.textViewText.setText(activityModel.getStrActivityName());
             else
-                viewHolder.textViewText.setText(activitiesModel.getStrActivityName());
+                viewHolder.textViewText.setText(activityModel.getStrActivityName());*/
 
             try {
 
-                File f = libs.getInternalFileImages(libs.replaceSpace(activitiesModel.getStrAuthor()));
+                File f = utils.getInternalFileImages(utils.replaceSpace(
+                        activityModel.getStrProviderID()));
 
                 if(f.exists())
                     multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.roundedImageView);

@@ -10,6 +10,7 @@ import com.shephertz.app42.paas.sdk.android.App42CacheManager;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.App42Response;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 import com.shephertz.app42.paas.sdk.android.storage.StorageService;
 import com.shephertz.app42.paas.sdk.android.upload.Upload;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AsyncApp42ServiceApi {
 
@@ -62,6 +64,10 @@ public class AsyncApp42ServiceApi {
         }
 
         return mInstance;
+    }
+
+    public void setOtherMetaHeaders(HashMap<String, String> otherMetaHeaders) {
+        uploadService.setOtherMetaHeaders(otherMetaHeaders);
     }
 
 
@@ -350,6 +356,34 @@ public class AsyncApp42ServiceApi {
                         public void run() {
                             if (callBack != null) {
                                 callBack.onFindDocFailed(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    public void findDocumentByQueryPaging(final String dbName, final String collectionName,
+                                          final Query query, final int max, final int offset, final App42CallBack callBack) {
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final Storage response = storageService.findDocumentsByQueryWithPaging(dbName, collectionName, query, max, offset);
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
                             }
                         }
                     });

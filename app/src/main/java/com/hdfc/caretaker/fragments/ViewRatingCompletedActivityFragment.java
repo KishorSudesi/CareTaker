@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.RatingCompletedAdapter;
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.FeedBackModel;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class ViewRatingCompletedActivityFragment extends Fragment {
 
     private static ArrayList<FeedBackModel> _activityModel;
-    private static Libs libs;
+    private static Utils utils;
     private static ListView listView;
     private static RatingCompletedAdapter ratingCompletedAdapter;
     private static Handler threadHandler;
@@ -54,7 +54,7 @@ public class ViewRatingCompletedActivityFragment extends Fragment {
         listView = (ListView) view.findViewById(R.id.listViewRatings);
         emptyTextView = (TextView) view.findViewById(android.R.id.empty);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
 
         context = getActivity();
 
@@ -98,8 +98,8 @@ public class ViewRatingCompletedActivityFragment extends Fragment {
             try {
                 if (_activityModel != null) {
                     for (int i = 0; i < _activityModel.size(); i++) {
-                        //Libs.log(_activityModel.get(i).getStrFeedBackByUrl(), " URL ");
-                        libs.loadImageFromWeb(_activityModel.get(i).getStrFeedBackBy().trim(), _activityModel.get(i).getStrFeedBackByUrl().trim());
+                        //Utils.log(_activityModel.get(i).getStrFeedBackByUrl(), " URL ");
+                        utils.loadImageFromWeb(_activityModel.get(i).getStrFeedBackBy().trim(), _activityModel.get(i).getStrFeedBackBy().trim());
                     }
                 }
             } catch (Exception e) {

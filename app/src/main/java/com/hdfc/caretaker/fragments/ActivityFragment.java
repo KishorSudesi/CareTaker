@@ -18,7 +18,7 @@ import com.hdfc.adapters.CalendarAdapter;
 import com.hdfc.caretaker.AddNewActivityActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     private static Context _context;
     private static Calendar calendar;
     private Button buttonActivity;
-    private  Libs libs;
+    private Utils utils;
     private LinearLayout dynamicUserTab;
     //public static int iSelectedDependent=0;
     private ImageView prevMonth;
@@ -68,7 +68,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
      */
     public static void setGridCellAdapterToDate(int month, int year) {
 
-        Libs.log(String.valueOf(month + "-" + year), " DATE ");
+        Utils.log(String.valueOf(month + "-" + year), " DATE ");
 
         calendar.set(year, month - 1, calendar.get(Calendar.DAY_OF_MONTH));
 
@@ -81,7 +81,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             ActivityMonthFragment.calendarView.setAdapter(ActivityMonthFragment.adapter);
             ActivityMonthFragment.adapter.notifyDataSetChanged();
 
-            ActivityMonthFragment.activitiesModelSelected.clear();
+            //ActivityMonthFragment.activitiesModelSelected.clear();
             ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
         }
     }
@@ -128,11 +128,11 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
 
         ImageView addActivity = (ImageView) view.findViewById(R.id.addActivity);
 
-        libs.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
+        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
         addActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,7 +191,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         }
 
-        libs.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
+        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
     }
 
     @Override

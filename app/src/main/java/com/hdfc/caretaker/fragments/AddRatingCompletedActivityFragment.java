@@ -18,7 +18,7 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.FeedBackModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -40,7 +40,6 @@ public class AddRatingCompletedActivityFragment extends Fragment {
     private static int iRating = 0;
     private static View previousViewButton;
     private static Context context;
-    private static ActivityListModel _activityListModel;
     private static ActivityModel _activityModel;
     private static JSONObject jsonObject;
     private static JSONArray jsonArrayFeatures;
@@ -49,19 +48,18 @@ public class AddRatingCompletedActivityFragment extends Fragment {
     private boolean checked = false;
     private JSONObject responseJSONDoc;
     private JSONObject responseJSONDocCarla;
-    private Libs libs;
+    private Utils utils;
     private ProgressDialog progressDialog;
 
     public AddRatingCompletedActivityFragment() {
         // Required empty public constructor
     }
 
-    public static AddRatingCompletedActivityFragment newInstance(Context context, ActivityListModel activityListModel, ActivityModel activityModels) {
+    public static AddRatingCompletedActivityFragment newInstance(Context context, ActivityModel activityModels) {
 
         AddRatingCompletedActivityFragment fragment = new AddRatingCompletedActivityFragment();
         Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY", activityListModel);
-        args.putSerializable("ACTIVITY_COMPLETE", activityModels);
+        args.putSerializable("ACTIVITY", activityModels);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,14 +86,13 @@ public class AddRatingCompletedActivityFragment extends Fragment {
         Button btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
         checkReport = (CheckBox) view.findViewById(R.id.checkReport);
 
-        _activityListModel = (ActivityListModel) this.getArguments().getSerializable("ACTIVITY");
-        _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
+        _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
-        //Libs.log(_activityModel.toString(), " OBJ ");
+        //Utils.log(_activityModel.toString(), " OBJ ");
 
         context = getActivity();
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +109,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                 if (iRating == 0) {
                     b = false;
-                    libs.toast(2, 2, getString(R.string.select_rating));
+                    utils.toast(2, 2, getString(R.string.select_rating));
                 }
 
                 if (b)
@@ -126,7 +123,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
     public void uploadCheckBox() {
 
-        if (libs.isConnectingToInternet()) {
+        if (utils.isConnectingToInternet()) {
 
             progressDialog.setMessage(getString(R.string.uploading));
             progressDialog.setCancelable(false);
@@ -138,7 +135,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                 Date doneDate = new Date();
 
-                final String strDoneDate = libs.convertDateToString(doneDate);
+                final String strDoneDate = utils.convertDateToString(doneDate);
 
                 jsonObject = new JSONObject();
 
@@ -154,7 +151,8 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            storageService.findDocsByIdApp42CallBack(Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
+            storageService.findDocsByIdApp42CallBack(Config.customerModel.getStrCustomerID(),
+                    Config.collectionCustomer, new App42CallBack() {
                 @Override
                 public void onSuccess(Object o) {
 
@@ -181,11 +179,11 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                         JSONObject jsonObjectActivities = dependantsA.
                                                 getJSONObject(i);
 
-                                        //Libs.log(_activityListModel.getStrDependentName().toString() + " S " + jsonObjectActivities.getString("dependent_name"), " NAME ");
+                                        //Utils.log(_activityListModel.getStrDependentName().toString() + " S " + jsonObjectActivities.getString("dependent_name"), " NAME ");
 
-                                        if (jsonObjectActivities.getString("dependent_name").equalsIgnoreCase(_activityListModel.getStrDependentName())) {
+                                        if (jsonObjectActivities.getString("dependent_name").equalsIgnoreCase(_activityModel.getStrActivityName())) {
 
-                                            // Libs.log(" 1 ", " IN ");
+                                            // Utils.log(" 1 ", " IN ");
 
                                             if (jsonObjectActivities.has("activities")) {
 
@@ -196,23 +194,23 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                                                     JSONObject jsonObjectActivity = dependantsActivities.getJSONObject(j);
 
-                                                    /*Libs.log(jsonObjectActivity.getString("activity_date") + " ~ " +
+                                                    /*Utils.log(jsonObjectActivity.getString("activity_date") + " ~ " +
                                                             jsonObjectActivity.getString("activity_name") +
                                                             " L " +
                                                             jsonObjectActivity.getString("activity_message"), " NAME1 ");
 
-                                                    Libs.log(_activityListModel.getStrActualDate() + " ~ " +
+                                                    Utils.log(_activityListModel.getStrActualDate() + " ~ " +
                                                             _activityModel.getStrActivityName() +
                                                             " L " +
                                                             _activityModel.getStrActivityMessage(), " NAME2 ");*/
 
-                                                    if (jsonObjectActivity.getString("activity_date").equalsIgnoreCase(_activityListModel.getStrActualDate()) &&
+                                                    if (jsonObjectActivity.getString("activity_date").equalsIgnoreCase(_activityModel.getStrActivityDate()) &&
                                                             jsonObjectActivity.getString("activity_name").equalsIgnoreCase(_activityModel.getStrActivityName()) &&
                                                             jsonObjectActivity.getString("activity_message").equalsIgnoreCase(_activityModel.getStrActivityMessage())) {
 
                                                         jsonArrayFeatures = jsonObjectActivity.getJSONArray("feedbacks");
 
-                                                        // Libs.log(" 2 ", " IN ");
+                                                        // Utils.log(" 2 ", " IN ");
 
                                                         jsonArrayFeatures.put(jsonObject);
                                                     }
@@ -226,17 +224,22 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                            //Libs.log(responseJSONDocCarla.toString()," responseJSONDocCarla ");
+                            //Utils.log(responseJSONDocCarla.toString()," responseJSONDocCarla ");
 
-                            storageService.updateDocs(responseJSONDocCarla, Config.jsonDocId, Config.collectionCustomer, new App42CallBack() {
+                            storageService.updateDocs(responseJSONDocCarla,
+                                    Config.customerModel.getStrCustomerID(),
+                                    Config.collectionCustomer, new App42CallBack() {
                                 @Override
                                 public void onSuccess(Object o) {
 
                                     if (o != null) {
 
-                                        Config.jsonObject = responseJSONDocCarla;
+                                        //Config.jsonObject = responseJSONDocCarla;
 
-                                        storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email", _activityModel.getStrAtivityProvider(), new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                                        storageService.findDocsByKeyValue(Config.collectionProvider,
+                                                "provider_email",
+                                                _activityModel.getStrProviderID(),
+                                                new AsyncApp42ServiceApi.App42StorageServiceListener() {
                                             @Override
                                             public void onDocumentInserted(Storage response) {
                                             }
@@ -302,12 +305,12 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                                     if (progressDialog.isShowing())
                                                                         progressDialog.dismiss();
 
-                                                                    libs.toast(2, 2, getString(R.string.rating_added));
+                                                                    utils.toast(2, 2, getString(R.string.rating_added));
 
                                                                 } else {
                                                                     if (progressDialog.isShowing())
                                                                         progressDialog.dismiss();
-                                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                                 }
                                                             }
 
@@ -316,9 +319,9 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                                 if (progressDialog.isShowing())
                                                                     progressDialog.dismiss();
                                                                 if (e != null) {
-                                                                    libs.toast(2, 2, e.getMessage());
+                                                                    utils.toast(2, 2, e.getMessage());
                                                                 } else {
-                                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                                 }
                                                             }
                                                         });
@@ -326,7 +329,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                 } else {
                                                     if (progressDialog.isShowing())
                                                         progressDialog.dismiss();
-                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
 
@@ -341,9 +344,9 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                     progressDialog.dismiss();
 
                                                 if (ex != null) {
-                                                    libs.toast(2, 2, ex.getMessage());
+                                                    utils.toast(2, 2, ex.getMessage());
                                                 } else {
-                                                    libs.toast(2, 2, getString(R.string.warning_internet));
+                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
 
@@ -356,7 +359,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                     } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
-                                        libs.toast(2, 2, getString(R.string.warning_internet));
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
                                     }
                                 }
 
@@ -365,9 +368,9 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
                                     if (e != null) {
-                                        libs.toast(2, 2, e.getMessage());
+                                        utils.toast(2, 2, e.getMessage());
                                     } else {
-                                        libs.toast(2, 2, getString(R.string.warning_internet));
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
                                     }
                                 }
                             });
@@ -380,14 +383,14 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
                     if (e != null) {
-                        libs.toast(2, 2, e.getMessage());
+                        utils.toast(2, 2, e.getMessage());
                     } else {
-                        libs.toast(2, 2, getString(R.string.warning_internet));
+                        utils.toast(2, 2, getString(R.string.warning_internet));
                     }
                 }
             });
         } else {
-            libs.toast(2, 2, getString(R.string.warning_internet));
+            utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 
@@ -401,14 +404,14 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                 JSONObject jsonObjectFeedback = jsonArrayFeatures.getJSONObject(k);
 
-                FeedBackModel feedBackModel = new FeedBackModel(
+               /* FeedBackModel feedBackModel = new FeedBackModel(
                         jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
                         jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
                         jsonObjectFeedback.getString("feedback_time"),
                         jsonObjectFeedback.getString("feedback_by_url")
                 );
 
-                feedBackModels.add(feedBackModel);
+                feedBackModels.add(feedBackModel);*/
             }
 
             ActivityCompletedFragment.setMenuInitView();

@@ -5,8 +5,11 @@ import android.content.Context;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class StorageService {
 
@@ -14,6 +17,10 @@ public class StorageService {
 
     public StorageService(Context context) {
         asyncService = AsyncApp42ServiceApi.instance(context);
+    }
+
+    public void setOtherMetaHeaders(HashMap<String, String> otherMetaHeaders) {
+        asyncService.setOtherMetaHeaders(otherMetaHeaders);
     }
 
     public void insertDocs(JSONObject jsonToSave, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack, String collectionCustomer) {
@@ -34,6 +41,10 @@ public class StorageService {
 
     public void findDocsByKeyValue(String strCollectionName, String strKey, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
         asyncService.findDocumentByKeyValue(Config.dbName, strCollectionName, strKey, strValue, app42CallBack);
+    }
+
+    public void findDocsByQuery(String strCollectionName, Query query, int max, int offset, App42CallBack app42CallBack) {
+        asyncService.findDocumentByQueryPaging(Config.dbName, strCollectionName, query, max, offset, app42CallBack);
     }
 
     /*public void updateDocs(JSONObject jsonToUpdate, String fieldName, String checkValue) {

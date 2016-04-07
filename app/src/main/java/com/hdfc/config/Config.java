@@ -1,16 +1,15 @@
 package com.hdfc.config;
 
-import android.graphics.Bitmap;
-
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
+import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
+import com.hdfc.models.ProviderModel;
 import com.hdfc.models.ServiceModel;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by balamurugan@adstringo.in on 23-12-2015.
@@ -23,11 +22,12 @@ public class Config {
     public static final String collectionProvider = "provider";
     public static final String collectionCustomer = "customer";
     public static final String collectionDependent = "dependent";
+    public static final String collectionActivity = "activity";
 
     //public static final String strServiceDocId = "56f280b0e4b003cbd56dcb38";//remove this
     //for UAT 56f280b0e4b003cbd56dcb38
     //for development 56c70aefe4b0067c8c7658bf
-    public static final String string = Libs.getStringJni();
+    public static final String string = Utils.getStringJni();
 
     public static final int START_CAMERA_REQUEST_CODE = 1;
     public static final int START_GALLERY_REQUEST_CODE = 2;
@@ -43,7 +43,7 @@ public class Config {
 
     public static final boolean isDebuggable = true;
 
-    public static final boolean release = true;
+    public static final boolean release = false;
 
     public static int intNotificationScreen = 2;
     public static int intActivityScreen = 5;
@@ -56,24 +56,27 @@ public class Config {
     public static int intScreenHeight = 0;
 
     //User Specific clear at logout or whenever needed
-    public static JSONObject jsonObject = null;
+    //public static JSONObject jsonObject = null;
     public static JSONObject jsonCustomer = null;
-
-    public static String jsonDocId = "";
 
     public static int intSelectedMenu = 0;
     public static int intDependentsCount = 0;
 
     public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+
     public static ArrayList<String> dependentNames = new ArrayList<>();
+    public static ArrayList<String> strDependentIds = new ArrayList<>();
+
+    public static ArrayList<String> strProviderIds = new ArrayList<>();
 
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
 
     public static CustomerModel customerModel = null;
+    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
+    public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
+
     public static String strUserName = "";
 
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
-
-    public static List<Bitmap> bitmaps = new ArrayList<>();
 }

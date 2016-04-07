@@ -17,14 +17,12 @@ import com.hdfc.models.ActivityModel;
 public class ActivityCompletedFragment extends Fragment {
 
     public static ImageButton imageButtonDesc, imageButtonVideo, imageButtonImage, imageButtonRating, imageButtonAdd;
-    private static ActivityListModel _activityListModel;
     private static ActivityModel _activityModel;
 
-    public static ActivityCompletedFragment newInstance(ActivityListModel activityListModel, ActivityModel activityModels) {
+    public static ActivityCompletedFragment newInstance(ActivityModel activityModels) {
         ActivityCompletedFragment fragment = new ActivityCompletedFragment();
         Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY", activityListModel);
-        args.putSerializable("ACTIVITY_COMPLETE", activityModels);
+        args.putSerializable("ACTIVITY", activityModels);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,8 +48,7 @@ public class ActivityCompletedFragment extends Fragment {
         Button buttonBack = (Button) view.findViewById(R.id.buttonBack);
         TextView txtViewHeader = (TextView) view.findViewById(R.id.header);
 
-        _activityListModel = (ActivityListModel) this.getArguments().getSerializable("ACTIVITY");
-        _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
+        _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.completed_activity));
 
@@ -119,7 +116,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToCarlaDescription() {
         setMenuInitView();
         imageButtonDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        CarlaCompletedActivityFragment newFragment = CarlaCompletedActivityFragment.newInstance(_activityListModel);
+        CarlaCompletedActivityFragment newFragment = CarlaCompletedActivityFragment.newInstance(_activityModel);
 
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
@@ -165,7 +162,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToAddRating() {
         setMenuInitView();
         imageButtonAdd.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        AddRatingCompletedActivityFragment newFragment = AddRatingCompletedActivityFragment.newInstance(getActivity(), _activityListModel, _activityModel);
+        AddRatingCompletedActivityFragment newFragment = AddRatingCompletedActivityFragment.newInstance(getActivity(), _activityModel);
         //Bundle args = new Bundle();
         //args.putInt(ArticleFragment.ARG_POSITION, position);
         // newFragment.setArguments(args);

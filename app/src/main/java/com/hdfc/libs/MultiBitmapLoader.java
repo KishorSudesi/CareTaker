@@ -23,14 +23,14 @@ public class MultiBitmapLoader {
 
     private static Context _context;
     private static Bitmap preLoadBitmap;
-    private static Libs libs;
+    private static Utils utils;
     private LruCache<String, Bitmap> mMemoryCache;
 
     public MultiBitmapLoader(Context context) {
         _context = context;
-        libs = new Libs(context);
+        utils = new Utils(context);
 
-        final int maxMemory = libs.getMemory();
+        final int maxMemory = utils.getMemory();
         preLoadBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
 
         // Use 1/8th of the available memory for this memory cache.
@@ -134,8 +134,8 @@ public class MultiBitmapLoader {
         @Override
         protected Bitmap doInBackground(String... params) {
             data = params[0];
-            Bitmap tempBitmap = libs.getBitmapFromFile(data, Config.intWidth, Config.intHeight);
-            tempBitmap=libs.roundedBitmap(tempBitmap);
+            Bitmap tempBitmap = utils.getBitmapFromFile(data, Config.intWidth, Config.intHeight);
+            tempBitmap = utils.roundedBitmap(tempBitmap);
             addBitmapToMemoryCache(String.valueOf(params[0]), tempBitmap);
             return tempBitmap;
         }
@@ -165,7 +165,7 @@ public class MultiBitmapLoader {
             try {
                 options.inJustDecodeBounds = true;
                 original = BitmapFactory.decodeFile(strPath, options);
-                options.inSampleSize = libs.calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
+                options.inSampleSize = utils.calculateSampleSize(options.outWidth, options.outHeight, intWidth, intHeight);
                 options.inJustDecodeBounds = false;
                 original = BitmapFactory.decodeFile(strPath, options);
             } catch (OutOfMemoryError | Exception oOm) {

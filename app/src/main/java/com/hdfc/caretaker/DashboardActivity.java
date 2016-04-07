@@ -18,7 +18,7 @@ import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.FileModel;
 
 /**
@@ -28,7 +28,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
-    private Libs libs;
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,16 +141,24 @@ public class DashboardActivity extends AppCompatActivity {
             goToActivity();
         }
 
-        libs = new Libs(DashboardActivity.this);
+        utils = new Utils(DashboardActivity.this);
 
-        threadHandler = new ThreadHandler();
-        Thread backgroundThread = new BackgroundThread();
-        backgroundThread.start();
+        try {
+            if (!AccountSuccessActivity.isCreatedNow) {
+                threadHandler = new ThreadHandler();
+                Thread backgroundThread = new BackgroundThread();
+                backgroundThread.start();
 
-        progressDialog.setMessage(getResources().getString(R.string.loading));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
+                progressDialog.setMessage(getResources().getString(R.string.loading));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            } else {
+                Config.intSelectedMenu = 0;
+                goToDashboard();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void goToNotifications() {
@@ -204,13 +212,12 @@ public class DashboardActivity extends AppCompatActivity {
         //super.onBackPressed();
         //moveTaskToBack(true);
 
-        //
         AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
         builder.setTitle(getString(R.string.confirm_logout));
         builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Libs.logout();
+                Utils.logout();
             }
         });
         builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -230,28 +237,15 @@ public class DashboardActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-
                 for (int i = 0; i < Config.fileModels.size(); i++) {
-
                     FileModel fileModel = Config.fileModels.get(i);
 
                     if (fileModel != null && fileModel.getStrFileUrl() != null &&
                             !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
-                        libs.loadImageFromWeb(fileModel.getStrFileName(),
+                        utils.loadImageFromWeb(fileModel.getStrFileName(),
                                 fileModel.getStrFileUrl());
                     }
                 }
-
-                for (int i = 0; i < Config.dependentNames.size(); i++) {
-                    try {
-                        Config.bitmaps.add(libs.getBitmapFromFile(libs.getInternalFileImages(
-                                libs.replaceSpace(Config.dependentNames.get(i))).getAbsolutePath(),
-                                Config.intWidth, Config.intHeight));
-                    } catch (OutOfMemoryError | Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -270,5 +264,4 @@ public class DashboardActivity extends AppCompatActivity {
             }
         }
     }
-
 }

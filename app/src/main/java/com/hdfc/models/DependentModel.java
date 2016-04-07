@@ -25,6 +25,7 @@ public class DependentModel {
     private String strCustomerID;
 
     private ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+    private ArrayList<ActivityModel> activityModels = new ArrayList<>();
 
     public DependentModel() {
     }
@@ -49,6 +50,14 @@ public class DependentModel {
         this.strDependentID = strDependentID;
         this.strCustomerID = strCustomerID;
         this.serviceModels = serviceModels;
+    }
+
+    public ArrayList<ActivityModel> getActivityModels() {
+        return activityModels;
+    }
+
+    public void setActivityModels(ArrayList<ActivityModel> activityModels) {
+        this.activityModels = activityModels;
     }
 
     public String getStrName() {
@@ -151,8 +160,16 @@ public class DependentModel {
         return strDependentID;
     }
 
+    public void setStrDependentID(String strDependentID) {
+        this.strDependentID = strDependentID;
+    }
+
     public String getStrCustomerID() {
         return strCustomerID;
+    }
+
+    public void setStrCustomerID(String strCustomerID) {
+        this.strCustomerID = strCustomerID;
     }
 
     public ArrayList<ServiceModel> getServiceModels() {
@@ -162,4 +179,5 @@ public class DependentModel {
     public void setServiceModels(ArrayList<ServiceModel> serviceModels) {
         this.serviceModels = serviceModels;
     }
+
 }

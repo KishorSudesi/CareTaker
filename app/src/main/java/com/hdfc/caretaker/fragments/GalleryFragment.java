@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ImageModel;
 
 import java.io.File;
@@ -29,12 +29,11 @@ public class GalleryFragment extends Fragment {
     static Bitmap bitmap = null;
     private static ArrayList<ImageModel> imageModels;
     public List<Bitmap> bitmapimages = new ArrayList<>();
-    public List<GalleryModel> galleryModelArrayList;
     public ImageView _gallery,imageGallery;
     ImageView thumbView;
     LinearLayout _thumbnails;
     private Handler backgroundThreadHandler;
-    private Libs libs;
+    private Utils utils;
     private ProgressDialog progressDialog;
 
 
@@ -72,7 +71,7 @@ public class GalleryFragment extends Fragment {
         //_gallery = (ImageView) view.findViewById(R.id.imageviewThumbnails);
         _thumbnails = (LinearLayout) view.findViewById(R.id.thumbnails);
         imageGallery = (ImageView)view.findViewById(R.id.imageViewGallery);
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
 
         backgroundThreadHandler = new BackgroundThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -119,7 +118,7 @@ public class GalleryFragment extends Fragment {
                 _thumbnails.removeAllViews();
 
                 for ( int m = 0; m < bitmapimages.size(); m++) {
-                  //  Libs.log(" 2 " + String.valueOf(bitmap.getHeight()), " IN ");
+                    //  Utils.log(" 2 " + String.valueOf(bitmap.getHeight()), " IN ");
 
                     _gallery = new ImageView(getActivity());
 
@@ -159,12 +158,9 @@ public class GalleryFragment extends Fragment {
                 //
                 try {
 
-                    galleryModelArrayList = new ArrayList<>();
-                    galleryModelArrayList.clear();
                     bitmapimages.clear();
 
-
-                    Libs.log(String.valueOf(imageModels.size()), " 1 ");
+                    Utils.log(String.valueOf(imageModels.size()), " 1 ");
 
                     try {
 
@@ -174,11 +170,11 @@ public class GalleryFragment extends Fragment {
 
                             if (imageModel.getStrImageUrl() != null && !imageModel.getStrImageUrl().equalsIgnoreCase("")) {
 
-                                    libs.loadImageFromWeb(imageModel.getStrImageName(),imageModel.getStrImageUrl());
+                                utils.loadImageFromWeb(imageModel.getStrImageName(), imageModel.getStrImageUrl());
 
-                                    File file = libs.getInternalFileImages(libs.replaceSpace(imageModel.getStrImageName()));
+                                File file = utils.getInternalFileImages(utils.replaceSpace(imageModel.getStrImageName()));
 
-                                    Bitmap bitmap = libs.getBitmapFromFile(file.getAbsolutePath(), Config.intWidth, Config.intHeight) ;
+                                Bitmap bitmap = utils.getBitmapFromFile(file.getAbsolutePath(), Config.intWidth, Config.intHeight);
                                     bitmapimages.add(bitmap);
                             }
 

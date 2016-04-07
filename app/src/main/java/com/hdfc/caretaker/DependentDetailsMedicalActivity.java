@@ -13,11 +13,11 @@ import android.widget.EditText;
 
 import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 
 public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
-    private Libs libs;
+    private Utils utils;
     private EditText editAge, editDiseases, editNotes;
     private String strAge, strDiseases, strNotes;
     private ProgressDialog progressDialog;
@@ -28,7 +28,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dependent_details_medical);
 
-        libs = new Libs(DependentDetailsMedicalActivity.this);
+        utils = new Utils(DependentDetailsMedicalActivity.this);
         progressDialog = new ProgressDialog(DependentDetailsMedicalActivity.this);
 
         editAge = (EditText) findViewById(R.id.editAge);
@@ -56,7 +56,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             });
         }
 
-        libs.setStatusBarColor("#cccccc");
+        utils.setStatusBarColor("#cccccc");
 
     }
 
@@ -131,22 +131,22 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             DependentDetailPersonalActivity.dependentModel = null;
 
             //chk this
-            libs.retrieveDependants();
+            utils.retrieveDependants();
             AddDependentFragment.adapter.notifyDataSetChanged();
 
-            libs.retrieveConfirmDependants();
+            utils.retrieveConfirmDependants();
             ConfirmFragment.adapter.notifyDataSetChanged();
             //
 
             progressDialog.dismiss();
-            libs.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
+            utils.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
 
             startActivity(selection);
             finish();
 
         } else {
             progressDialog.dismiss();
-            libs.toast(2, 2, getString(R.string.dependent_data_lost));
+            utils.toast(2, 2, getString(R.string.dependent_data_lost));
         }
     }
 

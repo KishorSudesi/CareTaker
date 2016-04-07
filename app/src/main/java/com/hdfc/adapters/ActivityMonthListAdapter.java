@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
 import java.io.File;
@@ -25,13 +25,13 @@ public class ActivityMonthListAdapter extends BaseAdapter {
     public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private List<ActivityModel> data;
-    private Libs libs;
+    private Utils utils;
 
     public ActivityMonthListAdapter(Context ctxt, List<ActivityModel> y) {
         _context = ctxt;
         data = y;
         multiBitmapLoader = new MultiBitmapLoader(ctxt);
-        libs = new Libs(ctxt);
+        utils = new Utils(ctxt);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 
             try {
 
-                File f = libs.getInternalFileImages(libs.replaceSpace(activityModel.getStrDependentID()));
+                File f = utils.getInternalFileImages(utils.replaceSpace(activityModel.getStrDependentID()));
 
                 if(f.exists())
                     multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);

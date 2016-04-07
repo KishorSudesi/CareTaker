@@ -35,31 +35,63 @@ public class CustomerModel {
         return strName;
     }
 
+    public void setStrName(String strName) {
+        this.strName = strName;
+    }
+
     public String getStrPaytm() {
         return strPaytm;
+    }
+
+    public void setStrPaytm(String strPaytm) {
+        this.strPaytm = strPaytm;
     }
 
     public String getStrImgUrl() {
         return strImgUrl;
     }
 
+    public void setStrImgUrl(String strImgUrl) {
+        this.strImgUrl = strImgUrl;
+    }
+
     public String getStrAddress() {
         return strAddress;
+    }
+
+    public void setStrAddress(String strAddress) {
+        this.strAddress = strAddress;
     }
 
     public String getStrContacts() {
         return strContacts;
     }
 
+    public void setStrContacts(String strContacts) {
+        this.strContacts = strContacts;
+    }
+
     public String getStrEmail() {
         return strEmail;
+    }
+
+    public void setStrEmail(String strEmail) {
+        this.strEmail = strEmail;
     }
 
     public String getStrCustomerID() {
         return strCustomerID;
     }
 
+    public void setStrCustomerID(String strCustomerID) {
+        this.strCustomerID = strCustomerID;
+    }
+
     public String getStrImgPath() {
         return strImgPath;
+    }
+
+    public void setStrImgPath(String strImgPath) {
+        this.strImgPath = strImgPath;
     }
 }

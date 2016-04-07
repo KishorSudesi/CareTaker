@@ -14,11 +14,21 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:id="@+id/loadingPanel"
+            style="@style/GenericProgressBackground"
+            android:alpha="0.6"
+            android:visibility="gone">
+
+            <ProgressBar style="@style/GenericProgressIndicator" />
+        </RelativeLayout>
+
         <ImageView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@null" />
+            android:background="@null"
+            android:src="@drawable/person_icon" />
 
     </com.hdfc.views.MyLinearView>
 

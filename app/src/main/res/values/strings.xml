@@ -71,6 +71,7 @@
     <string name="assisted_in">&#160;Assisted In&#160;</string>
     <string name="select_date">Select a Date</string>
     <string name="no_ratings">No Ratings</string>
+    <string name="up_next">UP Next</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

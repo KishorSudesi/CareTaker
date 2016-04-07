@@ -30,7 +30,7 @@ import android.widget.EditText;
 
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -39,8 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnShowRationale;
@@ -63,14 +61,14 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editRelation, editDependantEmail;
     private static ProgressDialog mProgress = null;
-    private Libs libs;
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dependent_detail_personal);
 
-        libs = new Libs(DependentDetailPersonalActivity.this);
+        utils = new Utils(DependentDetailPersonalActivity.this);
 
         editName = (EditText) findViewById(R.id.editDependantName);
         editContactNo = (EditText) findViewById(R.id.editContactNo);
@@ -86,35 +84,38 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backToSelection();
-            }
-        });
+        if (buttonBack != null) {
+            buttonBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    backToSelection();
+                }
+            });
+        }
 
-        buttonContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateDependant();
-            }
-        });
+        if (buttonContinue != null) {
+            buttonContinue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    validateDependant();
+                }
+            });
+        }
 
-        String tempDate = String.valueOf(new Date().getDate() + "" + new Date().getTime());
-
-        dependantImgName = tempDate + ".jpeg";
+        Calendar calendar = Calendar.getInstance();
+        dependantImgName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
 
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                libs.selectImage(dependantImgName, null, DependentDetailPersonalActivity.this);
+                utils.selectImage(dependantImgName, null, DependentDetailPersonalActivity.this);
                 isCamera = true;
             }
         });
 
         setupSearchView();
 
-        libs.setStatusBarColor("#cccccc");
+        utils.setStatusBarColor("#cccccc");
     }
 
     @Override
@@ -173,7 +174,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         View focusView = null;
 
         if (strImageName != null && TextUtils.isEmpty(strImageName) && dependentModel == null) {
-            libs.toast(2, 2, getString(R.string.warning_profile_pic));
+            utils.toast(2, 2, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
         } else {
@@ -194,7 +195,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 editContactNo.setError(getString(R.string.error_field_required));
                 focusView = editContactNo;
                 cancel = true;
-            } else if (!libs.validCellPhone(strContactNo)) {
+            } else if (!utils.validCellPhone(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_invalid_contact_no));
                 focusView = editContactNo;
                 cancel = true;
@@ -205,7 +206,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 focusView = editDependantEmail;
                 cancel = true;
             } else {
-                if (!libs.isEmailValid(strEmail)) {
+                if (!utils.isEmailValid(strEmail)) {
                     editDependantEmail.setError(getString(R.string.error_invalid_email));
                     focusView = editDependantEmail;
                     cancel = true;
@@ -260,29 +261,29 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Object o) {
                             if (o != null) {
-                                libs.toast(2, 2, getString(R.string.email_exists));
+                                utils.toast(2, 2, getString(R.string.email_exists));
                             } else {
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
                         @Override
                         public void onException(Exception e) {
                             if (e != null) {
-                                libs.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                                utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
                                 strImageName = "";
                                 Intent selection = new Intent(DependentDetailPersonalActivity.this,
                                         DependentDetailsMedicalActivity.class);
                                 startActivity(selection);
                                 finish();
                             } else {
-                                libs.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
 
                 } else {
-                    libs.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                    utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                 }
 
             } catch (Exception e) {
@@ -494,7 +495,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        strImageName = Libs.customerImageUri.getPath();
+                        strImageName = Utils.customerImageUri.getPath();
                         backgroundThreadHandler = new BackgroundThreadHandler();
                         backgroundThreadCamera = new BackgroundThreadCamera();
                         backgroundThreadCamera.start();
@@ -521,13 +522,14 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
             try {
                 if (uri != null) {
-                    Calendar calendar = new GregorianCalendar();
+                    Calendar calendar = Calendar.getInstance();
                     String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                    File galleryFile = libs.createFileInternalImage(strFileName);
+
+                    File galleryFile = utils.createFileInternalImage(strFileName);
                     strImageName = galleryFile.getAbsolutePath();
                     InputStream is = getContentResolver().openInputStream(uri);
-                    libs.copyInputStreamToFile(is, galleryFile);
-                    bitmap = libs.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
+                    utils.copyInputStreamToFile(is, galleryFile);
+                    bitmap = utils.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
             } catch (IOException ignored) {
@@ -543,7 +545,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
             try {
                 if (strImageName != null && !strImageName.equalsIgnoreCase("")) {
-                    bitmap = libs.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
+                    bitmap = utils.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
             } catch (Exception e) {
@@ -559,7 +561,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
             if (imgButtonCamera != null && bitmap != null)
                 imgButtonCamera.setImageBitmap(bitmap);
-            else if (bitmap != null)
+            else
                 imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.camera_icon));
         }

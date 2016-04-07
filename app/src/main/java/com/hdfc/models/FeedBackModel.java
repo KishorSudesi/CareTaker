@@ -13,20 +13,18 @@ public class FeedBackModel implements Serializable {
     private String strFeedBackByType;
 
     private int intFeedBackRating;
-    private String strFeedBackID;
 
     private boolean bFeedBackReport;
 
     public FeedBackModel(String strFeedBackMessage, String strFeedBackBy, int intFeedBackRating,
-                         boolean bFeedBackReport, String strFeedBackTime, String strFeedBackByType,
-                         String strFeedBackID) {
+                         boolean bFeedBackReport, String strFeedBackTime, String strFeedBackByType
+    ) {
         this.strFeedBackMessage = strFeedBackMessage;
         this.strFeedBackBy = strFeedBackBy;
         this.intFeedBackRating = intFeedBackRating;
         this.bFeedBackReport = bFeedBackReport;
         this.strFeedBackTime = strFeedBackTime;
         this.strFeedBackByType = strFeedBackByType;
-        this.strFeedBackID = strFeedBackID;
     }
 
     public String getStrFeedBackMessage() {
@@ -51,10 +49,6 @@ public class FeedBackModel implements Serializable {
 
     public String getStrFeedBackTime() {
         return strFeedBackTime;
-    }
-
-    public String getStrFeedBackID() {
-        return strFeedBackID;
     }
 
     public boolean isbFeedBackReport() {

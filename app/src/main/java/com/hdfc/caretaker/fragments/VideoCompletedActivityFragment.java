@@ -72,12 +72,12 @@ public class VideoCompletedActivityFragment extends Fragment {
             for (int i = 0; i < activityListModel.getVideoModels().size(); i++) {
                 VideoModel activityFeedBackModel = activityListModel.getVideoModels().get(i);
 
-                VideoModel activityCompletedModel = new VideoModel();
-                activityCompletedModel.setStrDateTime(activityFeedBackModel.getStrVideoTime());
-                activityCompletedModel.setStrDescription(activityFeedBackModel.getStrVideoName());
+                //VideoModel activityCompletedModel = new VideoModel();
+                //activityCompletedModel.setStrDateTime(activityFeedBackModel.getStrVideoTime());
+                //activityCompletedModel.setStrDescription(activityFeedBackModel.getStrVideoName());
                 // activityCompletedModel.setiVideoId(R.drawable.vidlink); //todo add video thumbnail
 
-                activityCompletedArrayList.add(activityCompletedModel);
+                // activityCompletedArrayList.add(activityCompletedModel);
             }
 
             activityCompletedAdapter.notifyDataSetChanged();

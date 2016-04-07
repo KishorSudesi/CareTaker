@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.hdfc.caretaker.AdditionalServicesActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.views.RoundedImageView;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public class MyAccountFragment extends Fragment {
     private static ProgressDialog progressDialog;
     TextView txtviewBuyServices;
     TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
-    private Libs libs;
+    private Utils utils;
 
     public static MyAccountFragment newInstance() {
         MyAccountFragment fragment = new MyAccountFragment();
@@ -55,7 +55,7 @@ public class MyAccountFragment extends Fragment {
         txtviewBuyServices = (TextView) view.findViewById(R.id.txtviewBuyServices);
         txtNumber = (TextView) view.findViewById(R.id.editText3);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
 
         //loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
@@ -107,7 +107,7 @@ public class MyAccountFragment extends Fragment {
                 builder.setPositiveButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Libs.logout();
+                        Utils.logout();
                     }
                 });
                 builder.setNegativeButton(getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -151,8 +151,8 @@ public class MyAccountFragment extends Fragment {
             try {
 
                 if(Config.customerModel!=null) {
-                    File f = libs.getInternalFileImages(Config.strCustomerImageName);
-                    bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+                    File f = utils.getInternalFileImages(Config.strCustomerImageName);
+                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 }
 
                 threadHandler.sendEmptyMessage(0);

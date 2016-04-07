@@ -15,21 +15,12 @@ import android.widget.TextView;
 import com.hdfc.adapters.ActivityMonthListAdapter;
 import com.hdfc.adapters.CalendarAdapter;
 import com.hdfc.caretaker.R;
-import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
-import com.hdfc.models.FeedBackModel;
-import com.hdfc.models.ImageModel;
-import com.hdfc.models.VideoModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,13 +31,11 @@ public class ActivityMonthFragment extends Fragment {
     public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
-    public static List<ActivityListModel> activitiesModelArrayList = new ArrayList<>();
     public static List<ActivityModel> activityModels = new ArrayList<>();
     public static GridView calendarView;
     public static CalendarAdapter adapter=null;
     public static ListView listView;
     public static ActivityMonthListAdapter activityListAdapter;
-    public static List<ActivityListModel> activitiesModelSelected = new ArrayList<>();
     private TextView txtViewDate;
 
     public static ActivityMonthFragment newInstance() {
@@ -72,7 +61,7 @@ public class ActivityMonthFragment extends Fragment {
         int month = _calendar.get(Calendar.MONTH) + 1;
         int year = _calendar.get(Calendar.YEAR);
 
-        Libs libs = new Libs(getActivity());
+        Utils utils = new Utils(getActivity());
 
         calendarView = (GridView) view.findViewById(R.id.calendar);
 
@@ -80,142 +69,12 @@ public class ActivityMonthFragment extends Fragment {
 
         TextView emptyTextView = (TextView) view.findViewById(android.R.id.empty);
 
-        try {
-
-            activitiesModelArrayList.clear();
-            activityModels.clear();
-
-            if (Config.jsonObject != null && Config.jsonObject.has("customer_name")) {
-
-                if (Config.jsonObject.has("dependents")) {
-
-                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
-
-                    JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-                    //Notifications
-                    if (jsonObject.has("activities")) {
-
-                        JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
-
-                        for (int j = 0; j < jsonArrayNotifications.length(); j++) {
-
-                            JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
-
-                            if (jsonObjectNotification.has("activity_date")) {
-
-                                ActivityListModel activityListModel = new ActivityListModel();
-
-                                String strDisplayDateTime = libs.formatDate(jsonObjectNotification.getString("activity_date"));
-                                String strDisplayDate = libs.formatDateActivity(jsonObjectNotification.getString("activity_date"));
-                                String strDisplayDateMonthYear = libs.formatDateActivityMonthYear(jsonObjectNotification.getString("activity_date"));
-
-                                activityListModel.setStrDate(strDisplayDateMonthYear);//month-year
-                                activityListModel.setStrDateTime(strDisplayDateTime);
-                                activityListModel.setStrDateNumber(strDisplayDate.substring(0, 2));//date
-
-                                activityListModel.setStrDependentName(jsonObject.getString("dependent_name"));
-
-                                activityListModel.setStrActualDate(jsonObjectNotification.getString("activity_date"));
-
-                                activityListModel.setStrPerson(jsonObjectNotification.getString("provider_name"));
-
-                                //activityListModel.setStr(jsonObjectNotification.getString("activity_name"));
-                                activityListModel.setStrMessage(jsonObjectNotification.getString("activity_message"));
-
-                                activityListModel.setStrStatus(jsonObjectNotification.getString("status"));
-                                activityListModel.setStrDesc(jsonObjectNotification.getString("provider_description"));
-                                activityListModel.setStrImageUrl(jsonObjectNotification.getString("provider_image_url"));
-
-
-                                ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-                                ArrayList<VideoModel> videoModels = new ArrayList<>();
-                                ArrayList<ImageModel> imageModels = new ArrayList<>();
-
-                                if (jsonObjectNotification.has("feedbacks")) {
-
-                                    JSONArray jsonArrayFeedback = jsonObjectNotification.getJSONArray("feedbacks");
-
-                                    for (int k = 0; k < jsonArrayFeedback.length(); k++) {
-
-                                        JSONObject jsonObjectFeedback = jsonArrayFeedback.getJSONObject(k);
-
-                                        FeedBackModel feedBackModel = new FeedBackModel(
-                                                jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                                                jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
-                                                jsonObjectFeedback.getString("feedback_time"),
-                                                jsonObjectFeedback.getString("feedback_by_url")
-                                        );
-
-                                        feedBackModels.add(feedBackModel);
-
-                                    }
-                                }
-
-                                if (jsonObjectNotification.has("videos")) {
-
-                                    JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("videos");
-
-                                    for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                        JSONObject jsonObjectVideo = jsonArrayVideos.getJSONObject(k);
-
-                                        VideoModel videoModel = new VideoModel(
-                                                jsonObjectVideo.getString("video_name"),
-                                                jsonObjectVideo.getString("video_url"),
-                                                jsonObjectVideo.getString("video_description"),
-                                                jsonObjectVideo.getString("video_taken")
-                                        );
-
-                                        videoModels.add(videoModel);
-                                    }
-                                }
-
-                                if (jsonObjectNotification.has("images")) {
-
-                                    JSONArray jsonArrayVideos = jsonObjectNotification.getJSONArray("images");
-
-                                    for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                        JSONObject jsonObjectImage = jsonArrayVideos.getJSONObject(k);
-
-                                        ImageModel imageModel = new ImageModel(
-                                                jsonObjectImage.getString("image_name"),
-                                                jsonObjectImage.getString("image_url"),
-                                                jsonObjectImage.getString("image_description"),
-                                                jsonObjectImage.getString("image_taken")
-                                        );
-
-                                        imageModels.add(imageModel);
-                                    }
-                                }
-
-                                activitiesModelArrayList.add(activityListModel);
-
-                                ActivityModel activityModel = new ActivityModel(
-                                        jsonObjectNotification.getString("activity_name"), jsonObjectNotification.getString("activity_message"),
-                                        jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("activity_date"),
-                                        jsonObjectNotification.getString("status"),
-                                        jsonObjectNotification.getString("provider_email"), jsonObjectNotification.getString("provider_contact_no"),
-                                        jsonObjectNotification.getString("provider_name"), jsonObjectNotification.getString("provider_description"),
-                                        videoModels, feedBackModels, imageModels);
-
-                                activityModels.add(activityModel);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         // Initialised
-        adapter = new CalendarAdapter(getContext(), month, year, activitiesModelArrayList);
+        adapter = new CalendarAdapter(getContext(), month, year, ActivityFragment.activitiesModelArrayList);
         calendarView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        activityListAdapter = new ActivityMonthListAdapter(getActivity(), activitiesModelSelected);
+        activityListAdapter = new ActivityMonthListAdapter(getActivity(), ActivityFragment.activitiesModelArrayList);
         listView.setAdapter(activityListAdapter);
         listView.setEmptyView(emptyTextView);
 
@@ -259,7 +118,7 @@ public class ActivityMonthFragment extends Fragment {
                     txtViewDate.setText(strDate);
                     //
 
-                    activitiesModelSelected.clear();
+                   /* activitiesModelSelected.clear();
 
                     if (position > 6) {
 
@@ -272,7 +131,7 @@ public class ActivityMonthFragment extends Fragment {
                                 int iActivityYear = Integer.parseInt(writeFormatYear.format(date));
                                 int iActivityDate = Integer.parseInt(writeFormatDate.format(date));
 
-                                //Libs.log(String.valueOf(iActivityYear + " == " + theyear + " && " + strActivityMonth + " EQS " + themonth + " && " + iActivityDate + " == " + theday), " Compare ");
+                                //Utils.log(String.valueOf(iActivityYear + " == " + theyear + " && " + strActivityMonth + " EQS " + themonth + " && " + iActivityDate + " == " + theday), " Compare ");
 
                                 if (iActivityYear == theyear && strActivityMonth.trim().equalsIgnoreCase(themonth) && iActivityDate == theday) {
                                     activitiesModelSelected.add(activityModel);
@@ -281,7 +140,7 @@ public class ActivityMonthFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
 
                     activityListAdapter.notifyDataSetChanged();
                 }
@@ -294,23 +153,21 @@ public class ActivityMonthFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                ActivityListModel activityListModel = activitiesModelSelected.get(position);
-
                 ActivityModel activityModel;
 
                 if (position <= activityModels.size()) {
                     activityModel = activityModels.get(position);//TODO java.lang.IndexOutOfBoundsException
                 } else activityModel = null;
 
-                if (activityListModel.getStrStatus().equalsIgnoreCase("upcoming")) {
+                if (activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
 
-                    UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityListModel, activityModel);
+                    UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();
 
                 } else {
-                    ActivityCompletedFragment completedFragment = ActivityCompletedFragment.newInstance(activityListModel, activityModel);
+                    ActivityCompletedFragment completedFragment = ActivityCompletedFragment.newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();

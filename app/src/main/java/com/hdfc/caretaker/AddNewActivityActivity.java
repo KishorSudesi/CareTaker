@@ -14,13 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.AddNewActivityAdapter;
-import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ServiceModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +28,14 @@ public class AddNewActivityActivity extends AppCompatActivity {
     private static AddNewActivityAdapter addNewActivityAdapter;
     private static Button buttonContinue;
     private static Handler threadHandler;
-    private Libs libs;
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new);
 
-        libs = new Libs(AddNewActivityActivity.this);
+        utils = new Utils(AddNewActivityActivity.this);
         ListView listView = (ListView) findViewById(R.id.listView1);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
@@ -110,9 +105,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
                 startActivity(newIntent);
                 finish();
-            }else libs.toast(2, 2, getResources().getString(R.string.error_service_zero));
+            } else utils.toast(2, 2, getResources().getString(R.string.error_service_zero));
 
-        } else libs.toast(2, 2, getResources().getString(R.string.error_service));
+        } else utils.toast(2, 2, getResources().getString(R.string.error_service));
     }
 
     @Override
@@ -156,7 +151,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 dependentServiceModels.clear();
                 selectedDependentServiceModels.clear();
 
-                if (Config.jsonObject.has("customer_name")) {
+               /* if (Config.jsonObject.has("customer_name")) {
 
                     if (Config.jsonObject.has("dependents")) {
 
@@ -174,7 +169,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                                 if(jsonObjectNotification.has("service_name")) {
 
-                                    ServiceModel serviceModel = new ServiceModel(
+                                   *//* ServiceModel serviceModel = new ServiceModel(
                                             jsonObjectNotification.getString("service_name"),
                                             jsonObjectNotification.getInt("service_id"),
                                             jsonObjectNotification.getInt("unit"),
@@ -183,14 +178,14 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                             jsonObjectNotification.getString("service_desc")
                                     );
 
-                                    dependentServiceModels.add(serviceModel);
+                                    dependentServiceModels.add(serviceModel);*//*
                                 }
                             }
                         }
                     }
-                }
+                }*/
 
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             threadHandler.sendEmptyMessage(0);

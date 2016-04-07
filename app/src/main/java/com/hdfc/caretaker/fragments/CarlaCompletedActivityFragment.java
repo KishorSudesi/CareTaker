@@ -16,7 +16,8 @@ import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
+import com.hdfc.models.ActivityModel;
 
 import java.io.File;
 
@@ -32,13 +33,13 @@ public class CarlaCompletedActivityFragment extends Fragment {
     private static String strCarlaImageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName;
-    private Libs libs;
+    private Utils utils;
 
-    public static CarlaCompletedActivityFragment newInstance(ActivityListModel _activityListModel) {
+    public static CarlaCompletedActivityFragment newInstance(ActivityModel _activityModel) {
 
         CarlaCompletedActivityFragment fragment = new CarlaCompletedActivityFragment();
         Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY", _activityListModel);
+        args.putSerializable("ACTIVITY", _activityModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,26 +67,26 @@ public class CarlaCompletedActivityFragment extends Fragment {
         txtViewHead2 = (TextView) view.findViewById(R.id.textViewHead2);
         imageViewCarla = (ImageView) view.findViewById(R.id.imageViewCarla);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
         //
-        ActivityListModel activityListModel = (ActivityListModel) this.getArguments().getSerializable("ACTIVITY");
+        ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
-        if (activityListModel != null) {
+        if (activityModel != null) {
 
-            txtViewHead2.setText(activityListModel.getStrMessage());
-            String strHead = activityListModel.getStrPerson() + getActivity().getResources().getString(R.string.assisted_in);
+            txtViewHead2.setText(activityModel.getStrActivityMessage());
+            String strHead = activityModel.getStrProviderID() + getActivity().getResources().getString(R.string.assisted_in);
             txtViewHead1.setText(strHead);
-            String strDate = getActivity().getResources().getString(R.string.at) + activityListModel.getStrDateTime();
+            String strDate = getActivity().getResources().getString(R.string.at) + activityModel.getStrActivityDate();
             txtViewDate.setText(strDate);
-            txtViewMSG.setText(activityListModel.getStrDesc());
+            txtViewMSG.setText(activityModel.getStrActivityDesc());
 
-            strCarlaImageName = libs.replaceSpace(activityListModel.getStrPerson());
+            strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
 
-            strCarlaImageUrl = libs.replaceSpace(activityListModel.getStrImageUrl());
+            strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
 
-            Libs.log(strCarlaImageUrl + " 1 ", " 0 ");
+            Utils.log(strCarlaImageUrl + " 1 ", " 0 ");
         }
         //
         return view;
@@ -95,8 +96,6 @@ public class CarlaCompletedActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        Libs.log(" On Resumse ", " 0 ");
 
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -124,14 +123,15 @@ public class CarlaCompletedActivityFragment extends Fragment {
 
                 if (strCarlaImageName != null && !strCarlaImageName.equalsIgnoreCase("")) {
 
-                    File f = libs.getInternalFileImages(strCarlaImageName);
+                    File f = utils.getInternalFileImages(strCarlaImageName);
 
                     if (!f.exists()) {
                         if (strCarlaImageUrl != null && !strCarlaImageUrl.equalsIgnoreCase(""))
-                            libs.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
+                            utils.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
                     }
 
-                    bitmap = libs.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
+                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
+                            Config.intHeight);
                 }
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {

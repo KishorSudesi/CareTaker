@@ -38,6 +38,19 @@ public class ServiceModel {
         this.strDependentId = strDependentId;
     }
 
+    public ServiceModel(String strServiceName, String strServiceDesc, String strUpdatedDate,
+                        String[] strFeatures, int iUnit, int iUnitUsed, String strServiceId,
+                        String strServiceHistoryId) {
+        this.strServiceName = strServiceName;
+        this.strServiceDesc = strServiceDesc;
+        this.strUpdatedDate = strUpdatedDate;
+        this.strFeatures = strFeatures;
+        this.iUnit = iUnit;
+        this.iUnitUsed = iUnitUsed;
+        this.strServiceId = strServiceId;
+        this.strServiceHistoryId = strServiceHistoryId;
+    }
+
     public String getStrServiceName() {
         return strServiceName;
     }

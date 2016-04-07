@@ -12,14 +12,14 @@ import com.hdfc.adapters.DependentViewAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Libs;
+import com.hdfc.libs.Utils;
 
 public class AddDependentFragment extends Fragment {
 
     public static ListView list;
     public static DependentViewAdapter adapter;
     public static Button buttonContinue;
-    private Libs libs;
+    private Utils utils;
 
     public AddDependentFragment() {
     }
@@ -34,7 +34,7 @@ public class AddDependentFragment extends Fragment {
 
         if (Config.customerModel.getStrName() != null
                 && !Config.customerModel.getStrName().equalsIgnoreCase(""))
-            intCount = libs.retrieveDependants();
+            intCount = utils.retrieveDependants();
 
         if (intCount > 1)
             buttonContinue.setVisibility(View.VISIBLE);
@@ -54,7 +54,7 @@ public class AddDependentFragment extends Fragment {
         list = (ListView) addFragment.findViewById(R.id.listViewDpndnts);
         buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
 
-        libs = new Libs(getActivity());
+        utils = new Utils(getActivity());
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override

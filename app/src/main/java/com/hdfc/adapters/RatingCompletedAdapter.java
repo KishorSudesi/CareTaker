@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Libs;
 import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.FeedBackModel;
 
 import java.io.File;
@@ -28,14 +28,14 @@ public class RatingCompletedAdapter extends BaseAdapter {
     private static final int[] intImageIds = new int[]{R.mipmap.rate_icon_1, R.mipmap.rate_icon_2, R.mipmap.rate_icon_3, R.mipmap.smiley_icon, R.mipmap.rate_icon_4};
     private static LayoutInflater inflater = null;
     private static Context _ctx;
-    private static Libs libs;
+    private static Utils utils;
     private static MultiBitmapLoader multiBitmapLoader;
     private List<FeedBackModel> data = new ArrayList<>();
 
     public RatingCompletedAdapter(Context context, List<FeedBackModel> x) {
         _ctx = context;
         data = x;
-        libs = new Libs(context);
+        utils = new Utils(context);
         multiBitmapLoader = new MultiBitmapLoader(context);
     }
 
@@ -88,7 +88,7 @@ public class RatingCompletedAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            String strTimeStamp = libs.formatDate(data.get(position).getStrFeedBackTime());
+            String strTimeStamp = utils.formatDate(data.get(position).getStrFeedBackTime());
 
             viewHolder.dateTime.setText(strTimeStamp);
 
@@ -99,15 +99,15 @@ public class RatingCompletedAdapter extends BaseAdapter {
             //
             try {
 
-                File file = libs.getInternalFileImages(libs.replaceSpace(data.get(position).getStrFeedBackBy()));
+                File file = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrFeedBackBy()));
 
-                //Libs.log(file.getAbsolutePath(), " PATH ");
+                //Utils.log(file.getAbsolutePath(), " PATH ");
 
                 if (file.exists()) {
 
                     String strPath = file.getAbsolutePath();
 
-                    int intImgHeight = libs.getBitmapHeightFromFile(strPath);
+                    int intImgHeight = utils.getBitmapHeightFromFile(strPath);
 
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
