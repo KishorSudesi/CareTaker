@@ -1698,7 +1698,7 @@ public class Utils {
                                 getJSONArray("service_features"));
 
                         ServiceModel serviceModel = new ServiceModel(
-                                jsonObjectService.getString("service_name"),
+                                "",//jsonObjectService.getString("service_neame") TODO remove this
                                 jsonObjectService.getString("service_desc"),
                                 jsonObjectService.getString("updated_date"),
                                 strFeatures,
@@ -1747,8 +1747,8 @@ public class Utils {
                     Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
 
                 activityModel.setStrServcieID(jsonObjectActivity.getString("service_id"));
-                activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
-                activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));
+                //activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
+                //activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));
 
                 activityModel.setStrActivityDate(jsonObjectActivity.getString("activity_date"));
                 activityModel.setStrActivityDoneDate(jsonObjectActivity.
@@ -1849,7 +1849,6 @@ public class Utils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     public void fetchDependents(String strCustomerId, final ProgressDialog progressDialog) {
@@ -2021,8 +2020,8 @@ public class Utils {
 
                             @Override
                             public void onException(Exception e) {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
 
                                 try {
                                     JSONObject jsonObject = new JSONObject(e.getMessage());
@@ -2031,6 +2030,10 @@ public class Utils {
                                     String strMess = jsonObjectError.getString("details");
 
                                     toast(2, 2, strMess);
+
+                                    log(e.getMessage(), " test ");
+
+                                    fetchLatestActivitiesUpcoming(progressDialog);
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
@@ -2186,6 +2189,15 @@ public class Utils {
                                 JSONObject jsonObjectError =
                                         jsonObject.getJSONObject("app42Fault");
                                 String strMess = jsonObjectError.getString("details");
+
+                                //
+                                iActivityCount++;
+
+                                if (iActivityCount == Config.strDependentIds.size())
+                                    fetchProviders(progressDialog);
+                                else
+                                    fetchLatestActivities(progressDialog);
+                                //
 
                                 toast(2, 2, strMess);
                             } catch (JSONException e1) {
