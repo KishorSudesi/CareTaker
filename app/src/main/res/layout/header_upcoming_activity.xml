@@ -31,9 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/buttonCall"
-        android:layout_marginRight="@dimen/margin_general"
+        android:layout_alignTop="@+id/buttonCallUpcoming"
         android:background="@drawable/button_back_trans"
         android:src="@drawable/cancel_icon" />
 

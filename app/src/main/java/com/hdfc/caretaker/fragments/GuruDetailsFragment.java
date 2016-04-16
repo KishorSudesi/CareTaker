@@ -112,7 +112,7 @@ public class GuruDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (Config.customerModel.getStrName() != null
+        if (Config.customerModel != null && Config.customerModel.getStrName() != null
                 && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
 
             editName.setText(Config.customerModel.getStrName());
@@ -276,7 +276,9 @@ public class GuruDetailsFragment extends Fragment {
 
                                     //chk this
                                     utils.retrieveDependants();//strEmail
-                                    AddDependentFragment.adapter.notifyDataSetChanged();
+
+                                    if (AddDependentFragment.adapter != null)
+                                        AddDependentFragment.adapter.notifyDataSetChanged();
 
                                     utils.retrieveConfirmDependants();
                                     ConfirmFragment.adapter.notifyDataSetChanged();

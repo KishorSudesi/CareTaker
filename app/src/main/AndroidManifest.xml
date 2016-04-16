@@ -70,7 +70,8 @@
         <activity
             android:name="com.hdfc.caretaker.DashboardActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <!-- <activity
              android:name=".BasePackageActivity"

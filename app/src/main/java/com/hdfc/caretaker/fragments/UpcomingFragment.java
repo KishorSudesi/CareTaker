@@ -35,6 +35,8 @@ public class UpcomingFragment extends Fragment {
     private String strCarlaImageName;
     private Utils utils;
 
+    private ImageButton buttonCancel;
+
     public static UpcomingFragment newInstance(ActivityModel activityModel) {
         UpcomingFragment fragment = new UpcomingFragment();
         Bundle args = new Bundle();
@@ -64,6 +66,7 @@ public class UpcomingFragment extends Fragment {
         imageViewCarla = (ImageView) view.findViewById(R.id.imageViewCarla);
         ImageButton msg = (ImageButton) view.findViewById(R.id.buttonMsg);
         ImageButton call = (ImageButton) view.findViewById(R.id.buttonCallUpcoming);
+        buttonCancel = (ImageButton) view.findViewById(R.id.buttonCancel);
 
         utils = new Utils(getActivity());
         progressDialog = new ProgressDialog(getActivity());
@@ -93,6 +96,14 @@ public class UpcomingFragment extends Fragment {
 
             }
         });
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.toast(2, 2, getString(R.string.coming_soon));
+            }
+        });
+
         msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

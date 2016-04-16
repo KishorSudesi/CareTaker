@@ -132,10 +132,14 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             //chk this
             utils.retrieveDependants();
-            AddDependentFragment.adapter.notifyDataSetChanged();
+
+            if (AddDependentFragment.adapter != null)
+                AddDependentFragment.adapter.notifyDataSetChanged();
 
             utils.retrieveConfirmDependants();
-            ConfirmFragment.adapter.notifyDataSetChanged();
+
+            if (ConfirmFragment.adapter != null)
+                ConfirmFragment.adapter.notifyDataSetChanged();
             //
 
             progressDialog.dismiss();

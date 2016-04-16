@@ -46,6 +46,8 @@ public class CalendarAdapter extends BaseAdapter {
         // Print Month
         printMonth(month, year);
 
+        //todo proper color scheme, default date selection,
+
         // Find Number of Events
        // eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
     }

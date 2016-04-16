@@ -25,8 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/camera_icon"
-                android:padding="5dp" />
+                android:padding="5dp"
+                android:src="@mipmap/camera_icon" />
 
             <TextView
                 android:id="@+id/textView18"
@@ -59,11 +59,11 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:hint="@string/gurunathan"
                     android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/person_icon"
-                    android:drawableStart="@drawable/person_icon"
                     android:drawablePadding="15dp"
+                    android:drawableStart="@drawable/person_icon"
+                    android:hint="@string/name"
                     android:paddingLeft="10dp" />
 
                 <EditText
@@ -76,8 +76,8 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/address_icon"
-                    android:drawableStart="@drawable/address_icon"
                     android:drawablePadding="15dip"
+                    android:drawableStart="@drawable/address_icon"
                     android:hint="@string/address"
                     android:paddingLeft="10dp" />
 
@@ -90,8 +90,8 @@
                     android:layout_marginTop="25dp"
                     android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/pass_icon"
-                    android:drawableStart="@drawable/pass_icon"
                     android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/pass_icon"
                     android:hint="@string/old_password"
                     android:inputType="textPassword"
                     android:padding="10dp" />
@@ -105,8 +105,8 @@
                     android:layout_marginTop="25dp"
                     android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/pass_icon"
-                    android:drawableStart="@drawable/pass_icon"
                     android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/pass_icon"
                     android:hint="@string/new_password"
                     android:inputType="textPassword"
                     android:padding="10dp" />
@@ -120,8 +120,8 @@
                     android:layout_marginTop="25dp"
                     android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/pass_icon"
-                    android:drawableStart="@drawable/pass_icon"
                     android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/pass_icon"
                     android:hint="@string/verify_password"
                     android:inputType="textPassword"
                     android:padding="10dp" />
@@ -136,8 +136,8 @@
                     android:layout_marginTop="25dp"
                     android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/receiver_icon"
-                    android:drawableStart="@drawable/receiver_icon"
                     android:drawablePadding="15dp"
+                    android:drawableStart="@drawable/receiver_icon"
                     android:hint="@string/number"
                     android:inputType="number"
                     android:maxLength="10"

@@ -32,7 +32,7 @@ public class AddDependentFragment extends Fragment {
 
         int intCount = 0;
 
-        if (Config.customerModel.getStrName() != null
+        if (Config.customerModel != null && Config.customerModel.getStrName() != null
                 && !Config.customerModel.getStrName().equalsIgnoreCase(""))
             intCount = utils.retrieveDependants();
 

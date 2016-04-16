@@ -380,6 +380,8 @@ public class ConfirmFragment extends Fragment {
 
         try {
 
+            Config.jsonCustomer = new JSONObject();
+
             Config.jsonCustomer.put("customer_name", Config.customerModel.getStrName());
             Config.jsonCustomer.put("customer_address", Config.customerModel.getStrAddress());
             Config.jsonCustomer.put("customer_contact_no", Config.customerModel.getStrContacts());
@@ -817,7 +819,7 @@ public class ConfirmFragment extends Fragment {
 
         int intCount = 0;
 
-        if (Config.customerModel.getStrName() != null
+        if (Config.customerModel != null && Config.customerModel.getStrName() != null
                 && !Config.customerModel.getStrName().equalsIgnoreCase(""))
             intCount = utils.retrieveConfirmDependants();
 

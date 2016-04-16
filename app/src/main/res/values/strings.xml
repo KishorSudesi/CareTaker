@@ -7,6 +7,7 @@
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
     <string name="email">Email</string>
+    <string name="name">Name</string>
     <string name="password">Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
@@ -72,6 +73,7 @@
     <string name="select_date">Select a Date</string>
     <string name="no_ratings">No Ratings</string>
     <string name="up_next">UP Next</string>
+    <string name="click_edit">Click Image to Edit</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

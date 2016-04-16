@@ -165,10 +165,10 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         editRelation.setError(null);
 
         strDependantName = editName.getText().toString().trim();
-        String strContactNo = editContactNo.getText().toString().trim();
-        String strAddress = editAddress.getText().toString().trim();
-        String strRelation = editRelation.getText().toString().trim();
-        String strEmail = editDependantEmail.getText().toString().trim();
+        final String strContactNo = editContactNo.getText().toString().trim();
+        final String strAddress = editAddress.getText().toString().trim();
+        final String strRelation = editRelation.getText().toString().trim();
+        final String strEmail = editDependantEmail.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -225,66 +225,74 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         } else {
             try {
 
-                boolean b = true;
+                mProgress.setMessage(getString(R.string.loading));
+                mProgress.setCancelable(false);
+                mProgress.show();
 
-                if (!SignupActivity.dependentNames.contains(strDependantName)) {
-                    dependentModel = new DependentModel();
+                UserService userService = new UserService(DependentDetailPersonalActivity.this);
 
-                    //strDependantName, strRelation, strImageName, "", "",
-                    // strAddress, strContactNo, strEmail, "", 0
+                userService.getUser(strEmail, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
 
-                    dependentModel.setStrName(strDependantName);
-                    dependentModel.setStrRelation(strRelation);
-                    dependentModel.setStrImagePath(strImageName);
-                    dependentModel.setStrAddress(strAddress);
-                    dependentModel.setStrContacts(strContactNo);
-                    dependentModel.setStrEmail(strEmail);
+                        if (mProgress.isShowing())
+                            mProgress.dismiss();
 
-                    SignupActivity.dependentNames.add(strDependantName);
-                } else {
-                    if (dependentModel != null &&
-                            SignupActivity.dependentNames.contains(strDependantName)
-                            && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
-
-                        dependentModel.setStrRelation(strRelation);
-                        dependentModel.setStrImagePath(strImageName);
-                        dependentModel.setStrAddress(strAddress);
-                        dependentModel.setStrContacts(strContactNo);
-                        dependentModel.setStrEmail(strEmail);
-                    } else b = false;
-                }
-
-                if (b) {
-                    UserService userService = new UserService(DependentDetailPersonalActivity.this);
-
-                    userService.getUser(strEmail, new App42CallBack() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            if (o != null) {
-                                utils.toast(2, 2, getString(R.string.email_exists));
-                            } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
+                        if (o != null) {
+                            utils.toast(2, 2, getString(R.string.email_exists));
+                        } else {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
                         }
+                    }
 
-                        @Override
-                        public void onException(Exception e) {
-                            if (e != null) {
-                                utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
-                                strImageName = "";
-                                Intent selection = new Intent(DependentDetailPersonalActivity.this,
-                                        DependentDetailsMedicalActivity.class);
-                                startActivity(selection);
-                                finish();
+                    @Override
+                    public void onException(Exception e) {
+
+                        if (mProgress.isShowing())
+                            mProgress.dismiss();
+
+                        if (e != null) {
+
+                            if (!SignupActivity.dependentNames.contains(strDependantName)) {
+                                dependentModel = new DependentModel();
+
+                                //strDependantName, strRelation, strImageName, "", "",
+                                // strAddress, strContactNo, strEmail, "", 0
+
+                                dependentModel.setStrName(strDependantName);
+                                dependentModel.setStrRelation(strRelation);
+                                dependentModel.setStrImagePath(strImageName);
+                                dependentModel.setStrAddress(strAddress);
+                                dependentModel.setStrContacts(strContactNo);
+                                dependentModel.setStrEmail(strEmail);
+
+                                SignupActivity.dependentNames.add(strDependantName);
                             } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
-                        }
-                    });
+                                if (dependentModel != null &&
+                                        SignupActivity.dependentNames.contains(strDependantName)
+                                        && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
 
-                } else {
-                    utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
-                }
+                                    dependentModel.setStrRelation(strRelation);
+                                    dependentModel.setStrImagePath(strImageName);
+                                    dependentModel.setStrAddress(strAddress);
+                                    dependentModel.setStrContacts(strContactNo);
+                                    dependentModel.setStrEmail(strEmail);
+                                } else {
+                                    utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                                }
+                            }
+
+                            utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                            strImageName = "";
+                            Intent selection = new Intent(DependentDetailPersonalActivity.this,
+                                    DependentDetailsMedicalActivity.class);
+                            startActivity(selection);
+                            finish();
+                        } else {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
+                    }
+                });
 
             } catch (Exception e) {
                 e.printStackTrace();
