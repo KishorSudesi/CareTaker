@@ -1698,7 +1698,7 @@ public class Utils {
                                 getJSONArray("service_features"));
 
                         ServiceModel serviceModel = new ServiceModel(
-                                "",//jsonObjectService.getString("service_neame") TODO remove this
+                                jsonObjectService.getString("service_name"),
                                 jsonObjectService.getString("service_desc"),
                                 jsonObjectService.getString("updated_date"),
                                 strFeatures,
@@ -2005,12 +2005,13 @@ public class Utils {
                                             String strActivityId = jsonDocument.getDocId();
                                             createActivityModel(strActivityId, strDocument);
                                         }
-                                        fetchLatestActivitiesUpcoming(progressDialog);
-                                    } else {
+
+                                    }/* else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
                                         toast(2, 2, _ctxt.getString(R.string.error));
-                                    }
+                                    }*/
+                                    fetchLatestActivitiesUpcoming(progressDialog);
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -2027,9 +2028,9 @@ public class Utils {
                                     JSONObject jsonObject = new JSONObject(e.getMessage());
                                     JSONObject jsonObjectError =
                                             jsonObject.getJSONObject("app42Fault");
-                                    String strMess = jsonObjectError.getString("details");
+                                    //String strMess = jsonObjectError.getString("details");
 
-                                    toast(2, 2, strMess);
+                                    //toast(2, 2, strMess);
 
                                     log(e.getMessage(), " test ");
 
@@ -2161,11 +2162,6 @@ public class Utils {
                                         createActivityModel(strActivityId, strDocument);
                                     }
                                     iActivityCount++;
-
-                                    if (iActivityCount == Config.strDependentIds.size())
-                                        fetchProviders(progressDialog);
-                                    else
-                                        fetchLatestActivities(progressDialog);
 
                                 } else {
                                     if (progressDialog.isShowing())

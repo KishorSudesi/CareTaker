@@ -533,7 +533,7 @@ public class ConfirmFragment extends Fragment {
 
         Config.customerModel.setStrCustomerID(jsonDocId);
 
-        while (iDependentCount < intCount) {
+        if (iDependentCount < intCount) {
 
             try {
 
