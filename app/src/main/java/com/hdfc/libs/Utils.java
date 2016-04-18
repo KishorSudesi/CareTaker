@@ -2021,20 +2021,24 @@ public class Utils {
 
                             @Override
                             public void onException(Exception e) {
-                                /*if (progressDialog.isShowing())
-                                    progressDialog.dismiss();*/
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
 
                                 try {
-                                    JSONObject jsonObject = new JSONObject(e.getMessage());
-                                    JSONObject jsonObjectError =
-                                            jsonObject.getJSONObject("app42Fault");
-                                    //String strMess = jsonObjectError.getString("details");
+                                    if (e != null) {
+                                        JSONObject jsonObject = new JSONObject(e.getMessage());
+                                        JSONObject jsonObjectError =
+                                                jsonObject.getJSONObject("app42Fault");
+                                        //String strMess = jsonObjectError.getString("details");
 
-                                    //toast(2, 2, strMess);
+                                        //toast(2, 2, strMess);
 
-                                    log(e.getMessage(), " test ");
+                                        log(e.getMessage(), " test ");
 
-                                    fetchLatestActivitiesUpcoming(progressDialog);
+                                        fetchLatestActivitiesUpcoming(progressDialog);
+                                    } else {
+                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                    }
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
@@ -2161,13 +2165,20 @@ public class Utils {
                                         String strActivityId = jsonDocument.getDocId();
                                         createActivityModel(strActivityId, strDocument);
                                     }
-                                    iActivityCount++;
 
-                                } else {
+
+                                } /*else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
                                     toast(2, 2, _ctxt.getString(R.string.error));
-                                }
+                                }*/
+                                iActivityCount++;
+
+                                if (iActivityCount == Config.strDependentIds.size())
+                                    fetchProviders(progressDialog);
+                                else
+                                    fetchLatestActivities(progressDialog);
+
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
@@ -2180,22 +2191,27 @@ public class Utils {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
 
+
                             try {
-                                JSONObject jsonObject = new JSONObject(e.getMessage());
-                                JSONObject jsonObjectError =
-                                        jsonObject.getJSONObject("app42Fault");
-                                String strMess = jsonObjectError.getString("details");
+                                if (e != null) {
+                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                    JSONObject jsonObjectError =
+                                            jsonObject.getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+                                    //
+                                    iActivityCount++;
 
-                                //
-                                iActivityCount++;
+                                    if (iActivityCount == Config.strDependentIds.size())
+                                        fetchProviders(progressDialog);
+                                    else
+                                        fetchLatestActivities(progressDialog);
+                                    //
 
-                                if (iActivityCount == Config.strDependentIds.size())
-                                    fetchProviders(progressDialog);
-                                else
-                                    fetchLatestActivities(progressDialog);
-                                //
+                                    log(e.getMessage(), " test 2");
 
-                                toast(2, 2, strMess);
+                                } else {
+                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                }
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
