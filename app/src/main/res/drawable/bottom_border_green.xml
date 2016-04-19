@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetLeft="-2dp"
-    android:insetRight="-2dp"
-    android:insetTop="-2dp">
+    android:insetLeft="-5dp"
+    android:insetRight="-5dp"
+    android:insetTop="-5dp">
 
     <shape android:shape="rectangle">
         <stroke
-            android:width="2dp"
-            android:color="#cccccc" />
-        <solid android:color="@null" />
+            android:width="5dp"
+            android:color="@color/colorPrimaryDark" />
+        <solid android:color="#cccccc" />
     </shape>
 
 </inset>
