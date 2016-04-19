@@ -93,8 +93,12 @@ public class ImagesFragment extends Fragment {
         public void run() {
             try {
 
-                bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+               /* bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                         utils.replaceSpace(Config.dependentNames.get(intPosition))).getAbsolutePath(),
+                        Config.intWidth, Config.intHeight);
+*/
+                bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+                        utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
                         Config.intWidth, Config.intHeight);
 
                 threadHandler.sendEmptyMessage(0);

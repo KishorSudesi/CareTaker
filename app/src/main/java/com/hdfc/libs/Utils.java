@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hdfc.app42service.StorageService;
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
@@ -1532,6 +1533,8 @@ public class Utils {
         if (isConnectingToInternet()) {
 
             Config.fileModels.clear();
+            iActivityCount = 0;
+            iProviderCount = 0;
 
             StorageService storageService = new StorageService(_ctxt);
 
@@ -1673,7 +1676,7 @@ public class Utils {
                 dependentModel.setStrNotes(jsonObjectDependent.getString("dependent_notes"));
                 dependentModel.setStrContacts(jsonObjectDependent.getString("dependent_contact_no"));
                 dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
-                dependentModel.setStrIllness(jsonObjectDependent.getString("dependent_profile_url"));
+                dependentModel.setStrImageUrl(jsonObjectDependent.getString("dependent_profile_url"));
                 dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
                 dependentModel.setIntAge(jsonObjectDependent.getInt("dependent_age"));
 
@@ -1729,7 +1732,7 @@ public class Utils {
             JSONObject jsonObjectActivity =
                     new JSONObject(strDocument);
 
-            log(strDocument, " Activity");
+            //log(strDocument, " Activity");
 
             if (jsonObjectActivity.has("activity_name")) {
 
@@ -1742,6 +1745,8 @@ public class Utils {
                 activityModel.setStrActivityDesc(jsonObjectActivity.getString("activity_desc"));
                 activityModel.setStrActivityMessage(jsonObjectActivity.
                         getString("activity_message"));
+
+                //log(jsonObjectActivity.getString("provider_id"), " PROVIDER ID ");
 
                 if (!Config.strProviderIds.contains(jsonObjectActivity.getString("provider_id")))
                     Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
@@ -1968,9 +1973,9 @@ public class Utils {
 
         if (iActivityCount < Config.strDependentIds.size()) {
 
-            log(String.valueOf(iActivityCount), " Activity Count");
-
             activityModels.clear();
+
+            //log(String.valueOf(iActivityCount), " A Count 0 ");
 
             if (isConnectingToInternet()) {
 
@@ -1991,8 +1996,6 @@ public class Utils {
                                 Storage response = (Storage) o;
 
                                 if (response != null) {
-
-                                    log(String.valueOf(response), " response ");
 
                                     if (response.getJsonDocList().size() > 0) {
 
@@ -2021,22 +2024,21 @@ public class Utils {
 
                             @Override
                             public void onException(Exception e) {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
 
                                 try {
                                     if (e != null) {
                                         JSONObject jsonObject = new JSONObject(e.getMessage());
                                         JSONObject jsonObjectError =
                                                 jsonObject.getJSONObject("app42Fault");
-                                        //String strMess = jsonObjectError.getString("details");
+                                        int appErrorCode = jsonObjectError.getInt("appErrorCode");
 
-                                        //toast(2, 2, strMess);
+                                        if (appErrorCode == 2608) {
+                                            fetchLatestActivitiesUpcoming(progressDialog);
+                                        }
 
-                                        log(e.getMessage(), " test ");
-
-                                        fetchLatestActivitiesUpcoming(progressDialog);
                                     } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
                                 } catch (JSONException e1) {
@@ -2056,11 +2058,15 @@ public class Utils {
 
     public void fetchProviders(final ProgressDialog progressDialog) {
 
+        log(String.valueOf(iProviderCount + "g " + Config.strProviderIds.size()), " Count -1");
+
         if (iProviderCount < Config.strProviderIds.size()) {
 
             if (isConnectingToInternet()) {
 
                 StorageService storageService = new StorageService(_ctxt);
+
+                //log(String.valueOf(iProviderCount), " Count ");
 
                 storageService.findDocsByIdApp42CallBack(Config.strProviderIds.get(iProviderCount),
                         Config.collectionDependent, new App42CallBack() {
@@ -2079,24 +2085,20 @@ public class Utils {
                                         String strDocument = jsonDocument.getJsonDoc();
                                         String strProviderDocId = jsonDocument.getDocId();
                                         createProviderModel(strProviderDocId, strDocument);
+                                    }
 
-                                        iProviderCount++;
+                                    iProviderCount++;
 
-                                        if (iProviderCount == Config.strProviderIds.size()) {
+                                    //log(String.valueOf(iProviderCount), " Count 0 ");
 
-                                            progressDialog.dismiss();
-                                            toast(1, 1, _ctxt.getString(R.string.success_login));
+                                    if (iProviderCount == Config.strProviderIds.size()) {
 
-                                            Config.intSelectedMenu = Config.intDashboardScreen;
-                                            Config.boolIsLoggedIn = true;
-
-                                        } else fetchProviders(progressDialog);
-
-                                    } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
-                                        toast(2, 2, _ctxt.getString(R.string.error));
-                                    }
+                                        goToDashboard();
+
+                                    } else fetchProviders(progressDialog);
+
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -2106,16 +2108,34 @@ public class Utils {
 
                             @Override
                             public void onException(Exception e) {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
 
                                 try {
-                                    JSONObject jsonObject = new JSONObject(e.getMessage());
-                                    JSONObject jsonObjectError =
-                                            jsonObject.getJSONObject("app42Fault");
-                                    String strMess = jsonObjectError.getString("details");
 
-                                    toast(2, 2, strMess);
+                                    if (e != null) {
+
+                                        JSONObject jsonObject = new JSONObject(e.getMessage());
+                                        JSONObject jsonObjectError =
+                                                jsonObject.getJSONObject("app42Fault");
+
+                                        int appErrorCode = jsonObjectError.getInt("appErrorCode");
+
+                                        if (appErrorCode == 2608) {
+                                            iProviderCount++;
+                                        }
+
+                                        if (iProviderCount == Config.strProviderIds.size()) {
+
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            goToDashboard();
+
+                                        } else fetchProviders(progressDialog);
+
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                    }
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
@@ -2127,7 +2147,25 @@ public class Utils {
                     progressDialog.dismiss();
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
+
+        } else {
+            if (iProviderCount == Config.strProviderIds.size()) {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                goToDashboard();
+            }
         }
+    }
+
+    public void goToDashboard() {
+
+        toast(1, 1, _ctxt.getString(R.string.success_login));
+
+        Config.intSelectedMenu = Config.intDashboardScreen;
+        Config.boolIsLoggedIn = true;
+
+        Intent intent = new Intent(_ctxt, DashboardActivity.class);
+        _ctxt.startActivity(intent);
     }
 
     public void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog) {
@@ -2152,8 +2190,6 @@ public class Utils {
 
                             if (response != null) {
 
-                                log(" 1 ", " L ");
-
                                 if (response.getJsonDocList().size() > 0) {
 
                                     for (int i = 0; i < response.getJsonDocList().size(); i++) {
@@ -2174,6 +2210,8 @@ public class Utils {
                                 }*/
                                 iActivityCount++;
 
+                                //log(String.valueOf(iActivityCount), " A Count 1 ");
+
                                 if (iActivityCount == Config.strDependentIds.size())
                                     fetchProviders(progressDialog);
                                 else
@@ -2188,28 +2226,31 @@ public class Utils {
 
                         @Override
                         public void onException(Exception e) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
-
 
                             try {
                                 if (e != null) {
                                     JSONObject jsonObject = new JSONObject(e.getMessage());
                                     JSONObject jsonObjectError =
                                             jsonObject.getJSONObject("app42Fault");
-                                    String strMess = jsonObjectError.getString("details");
-                                    //
-                                    iActivityCount++;
+
+                                    int appErrorCode = jsonObjectError.getInt("appErrorCode");
+
+                                    if (appErrorCode == 2608) {
+                                        iActivityCount++;
+                                    }
+
+                                    log(String.valueOf(iActivityCount + " E " + Config.strDependentIds.size()), " A Count 2 ");
 
                                     if (iActivityCount == Config.strDependentIds.size())
                                         fetchProviders(progressDialog);
                                     else
                                         fetchLatestActivities(progressDialog);
-                                    //
 
-                                    log(e.getMessage(), " test 2");
+                                    //log(e.getMessage(), " test 2");
 
                                 } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
                             } catch (JSONException e1) {

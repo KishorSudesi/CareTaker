@@ -82,7 +82,7 @@ public class MyAccountEditFragment extends Fragment {
 
         //RelativeLayout loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
-        strCustomerImagePath=getActivity().getFilesDir()+"/images/"+Config.strCustomerImageName;
+        strCustomerImagePath = getActivity().getFilesDir() + "/images/" + Config.customerModel.getStrCustomerID();
 
         progressDialog = new ProgressDialog(getActivity());
 
@@ -224,7 +224,7 @@ public class MyAccountEditFragment extends Fragment {
 
                                     if (utils.isConnectingToInternet()) {
 
-                                        progressDialog.setMessage(getActivity().getString(R.string.verify_identity));
+                                        progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
 
                                        /* try {
                                             strOldPass = AESCrypt.encrypt(Config.string, strOldPass);
@@ -247,7 +247,15 @@ public class MyAccountEditFragment extends Fragment {
                                             @Override
                                             public void onException(Exception e) {
                                                 progressDialog.dismiss();
-                                                utils.toast(2, 2, e.getMessage());
+                                                try {
+                                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                                    String strMess = jsonObjectError.getString("details");
+
+                                                    utils.toast(2, 2, strMess);
+                                                } catch (JSONException e1) {
+                                                    e1.printStackTrace();
+                                                }
                                             }
                                         });
 
@@ -547,7 +555,7 @@ public class MyAccountEditFragment extends Fragment {
         public void run() {
             try {
 
-                File f = utils.getInternalFileImages(Config.strCustomerImageName);
+                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
                 Utils.log(f.getAbsolutePath(), " FP ");
                 bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
 

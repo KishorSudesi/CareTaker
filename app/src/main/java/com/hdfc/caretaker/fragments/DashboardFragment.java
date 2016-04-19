@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public class DashboardFragment extends Fragment {
 
-    public final static int PAGES = Config.intDependentsCount;
+    public final static int PAGES = Config.dependentModels.size();
     // You can choose a bigger number for LOOPS, but you know, nobody will fling
     // more than 1000 times just in order to test your "infinite" ViewPager :D
     public final static int LOOPS = 1;//Config.intDependentsCount;
@@ -64,7 +64,7 @@ public class DashboardFragment extends Fragment {
 
     public static void loadData(int intIndex) {
 
-        Utils.log(String.valueOf(intIndex), "");
+        Utils.log(String.valueOf(intIndex), " INDEX ");
 
         try {
 
@@ -72,10 +72,13 @@ public class DashboardFragment extends Fragment {
             activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
             activitiesAdapter.notifyDataSetChanged();
 
-            textView1.setText(Config.dependentModels.get(intIndex).getIntHealthBp());
-            textView2.setText(Config.dependentModels.get(intIndex).getIntHealthHeartRate());
-            textView3.setText(Config.dependentModels.get(intIndex).getIntHealthBp());
-            textView4.setText(Config.dependentModels.get(intIndex).getIntHealthHeartRate());
+
+            Utils.log(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()), " INDEX 0 ");
+
+            textView1.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
+            textView2.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));
+            textView3.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
+            textView4.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,7 +234,7 @@ public class DashboardFragment extends Fragment {
             try {
 
                 bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
-                        utils.replaceSpace(Config.dependentNames.get(iPosition))).getAbsolutePath(),
+                        utils.replaceSpace(Config.dependentModels.get(iPosition).getStrDependentID())).getAbsolutePath(),
                         Config.intWidth, Config.intHeight);
 
                 threadHandler.sendEmptyMessage(0);

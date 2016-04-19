@@ -151,7 +151,7 @@ public class MyAccountFragment extends Fragment {
             try {
 
                 if(Config.customerModel!=null) {
-                    File f = utils.getInternalFileImages(Config.strCustomerImageName);
+                    File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
                     bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 }
 

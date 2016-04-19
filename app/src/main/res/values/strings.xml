@@ -89,6 +89,7 @@
     <string name="loading">Getting Information…</string>
     <string name="process_login">Taking you In…</string>
     <string name="verify_identity">Taking you In…</string>
+    <string name="verify_identity_password">Verifying…</string>
     <string name="uploading_profile_pic">Setting Profile Images…</string>
 
     <!--Error Strings-->

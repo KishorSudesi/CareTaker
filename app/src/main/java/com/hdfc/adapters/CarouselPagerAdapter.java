@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.fragments.DashboardFragment;
@@ -37,7 +36,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
 */
         //position = position % DashboardFragment.PAGES;
 
-        Log.e("CarouselPagerAdapter", String.valueOf(position));
+        //Log.e("CarouselPagerAdapter", String.valueOf(position));
         return ImagesFragment.newInstance(context, position, scale);
     }
 
@@ -76,12 +75,16 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
     }
 
     private MyLinearView getRootView(int position) {
+
+        //Utils.log(String.valueOf(fm.findFragmentByTag(this.getFragmentTag(position))+ " : " + position), " NPE ");
+
         return (MyLinearView)
                 fm.findFragmentByTag(this.getFragmentTag(position))
                         .getView().findViewById(R.id.root);
     }
 
     private String getFragmentTag(int position) {
+        //Utils.log(String.valueOf("android:switcher:" + DashboardFragment.pager.getId() + ":" + position), " NPE 0 ");
         return "android:switcher:" + DashboardFragment.pager.getId() + ":" + position;
     }
 }
