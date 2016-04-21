@@ -100,7 +100,8 @@ public class UpcomingFragment extends Fragment {
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.toast(2, 2, getString(R.string.coming_soon));
+                //utils.toast(2, 2, getString(R.string.coming_soon));
+                goToList();
             }
         });
 
@@ -108,16 +109,20 @@ public class UpcomingFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.putExtra("sms_body",
-                        activityModel != null ? activityModel.getStrActivityName() : "Activity Name");
-                //sendIntent.putExtra("address",
-                // activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
-                sendIntent.setType("vnd.android-dir/mms-sms");
-                //startActivity(sendIntent);
+                try {
+                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                    sendIntent.putExtra("sms_body",
+                            activityModel != null ? activityModel.getStrActivityName() : "Activity Name");
+                    //sendIntent.putExtra("address",
+                    // activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
+                    sendIntent.setType("vnd.android-dir/mms-sms");
+                    //startActivity(sendIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
+
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

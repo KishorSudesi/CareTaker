@@ -95,7 +95,7 @@ public class ConfirmFragment extends Fragment {
                     pDialog.setIndeterminate(false);
                     pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                     pDialog.setProgress(0);
-                    pDialog.setCancelable(true);
+                    pDialog.setCancelable(false);
                     pDialog.setMax(uploadSize);
                     pDialog.show();
 
@@ -297,7 +297,7 @@ public class ConfirmFragment extends Fragment {
             if (utils.isConnectingToInternet()) {
 
                 progressDialog.setMessage(getActivity().getResources().getString(R.string.uploading));
-                progressDialog.setCancelable(true);
+                progressDialog.setCancelable(false);
                 progressDialog.show();
 
                 StorageService storageService = new StorageService(getActivity());
@@ -504,7 +504,7 @@ public class ConfirmFragment extends Fragment {
 
                         int appErrorCode = ((App42Exception)e).getAppErrorCode();
 
-                        if (appErrorCode == 2005) {
+                        if (appErrorCode == 2005 || appErrorCode == 2001) {
                             createDependent();
                         } else {
                             if (progressDialog.isShowing())
@@ -781,7 +781,7 @@ public class ConfirmFragment extends Fragment {
 
                                     int appErrorCode = ((App42Exception) e).getAppErrorCode();
 
-                                    if (appErrorCode == 2005) {
+                                    if (appErrorCode == 2005 || appErrorCode == 2001) {
 
                                         iDependentCount++;
 

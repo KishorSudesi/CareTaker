@@ -5,15 +5,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1">
+        android:layout_height="350dp"
+        android:layout_gravity="center_horizontal">
 
         <ImageView
-            android:layout_width="match_parent"
             android:id="@+id/carlaImage"
-            android:background="@null"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="340dp"
+            android:background="@null" />
 
         <TextView
             android:id="@+id/textView7"
@@ -53,14 +52,14 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/edit_text"
-            android:drawablePadding="20dp"
-            android:paddingEnd="20dp"
-            android:drawableRight="@drawable/activity_icon_32"
             android:drawableEnd="@drawable/activity_icon_32"
+            android:drawablePadding="20dp"
+            android:drawableRight="@drawable/activity_icon_32"
             android:hint="@string/date_time"
+            android:inputType="datetime"
+            android:paddingEnd="20dp"
             android:paddingLeft="20dp"
-            android:paddingStart="20dp"
-            android:inputType="datetime" />
+            android:paddingStart="20dp" />
 
         <EditText
             android:id="@+id/editText2"

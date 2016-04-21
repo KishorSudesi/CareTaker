@@ -62,6 +62,9 @@ public class ActivityListAdapter extends BaseAdapter {
             viewHolder.linearLayout = (LinearLayout) convertView.findViewById(
                     R.id.completedActivityOne);
 
+            viewHolder.linearLayoutDone = (LinearLayout) convertView.findViewById(
+                    R.id.linearLayoutDone);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -71,9 +74,16 @@ public class ActivityListAdapter extends BaseAdapter {
 
             ActivityModel activityListModel = data.get(position);
 
-            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming"))
+            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().
                         getColor(R.color.colorWhite));
+                viewHolder.linearLayoutDone.setVisibility(View.GONE);
+
+            } else {
+                viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.colorPrimary));
+                viewHolder.linearLayoutDone.setVisibility(View.VISIBLE);
+            }
 
             viewHolder.dateNumber.setText(activityListModel.getStrActivityDate());
             viewHolder.date.setText(activityListModel.getStrActivityDate());
@@ -103,6 +113,7 @@ public class ActivityListAdapter extends BaseAdapter {
         TextView dateTime;
         TextView person;
         LinearLayout linearLayout;
+        LinearLayout linearLayoutDone;
     }
 
 }

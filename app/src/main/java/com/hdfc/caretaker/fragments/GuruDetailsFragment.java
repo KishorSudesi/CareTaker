@@ -146,6 +146,7 @@ public class GuruDetailsFragment extends Fragment {
         View focusView = null;
 
         if (TextUtils.isEmpty(strCustomerImgName)
+                && Config.customerModel != null
                 && Config.customerModel.getStrName().equalsIgnoreCase("")) {
             utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;

@@ -47,6 +47,10 @@ public class StorageService {
         asyncService.findDocumentByQueryPaging(Config.dbName, strCollectionName, query, max, offset, app42CallBack);
     }
 
+    public void findAllDocs(String strCollectionName, App42CallBack app42CallBack) {
+        asyncService.findAllDocuments(Config.dbName, strCollectionName, app42CallBack);
+    }
+
     /*public void updateDocs(JSONObject jsonToUpdate, String fieldName, String checkValue) {
         asyncService.updateDocByKeyValue(Config.dbName, Config.collectionCustomer, fieldName, checkValue, jsonToUpdate, this);
     }*/

@@ -177,7 +177,8 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         if (day_color[1].equals("GREEN")) {
-            gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimary));
+            gridcell.setTextColor(Color.RED);
+            //gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimary));
         }
 
         if(position>6) {
@@ -197,8 +198,12 @@ public class CalendarAdapter extends BaseAdapter {
                     if (iActivityYear == iYear &&
                             strActivityMonth.trim().equalsIgnoreCase(themonth) &&
                             iActivityDate == iDay) {
+
                         gridcell.setBackground(_context.getResources().
-                                getDrawable(R.drawable.bottom_border_grey));
+                                getDrawable(R.drawable.bottom_border_green));
+
+                        //gridcell.setBackground(_context.getResources().getDrawable(R.drawable.bottom_border_green));
+                        gridcell.setTextColor(Color.BLACK);
                     }
                 }
             } catch (Exception e) {

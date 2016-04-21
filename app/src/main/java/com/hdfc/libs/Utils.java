@@ -1102,14 +1102,14 @@ public class Utils {
 
         dynamicUserTab.removeAllViews();
 
-        for (int i = 0; i < Config.dependentNames.size(); i++) {
+        for (int i = 0; i < Config.dependentModels.size(); i++) {
 
             //Creates tab button
             Button bt = new Button(_ctxt);
             bt.setId(i);
-            bt.setText(Config.dependentNames.get(i));
+            bt.setText(Config.dependentModels.get(i).getStrName());
 
-            log(Config.dependentNames.get(i), " Index ");
+            //log(Config.dependentNames.get(i), " Index ");
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
@@ -1194,7 +1194,6 @@ public class Utils {
 
         if (intWhichScreen == Config.intListActivityScreen ||
                 intWhichScreen == Config.intActivityScreen) {
-
             try {
                 populateActivity();
             } catch (Exception e) {

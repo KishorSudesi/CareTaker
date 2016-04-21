@@ -34,6 +34,24 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayoutDone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_general"
+                android:layout_marginRight="@dimen/margin_general"
+                android:layout_marginTop="30dp"
+                android:padding="@dimen/padding_general"
+                android:src="@drawable/done" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">

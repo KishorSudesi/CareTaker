@@ -17,13 +17,13 @@
 
     <com.hdfc.views.RoundedImageView
         android:id="@+id/imageButtonCamera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:background="@mipmap/ic_launcher" />
+        android:background="@drawable/temp" />
 
     <EditText
         android:id="@+id/editEmail"

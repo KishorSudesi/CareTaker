@@ -71,14 +71,6 @@ public class NotificationFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-      /*  if(Config.notificationModels.size()>0&&Config.intSelectedDependent<Config.notificationModels.size())
-            notificationModels = Config.notificationModels.get(Config.intSelectedDependent);
-        else
-            notificationModels.clear();*/
-
-        /*if(Config.notificationModels.size()>0)
-            staticNotificationModels = Config.notificationModels.get(0);*/
-
         try {
 
             staticNotificationModels.clear();
@@ -124,6 +116,5 @@ public class NotificationFragment extends Fragment {
         listViewActivities.setEmptyView(emptyTextView);
 
         utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
-
     }
 }

@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.AdditionalServicesActivity;
@@ -69,6 +70,8 @@ public class MyAccountFragment extends Fragment {
 
         txtAddress = (TextView) view.findViewById(R.id.editText31);
 
+        ImageView imageView = (ImageView) view.findViewById(R.id.imgPen);
+
         if (Config.customerModel != null && Config.customerModel.getStrAddress() != null)
             txtAddress.setText(Config.customerModel.getStrAddress());
 
@@ -89,12 +92,14 @@ public class MyAccountFragment extends Fragment {
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyAccountEditFragment myAccountEditFragment = MyAccountEditFragment.newInstance();
+                goToAccountEdit();
+            }
+        });
 
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.fragment_dashboard, myAccountEditFragment);
-                ft.commit();
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAccountEdit();
             }
         });
 
@@ -131,6 +136,15 @@ public class MyAccountFragment extends Fragment {
         //loadingPanel.setVisibility(View.VISIBLE);
 
         return view;
+    }
+
+    public void goToAccountEdit() {
+        MyAccountEditFragment myAccountEditFragment = MyAccountEditFragment.newInstance();
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_dashboard, myAccountEditFragment);
+        ft.commit();
     }
 
     public static class ThreadHandler extends Handler {

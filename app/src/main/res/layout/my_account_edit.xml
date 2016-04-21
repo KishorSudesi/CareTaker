@@ -73,7 +73,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="25dp"
                     android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/address_icon"
                     android:drawablePadding="15dip"

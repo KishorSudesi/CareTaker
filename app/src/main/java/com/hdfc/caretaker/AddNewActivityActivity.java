@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,53 +40,67 @@ public class AddNewActivityActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listView1);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        ImageButton imageButtonBuyServices = (ImageButton) findViewById(R.id.imageButtonBuyServices);
 
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
 
         addNewActivityAdapter = new AddNewActivityAdapter(this, dependentServiceModels);
-        listView.setAdapter(addNewActivityAdapter);
-        listView.setEmptyView(textViewEmpty);
+
+        if (listView != null) {
+            listView.setAdapter(addNewActivityAdapter);
+            listView.setEmptyView(textViewEmpty);
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    int count = parent.getChildCount();
+                    View v;
+
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxService);
+                    ServiceModel dependentServiceModel = (ServiceModel) checkBox.getTag();
+
+                    if (checkBox.isChecked()) {
+                        selectedDependentServiceModels.remove(dependentServiceModel);
+                        checkBox.setChecked(false);
+                    } else {
+
+                        for (int i = 0; i < count; i++) {
+                            if (i != position) {
+                                v = parent.getChildAt(i);
+                                CheckBox checkBoxAll = (CheckBox) v.findViewById(R.id.checkBoxService);
+                                checkBoxAll.setChecked(false);
+                            }
+                        }
+                        selectedDependentServiceModels.clear();
+
+                        selectedDependentServiceModels.add(dependentServiceModel);
+                        checkBox.setChecked(true);
+                    }
+
+                }
+            });
+        }
 
         Button cancelButton = (Button) findViewById(R.id.buttonCancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goBack();
-            }
-        });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                int count = parent.getChildCount();
-                View v;
-
-                CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxService);
-                ServiceModel dependentServiceModel = (ServiceModel) checkBox.getTag();
-
-                if (checkBox.isChecked()) {
-                    selectedDependentServiceModels.remove(dependentServiceModel);
-                    checkBox.setChecked(false);
-                } else {
-
-                    for (int i = 0; i < count; i++) {
-                        if (i != position) {
-                            v = parent.getChildAt(i);
-                            CheckBox checkBoxAll = (CheckBox) v.findViewById(R.id.checkBoxService);
-                            checkBoxAll.setChecked(false);
-                        }
-                    }
-                    selectedDependentServiceModels.clear();
-
-                    selectedDependentServiceModels.add(dependentServiceModel);
-                    checkBox.setChecked(true);
+        if (cancelButton != null) {
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goBack();
                 }
+            });
+        }
 
-            }
-        });
-
-        // listView.setO
+        if (imageButtonBuyServices != null) {
+            imageButtonBuyServices.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(AddNewActivityActivity.this, AdditionalServicesActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     public void goBack() {
