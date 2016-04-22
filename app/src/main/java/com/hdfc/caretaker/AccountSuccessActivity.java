@@ -94,8 +94,12 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
             for (int i = 0; i < Config.dependentModels.size(); i++) {
 
+                Utils.log(Config.dependentModels.get(i).getStrImagePath() + " ~ " +
+                        Config.dependentModels.get(i).getStrDependentID(), " PATH ");
+
                 fromFile1 = new File(Config.dependentModels.get(i).getStrImagePath());
-                toFile1 = utils.getInternalFileImages(Config.dependentModels.get(i).getStrDependentID());
+                toFile1 = utils.getInternalFileImages(Config.dependentModels.get(i).
+                        getStrDependentID());
 
                 utils.moveFile(fromFile1, toFile1);
             }

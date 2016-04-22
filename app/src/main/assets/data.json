@@ -1,328 +1,49 @@
 {
-  "provider_email": "carla1@gmail.com",
-  "dependents": [
+  "service_id": "56f53980e4b003cbd56f2cea",
+  "dependent_id": "56f53951e4b004bad20daf54",
+  "provider_status": "scheduled",
+  "features_done": [
+    "service1"
+  ],
+  "activity_message": "message",
+  "servcie_name": "name",
+  "status": "upcoming",
+  "provider_id": "5715c39ee4b0d2aca6fe5d17",
+  "videos": [
     {
-      "dependent_illness": "Fff",
-      "dependent_name": "Kovendan V",
-      "dependent_address": "Chennai",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/e47108337f1763b16601cd7f0fda548e69d9f72a/Kovendan_V.jpeg",
-      "customer_email": "balamscint@gmail.com",
-      "dependent_email": "emailkove@gmail.com",
-      "dependent_notes": "Trex",
-      "dependent_age": 65,
-      "dependent_contact_no": "09619449616"
-    },
-    {
-      "dependent_illness": "NA",
-      "dependent_name": "Priya",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/f8986baf7c21045d7ed9606068f0d02f86a52e0e/Priya.jpeg",
-      "dependent_address": "Nerul",
-      "customer_email": "martin@adstringo.in",
-      "dependent_email": "martin@sudesi.in",
-      "dependent_age": 30,
-      "dependent_notes": "Na",
-      "dependent_contact_no": "9004957071"
-    },
-    {
-      "dependent_illness": "allergy to weather change",
-      "dependent_name": "Mano",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/711e4ecdd150b83b7d338d3ab338c70c1ee68c39/Mano.jpeg",
-      "dependent_address": "Tiruvannamalai",
-      "customer_email": "manmurugan@gmail.com",
-      "dependent_email": "mano@gmail.com",
-      "dependent_age": 45,
-      "dependent_notes": "Take care",
-      "dependent_contact_no": "+919442904153"
-    },
-    {
-      "dependent_illness": "Good Fit",
-      "dependent_name": "panimalar",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/536ac8015c76d35bbf1a2ceae5d4a24b4f3c19f2/panimalar.jpeg",
-      "dependent_address": "chennai",
-      "customer_email": "manmurugan@gmail.com",
-      "dependent_email": "pani@gmail.com",
-      "dependent_age": 50,
-      "dependent_notes": "Take Care",
-      "dependent_contact_no": "9963214523"
-    },
-    {
-      "dependent_illness": "Arthritis",
-      "dependent_name": "Vasudha Shanbhag",
-      "dependent_address": "Thane",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/cb51ec9f685276d955f6025b948edbd9b227d6db/Vasudha_Shanbhag.jpeg",
-      "customer_email": "vishal.vvs.shanbhag@gmail.com",
-      "dependent_email": "",
-      "dependent_notes": "Like to eat sweet",
-      "dependent_age": 69,
-      "dependent_contact_no": "09220571206"
-    },
-    {
-      "dependent_illness": "Good Health",
-      "dependent_name": "manu",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/a0569c6a6c0f1c88995267b0b16da20023a43e22/mano.jpeg",
-      "dependent_address": "vashi",
-      "customer_email": "palani@yahoo.in",
-      "dependent_email": "man@yahoo.co.in",
-      "dependent_age": 25,
-      "dependent_notes": "Quiet Fit",
-      "dependent_contact_no": "9632598765"
-    },
-    {
-      "dependent_illness": "No",
-      "dependent_name": "dano",
-      "dependent_address": "Gandhinagar",
-      "dependent_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/6da44d3b0a0156907351890c9a9449b8d976a1a3/dano.jpeg",
-      "customer_email": "palani@yahoo.in",
-      "dependent_email": "dano@gmail.com",
-      "dependent_notes": "Good Health",
-      "dependent_age": 50,
-      "dependent_contact_no": "9321727255"
+      "video_taken": "2016-03-23T17:16:39.665Z",
+      "video_description": "1458733599660.jpeg",
+      "video_name": "1458733599660.jpeg",
+      "video_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/d7a52ac9c15c52737969410cf0d1c7b0ade68f78/1458733599660.jpeg"
     }
   ],
-  "provider_contact_no": "9321727255",
-  "status": "upcoming",
   "feedbacks": [
     {
-      "feedback_message": "Delivered in Time",
-      "feedback_by": "Murugan",
+      "feedback_message": "Testing",
+      "feedback_by": "234324234324",
       "feedback_report": "false",
-      "feedback_by_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/a461aa452b2694328829048dc7c3085333633bf7/customer_image.jpeg",
-      "feedback_time": "2016-04-19T09:59:07.507Z",
-      "feedback_rating": 5
-    },
-    {
-      "feedback_message": "Carla has attached incorrect report.",
-      "feedback_by": "Vishal",
-      "feedback_report": "true",
-      "feedback_time": "2016-04-19T19:21:48.396Z",
-      "feedback_by_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/1ca39ec1bedb7cc32abf45a1ca319535a7780ff2/customer_image.jpeg",
-      "feedback_rating": 3
+      "feedback_time": "2016-03-23T12:41:52.195Z",
+      "feedback_by_type": "customer",
+      "feedback_rating": 4
     }
   ],
-  "provider_profile_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/0fd9258b8b56dc295c28b57680ca098fd4b23f11/provider_image.jpeg",
-  "activities": [
+  "activity_name": "activity name",
+  "servcie_desc": "description",
+  "activity_description": "Walk in garden",
+  "overdue": false,
+  "features": [
+    "service1"
+  ],
+  "images": [
     {
-      "service_id": "14700",
-      "features_done": [
-        "corn",
-        "potato"
-      ],
-      "activity_message": "saloon service ",
-      "activity_date": "2016-04-20T00:03:10.919Z",
-      "dependent_name": "Priya",
-      "status": "completed",
-      "customer_email": "martin@adstringo.in",
-      "images": [
-        {
-          "image_name": "1461039755904.jpeg",
-          "image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/e167a8b00e8746cb20dbc1718c8b03a2b58de7c5/1461039755904.jpeg",
-          "image_description": "1461039755904.jpeg",
-          "image_taken": "2016-04-19T09:52:35.906Z"
-        }
-      ],
-      "activity_name": "saloon service ",
-      "activity_done_date": "2016-04-19T09:52:48.694Z",
-      "activity_description": "saloon service "
-    },
-    {
-      "service_id": "14700",
-      "activity_message": "Full Testing",
-      "activity_date": "2016-04-23T00:12:33.356Z",
-      "dependent_name": "Priya",
-      "status": "upcoming",
-      "customer_email": "martin@adstringo.in",
-      "activity_name": "Full Testing",
-      "activity_done_date": "2016-04-23T00:12:33.356Z",
-      "activity_description": "Full Testing"
-    },
-    {
-      "service_id": "14700",
-      "features_done": [
-        "corn",
-        "potato",
-        "corn"
-      ],
-      "activity_message": "Grocery service",
-      "activity_date": "2016-04-19T09:54:20.008Z",
-      "dependent_name": "Mano",
-      "status": "completed",
-      "customer_email": "manmurugan@gmail.com",
-      "images": [
-        {
-          "image_name": "1461040085689.jpeg",
-          "image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/8eafa2e09e9d77c6a62dfb18d82cf7ad27367121/1461040085689.jpeg",
-          "image_description": "1461040085689.jpeg",
-          "image_taken": "2016-04-19T09:58:05.707Z"
-        }
-      ],
-      "activity_name": "Grocery service",
-      "activity_done_date": "2016-04-19T09:58:15.866Z",
-      "activity_description": "Grocery service"
-    },
-    {
-      "service_id": 14702,
-      "activity_message": "Please take vasudha for a check up ",
-      "features_done": [],
-      "status": "upcoming",
-      "videos": [],
-      "customer_email": "vishal.vvs.shanbhag@gmail.com",
-      "feedbacks": [],
-      "activity_name": "Medical Test Service",
-      "dependent_image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/cb51ec9f685276d955f6025b948edbd9b227d6db/Vasudha_Shanbhag.jpeg",
-      "activity_description": "Medical Lab Test Service",
-      "activity_date": "2016-04-19T09:02:27.688Z",
-      "dependent_name": "Vasudha Shanbhag",
-      "features": [
-        "Blood Test",
-        "BP check",
-        "Sugar Level Test"
-      ],
-      "images": [],
-      "activity_done_date": "2016-04-19T09:02:27.688Z"
-    },
-    {
-      "service_id": 14702,
-      "activity_message": "May check up for vasudha",
-      "features_done": [
-        "Blood Test",
-        "BP check",
-        "Sugar Level Test",
-        "Blood Test",
-        "BP check",
-        "Sugar Level Test"
-      ],
-      "status": "completed",
-      "videos": [],
-      "customer_email": "vishal.vvs.shanbhag@gmail.com",
-      "feedbacks": [],
-      "activity_name": "Medical Test Service",
-      "dependent_image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/cb51ec9f685276d955f6025b948edbd9b227d6db/Vasudha_Shanbhag.jpeg",
-      "activity_description": "Medical Lab Test Service",
-      "activity_date": "2016-05-04T09:00:28.384Z",
-      "dependent_name": "Vasudha Shanbhag",
-      "features": [
-        "Blood Test",
-        "BP check",
-        "Sugar Level Test"
-      ],
-      "images": [
-        {
-          "image_name": "1461072490912.jpeg",
-          "image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/4cef95f5f5e1320d93f878e3787ac37c27fae4d3/1461072490912.jpeg",
-          "image_description": "1461072490912.jpeg",
-          "image_taken": "2016-04-19T18:58:10.916Z"
-        }
-      ],
-      "activity_done_date": "2016-04-19T18:58:47.532Z"
-    },
-    {
-      "service_id": 14702,
-      "activity_message": "Fortnightly check up. 24 may",
-      "features_done": [],
-      "status": "upcoming",
-      "videos": [],
-      "customer_email": "vishal.vvs.shanbhag@gmail.com",
-      "feedbacks": [],
-      "activity_name": "Medical Test Service",
-      "dependent_image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/cb51ec9f685276d955f6025b948edbd9b227d6db/Vasudha_Shanbhag.jpeg",
-      "activity_description": "Medical Lab Test Service",
-      "activity_date": "2016-05-24T08:00:50.408Z",
-      "dependent_name": "Vasudha Shanbhag",
-      "features": [
-        "Blood Test",
-        "BP check",
-        "Sugar Level Test"
-      ],
-      "images": [],
-      "activity_done_date": "2016-05-24T08:00:50.408Z"
-    },
-    {
-      "service_id": 14701,
-      "activity_message": "May parlour appointment ",
-      "features_done": [],
-      "status": "upcoming",
-      "videos": [],
-      "customer_email": "vishal.vvs.shanbhag@gmail.com",
-      "feedbacks": [],
-      "activity_name": "Saloon Service",
-      "dependent_image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/cb51ec9f685276d955f6025b948edbd9b227d6db/Vasudha_Shanbhag.jpeg",
-      "activity_description": "Haircut and Beautification Service",
-      "activity_date": "2016-04-19T19:00:36.535Z",
-      "dependent_name": "Vasudha Shanbhag",
-      "features": [
-        "Facial",
-        "Haircut",
-        "Shaving"
-      ],
-      "images": [],
-      "activity_done_date": "2016-04-19T19:00:36.535Z"
-    },
-    {
-      "service_id": 14702,
-      "features_done": [
-        "Blood Test"
-      ],
-      "activity_message": "Take me to medical service",
-      "status": "completed",
-      "videos": [],
-      "customer_email": "palani@yahoo.in",
-      "feedbacks": [],
-      "activity_name": "Medical Test Service",
-      "dependent_image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/6da44d3b0a0156907351890c9a9449b8d976a1a3/dano.jpeg",
-      "activity_description": "Medical Lab Test Service",
-      "activity_date": "2016-04-19T20:23:45.506Z",
-      "dependent_name": "dano",
-      "features": [
-        "Blood Test",
-        "BP check",
-        "Sugar Level Test"
-      ],
-      "images": [
-        {
-          "image_name": "1461077806054.jpeg",
-          "image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/d96c1de5b9f8d3f4dd122a3edb29a45359950d7a/1461077806054.jpeg",
-          "image_description": "1461077806054.jpeg",
-          "image_taken": "2016-04-19T20:26:46.099Z"
-        }
-      ],
-      "activity_done_date": "2016-04-19T20:27:25.233Z"
-    },
-    {
-      "service_id": 14700,
-      "features_done": [
-        "potato"
-      ],
-      "activity_message": "medical service",
-      "status": "completed",
-      "videos": [],
-      "customer_email": "manmurugan@gmail.com",
-      "feedbacks": [],
-      "activity_name": "Grocery Service",
-      "dependent_image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/536ac8015c76d35bbf1a2ceae5d4a24b4f3c19f2/panimalar.jpeg",
-      "activity_description": "Buy and Delivery of Required Grocery items",
-      "activity_date": "2016-04-20T11:31:13.043Z",
-      "dependent_name": "panimalar",
-      "features": [
-        "potato",
-        "corn"
-      ],
-      "images": [
-        {
-          "image_name": "1461132314134.jpeg",
-          "image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/e11fda82479a3ec50d780474052b5d3e9c61bda3/1461132314134.jpeg",
-          "image_description": "1461132314134.jpeg",
-          "image_taken": "2016-04-20T11:35:14.134Z"
-        },
-        {
-          "image_name": "1461132313842.jpeg",
-          "image_url": "http://cdn.shephertz.com/repository/files/eb3d6dc6fdfd558e91f6164d78c422de12013f0fe04ecd98fa19b406f9d7340f/c9c57722ca43d37372f10ebfbf1479ae94d5d3df/1461132313842.jpeg",
-          "image_description": "1461132313842.jpeg",
-          "image_taken": "2016-04-20T11:35:14.107Z"
-        }
-      ],
-      "activity_done_date": "2016-04-20T11:35:33.886Z"
+      "image_name": "1458733599660.jpeg",
+      "image_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/d7a52ac9c15c52737969410cf0d1c7b0ade68f78/1458733599660.jpeg",
+      "image_description": "1458733599660.jpeg",
+      "image_taken": "2016-03-23T17:16:39.665Z"
     }
   ],
-  "provider_address": "Pune,Kothrud,poud 1 road",
-  "provider_name": "Carla"
+  "activity_desc": "desc",
+  "activity_done_date": "2016-04-20T23:45:11.343Z",
+  "activity_date": "2016-04-24T23:08:11.343Z",
+  "customer_id": "570f6536e4b0e13ab2966236"
 }

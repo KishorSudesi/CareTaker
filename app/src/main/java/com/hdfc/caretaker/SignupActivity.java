@@ -23,7 +23,8 @@ public class SignupActivity extends FragmentActivity {
 
     public static ViewPager _mViewPager;
     //public static String strUserId = "";
-    //public static String strCustomerName = "", strCustomerEmail = "", strCustomerContactNo = "", strCustomerAddress = "", strCustomerImg = "", strCustomerPass = "";
+    //public static String strCustomerName = "", strCustomerEmail = "", strCustomerContactNo = "",
+    // strCustomerAddress = "", strCustomerImg = "", strCustomerPass = "";
     public static String strCustomerPass = "";
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
     public static ArrayList<String> dependentNames = new ArrayList<>();

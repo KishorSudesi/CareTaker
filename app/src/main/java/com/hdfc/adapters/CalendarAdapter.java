@@ -46,8 +46,6 @@ public class CalendarAdapter extends BaseAdapter {
         // Print Month
         printMonth(month, year);
 
-        //todo proper color scheme, default date selection,
-
         // Find Number of Events
        // eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
     }
@@ -123,7 +121,7 @@ public class CalendarAdapter extends BaseAdapter {
 
         // Current Month Days
         for (int i = 1; i <= daysInMonth; i++) {
-            if (i == getCurrentDayOfMonth())
+            if (i == getCurrentDayOfMonth()) //&& mm==currentDayOfMonth
                 list.add(String.valueOf(i) + "-GREEN" + "-" + getMonthAsString(currentMonth) + "-" +
                         yy);
             else

@@ -1,5 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ public class DashboardFragment extends Fragment {
     private static Bitmap bitmap;
     private static Handler threadHandler;
     private static int iPosition;
+    private static Context context;
     public CarouselPagerAdapter adapter;
     private Utils utils;
 
@@ -70,10 +72,13 @@ public class DashboardFragment extends Fragment {
 
             activitiesModelArrayList.clear();
             activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
-            activitiesAdapter.notifyDataSetChanged();
 
+            activitiesAdapter = new ActivitiesAdapter(context, activitiesModelArrayList);
+            listViewActivities.setAdapter(activitiesAdapter);
 
-            Utils.log(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()), " INDEX 0 ");
+            //activitiesAdapter.notifyDataSetChanged();
+
+            Utils.log(String.valueOf(Config.dependentModels.get(intIndex).getActivityModels().size()), " INDEX 0 ");
 
             textView1.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
             textView2.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));
@@ -95,6 +100,7 @@ public class DashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         utils = new Utils(getActivity());
+        context = getContext();
     }
 
     @Override
@@ -183,11 +189,11 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        activitiesAdapter = new ActivitiesAdapter(getContext(), activitiesModelArrayList);
-        listViewActivities.setAdapter(activitiesAdapter);
-        loadData(0);
 
         listViewActivities.setEmptyView(emptyTextView);
+        loadData(0);
+
+
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 

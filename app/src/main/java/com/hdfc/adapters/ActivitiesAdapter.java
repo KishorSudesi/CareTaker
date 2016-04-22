@@ -10,9 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
+import com.hdfc.models.ProviderModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,18 +77,32 @@ public class ActivitiesAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        Utils.log(String.valueOf(data.size()), " SIZE ");
+
         if (data.size() > 0) {
 
             ActivityModel activityModel = (ActivityModel) data.get(position);
 
-            //Date date = utils.convertStringToDate(activityModel.getStrActivityDate()); //new Date();//
+            //Date date = utils.convertStringToDate(activityModel.getStrActivityDate());
+            // new Date();//
 
             //Date dateNow = new Date();
 
-            String strDisplayDate = _context.getResources().getString(R.string.space)+
-                    _context.getResources().getString(R.string.at)+
-                    _context.getResources().getString(R.string.space)+
+            String strDisplayDate = _context.getResources().getString(R.string.space) +
+                    _context.getResources().getString(R.string.at) +
+                    _context.getResources().getString(R.string.space) +
                     utils.formatDate(activityModel.getStrActivityDate());
+
+            ProviderModel providerModel = null;
+
+            for (int i = 0; i < Config.strProviderIds.size(); i++) {
+                Utils.log(Config.strProviderIds.get(i), " NAME ");
+            }
+
+            if (Config.strProviderIds.contains(activityModel.getStrProviderID())) {
+                providerModel = Config.providerModels.get(Config.strProviderIds.
+                        indexOf(activityModel.getStrProviderID()));
+            }
 
             try {
                 if (activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
@@ -98,9 +114,10 @@ public class ActivitiesAdapter extends BaseAdapter {
 
                     viewHolder.textViewUpcoming.setVisibility(View.VISIBLE);
                     viewHolder.textViewUpcoming.setText(_context.getString(R.string.up_next));
-                    String strTemp = activityModel.getStrDependentID() + " " + strDisplayDate;
+                    String strTemp = providerModel.getStrName() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
 
+                    viewHolder.textViewText.setText(activityModel.getStrActivityMessage());
                 } else {
 
                     Utils.setDrawable(viewHolder.linearLayout, _context.getResources().
@@ -110,19 +127,20 @@ public class ActivitiesAdapter extends BaseAdapter {
 
                     viewHolder.textViewUpcoming.setVisibility(View.GONE);
 
-                    String strTemp = activityModel.getStrDependentID() + " " + strDisplayDate;
+                    String strTemp = providerModel.getStrName() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
+
+                    viewHolder.textViewText.setText(activityModel.getStrActivityDesc());
                 }
             }catch (Exception e){
                 e.printStackTrace();
             }
 
-            viewHolder.textViewText.setText(activityModel.getStrActivityName());
-
             /*if (!activityModel.getStrActivityDesc().equalsIgnoreCase(""))
                 viewHolder.textViewText.setText(activityModel.getStrActivityName());
             else
                 viewHolder.textViewText.setText(activityModel.getStrActivityName());*/
+
 
             try {
 

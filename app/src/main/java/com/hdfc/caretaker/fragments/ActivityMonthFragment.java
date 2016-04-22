@@ -38,7 +38,7 @@ public class ActivityMonthFragment extends Fragment {
     public static CalendarAdapter adapter=null;
     public static ListView listView;
     public static ActivityMonthListAdapter activityListAdapter;
-    private static int iSelectedPosition = 0, iSelectedColor = 0;
+    private static int iSelectedPosition = -1, iSelectedColor = 0;
     private TextView txtViewDate;
 
     public static ActivityMonthFragment newInstance() {
@@ -86,10 +86,7 @@ public class ActivityMonthFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     final int position, long id) {
-
-                //TODO background color for selected date except today date
-
-                int count = parent.getChildCount();
+                //int count = parent.getChildCount();
                 View v;
 
                /* for (int i = 0; i < count; i++) {
@@ -109,24 +106,36 @@ public class ActivityMonthFragment extends Fragment {
 
                     String[] day_color = date_month_year.split("-");
 
-                    //gridcell.setTextColor(getActivity().getResources().getColor(R.color.colorPrimaryDark));
-
                     int theday = Integer.parseInt(day_color[0]);
                     String themonth = day_color[1];
                     int theyear = Integer.parseInt(day_color[2]);
 
                     //
-                    String strDate = "Activities on " + theday + "-" + themonth + "-" + theyear;
+                    String strDate = getString(R.string.activities_on) + theday + "-" + themonth
+                            + "-" + theyear;
+
+                    if (iSelectedPosition > -1) {
+                        v = parent.getChildAt(iSelectedPosition);
+                        Button gridcell1 = (Button) v.findViewById(R.id.calendar_day_gridcell);
+                        gridcell1.setTextColor(iSelectedColor);
+                    }
+
+                    if (iSelectedPosition != position) {
+                        iSelectedPosition = position;
+                        iSelectedColor = gridcell.getCurrentTextColor();
+                    }
+                    gridcell.setTextColor(getActivity().getResources().getColor(
+                            R.color.colorPrimaryDark));
 
                     txtViewDate.setText(strDate);
-                    //
 
                     activitiesModelSelected.clear();
 
                     if (position > 6) {
 
                         try {
-                            for (ActivityModel activityModel : ActivityFragment.activitiesModelArrayList) {
+                            for (ActivityModel activityModel :
+                                    ActivityFragment.activitiesModelArrayList) {
 
                                 Date date = readFormat.parse(activityModel.getStrActivityDate());
 
@@ -138,7 +147,9 @@ public class ActivityMonthFragment extends Fragment {
                                 // + strActivityMonth + " EQS " + themonth + " && " + iActivityDate
                                 // + " == " + theday), " Compare ");
 
-                                if (iActivityYear == theyear && strActivityMonth.trim().equalsIgnoreCase(themonth) && iActivityDate == theday) {
+                                if (iActivityYear == theyear &&
+                                        strActivityMonth.trim().equalsIgnoreCase(themonth) &&
+                                        iActivityDate == theday) {
                                     activitiesModelSelected.add(activityModel);
                                 }
                             }
@@ -161,19 +172,23 @@ public class ActivityMonthFragment extends Fragment {
                 ActivityModel activityModel;
 
                 if (position <= activityModels.size()) {
-                    activityModel = activityModels.get(position);//TODO java.lang.IndexOutOfBoundsException
+                    activityModel = activityModels.get(position);
                 } else activityModel = null;
 
-                if (activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+                if (activityModel != null
+                        && activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
 
                     UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().
+                            beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();
 
                 } else {
-                    ActivityCompletedFragment completedFragment = ActivityCompletedFragment.newInstance(activityModel);
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ActivityCompletedFragment completedFragment = ActivityCompletedFragment.
+                            newInstance(activityModel);
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().
+                            beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();
                 }

@@ -1,6 +1,7 @@
 package com.hdfc.config;
 
 import com.hdfc.libs.Utils;
+import com.hdfc.models.ActivityModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
@@ -79,4 +80,6 @@ public class Config {
     public static String strUserName = "";
 
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
+
+    public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
 }

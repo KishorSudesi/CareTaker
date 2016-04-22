@@ -108,7 +108,6 @@ public class Utils {
 
     private static int iActivityCount = 0;
     private static int iProviderCount = 0;
-    private static ArrayList<ActivityModel> activityModels = new ArrayList<>();
     //
 
     private static Context _ctxt;
@@ -678,7 +677,6 @@ public class Utils {
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();
         }
-
     }
 
     /*public void setupUI(View view) {
@@ -981,7 +979,7 @@ public class Utils {
 
         File fileImage = createFileInternal("images/" + strFileName);
 
-        log(strFileName + " ~ " + strFileUrl, " path ");
+        log(strFileName + " ~ " + strFileUrl, " Path ");
         //fileImage.
         if (fileImage.length() <= 0) {
 
@@ -1527,7 +1525,7 @@ public class Utils {
         return password.length() > 1;
     }
 
-    public void fetchCustomer(final ProgressDialog progressDialog) {
+    public void fetchCustomer(final ProgressDialog progressDialog, final int iFlag) {
 
         if (isConnectingToInternet()) {
 
@@ -1565,8 +1563,10 @@ public class Utils {
                                     e.printStackTrace();
                                 }
 
-                                fetchDependents(Config.customerModel.getStrCustomerID(),
-                                        progressDialog);
+                                if (iFlag == 1) {
+                                    fetchDependents(Config.customerModel.getStrCustomerID(),
+                                            progressDialog, 1);
+                                }
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
@@ -1745,7 +1745,7 @@ public class Utils {
                 activityModel.setStrActivityMessage(jsonObjectActivity.
                         getString("activity_message"));
 
-                //log(jsonObjectActivity.getString("provider_id"), " PROVIDER ID ");
+                log(jsonObjectActivity.getString("provider_id"), " PROVIDER ID ");
 
                 if (!Config.strProviderIds.contains(jsonObjectActivity.getString("provider_id")))
                     Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
@@ -1848,14 +1848,14 @@ public class Utils {
                     activityModel.setImageModels(imageModels);
                 }
 
-                activityModels.add(activityModel);
+                Config.activityModels.add(activityModel);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void fetchDependents(String strCustomerId, final ProgressDialog progressDialog) {
+    public void fetchDependents(String strCustomerId, final ProgressDialog progressDialog, final int iFlag) {
 
         if (isConnectingToInternet()) {
 
@@ -1892,10 +1892,10 @@ public class Utils {
                                         createDependentModel(strDependentDocId, strDocument);
                                     }
 
-                                    Config.dependentModels.get(iActivityCount).
-                                            setActivityModels(activityModels);
+                                    /**/
 
-                                    fetchLatestActivities(progressDialog);
+                                    if (iFlag == 1)
+                                        fetchLatestActivities(progressDialog);
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -1950,7 +1950,8 @@ public class Utils {
         String key2 = "dependent_id";
         String value2 = Config.strDependentIds.get(iActivityCount);
 
-        Query q1 = QueryBuilder.build(strKey1, value1, operator);
+        //Query q1 = QueryBuilder.build(strKey1, value1, operator);//todo check logic
+
         // Build query q1 for key1 equal to name and value1 equal to Nick
         Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
         // Build query q2 for key2 equal to age and value2
@@ -1961,18 +1962,18 @@ public class Utils {
         HashMap<String, String> otherMetaHeaders = new HashMap<String, String>();
         otherMetaHeaders.put("orderByDescending", strKey1);// Use orderByDescending
 
-        Query query = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+        //Query query = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
 
         storageService.setOtherMetaHeaders(otherMetaHeaders);
 
-        return query;
+        return q4; //query
     }
 
     public void fetchLatestActivities(final ProgressDialog progressDialog) {
 
         if (iActivityCount < Config.strDependentIds.size()) {
 
-            activityModels.clear();
+            Config.activityModels.clear();
 
             //log(String.valueOf(iActivityCount), " A Count 0 ");
 
@@ -2057,7 +2058,7 @@ public class Utils {
 
     public void fetchProviders(final ProgressDialog progressDialog) {
 
-        log(String.valueOf(iProviderCount + "g " + Config.strProviderIds.size()), " Count -1");
+        //log(String.valueOf(iProviderCount + "g " + Config.strProviderIds.size()), " Count -1");
 
         if (iProviderCount < Config.strProviderIds.size()) {
 
@@ -2065,10 +2066,10 @@ public class Utils {
 
                 StorageService storageService = new StorageService(_ctxt);
 
-                //log(String.valueOf(iProviderCount), " Count ");
+                log(String.valueOf(iProviderCount), " Count ");
 
                 storageService.findDocsByIdApp42CallBack(Config.strProviderIds.get(iProviderCount),
-                        Config.collectionDependent, new App42CallBack() {
+                        Config.collectionProvider, new App42CallBack() {
                             @Override
                             public void onSuccess(Object o) {
 
@@ -2118,7 +2119,9 @@ public class Utils {
 
                                         int appErrorCode = jsonObjectError.getInt("appErrorCode");
 
-                                        if (appErrorCode == 2608) {
+                                        //log(e.getMessage(), " MESS ");
+
+                                        if (appErrorCode == 2608 || appErrorCode == 2600) {
                                             iProviderCount++;
                                         }
 
@@ -2148,6 +2151,7 @@ public class Utils {
             }
 
         } else {
+            //log(String.valueOf(iProviderCount + "g " + Config.strProviderIds.size()), " Count -2");
             if (iProviderCount == Config.strProviderIds.size()) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -2207,6 +2211,10 @@ public class Utils {
                                         progressDialog.dismiss();
                                     toast(2, 2, _ctxt.getString(R.string.error));
                                 }*/
+
+                                Config.dependentModels.get(iActivityCount).
+                                        setActivityModels(Config.activityModels);
+
                                 iActivityCount++;
 
                                 //log(String.valueOf(iActivityCount), " A Count 1 ");
@@ -2234,11 +2242,13 @@ public class Utils {
 
                                     int appErrorCode = jsonObjectError.getInt("appErrorCode");
 
+                                    Config.dependentModels.get(iActivityCount).
+                                            setActivityModels(Config.activityModels);
+
                                     if (appErrorCode == 2608) {
                                         iActivityCount++;
                                     }
-
-                                    log(String.valueOf(iActivityCount + " E " + Config.strDependentIds.size()), " A Count 2 ");
+                                    //log(String.valueOf(iActivityCount + " E " + Config.strDependentIds.size()), " A Count 2 ");
 
                                     if (iActivityCount == Config.strDependentIds.size())
                                         fetchProviders(progressDialog);

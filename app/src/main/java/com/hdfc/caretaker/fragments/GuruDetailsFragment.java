@@ -252,27 +252,32 @@ public class GuruDetailsFragment extends Fragment {
                                 if (!strMess.equalsIgnoreCase("")
                                         && strMess.equalsIgnoreCase("Not Found")) {
 
-                                    //SignupActivity.strUserId = strEmail;
                                     CustomViewPager.setPagingEnabled(true);
 
-                                    Config.customerModel = new CustomerModel(strName, "", "",
-                                            strAddress, strContactNo, strEmail, "",
-                                            strCustomerImgName);
+                                    if (Config.customerModel != null
+                                            && Config.customerModel.getStrName() != null
+                                            && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
 
-                                  /*  SignupActivity.strCustomerName = strName;
-                                    SignupActivity.strCustomerEmail = strEmail;
-                                    SignupActivity.strCustomerContactNo = strContactNo;
-                                    SignupActivity.strCustomerAddress = strAddress;
-                                    SignupActivity.strCustomerImg = strCustomerImgName;*/
+                                        Config.customerModel.setStrName(strName);
 
-                                   /* String strPass = null;
-                                    try {
-                                        strPass = AESCrypt.encrypt(Config.string, strConfirmPass);
-                                    } catch (GeneralSecurityException gSe) {
-                                        gSe.printStackTrace();
+                                        if (!Config.customerModel.getStrAddress().
+                                                equalsIgnoreCase(""))
+                                            Config.customerModel.setStrAddress(strAddress);
+
+                                        Config.customerModel.setStrContacts(strContactNo);
+                                        Config.customerModel.setStrEmail(strEmail);
+
+                                        if (!strCustomerImgName.equalsIgnoreCase(""))
+                                            Config.customerModel.setStrImgPath(strCustomerImgName);
+
+                                    } else {
+
+                                        Config.customerModel = new CustomerModel(strName, "", "",
+                                                strAddress, strContactNo, strEmail, "",
+                                                strCustomerImgName);
                                     }
 
-                                    if (strPass != null && !strPass.equalsIgnoreCase(""))*/
+                                    if (strConfirmPass != null && !strConfirmPass.equalsIgnoreCase(""))
                                         SignupActivity.strCustomerPass = strConfirmPass;
 
                                     //chk this
@@ -291,7 +296,6 @@ public class GuruDetailsFragment extends Fragment {
 
                                     SignupActivity._mViewPager.setCurrentItem(1);
 
-                                    //Utils.log(e.getMessage(), "");
                                 }else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
@@ -324,7 +328,6 @@ public class GuruDetailsFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
                 backgroundThreadHandler = new BackgroundThreadHandler();
-                //Utils.toast(1, 1, "Getting Image...");
                 mProgress.setMessage(getString(R.string.loading));
                 mProgress.show();
                 switch (requestCode) {

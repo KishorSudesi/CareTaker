@@ -191,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (o != null) {
                                 Config.strUserName = userName;
 
-                                utils.fetchCustomer(progressDialog);
+                                utils.fetchCustomer(progressDialog, 1);
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
@@ -204,14 +204,19 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
-                            try {
-                                JSONObject jsonObject = new JSONObject(e.getMessage());
-                                JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
-                                String strMess = jsonObjectError.getString("details");
 
-                                utils.toast(2, 2, strMess);
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
+                            if (e != null) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    utils.toast(2, 2, strMess);
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });

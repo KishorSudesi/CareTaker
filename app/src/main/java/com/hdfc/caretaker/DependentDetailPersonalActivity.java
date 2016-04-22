@@ -253,6 +253,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                         if (e != null) {
 
+                            //Utils.log(strImageName, " strImageName ");
+
                             if (!SignupActivity.dependentNames.contains(strDependantName)) {
                                 dependentModel = new DependentModel();
 
@@ -473,6 +475,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        //Utils.log(strImageName, " strImageName 1 ");
+
         if (!Config.customerModel.getStrName().equalsIgnoreCase("")
                 && !strDependantName.equalsIgnoreCase("")) {
 
@@ -566,6 +570,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             mProgress.dismiss();
+
+            //Utils.log(strImageName, " strImageName 0 ");
 
             if (imgButtonCamera != null && bitmap != null)
                 imgButtonCamera.setImageBitmap(bitmap);

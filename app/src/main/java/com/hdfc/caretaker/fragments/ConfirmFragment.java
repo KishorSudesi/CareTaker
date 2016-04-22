@@ -114,6 +114,18 @@ public class ConfirmFragment extends Fragment {
 
     public void callSuccess() {
 
+        //remove "Add Dependent"
+
+        for (int i = 0; i < SignupActivity.dependentModels.size(); i++) {
+            if (SignupActivity.dependentModels.get(i).getStrName().
+                    equalsIgnoreCase(getActivity().
+                            getResources().
+                            getString(R.string.add_dependent))) {
+                SignupActivity.dependentModels.remove(i);
+                break;
+            }
+        }
+
         if (progressDialog.isShowing())
             progressDialog.dismiss();
         utils.toast(2, 2, getString(R.string.register_success));
@@ -601,6 +613,10 @@ public class ConfirmFragment extends Fragment {
 
                                             if (response.getJsonDocList().size() <= 0) {
 
+                                                insertDependent(strDependentEmail, object, iSelectedDependent);
+                                            } else {
+
+                                                //
                                                 Storage.JSONDocument jsonDocument = response.
                                                         getJsonDocList().
                                                         get(0);
@@ -611,10 +627,10 @@ public class ConfirmFragment extends Fragment {
                                                         get(iSelectedDependent).
                                                         setStrDependentID(strDependentDocId);
 
-                                                Config.strDependentIds.add(strDependentDocId);
+                                                if (!Config.strDependentIds.contains(strDependentDocId))
+                                                    Config.strDependentIds.add(strDependentDocId);
+                                                //
 
-                                                insertDependent(strDependentEmail, object);
-                                            } else {
                                                 createDependentUser(strDependentEmail);
                                             }
                                         } else {
@@ -636,7 +652,8 @@ public class ConfirmFragment extends Fragment {
                                             int appErrorCode = ex.getAppErrorCode();
 
                                             if (appErrorCode == 2601) {
-                                                insertDependent(strDependentEmail, object);
+                                                insertDependent(strDependentEmail, object,
+                                                        iSelectedDependent);
                                             } else {
                                                 createDependentUser(strDependentEmail);
                                             }
@@ -657,7 +674,10 @@ public class ConfirmFragment extends Fragment {
                             progressDialog.dismiss();
                         utils.toast(2, 2, getString(R.string.warning_internet));
                     }
-                } else iDependentCount++;
+                } else {
+                    iDependentCount++;
+                    createDependent();
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -668,7 +688,8 @@ public class ConfirmFragment extends Fragment {
         }
     }
 
-    public void insertDependent(final String strDependentEmail, JSONObject jsonObject) {
+    public void insertDependent(final String strDependentEmail, JSONObject jsonObject,
+                                final int iSelectedDependent) {
         try {
 
             if (utils.isConnectingToInternet()) {
@@ -683,6 +704,21 @@ public class ConfirmFragment extends Fragment {
 
                                 if (response != null) {
                                     if (response.isResponseSuccess()) {
+                                        //
+                                        Storage.JSONDocument jsonDocument = response.
+                                                getJsonDocList().
+                                                get(0);
+
+                                        String strDependentDocId = jsonDocument.getDocId();
+
+                                        SignupActivity.dependentModels.
+                                                get(iSelectedDependent).
+                                                setStrDependentID(strDependentDocId);
+
+                                        if (!Config.strDependentIds.contains(strDependentDocId))
+                                            Config.strDependentIds.add(strDependentDocId);
+                                        //
+
                                         createDependentUser(strDependentEmail);
                                 } else {
                                     if (progressDialog.isShowing())
@@ -750,6 +786,8 @@ public class ConfirmFragment extends Fragment {
 
                 ArrayList<String> roleList = new ArrayList<>();
                 roleList.add("dependent");
+
+                Utils.log(" 2 ", " IN 0");
 
                 userService.onCreateUser(strDependentEmail,
                         //todo generate random password and send mail
