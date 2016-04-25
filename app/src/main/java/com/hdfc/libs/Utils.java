@@ -1745,7 +1745,7 @@ public class Utils {
                 activityModel.setStrActivityMessage(jsonObjectActivity.
                         getString("activity_message"));
 
-                log(jsonObjectActivity.getString("provider_id"), " PROVIDER ID ");
+                //log(jsonObjectActivity.getString("provider_id"), " PROVIDER ID ");
 
                 if (!Config.strProviderIds.contains(jsonObjectActivity.getString("provider_id")))
                     Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
@@ -2072,7 +2072,7 @@ public class Utils {
 
                 StorageService storageService = new StorageService(_ctxt);
 
-                log(String.valueOf(iProviderCount), " Count ");
+                // log(String.valueOf(iProviderCount), " Count ");
 
                 storageService.findDocsByIdApp42CallBack(Config.strProviderIds.get(iProviderCount),
                         Config.collectionProvider, new App42CallBack() {

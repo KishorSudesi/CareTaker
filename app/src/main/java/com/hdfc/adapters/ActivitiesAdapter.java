@@ -77,7 +77,7 @@ public class ActivitiesAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Utils.log(String.valueOf(data.size()), " SIZE ");
+        //Utils.log(String.valueOf(data.size()), " SIZE ");
 
         if (data.size() > 0) {
 
@@ -90,9 +90,9 @@ public class ActivitiesAdapter extends BaseAdapter {
 
             ProviderModel providerModel = null;
 
-            for (int i = 0; i < Config.strProviderIds.size(); i++) {
+           /* for (int i = 0; i < Config.strProviderIds.size(); i++) {
                 Utils.log(Config.strProviderIds.get(i), " NAME ");
-            }
+            }*/
 
             if (Config.strProviderIds.contains(activityModel.getStrProviderID())) {
                 providerModel = Config.providerModels.get(Config.strProviderIds.
