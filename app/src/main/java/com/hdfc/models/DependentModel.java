@@ -7,19 +7,19 @@ import java.util.ArrayList;
  */
 public class DependentModel {
 
-    private String strName = "";
-    private String strRelation = "";
-    private String strNotes = "";
-    private String strAddress = "";
-    private String strContacts = "";
-    private String strEmail = "";
-    private String strIllness = "";
-    private String strImagePath = "";
-    private String strImageUrl = "";
+    private String strName;
+    private String strRelation;
+    private String strNotes;
+    private String strAddress;
+    private String strContacts;
+    private String strEmail;
+    private String strIllness;
+    private String strImagePath;
+    private String strImageUrl;
 
-    private int intAge = 0;
-    private int intHealthBp = 0;
-    private int intHealthHeartRate = 0;
+    private int intAge;
+    private int intHealthBp;
+    private int intHealthHeartRate;
 
     private String strDependentID;
     private String strCustomerID;
@@ -56,8 +56,12 @@ public class DependentModel {
         return activityModels;
     }
 
-    public void setActivityModels(ArrayList<ActivityModel> activityModels) {
+    /*public void setActivityModels(ArrayList<ActivityModel> activityModels) {
         this.activityModels = activityModels;
+    }*/
+
+    public void setActivityModels(ActivityModel activityModel) {
+        this.activityModels.add(activityModel);
     }
 
     public String getStrName() {
@@ -174,6 +178,10 @@ public class DependentModel {
 
     public ArrayList<ServiceModel> getServiceModels() {
         return serviceModels;
+    }
+
+    public void setServiceModels(ServiceModel serviceModel) {
+        this.serviceModels.add(serviceModel);
     }
 
     public void setServiceModels(ArrayList<ServiceModel> serviceModels) {

@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.ImagesFragment;
+import com.hdfc.libs.Utils;
 import com.hdfc.views.MyLinearView;
 
 public class CarouselPagerAdapter extends FragmentPagerAdapter implements
@@ -54,6 +55,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
                     positionOffset);
 
             /*if(Config.intDependentsCount<=position)*/
+            Utils.log(String.valueOf(position), " position ");
             DashboardFragment.loadData(position);
            /* else
                 DashboardFragment.loadData(0);*/

@@ -70,7 +70,7 @@ public class DashboardFragment extends Fragment {
 
         try {
 
-            activitiesModelArrayList.clear();
+            //activitiesModelArrayList.clear();
             activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
 
             activitiesAdapter = new ActivitiesAdapter(context, activitiesModelArrayList);
@@ -189,11 +189,8 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-
         listViewActivities.setEmptyView(emptyTextView);
-        loadData(0);
-
-
+        //loadData(0);
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 

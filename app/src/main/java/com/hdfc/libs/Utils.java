@@ -1711,6 +1711,8 @@ public class Utils {
                         );
 
                         serviceModels.add(serviceModel);
+                        Config.dependentModels.get(iActivityCount).
+                                setServiceModels(serviceModel);
                     }
                     dependentModel.setServiceModels(serviceModels);
                 }
@@ -1848,7 +1850,10 @@ public class Utils {
                     activityModel.setImageModels(imageModels);
                 }
 
-                Config.activityModels.add(activityModel);
+                Config.dependentModels.get(iActivityCount).
+                        setActivityModels(activityModel);
+
+                //Config.activityModels.add(activityModel);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -2212,8 +2217,8 @@ public class Utils {
                                     toast(2, 2, _ctxt.getString(R.string.error));
                                 }*/
 
-                                Config.dependentModels.get(iActivityCount).
-                                        setActivityModels(Config.activityModels);
+                                /*Config.dependentModels.get(iActivityCount).
+                                        setActivityModels(Config.activityModels);*/
 
                                 iActivityCount++;
 
@@ -2242,8 +2247,8 @@ public class Utils {
 
                                     int appErrorCode = jsonObjectError.getInt("appErrorCode");
 
-                                    Config.dependentModels.get(iActivityCount).
-                                            setActivityModels(Config.activityModels);
+                                   /* Config.dependentModels.get(iActivityCount).
+                                            setActivityModels(Config.activityModels);*/
 
                                     if (appErrorCode == 2608) {
                                         iActivityCount++;
