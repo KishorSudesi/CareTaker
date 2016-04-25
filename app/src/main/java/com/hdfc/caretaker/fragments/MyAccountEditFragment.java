@@ -90,6 +90,8 @@ public class MyAccountEditFragment extends Fragment {
 
         name = (EditText) view.findViewById(R.id.editTextGuruName);
 
+        Button buttonBack = (Button) view.findViewById(R.id.buttonBack);
+
         editTextOldPassword = (EditText) view.findViewById(R.id.editOldPassword);
         editTextPassword = (EditText) view.findViewById(R.id.editPassword);
         editTextConfirmPassword = (EditText) view.findViewById(R.id.editConfirmPassword);
@@ -128,6 +130,18 @@ public class MyAccountEditFragment extends Fragment {
 
         //loadingPanel.setVisibility(View.VISIBLE);
         //
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Config.intSelectedMenu = Config.intAccountScreen;
+                MyAccountFragment fragment = MyAccountFragment.newInstance();
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_dashboard, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         goToDashBoard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,9 +347,9 @@ public class MyAccountEditFragment extends Fragment {
 
                 UploadService uploadService = new UploadService(getActivity());
 
-                if (progressDialog.isShowing())
+               /* if (progressDialog.isShowing())
                     progressDialog.setProgress(1);
-
+*/
                 uploadService.removeImage(Config.strCustomerImageName,
                         Config.customerModel.getStrEmail(),
                             new App42CallBack() {
@@ -427,7 +441,7 @@ public class MyAccountEditFragment extends Fragment {
 
                                                     try {
                                                         File f = utils.getInternalFileImages(
-                                                                Config.strCustomerImageName);
+                                                                Config.customerModel.getStrCustomerID());
 
                                                         if (f.exists())
                                                             f.delete();

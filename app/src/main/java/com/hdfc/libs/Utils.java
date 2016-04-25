@@ -82,9 +82,7 @@ import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -1946,11 +1944,10 @@ public class Utils {
         }
     }
 
-    public Query generateQuery(StorageService storageService, String strKey1, String strStatus,
-                               QueryBuilder.Operator operator) {
+    public Query generateQuery(String strStatus) {
 
-        Calendar calendar = Calendar.getInstance();
-        String value1 = convertDateToString(calendar.getTime());
+        /*Calendar calendar = Calendar.getInstance();
+        String value1 = convertDateToString(calendar.getTime());*/
 
         String key2 = "dependent_id";
         String value2 = Config.strDependentIds.get(iActivityCount);
@@ -1963,13 +1960,6 @@ public class Utils {
 
         Query q3 = QueryBuilder.build("status", strStatus, QueryBuilder.Operator.EQUALS);
         Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
-
-        HashMap<String, String> otherMetaHeaders = new HashMap<String, String>();
-        otherMetaHeaders.put("orderByDescending", strKey1);// Use orderByDescending
-
-        //Query query = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
-
-        storageService.setOtherMetaHeaders(otherMetaHeaders);
 
         return q4; //query
     }
@@ -1986,13 +1976,22 @@ public class Utils {
 
                 StorageService storageService = new StorageService(_ctxt);
 
-                Query query = generateQuery(storageService, "activity_done_date", "completed",
-                        QueryBuilder.Operator.LESS_THAN_EQUALTO);
+                Query query = generateQuery("completed");
 
                 int max = 1;
                 int offset = 0;
 
-                storageService.findDocsByQuery(Config.collectionActivity, query, max, offset,
+                /*HashMap<String, String> otherMetaHeaders = new HashMap<String, String>();
+                otherMetaHeaders.put("orderByDescending", "activity_done_date");// Use orderByDescending
+
+                //Query query = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+
+                storageService.setOtherMetaHeaders(otherMetaHeaders);*/
+
+                //log(query.get(), " QUERY ");
+
+                storageService.findDocsByQueryOrderBy(Config.collectionActivity, query, max, offset,
+                        "activity_done_date", 1, //1 for descending
                         new App42CallBack() {
 
                             @Override
@@ -2001,6 +2000,8 @@ public class Utils {
                                 Storage response = (Storage) o;
 
                                 if (response != null) {
+
+                                    log(response.toString(), " RESPONSE ");
 
                                     if (response.getJsonDocList().size() > 0) {
 
@@ -2182,13 +2183,20 @@ public class Utils {
 
             StorageService storageService = new StorageService(_ctxt);
 
-            Query query = generateQuery(storageService, "activity_date", "upcoming",
-                    QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+            Query query = generateQuery("upcoming");
 
             int max = 1;
             int offset = 0;
 
-            storageService.findDocsByQuery(Config.collectionActivity, query, max, offset,
+          /*  HashMap<String, String> otherMetaHeaders = new HashMap<String, String>();
+            otherMetaHeaders.put("orderByAscending", "activity_date");// Use orderByDescending
+
+            //Query query = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+
+            storageService.setOtherMetaHeaders(otherMetaHeaders);*/
+
+            storageService.findDocsByQueryOrderBy(Config.collectionActivity, query, max, offset,
+                    "activity_date", 0, //1 for descending
                     new App42CallBack() {
 
                         @Override

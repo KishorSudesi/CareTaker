@@ -72,13 +72,13 @@ public class MyAccountFragment extends Fragment {
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imgPen);
 
-        if (Config.customerModel != null && Config.customerModel.getStrAddress() != null)
-            txtAddress.setText(Config.customerModel.getStrAddress());
-
         if (Config.customerModel != null) {
             txtNumber.setText(Config.customerModel.getStrContacts());
             textViewName.setText(Config.customerModel.getStrName());
             textViewEmail.setText(Config.customerModel.getStrEmail());
+
+            if (Config.customerModel.getStrAddress() != null)
+                txtAddress.setText(Config.customerModel.getStrAddress());
         }
 
         txtviewBuyServices.setOnClickListener(new View.OnClickListener() {

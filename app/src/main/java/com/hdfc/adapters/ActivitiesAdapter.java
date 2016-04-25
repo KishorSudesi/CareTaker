@@ -88,11 +88,6 @@ public class ActivitiesAdapter extends BaseAdapter {
 
             //Date dateNow = new Date();
 
-            String strDisplayDate = _context.getResources().getString(R.string.space) +
-                    _context.getResources().getString(R.string.at) +
-                    _context.getResources().getString(R.string.space) +
-                    utils.formatDate(activityModel.getStrActivityDate());
-
             ProviderModel providerModel = null;
 
             for (int i = 0; i < Config.strProviderIds.size(); i++) {
@@ -107,6 +102,11 @@ public class ActivitiesAdapter extends BaseAdapter {
             try {
                 if (activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
 
+                    String strDisplayDate = _context.getResources().getString(R.string.space) +
+                            _context.getResources().getString(R.string.at) +
+                            _context.getResources().getString(R.string.space) +
+                            utils.formatDate(activityModel.getStrActivityDate());
+
                     viewHolder.linearLayout.setBackgroundColor(_context.getResources().
                             getColor(R.color.colorWhite));
                     viewHolder.textViewTime.setTextColor(_context.getResources().
@@ -119,6 +119,11 @@ public class ActivitiesAdapter extends BaseAdapter {
 
                     viewHolder.textViewText.setText(activityModel.getStrActivityMessage());
                 } else {
+
+                    String strDisplayDate = _context.getResources().getString(R.string.space) +
+                            _context.getResources().getString(R.string.at) +
+                            _context.getResources().getString(R.string.space) +
+                            utils.formatDate(activityModel.getStrActivityDoneDate());
 
                     Utils.setDrawable(viewHolder.linearLayout, _context.getResources().
                             getDrawable(R.drawable.header_gradient));

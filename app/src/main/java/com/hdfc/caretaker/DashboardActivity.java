@@ -109,7 +109,7 @@ public class DashboardActivity extends AppCompatActivity {
             buttonSeniors.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Config.intSelectedMenu = 0;
+                    //Config.intSelectedMenu = 0;
                     goToDashboard();
                 }
             });
@@ -119,19 +119,19 @@ public class DashboardActivity extends AppCompatActivity {
             textViewSeniors.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Config.intSelectedMenu = 0;
+                    //Config.intSelectedMenu = 0;
                     goToDashboard();
                 }
             });
         }
 
         if (Config.intSelectedMenu == Config.intNotificationScreen) {
-            Config.intSelectedMenu = 0;
+            // Config.intSelectedMenu = 0;
             goToNotifications();
         }
 
         if (Config.intSelectedMenu == Config.intAccountScreen) {
-            Config.intSelectedMenu = 0;
+            //Config.intSelectedMenu = 0;
             goToAccount();
         }
 
@@ -153,7 +153,7 @@ public class DashboardActivity extends AppCompatActivity {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
             } else {
-                Config.intSelectedMenu = 0;
+                //Config.intSelectedMenu = 0;
                 goToDashboard();
             }
         } catch (Exception e) {
@@ -162,49 +162,49 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void goToNotifications() {
-        if (Config.intSelectedMenu != Config.intNotificationScreen) {
+        //if (Config.intSelectedMenu != Config.intNotificationScreen) {
             Config.intSelectedMenu = Config.intNotificationScreen;
             NotificationFragment fragment = NotificationFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
+        // }
     }
 
     public void goToAccount() {
-        if (Config.intSelectedMenu != Config.intAccountScreen) {
+        //if (Config.intSelectedMenu != Config.intAccountScreen) {
             Config.intSelectedMenu = Config.intAccountScreen;
             MyAccountFragment fragment = MyAccountFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
+        //}
     }
 
     public void goToActivity() {
 
-        if (Config.intSelectedMenu == Config.intListActivityScreen ||
-                Config.intSelectedMenu == Config.intActivityScreen) {
-            //Config.intSelectedMenu = Config.intActivityScreen;
+        //if (Config.intSelectedMenu == Config.intListActivityScreen ||
+        //Config.intSelectedMenu == Config.intActivityScreen) {
+        Config.intSelectedMenu = Config.intActivityScreen;
             ActivityFragment fragment = ActivityFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
+        //}
     }
 
     public void goToDashboard() {
-        if (Config.intSelectedMenu != Config.intDashboardScreen) {
+        //if (Config.intSelectedMenu != Config.intDashboardScreen) {
             Config.intSelectedMenu = Config.intDashboardScreen;
             DashboardFragment newFragment = DashboardFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        }
+        //}
     }
 
     @Override
@@ -259,7 +259,7 @@ public class DashboardActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
             if (Config.intSelectedMenu == Config.intDashboardScreen) {
-                Config.intSelectedMenu = 0;
+                //Config.intSelectedMenu = 0;
                 goToDashboard();
             }
         }

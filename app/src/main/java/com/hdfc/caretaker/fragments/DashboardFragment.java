@@ -66,7 +66,7 @@ public class DashboardFragment extends Fragment {
 
     public static void loadData(int intIndex) {
 
-        Utils.log(String.valueOf(intIndex), " INDEX ");
+        //Utils.log(String.valueOf(intIndex), " INDEX ");
 
         try {
 
@@ -78,7 +78,7 @@ public class DashboardFragment extends Fragment {
 
             //activitiesAdapter.notifyDataSetChanged();
 
-            Utils.log(String.valueOf(Config.dependentModels.get(intIndex).getActivityModels().size()), " INDEX 0 ");
+            //Utils.log(String.valueOf(Config.dependentModels.get(intIndex).getActivityModels().size()), " INDEX 0 ");
 
             textView1.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
             textView2.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));
