@@ -14,9 +14,6 @@ import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.NotificationModel;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +24,6 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class NotificationFragment extends Fragment {
-    public static ArrayList<NotificationModel> staticNotificationModels = new ArrayList<>();
     public static ListView listViewActivities;
     public static NotificationAdapter notificationAdapter;
     public static LinearLayout dynamicUserTab;
@@ -71,50 +67,9 @@ public class NotificationFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        try {
-
-            staticNotificationModels.clear();
-
-/*
-            if (Config.jsonObject!=null&&Config.jsonObject.has("customer_name")) {
-
-                if (Config.jsonObject.has("dependents")) {
-
-                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
-
-                    JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-                    //Notifications
-                    if (jsonObject.has("notifications")) {
-
-                        JSONArray jsonArrayNotifications = jsonObject.getJSONArray("notifications");
-
-                        for (int j = 0; j < jsonArrayNotifications.length(); j++) {
-
-                            JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
-
-                           */
-/* NotificationModel notificationModel = new NotificationModel("",
-                                    jsonObjectNotification.getString("notification_message"),
-                                    jsonObjectNotification.getString("time"),
-                                    jsonObjectNotification.getString("author"));
-
-                            staticNotificationModels.add(notificationModel);*//*
-
-                        }
-                    }
-                    //
-                }
-            }
-*/
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        notificationAdapter = new NotificationAdapter(getContext(), staticNotificationModels);
-        listViewActivities.setAdapter(notificationAdapter);
         listViewActivities.setEmptyView(emptyTextView);
-
         utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        //notificationAdapter = new NotificationAdapter(getContext(), staticNotificationModels);
+
     }
 }

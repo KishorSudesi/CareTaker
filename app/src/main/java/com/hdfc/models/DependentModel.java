@@ -26,6 +26,7 @@ public class DependentModel {
 
     private ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     private ArrayList<ActivityModel> activityModels = new ArrayList<>();
+    private ArrayList<NotificationModel> notificationModels = new ArrayList<>();
 
     public DependentModel() {
     }
@@ -180,12 +181,19 @@ public class DependentModel {
         return serviceModels;
     }
 
-    public void setServiceModels(ServiceModel serviceModel) {
-        this.serviceModels.add(serviceModel);
-    }
-
     public void setServiceModels(ArrayList<ServiceModel> serviceModels) {
         this.serviceModels = serviceModels;
     }
 
+    public void setServiceModels(ServiceModel serviceModel) {
+        this.serviceModels.add(serviceModel);
+    }
+
+    public ArrayList<NotificationModel> getNotificationModels() {
+        return notificationModels;
+    }
+
+    public void setNotificationModels(NotificationModel notificationModels) {
+        this.notificationModels.add(notificationModels);
+    }
 }

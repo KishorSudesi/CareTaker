@@ -41,12 +41,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
+import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ConfirmViewModel;
@@ -55,6 +57,7 @@ import com.hdfc.models.DependentModel;
 import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
+import com.hdfc.models.NotificationModel;
 import com.hdfc.models.ProviderModel;
 import com.hdfc.models.ServiceModel;
 import com.hdfc.models.VideoModel;
@@ -1098,6 +1101,10 @@ public class Utils {
 
         dynamicUserTab.removeAllViews();
 
+        Config.intSelectedDependent = 0;
+
+        loadDependentData(intWhichScreen);
+
         for (int i = 0; i < Config.dependentModels.size(); i++) {
 
             //Creates tab button
@@ -1143,49 +1150,7 @@ public class Utils {
     public void loadDependentData(int intWhichScreen) {
 
         if (intWhichScreen == Config.intNotificationScreen) {
-
-            /*NotificationFragment.staticNotificationModels.clear();
-
-            try {
-
-                if (Config.jsonObject.has("customer_name")) {
-
-                    if (Config.jsonObject.has("dependents")) {
-
-                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
-
-                        for (int i = Config.intSelectedDependent;
-                             i < Config.intSelectedDependent + 1;
-                             i++) {
-
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                            //Notifications
-                           *//* if (jsonObject.has("notifications")) {
-
-                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("notifications");
-
-                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
-
-                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
-
-                                    NotificationModel notificationModel = new NotificationModel("",
-                                            jsonObjectNotification.getString("notification_message"),
-                                            jsonObjectNotification.getString("time"),
-                                            jsonObjectNotification.getString("author"));
-
-                                    NotificationFragment.staticNotificationModels.add(notificationModel);
-                                }
-                            }*//*
-                        }
-                    }
-                }
-
-                NotificationFragment.notificationAdapter.notifyDataSetChanged();
-
-            }catch (JSONException e){
-                e.printStackTrace();
-            }*/
+            loadNotifications();
         }
 
         if (intWhichScreen == Config.intListActivityScreen ||
@@ -1195,6 +1160,134 @@ public class Utils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void loadNotifications() {
+
+        final ProgressDialog progressDialog = new ProgressDialog(_ctxt);
+
+        if (isConnectingToInternet()) {
+
+            progressDialog.setMessage(_ctxt.getString(R.string.loading));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            storageService.findDocsByKeyValue(Config.collectionNotification,
+                    "user_id",
+                    Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage storage) {
+
+                            if (storage != null) {
+
+                                if (storage.getJsonDocList().size() > 0) {
+
+                                    ArrayList<Storage.JSONDocument> jsonDocList = storage.
+                                            getJsonDocList();
+
+                                    for (int i = 0; i < jsonDocList.size(); i++) {
+
+                                        createNotificationModel(jsonDocList.get(i).getDocId(),
+                                                jsonDocList.get(i).getJsonDoc());
+                                    }
+
+                                    NotificationFragment.notificationAdapter =
+                                            new NotificationAdapter(
+                                                    _ctxt,
+                                                    Config.dependentModels.
+                                                            get(Config.intSelectedDependent).
+                                                            getNotificationModels());
+                                    //NotificationFragment.notificationAdapter.notifyDataSetChanged();
+                                    //setAdapter(NotificationFragment.notificationAdapter);
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    NotificationFragment.listViewActivities.
+                                            setAdapter(NotificationFragment.notificationAdapter);
+
+                                }
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                }
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            if (ex != null) {
+                                try {
+                                       /* JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                        JSONObject jsonObjectError = jsonObject.
+                                                getJSONObject("app42Fault");
+                                        String strMess = jsonObjectError.getString("details");
+
+                                        toast(2, 2, strMess);*/
+                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            } else {
+                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+        }
+    }
+
+
+    public void createNotificationModel(String strDocumentId, String strDocument) {
+        try {
+
+            JSONObject jsonObjectProvider = new JSONObject(strDocument);
+
+            if (jsonObjectProvider.has("notification_message")) {
+
+                NotificationModel notificationModel = new NotificationModel(
+                        jsonObjectProvider.getString("notification_message"),
+                        jsonObjectProvider.getString("time"),
+                        jsonObjectProvider.getString("user_type"),
+                        jsonObjectProvider.getString("created_by_type"),
+                        jsonObjectProvider.getString("user_id"),
+                        jsonObjectProvider.getString("created_by"), strDocumentId);
+
+                if (!Config.strNotificationIds.contains(strDocumentId)) {
+                    Config.strNotificationIds.add(strDocumentId);
+                    Config.dependentModels.get(Config.intSelectedDependent).
+                            setNotificationModels(notificationModel);
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -1303,64 +1396,6 @@ public class Utils {
                 tab.setBackgroundResource(R.drawable.button_back_trans);
             }
 
-        }
-    }
-
-    public void parseData() {
-
-        try {
-
-          /*  if (Config.jsonCustomer.has("customer_name")) {
-
-                Config.customerModel = new CustomerModel(
-                        Config.jsonObject.getString("customer_name"),
-                        Config.jsonObject.getString("paytm_account"),
-                        Config.jsonObject.getString("customer_profile_url"),
-                        Config.jsonObject.getString("customer_address"),
-                        Config.jsonObject.getString("customer_contact_no"),
-                        Config.jsonObject.getString("customer_email"),
-                        Config.strCustomerDocId, "");*/
-
-                /*if (Config.jsonObject.has("dependents")) {
-
-                    Config.intDependentsCount = Config.jsonObject.getJSONArray("dependents").length();
-
-                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
-
-                    try {
-
-                        for (int i = 0; i < jsonArray.length(); i++) {
-
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                            //Dependant Names
-                            Config.dependentNames.add(jsonObject.getString("dependent_name"));
-
-                            //carla profile images
-                            if (jsonObject.has("activities")) {
-
-                                JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
-
-                                for (int j = 0; j < jsonArrayNotifications.length(); j++) {
-
-                                    JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
-
-                                    Config.fileModels.add(
-                                            new FileModel(jsonObjectNotification.getString("provider_name"),
-                                                    jsonObjectNotification.getString("provider_image_url"),
-                                                    "IMAGE"));
-                                }
-                            }
-                            //
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }*/
-            //}
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -1662,63 +1697,66 @@ public class Utils {
 
             if (jsonObjectDependent.has("dependent_name")) {
 
-                DependentModel dependentModel = new DependentModel();
+                if (!Config.strDependentIds.contains(strDependentDocId)) {
+                    Config.strDependentIds.add(strDependentDocId);
 
-                dependentModel.setStrIllness(jsonObjectDependent.getString("dependent_illness"));
-                dependentModel.setIntHealthBp(jsonObjectDependent.getInt("health_bp"));
-                dependentModel.setIntHealthHeartRate(jsonObjectDependent.getInt("health_heart_rate"));
+                    DependentModel dependentModel = new DependentModel();
 
-                dependentModel.setStrRelation(jsonObjectDependent.getString("dependent_relation"));
-                dependentModel.setStrAddress(jsonObjectDependent.getString("dependent_address"));
-                dependentModel.setStrNotes(jsonObjectDependent.getString("dependent_notes"));
-                dependentModel.setStrContacts(jsonObjectDependent.getString("dependent_contact_no"));
-                dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
-                dependentModel.setStrImageUrl(jsonObjectDependent.getString("dependent_profile_url"));
-                dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
-                dependentModel.setIntAge(jsonObjectDependent.getInt("dependent_age"));
+                    dependentModel.setStrIllness(jsonObjectDependent.getString("dependent_illness"));
+                    dependentModel.setIntHealthBp(jsonObjectDependent.getInt("health_bp"));
+                    dependentModel.setIntHealthHeartRate(jsonObjectDependent.getInt("health_heart_rate"));
 
-                dependentModel.setStrCustomerID(jsonObjectDependent.getString("customer_id"));
+                    dependentModel.setStrRelation(jsonObjectDependent.getString("dependent_relation"));
+                    dependentModel.setStrAddress(jsonObjectDependent.getString("dependent_address"));
+                    dependentModel.setStrNotes(jsonObjectDependent.getString("dependent_notes"));
+                    dependentModel.setStrContacts(jsonObjectDependent.getString("dependent_contact_no"));
+                    dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
+                    dependentModel.setStrImageUrl(jsonObjectDependent.getString("dependent_profile_url"));
+                    dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
+                    dependentModel.setIntAge(jsonObjectDependent.getInt("dependent_age"));
 
-                dependentModel.setStrDependentID(strDependentDocId);
+                    dependentModel.setStrCustomerID(jsonObjectDependent.getString("customer_id"));
 
-                Config.strDependentIds.add(strDependentDocId);
-                Config.dependentNames.add(jsonObjectDependent.getString("dependent_name"));
+                    dependentModel.setStrDependentID(strDependentDocId);
 
-                ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+                    Config.dependentNames.add(jsonObjectDependent.getString("dependent_name"));
 
-                if (jsonObjectDependent.has("services")) {
+                    ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
-                    JSONArray jsonArrayServices = jsonObjectDependent.getJSONArray("services");
+                    if (jsonObjectDependent.has("services")) {
 
-                    for (int j = 0; j < jsonArrayServices.length(); j++) {
+                        JSONArray jsonArrayServices = jsonObjectDependent.getJSONArray("services");
 
-                        JSONObject jsonObjectService = jsonArrayServices.getJSONObject(j);
+                        for (int j = 0; j < jsonArrayServices.length(); j++) {
 
-                        String strFeatures[] = jsonToStringArray(jsonObjectService.
-                                getJSONArray("service_features"));
+                            JSONObject jsonObjectService = jsonArrayServices.getJSONObject(j);
 
-                        ServiceModel serviceModel = new ServiceModel(
-                                jsonObjectService.getString("service_name"),
-                                jsonObjectService.getString("service_desc"),
-                                jsonObjectService.getString("updated_date"),
-                                strFeatures,
-                                jsonObjectService.getInt("unit"),
-                                jsonObjectService.getInt("unit_consumed"),
-                                jsonObjectService.getString("service_id"),
-                                jsonObjectService.getString("service_history_id")
-                        );
+                            String strFeatures[] = jsonToStringArray(jsonObjectService.
+                                    getJSONArray("service_features"));
 
-                        serviceModels.add(serviceModel);
-                        Config.dependentModels.get(iActivityCount).
-                                setServiceModels(serviceModel);
+                            ServiceModel serviceModel = new ServiceModel(
+                                    jsonObjectService.getString("service_name"),
+                                    jsonObjectService.getString("service_desc"),
+                                    jsonObjectService.getString("updated_date"),
+                                    strFeatures,
+                                    jsonObjectService.getInt("unit"),
+                                    jsonObjectService.getInt("unit_consumed"),
+                                    jsonObjectService.getString("service_id"),
+                                    jsonObjectService.getString("service_history_id")
+                            );
+
+                            serviceModels.add(serviceModel);
+                            Config.dependentModels.get(iActivityCount).
+                                    setServiceModels(serviceModel);
+                        }
+                        dependentModel.setServiceModels(serviceModels);
                     }
-                    dependentModel.setServiceModels(serviceModels);
+
+                    Config.dependentModels.add(dependentModel);
+
+                    Config.fileModels.add(new FileModel(strDependentDocId,
+                            dependentModel.getStrImageUrl(), "IMAGE"));
                 }
-
-                Config.dependentModels.add(dependentModel);
-
-                Config.fileModels.add(new FileModel(strDependentDocId,
-                        dependentModel.getStrImageUrl(), "IMAGE"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -2001,7 +2039,7 @@ public class Utils {
 
                                 if (response != null) {
 
-                                    log(response.toString(), " RESPONSE ");
+                                    //log(response.toString(), " RESPONSE ");
 
                                     if (response.getJsonDocList().size() > 0) {
 

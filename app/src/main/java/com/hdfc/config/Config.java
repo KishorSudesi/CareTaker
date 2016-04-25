@@ -24,6 +24,7 @@ public class Config {
     public static final String collectionCustomer = "customer";
     public static final String collectionDependent = "dependent";
     public static final String collectionActivity = "activity";
+    public static final String collectionNotification = "notification";
 
     //public static final String strServiceDocId = "56f280b0e4b003cbd56dcb38";//remove this
     //for UAT 56f280b0e4b003cbd56dcb38
@@ -67,6 +68,7 @@ public class Config {
 
     public static ArrayList<String> dependentNames = new ArrayList<>();
     public static ArrayList<String> strDependentIds = new ArrayList<>();
+    public static ArrayList<String> strNotificationIds = new ArrayList<>();
 
     public static ArrayList<String> strProviderIds = new ArrayList<>();
 
