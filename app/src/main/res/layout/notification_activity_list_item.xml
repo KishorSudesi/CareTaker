@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.hdfc.views.RoundedImageView
+            <ImageView
                 android:id="@+id/roundedImageView"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -38,10 +38,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:paddingLeft="13dp"
-                android:paddingStart="13dp"
-                android:paddingRight="3dp"
                 android:paddingEnd="3dp"
+                android:paddingLeft="13dp"
+                android:paddingRight="3dp"
+                android:paddingStart="13dp"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -55,7 +55,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="13dp"
-                    android:paddingRight="13dp"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="14sp" />
 
@@ -63,7 +62,6 @@
                     android:id="@+id/textViewTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="13dp"
                     android:paddingRight="13dp"
                     android:textColor="#333333"
                     android:textSize="12sp" />

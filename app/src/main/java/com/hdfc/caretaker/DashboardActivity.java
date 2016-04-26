@@ -19,7 +19,6 @@ import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.FileModel;
 
 /**
  * Created by user on 08-01-2016.
@@ -237,15 +236,7 @@ public class DashboardActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                for (int i = 0; i < Config.fileModels.size(); i++) {
-                    FileModel fileModel = Config.fileModels.get(i);
-
-                    if (fileModel != null && fileModel.getStrFileUrl() != null &&
-                            !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
-                        utils.loadImageFromWeb(fileModel.getStrFileName(),
-                                fileModel.getStrFileUrl());
-                    }
-                }
+                utils.loadAllFiles();
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception e) {
                 e.printStackTrace();

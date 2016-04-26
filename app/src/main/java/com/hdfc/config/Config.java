@@ -1,7 +1,6 @@
 package com.hdfc.config;
 
 import com.hdfc.libs.Utils;
-import com.hdfc.models.ActivityModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
@@ -71,6 +70,7 @@ public class Config {
     public static ArrayList<String> strNotificationIds = new ArrayList<>();
 
     public static ArrayList<String> strProviderIds = new ArrayList<>();
+    public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
 
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
@@ -83,5 +83,5 @@ public class Config {
 
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
 
-    public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
+    //public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
 }

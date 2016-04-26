@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class ActivitiesAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    public MultiBitmapLoader multiBitmapLoader;
+    private MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private ArrayList data;
     private Utils utils;
@@ -152,7 +152,7 @@ public class ActivitiesAdapter extends BaseAdapter {
                 File f = utils.getInternalFileImages(utils.replaceSpace(
                         activityModel.getStrProviderID()));
 
-                if(f.exists())
+                if (f.exists())
                     multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.roundedImageView);
 
             } catch (Exception e) {

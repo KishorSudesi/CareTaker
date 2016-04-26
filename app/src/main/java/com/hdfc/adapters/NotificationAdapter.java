@@ -5,14 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
+import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.NotificationModel;
-import com.hdfc.views.RoundedImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -24,11 +27,13 @@ public class NotificationAdapter extends BaseAdapter {
     private Context _context;
     private ArrayList<NotificationModel> adapterNotificationModels;
     private Utils utils;
+    private MultiBitmapLoader multiBitmapLoader;
 
     public NotificationAdapter(Context ctxt, ArrayList d) {
         _context = ctxt;
         adapterNotificationModels = d;
         utils = new Utils(ctxt);
+        multiBitmapLoader = new MultiBitmapLoader(ctxt);
     }
 
     @Override
@@ -63,9 +68,9 @@ public class NotificationAdapter extends BaseAdapter {
             viewHolder.textViewName = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.textViewText = (TextView) convertView.findViewById(R.id.textViewText);
             viewHolder.textViewTime = (TextView) convertView.findViewById(R.id.textViewTime);
-            viewHolder.roundedImageView = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
+            viewHolder.roundedImageView = (ImageView) convertView.
+                    findViewById(R.id.roundedImageView);
             viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.activityList);
-
 
             convertView.setTag(viewHolder);
         } else {
@@ -76,25 +81,55 @@ public class NotificationAdapter extends BaseAdapter {
 
             NotificationModel notificationModel = adapterNotificationModels.get(position);
 
+            String strId = notificationModel.getStrCreatedByID();
+
+            String strName = "";
+
             viewHolder.textViewText.setText(notificationModel.getStrMessage());
-            viewHolder.textViewName.setText(notificationModel.getStrUserID());
+
+            if (notificationModel.getStrCreatedByType().equalsIgnoreCase("provider")) {
+                if (Config.strProviderIds.contains(strId)) {
+                    strName = Config.providerModels.get(Config.strProviderIds.
+                            indexOf(strId)).getStrName();
+                }
+            }
+
+            if (notificationModel.getStrCreatedByType().equalsIgnoreCase("dependent")) {
+                if (Config.strDependentIds.contains(strId)) {
+                    strName = Config.dependentModels.get(Config.strDependentIds.
+                            indexOf(strId)).getStrName();
+                }
+            }
+
+            if (notificationModel.getStrCreatedByType().equalsIgnoreCase("customer")) {
+                strName = Config.customerModel.getStrName();
+            }
 
             try {
                 String strDate = notificationModel.getStrDateTime();
-                String strDisplayDate = _context.getResources().getString(R.string.space)+
-                         _context.getResources().getString(R.string.at)+
-                        _context.getResources().getString(R.string.space)+
+                String strDisplayDate = _context.getResources().getString(R.string.space) +
+                        _context.getResources().getString(R.string.at) +
+                        _context.getResources().getString(R.string.space) +
                         utils.formatDate(strDate);
 
                 viewHolder.textViewTime.setText(strDisplayDate);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            if (position % 2 == 0)
-                viewHolder.roundedImageView.setImageResource(R.drawable.carla2);
-            else
-                viewHolder.roundedImageView.setImageResource(R.drawable.carla1);
+            viewHolder.textViewName.setText(strName);
+
+            try {
+                File f = utils.getInternalFileImages(utils.replaceSpace(strId));
+
+                //Utils.log(f.getAbsolutePath(), " P ");
+
+                if (f.exists())
+                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.roundedImageView);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return convertView;
@@ -104,7 +139,7 @@ public class NotificationAdapter extends BaseAdapter {
         TextView textViewName;
         TextView textViewText;
         TextView textViewTime;
-        RoundedImageView roundedImageView;
+        ImageView roundedImageView;
         LinearLayout linearLayout;
     }
 }

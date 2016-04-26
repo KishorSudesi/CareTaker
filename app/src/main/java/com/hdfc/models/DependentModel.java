@@ -185,7 +185,7 @@ public class DependentModel {
         this.serviceModels = serviceModels;
     }
 
-    public void setServiceModels(ServiceModel serviceModel) {
+    public void setServiceModel(ServiceModel serviceModel) {
         this.serviceModels.add(serviceModel);
     }
 

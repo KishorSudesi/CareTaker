@@ -17,9 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:button="@mipmap/check_off"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false" />
+
     </LinearLayout>
 
 
@@ -37,7 +39,6 @@
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:text="Medical Checkups - (2 left)"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorAccent" />
 
@@ -48,7 +49,6 @@
             android:layout_margin="@dimen/margin_general"
             android:clickable="false"
             android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:text="BP, Heart Rate, Blood Suger and Temperature" />
+            android:focusableInTouchMode="false" />
     </LinearLayout>
 </LinearLayout>

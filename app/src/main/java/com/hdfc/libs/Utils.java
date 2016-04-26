@@ -21,6 +21,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -34,7 +36,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -106,9 +107,10 @@ public class Utils {
     public final static SimpleDateFormat writeFormatActivityMonthYear =
             new SimpleDateFormat("MMM yyyy", Locale.US);
     public static Uri customerImageUri;
-
+    public static int iProviderCount = 0;
+    private static Handler threadHandler;
     private static int iActivityCount = 0;
-    private static int iProviderCount = 0;
+    private static ProgressDialog progressDialog;
     //
 
     private static Context _ctxt;
@@ -331,7 +333,7 @@ public class Utils {
                 android.os.Environment.MEDIA_MOUNTED);
     }
 
-    public static void hideSoftKeyboard(Activity activity) {
+   /* public static void hideSoftKeyboard(Activity activity) {
         try {
             if (activity.getCurrentFocus() != null) {
                 InputMethodManager inputMethodManager = (InputMethodManager)
@@ -342,7 +344,7 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
    /* public static long getAvailableExternalMemorySize() {
         if (externalMemoryAvailable()) {
@@ -631,9 +633,6 @@ public class Utils {
 
     public static void logout() {
         try {
-            //Config.jsonObject = null;
-            //Config.jsonServer = null;
-            //Config.strCustomerDocId = "";
 
             Config.intSelectedMenu = 0;
             Config.intDependentsCount = 0;
@@ -949,7 +948,7 @@ public class Utils {
     }
 
     public String replaceSpace(String string) {
-        string = string.replace(" ", "_");
+        string = string.trim().replace(" ", "_");
         return string;
     }
 
@@ -1036,8 +1035,6 @@ public class Utils {
         return output;
     }
 
-    //Application Specigfic Start
-
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
@@ -1055,6 +1052,8 @@ public class Utils {
         }
         return original;
     }
+
+    //Application Specigfic Start
 
     public int getBitmapHeightFromFile(String strPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -1191,6 +1190,8 @@ public class Utils {
                         @Override
                         public void onFindDocSuccess(Storage storage) {
 
+                            refreshNotificationAdapter();
+
                             if (storage != null) {
 
                                 if (storage.getJsonDocList().size() > 0) {
@@ -1204,25 +1205,15 @@ public class Utils {
                                                 jsonDocList.get(i).getJsonDoc());
                                     }
 
-                                    NotificationFragment.notificationAdapter =
-                                            new NotificationAdapter(
-                                                    _ctxt,
-                                                    Config.dependentModels.
-                                                            get(Config.intSelectedDependent).
-                                                            getNotificationModels());
-                                    //NotificationFragment.notificationAdapter.notifyDataSetChanged();
-                                    //setAdapter(NotificationFragment.notificationAdapter);
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    NotificationFragment.listViewActivities.
-                                            setAdapter(NotificationFragment.notificationAdapter);
+                                    iProviderCount = 0;
 
+                                    fetchProviders(progressDialog, 1);
                                 }
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                                }
+                            }
                         }
 
                         @Override
@@ -1249,6 +1240,7 @@ public class Utils {
                             } else {
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
+                            refreshNotificationAdapter();
                         }
 
                         @Override
@@ -1260,7 +1252,17 @@ public class Utils {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
+
+            refreshNotificationAdapter();
         }
+    }
+
+    public void refreshNotificationAdapter() {
+
+        NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
+                Config.dependentModels.
+                        get(Config.intSelectedDependent).
+                        getNotificationModels());
     }
 
 
@@ -1279,6 +1281,11 @@ public class Utils {
                         jsonObjectProvider.getString("user_id"),
                         jsonObjectProvider.getString("created_by"), strDocumentId);
 
+                if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
+                    if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by")))
+                        Config.strProviderIds.add(jsonObjectProvider.getString("created_by"));
+                }
+
                 if (!Config.strNotificationIds.contains(strDocumentId)) {
                     Config.strNotificationIds.add(strDocumentId);
                     Config.dependentModels.get(Config.intSelectedDependent).
@@ -1295,92 +1302,7 @@ public class Utils {
 
         try {
 
-            /*ActivityFragment.activitiesModelArrayList.clear();
 
-            if (Config.jsonObject.has("customer_name")) {
-
-                if (Config.jsonObject.has("dependents")) {
-
-                    JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
-
-                    for (int index = Config.intSelectedDependent;
-                         index < Config.intSelectedDependent + 1; index++) {
-
-                        JSONObject jsonObject = jsonArray.getJSONObject(index);
-
-                        if (jsonObject.has("activities")) {
-
-                            JSONArray jsonArrayNotifications = jsonObject.getJSONArray("activities");
-
-                            for (int j = 0; j < jsonArrayNotifications.length(); j++) {
-
-                                JSONObject jsonObjectNotification =
-                                        jsonArrayNotifications.getJSONObject(j);
-
-                                if (jsonObjectNotification.has("activity_date")) {
-
-                                    ActivityModel activityModel = new ActivityModel();
-
-                                    activityModel.setStrActivityDate(
-                                            jsonObjectNotification.getString("activity_date"));
-                                    //month-year
-
-                                    activityModel.setStrActivityMessage(
-                                            jsonObjectNotification.getString("activity_message"));
-                                    activityModel.setStrActivityStatus(
-                                            jsonObjectNotification.getString("status"));
-                                    activityModel.setStrActivityDesc(
-                                            jsonObjectNotification.getString("provider_description"));
-
-                                    ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-                                    ArrayList<VideoModel> videoModels = new ArrayList<>();
-                                    ArrayList<ImageModel> imageModels = new ArrayList<>();
-
-                                    if (jsonObjectNotification.has("feedbacks")) {
-
-                                        JSONArray jsonArrayFeedback = jsonObjectNotification.
-                                                getJSONArray("feedbacks");
-
-                                        for (int k = 0; k < jsonArrayFeedback.length(); k++) {
-
-                                            JSONObject jsonObjectFeedback =
-                                                    jsonArrayFeedback.getJSONObject(k);
-
-                                        }
-                                    }
-
-                                    if (jsonObjectNotification.has("videos")) {
-
-                                        JSONArray jsonArrayVideos = jsonObjectNotification.
-                                                getJSONArray("videos");
-
-                                        for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                            JSONObject jsonObjectVideo = jsonArrayVideos.
-                                                    getJSONObject(k);
-
-                                        }
-                                    }
-
-                                    if (jsonObjectNotification.has("images")) {
-
-                                        JSONArray jsonArrayVideos = jsonObjectNotification.
-                                                getJSONArray("images");
-
-                                        for (int k = 0; k < jsonArrayVideos.length(); k++) {
-
-                                            JSONObject jsonObjectImage = jsonArrayVideos.
-                                                    getJSONObject(k);
-                                        }
-                                    }
-
-                                    ActivityFragment.activitiesModelArrayList.add(activityModel);
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1494,7 +1416,7 @@ public class Utils {
         return strDisplayDate;
     }
 
-    public String formatDateActivity(String strDate){
+   /* public String formatDateActivity(String strDate){
 
         String strDisplayDate="06-03-2016 20:55:00";
 
@@ -1520,7 +1442,7 @@ public class Utils {
         }
 
         return strDisplayDate;
-    }
+    }*/
 
     public void toast(int type, int duration, String message) {
 
@@ -1665,6 +1587,37 @@ public class Utils {
         }
     }
 
+    public void createServiceModel(String strDocumentId, JSONObject jsonObject) {
+
+        try {
+
+            JSONArray jsonArr = jsonObject.getJSONArray("features");
+
+            String[] arr = new String[jsonArr.length()];
+
+            for (int j = 0; j < jsonArr.length(); j++)
+                arr[j] = jsonArr.getString(j);
+
+            ServiceModel serviceModel = new ServiceModel();
+
+            serviceModel.setDoubleCost(jsonObject.getDouble("cost"));
+            serviceModel.setStrServiceName(jsonObject.getString("service_name"));
+            serviceModel.setStrServiceDesc(jsonObject.getString("service_desc"));
+            serviceModel.setiUnit(jsonObject.getInt("unit"));
+            serviceModel.setStrServiceId(strDocumentId);
+            serviceModel.setStrFeatures(arr);
+
+            log(String.valueOf(Config.serviceModels.contains(serviceModel)), " BOOLEAN ");
+
+            if (!Config.serviceModels.contains(serviceModel))
+                Config.serviceModels.add(serviceModel);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void createProviderModel(String strDocumentId, String strDocument) {
         try {
 
@@ -1679,10 +1632,15 @@ public class Utils {
                         jsonObjectProvider.getString("provider_contact_no"),
                         jsonObjectProvider.getString("provider_email"), strDocumentId);
 
-                Config.providerModels.add(providerModel);
+                if (!Config.strProviderIdsAdded.contains(strDocumentId)) {
 
-                Config.fileModels.add(new FileModel(strDocumentId,
-                        jsonObjectProvider.getString("provider_profile_url"), "IMAGE"));
+                    Config.strProviderIdsAdded.add(strDocumentId);
+
+                    Config.providerModels.add(providerModel);
+
+                    Config.fileModels.add(new FileModel(strDocumentId,
+                            jsonObjectProvider.getString("provider_profile_url"), "IMAGE"));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1721,7 +1679,7 @@ public class Utils {
 
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_name"));
 
-                    ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+                    //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
                     if (jsonObjectDependent.has("services")) {
 
@@ -1745,11 +1703,12 @@ public class Utils {
                                     jsonObjectService.getString("service_history_id")
                             );
 
-                            serviceModels.add(serviceModel);
-                            Config.dependentModels.get(iActivityCount).
-                                    setServiceModels(serviceModel);
+                            //serviceModels.add(serviceModel);
+                            /*Config.dependentModels.get(iActivityCount).
+                                    setServiceModels(serviceModel);*/
+
+                            dependentModel.setServiceModel(serviceModel);
                         }
-                        dependentModel.setServiceModels(serviceModels);
                     }
 
                     Config.dependentModels.add(dependentModel);
@@ -1789,8 +1748,8 @@ public class Utils {
                     Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
 
                 activityModel.setStrServcieID(jsonObjectActivity.getString("service_id"));
-                //activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
-                //activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));
+                activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
+                activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));
 
                 activityModel.setStrActivityDate(jsonObjectActivity.getString("activity_date"));
                 activityModel.setStrActivityDoneDate(jsonObjectActivity.
@@ -2006,7 +1965,7 @@ public class Utils {
 
         if (iActivityCount < Config.strDependentIds.size()) {
 
-            Config.activityModels.clear();
+            //Config.activityModels.clear();
 
             //log(String.valueOf(iActivityCount), " A Count 0 ");
 
@@ -2100,97 +2059,123 @@ public class Utils {
     }
     //
 
-    public void fetchProviders(final ProgressDialog progressDialog) {
+    public void fetchProviders(final ProgressDialog progressDialog, final int iFlag) {
 
-        //log(String.valueOf(iProviderCount + "g " + Config.strProviderIds.size()), " Count -1");
+        log(String.valueOf(iProviderCount + " C " + Config.strProviderIds.size()), " Count ");
 
-        if (iProviderCount < Config.strProviderIds.size()) {
+        if (iProviderCount < Config.strProviderIds.size()) { //todo check logic
 
             if (isConnectingToInternet()) {
 
-                StorageService storageService = new StorageService(_ctxt);
+                if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.get(iProviderCount))) {
 
-                // log(String.valueOf(iProviderCount), " Count ");
+                    StorageService storageService = new StorageService(_ctxt);
 
-                storageService.findDocsByIdApp42CallBack(Config.strProviderIds.get(iProviderCount),
-                        Config.collectionProvider, new App42CallBack() {
-                            @Override
-                            public void onSuccess(Object o) {
+                    // log(String.valueOf(iProviderCount), " Count ");
 
-                                Storage storage = (Storage) o;
+                    storageService.findDocsByIdApp42CallBack(Config.strProviderIds.get(iProviderCount),
+                            Config.collectionProvider, new App42CallBack() {
+                                @Override
+                                public void onSuccess(Object o) {
 
-                                if (storage != null) {
+                                    Storage storage = (Storage) o;
 
-                                    if (storage.getJsonDocList().size() > 0) {
+                                    if (storage != null) {
 
-                                        Storage.JSONDocument jsonDocument = storage.getJsonDocList().
-                                                get(0);
+                                        if (storage.getJsonDocList().size() > 0) {
 
-                                        String strDocument = jsonDocument.getJsonDoc();
-                                        String strProviderDocId = jsonDocument.getDocId();
-                                        createProviderModel(strProviderDocId, strDocument);
-                                    }
+                                            Storage.JSONDocument jsonDocument = storage.getJsonDocList().
+                                                    get(0);
 
-                                    iProviderCount++;
-
-                                    //log(String.valueOf(iProviderCount), " Count 0 ");
-
-                                    if (iProviderCount == Config.strProviderIds.size()) {
-
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        goToDashboard();
-
-                                    } else fetchProviders(progressDialog);
-
-                                } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                                }
-                            }
-
-                            @Override
-                            public void onException(Exception e) {
-
-                                try {
-
-                                    if (e != null) {
-
-                                        JSONObject jsonObject = new JSONObject(e.getMessage());
-                                        JSONObject jsonObjectError =
-                                                jsonObject.getJSONObject("app42Fault");
-
-                                        int appErrorCode = jsonObjectError.getInt("appErrorCode");
-
-                                        //log(e.getMessage(), " MESS ");
-
-                                        if (appErrorCode == 2608 || appErrorCode == 2600) {
-                                            iProviderCount++;
+                                            String strDocument = jsonDocument.getJsonDoc();
+                                            String strProviderDocId = jsonDocument.getDocId();
+                                            createProviderModel(strProviderDocId, strDocument);
                                         }
+
+                                        iProviderCount++;
+
+                                        //log(String.valueOf(iProviderCount), " Count 0 ");
 
                                         if (iProviderCount == Config.strProviderIds.size()) {
 
                                             if (progressDialog.isShowing())
                                                 progressDialog.dismiss();
-                                            goToDashboard();
 
-                                        } else fetchProviders(progressDialog);
+                                            if (iFlag == 0)
+                                                goToDashboard();
+                                            if (iFlag == 1)
+                                                refreshNotifications();
+
+                                        } else fetchProviders(progressDialog, iFlag);
 
                                     } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
-                                } catch (JSONException e1) {
-                                    e1.printStackTrace();
+                                }
+
+                                @Override
+                                public void onException(Exception e) {
+
+                                    try {
+
+                                        if (e != null) {
+
+                                            JSONObject jsonObject = new JSONObject(e.getMessage());
+                                            JSONObject jsonObjectError =
+                                                    jsonObject.getJSONObject("app42Fault");
+
+                                            int appErrorCode = jsonObjectError.getInt("appErrorCode");
+
+                                            //log(e.getMessage(), " MESS ");
+
+                                            if (appErrorCode == 2608 || appErrorCode == 2600) {
+                                                iProviderCount++;
+                                            }
+
+                                            if (iProviderCount == Config.strProviderIds.size()) {
+
+                                                if (progressDialog.isShowing())
+                                                    progressDialog.dismiss();
+
+                                                if (iFlag == 0)
+                                                    goToDashboard();
+                                                if (iFlag == 1)
+                                                    refreshNotifications();
+
+                                            } else fetchProviders(progressDialog, iFlag);
+
+                                        } else {
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                        }
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                    }
                                 }
                             }
-                        }
-                );
+                    );
+                } else {
+                    iProviderCount++;
+
+                    if (iProviderCount == Config.strProviderIds.size()) {
+
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+
+                        if (iFlag == 0)
+                            goToDashboard();
+                        if (iFlag == 1)
+                            refreshNotifications();
+
+                    } else fetchProviders(progressDialog, iFlag);
+                }
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
+
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
 
@@ -2199,9 +2184,43 @@ public class Utils {
             if (iProviderCount == Config.strProviderIds.size()) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
-                goToDashboard();
+
+                if (iFlag == 0)
+                    goToDashboard();
+                if (iFlag == 1)
+                    refreshNotifications();
             }
         }
+    }
+
+    public void loadAllFiles() {
+        for (int i = 0; i < Config.fileModels.size(); i++) {
+            FileModel fileModel = Config.fileModels.get(i);
+
+            if (fileModel != null && fileModel.getStrFileUrl() != null &&
+                    !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
+                loadImageFromWeb(fileModel.getStrFileName(),
+                        fileModel.getStrFileUrl());
+            }
+        }
+    }
+
+    public void refreshNotifications() {
+
+        if (NotificationFragment.listViewActivities != null
+                && NotificationFragment.notificationAdapter != null) {
+            NotificationFragment.listViewActivities.
+                    setAdapter(NotificationFragment.notificationAdapter);
+        }
+
+        progressDialog = new ProgressDialog(_ctxt);
+        progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        threadHandler = new ThreadHandler();
+        Thread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
     }
 
     public void goToDashboard() {
@@ -2271,7 +2290,7 @@ public class Utils {
                                 //log(String.valueOf(iActivityCount), " A Count 1 ");
 
                                 if (iActivityCount == Config.strDependentIds.size())
-                                    fetchProviders(progressDialog);
+                                    fetchProviders(progressDialog, 0);
                                 else
                                     fetchLatestActivities(progressDialog);
 
@@ -2302,7 +2321,7 @@ public class Utils {
                                     //log(String.valueOf(iActivityCount + " E " + Config.strDependentIds.size()), " A Count 2 ");
 
                                     if (iActivityCount == Config.strDependentIds.size())
-                                        fetchProviders(progressDialog);
+                                        fetchProviders(progressDialog, 0);
                                     else
                                         fetchLatestActivities(progressDialog);
 
@@ -2323,6 +2342,27 @@ public class Utils {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
+        }
+    }
+
+    public static class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                loadAllFiles();
+                threadHandler.sendEmptyMessage(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
