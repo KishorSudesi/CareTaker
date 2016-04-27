@@ -18,7 +18,9 @@ public class Config {
 
     public static final String dbName = "newzeal";
 
-    public static final String collectionServices = "service";
+    public static final String collectionService = "service";
+    public static final String collectionServiceHistory = "servicehistory";
+    public static final String collectionServiceDependent = "servicedependent";
     public static final String collectionProvider = "provider";
     public static final String collectionCustomer = "customer";
     public static final String collectionDependent = "dependent";
@@ -47,6 +49,7 @@ public class Config {
     public static final boolean release = false;
 
     public static int intNotificationScreen = 2;
+    public static int intServiceScreen = 7;
     public static int intActivityScreen = 5;
     public static int intListActivityScreen = 6;
     public static int intAccountScreen = 3;
@@ -66,8 +69,10 @@ public class Config {
     public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
     public static ArrayList<String> dependentNames = new ArrayList<>();
+
     public static ArrayList<String> strDependentIds = new ArrayList<>();
     public static ArrayList<String> strNotificationIds = new ArrayList<>();
+    public static ArrayList<String> strServcieIds = new ArrayList<>();
 
     public static ArrayList<String> strProviderIds = new ArrayList<>();
     public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();

@@ -8,18 +8,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.AdditionalServicesAdapter;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
+import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ServiceModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
+import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,9 +37,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     public static AdditionalServicesAdapter additionalServicesAdapter;
     private static ProgressDialog progressDialog;
     private static StorageService storageService;
-    private static Storage findObj;
+    private static LinearLayout dynamicUserTab;
+    private static int iServiceCount = 0, iServiceHistoryAddedCount = 0, iServiceDependentAddedCount = 0;
     private Utils utils;
-    private JSONObject jsonObjectAct, responseJSONDoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,10 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         utils = new Utils(AdditionalServicesActivity.this);
         progressDialog = new ProgressDialog(AdditionalServicesActivity.this);
 
+        dynamicUserTab = (LinearLayout) findViewById(R.id.dynamicUserTab);
+
+        utils = new Utils(AdditionalServicesActivity.this);
+
         selectedServiceModels.clear();
 
         if (buttonContinue != null) {
@@ -56,7 +64,20 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             buttonContinue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //addServices();
+
+                    if (selectedServiceModels.size() > 0) {
+
+                        if (utils.isConnectingToInternet()) {
+                            progressDialog.setMessage(getResources().getString(R.string.loading));
+                            progressDialog.setCancelable(false);
+                            progressDialog.show();
+
+                            storageService = new StorageService(AdditionalServicesActivity.this);
+
+                            addServices();
+                        } else utils.toast(2, 2, getString(R.string.warning_internet));
+
+                    } else utils.toast(2, 2, getResources().getString(R.string.error_service));
                 }
             });
         }
@@ -135,13 +156,15 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        utils.populateHeaderDependents(dynamicUserTab, Config.intServiceScreen);
+
         progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
 
         StorageService storageService = new StorageService(AdditionalServicesActivity.this);
 
-        storageService.findAllDocs(Config.collectionServices,
+        storageService.findAllDocs(Config.collectionService,
                 new App42CallBack() {
 
                     @Override
@@ -208,205 +231,385 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         additionalServicesAdapter.notifyDataSetChanged();
     }
 
-    public void addServices() {
+    public void addServiceHistory(final JSONObject jsonObject) {
 
-        if (selectedServiceModels.size() > 0) {
+        if (utils.isConnectingToInternet()) {
 
-            if (utils.isConnectingToInternet()) {
+            storageService.insertDocs(jsonObject,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
 
-                storageService = new StorageService(AdditionalServicesActivity.this);
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            try {
+                                if (response != null) {
+                                    iServiceHistoryAddedCount++;
 
-                jsonObjectAct = new JSONObject();
+                                    if ((iServiceHistoryAddedCount - 1) == iServiceCount
+                                            && (iServiceDependentAddedCount - 1) == iServiceCount)
+                                        iServiceCount++;
 
-                progressDialog.setMessage(getResources().getString(R.string.loading));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
+                                    if (iServiceCount == selectedServiceModels.size())
+                                        serviceAdded();
+                                    else
+                                        addServices();
 
-                if (selectedServiceModels.size() == 1) {
-
-                    ServiceModel serviceModel = selectedServiceModels.get(0);
-
-                    //if(serviceModel.get) //TODO check units updated
-                    try {
-
-                        jsonObjectAct.put("unit", serviceModel.getiUnit());
-                        jsonObjectAct.put("service_name", serviceModel.getStrServiceName());
-                        jsonObjectAct.put("service_desc",
-                                serviceModel.getStrServiceDesc());
-                        jsonObjectAct.put("service_id", serviceModel.getStrServiceId());
-
-                        String strDate = utils.convertDateToString(new Date());
-
-                        jsonObjectAct.put("purchased_date", strDate);
-
-                        //String[] arr = serviceModel.getJsonArrayFeatures();
-
-                        //jsonArray = serviceModel.getStrFeatures();
-
-                        //for (String anArr : arr) jsonArray.put(anArr);
-
-                        //jsonObjectAct.put("service_features", jsonArray);
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        jsonObjectAct = null;
-                    }
-                    //
-                }
-
-                if (jsonObjectAct != null) {
-
-                    storageService.findDocsByIdApp42CallBack(Config.customerModel.getStrCustomerID(),
-                            Config.collectionCustomer, new App42CallBack() {
-                                @Override
-                                public void onSuccess(Object o) {
-
-                                    if (o != null) {
-
-                                        findObj = (Storage) o;
-
-                                        try {
-                                            responseJSONDoc = new JSONObject(
-                                                    findObj.getJsonDocList().get(0).getJsonDoc());
-                                            if (responseJSONDoc.has("dependents")) {
-                                                JSONArray dependantsA = responseJSONDoc.
-                                                        getJSONArray("dependents");
-
-        /*if (Config.intSelectedDependent <= dependantsA.length()) {
-            JSONObject dependantsObject = dependantsA.getJSONObject(Config.intSelectedDependent);
-            if (dependantsObject.has("services")) {
-                JSONArray activitiesA = dependantsObject.getJSONArray("services");
-                activitiesA.put(jsonObjectAct);
-            }
-        }*/
-                                                for (int i = 0; i < dependantsA.length(); i++) {
-                                                    JSONObject dependantsObject = dependantsA.
-                                                            getJSONObject(i);
-                                                    if (dependantsObject.has("services_history")) {
-                                                        JSONArray activitiesA = dependantsObject.
-                                                                getJSONArray("services_history");
-                                                        activitiesA.put(jsonObjectAct);
-                                                    }
-
-                                                    //service buy
-                                                    int iNew = 0;
-                                                    if (dependantsObject.has("services")) {
-
-                                                        JSONArray jsonArrayServices =
-                                                                dependantsObject.
-                                                                        getJSONArray("services");
-
-                                                        int iSize = jsonArrayServices.length();
-
-                                                        if (iSize > 0) {
-
-                                                            for (int j = 0; j < iSize; j++) {
-
-                                                                JSONObject jsonObjectService =
-                                                                        jsonArrayServices.
-                                                                                getJSONObject(j);
-
-                                                                if (jsonObjectService.getInt("service_id") == jsonObjectAct.getInt("service_id")) {
-
-                                                                    //TODO update other info later
-                                                                    Double aDouble = Utils.round(jsonObjectService.getDouble("unit") + jsonObjectAct.getDouble("unit"), 2);
-                                                                    jsonObjectService.put("unit",
-                                                                            aDouble);
-                                                                    jsonArrayServices.remove(j);
-                                                                    jsonArrayServices.put(jsonObjectService);
-                                                                    iNew++;
-                                                                }
-                                                            }
-                                                        }
-
-                                                        if (iNew == 0) {
-
-                                                            JSONObject jsonObjectServices = new JSONObject();
-                                                            jsonObjectServices.put("unit", jsonObjectAct.getDouble("unit"));
-                                                            jsonObjectServices.put("unit_consumed", 0);
-                                                            jsonObjectServices.put("service_name", jsonObjectAct.getString("service_name"));
-                                                            jsonObjectServices.put("service_desc", jsonObjectAct.getString("service_desc"));
-                                                            jsonObjectServices.put("service_id", jsonObjectAct.getInt("service_id"));
-                                                            jsonObjectServices.put("updated_date", jsonObjectAct.getString("purchased_date"));
-                                                            //jsonObjectServices.put("service_features", jsonArray);
-
-                                                            jsonArrayServices.put(jsonObjectServices);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } catch (JSONException jSe) {
-                                            jSe.printStackTrace();
-                                            progressDialog.dismiss();
-                                        }
-
-                                        if (utils.isConnectingToInternet()) {
-
-                                            storageService.updateDocs(responseJSONDoc,
-                                                    Config.customerModel.getStrCustomerID(),
-                                                    Config.collectionCustomer,
-                                                    new App42CallBack() {
-                                                        @Override
-                                                        public void onSuccess(Object o) {
-
-                                                            if (o != null) {
-                                                                //Config.jsonObject = responseJSONDoc;
-                                                                progressDialog.dismiss();
-                                                                utils.toast(2, 2,
-                                                                        getString(R.string.service_added));
-                                                                Intent dashboardIntent = new Intent(AdditionalServicesActivity.this, DashboardActivity.class);
-                                                                Config.intSelectedMenu = Config.intAccountScreen;
-                                                                startActivity(dashboardIntent);
-                                                                finish();
-                                                            } else {
-                                                                if (progressDialog.isShowing())
-                                                                    progressDialog.dismiss();
-                                                                utils.toast(2, 2, getString(R.string.warning_internet));
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onException(Exception e) {
-                                                            if (progressDialog.isShowing())
-                                                                progressDialog.dismiss();
-                                                            if (e != null) {
-                                                                utils.toast(2, 2, e.getMessage());
-                                                            } else {
-                                                                utils.toast(2, 2, getString(R.string.warning_internet));
-                                                            }
-                                                        }
-                                                    });
-
-                                        } else {
-                                            if (progressDialog.isShowing())
-                                                progressDialog.dismiss();
-                                            utils.toast(2, 2, getString(R.string.warning_internet));
-                                        }
-
-                                    } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                }
-
-                                @Override
-                                public void onException(Exception e) {
+                                } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    if (e != null) {
-                                        utils.toast(2, 2, e.getMessage());
-                                    } else {
-                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
-                            });
 
-                } else utils.toast(2, 2, getString(R.string.error));
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
 
-            } else utils.toast(2, 2, getString(R.string.warning_internet));
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
 
-        } else utils.toast(2, 2, getResources().getString(R.string.error_service));
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                            try {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                if (ex != null) {
+                                    JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                    JSONObject jsonObjectError = jsonObject.
+                                            getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    utils.toast(2, 2, strMess);
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    },
+                    Config.collectionServiceHistory);
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+    }
+
+    public void updateServiceHistory(final String strDocumentId, final String strDocument,
+                                     final ServiceModel serviceModel) {
+
+        if (utils.isConnectingToInternet()) {
+
+            JSONObject jsonObjectServices = new JSONObject();
+            String strDate = utils.convertDateToString(new Date());
+
+            try {
+
+                JSONObject jsonObject = new JSONObject(strDocument);
+
+                jsonObjectServices.put("unit", serviceModel.getiUnit());
+
+                //todo check to update this
+                /*jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
+                jsonObjectServices.put("service_desc", serviceModel.getStrServiceDesc());
+                jsonObjectServices.put("service_features", serviceModel);*/
+
+                jsonObjectServices.put("updated_date", strDate);
+                jsonObjectServices.put("unit", jsonObject.getInt("unit") + serviceModel.getiUnit());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            storageService.updateDocs(jsonObjectServices, strDocumentId,
+                    Config.collectionServiceDependent,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                            try {
+                                if (o != null) {
+                                    iServiceDependentAddedCount++;
+
+                                    JSONObject jsonObjectHistory = createServiceHistory(serviceModel);
+
+                                    addServiceHistory(jsonObjectHistory);
+
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception ex) {
+                            try {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                if (ex != null) {
+                                    JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                    JSONObject jsonObjectError = jsonObject.
+                                            getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    utils.toast(2, 2, strMess);
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+    }
+
+    public JSONObject createServiceHistory(ServiceModel serviceModel) {
+
+        JSONObject jsonObjectHistory = null;
+
+        try {
+            jsonObjectHistory = new JSONObject();
+
+            jsonObjectHistory.put("dependent_id", Config.dependentModels.
+                    get(Config.intSelectedDependent).getStrDependentID());
+
+            jsonObjectHistory.put("unit", serviceModel.getiUnit());
+            jsonObjectHistory.put("service_name", serviceModel.getStrServiceName());
+            jsonObjectHistory.put("service_desc",
+                    serviceModel.getStrServiceDesc());
+            jsonObjectHistory.put("service_features", serviceModel.getStrFeatures());
+            jsonObjectHistory.put("service_id", serviceModel.getStrServiceId());
+
+            String strDate = utils.convertDateToString(new Date());
+
+            jsonObjectHistory.put("purchased_date", strDate);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObjectHistory;
+    }
+
+    public void addServiceDependent(final ServiceModel serviceModel) {
+
+        if (utils.isConnectingToInternet()) {
+
+            //
+            JSONObject jsonObjectServices = null;
+
+            try {
+                jsonObjectServices = new JSONObject();
+                String strDate = utils.convertDateToString(new Date());
+
+                jsonObjectServices.put("unit", serviceModel.getiUnit());
+                jsonObjectServices.put("unit_consumed", 0);
+                jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
+                jsonObjectServices.put("service_desc", serviceModel.getStrServiceDesc());
+                jsonObjectServices.put("service_id", serviceModel.getStrServiceId());
+                jsonObjectServices.put("updated_date", strDate);
+                jsonObjectServices.put("service_features", serviceModel);
+                jsonObjectServices.put("dependent_id", Config.dependentModels.
+                        get(Config.intSelectedDependent).getStrDependentID());
+
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+            //
+
+            storageService.insertDocs(jsonObjectServices,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            if (response != null) {
+                                iServiceDependentAddedCount++;
+
+                                JSONObject jsonObjectHistory = createServiceHistory(serviceModel);
+
+                                addServiceHistory(jsonObjectHistory);
+
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                            try {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                if (ex != null) {
+                                    JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    utils.toast(2, 2, strMess);
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    },
+                    Config.collectionServiceDependent);
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+    }
+
+    public void checkServiceExists(final ServiceModel serviceModel) {
+
+        if (utils.isConnectingToInternet()) {
+
+            String key1 = "service_id";
+            String value1 = serviceModel.getStrServiceId();
+
+            String key2 = "dependent_id";
+            String value2 = Config.dependentModels.get(Config.intSelectedDependent).
+                    getStrDependentID();
+
+            Query q1 = QueryBuilder.build(key1, value1, QueryBuilder.Operator.EQUALS);
+            Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
+            Query q3 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+
+            storageService.findDocsByQueryOrderBy(Config.collectionServiceDependent, q3, 1, 0,
+                    "updated_date", 1,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                            try {
+                                if (o != null) {
+
+                                    //
+                                    Storage response = (Storage) o;
+
+                                    if (response.getJsonDocList().size() > 0) {
+
+                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+
+                                        String strDocumentId = jsonDocument.getDocId();
+
+                                        updateServiceHistory(strDocumentId, strDocument, serviceModel);
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            try {
+                                if (e != null) {
+                                    App42Exception exception = (App42Exception) e;
+
+                                    int appErrorCode = exception.getAppErrorCode();
+
+                                    if (appErrorCode == 2601 || appErrorCode == 2608)
+                                        addServiceDependent(serviceModel);
+                                    else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.error));
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+    }
+
+    public void addServices() {
+
+        if (iServiceCount < selectedServiceModels.size()) {
+
+            storageService = new StorageService(AdditionalServicesActivity.this);
+            ServiceModel serviceModel = selectedServiceModels.get(iServiceCount);
+
+            try {
+                checkServiceExists(serviceModel);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (iServiceCount == selectedServiceModels.size())
+                serviceAdded();
+        }
+    }
+
+    public void serviceAdded() {
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+        utils.toast(1, 1, getString(R.string.service_added));
+        goBack();
     }
 }

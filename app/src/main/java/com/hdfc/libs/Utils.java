@@ -1152,6 +1152,10 @@ public class Utils {
             loadNotifications();
         }
 
+        if (intWhichScreen == Config.intServiceScreen) {
+            //loadNotifications();
+        }
+
         if (intWhichScreen == Config.intListActivityScreen ||
                 intWhichScreen == Config.intActivityScreen) {
             try {
@@ -1609,9 +1613,10 @@ public class Utils {
 
             log(String.valueOf(Config.serviceModels.contains(serviceModel)), " BOOLEAN ");
 
-            if (!Config.serviceModels.contains(serviceModel))
+            if (!Config.strServcieIds.contains(strDocumentId)) {
                 Config.serviceModels.add(serviceModel);
-
+                Config.strServcieIds.add(strDocumentId);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

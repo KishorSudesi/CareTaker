@@ -3,8 +3,6 @@
   "dependent_illness": "Illness",
   "health_bp": 76,
   "health_heart_rate": 70,
-  "services": [
-  ],
   "dependent_relation": "brother",
   "dependent_address": "Address",
   "dependent_notes": "Note",
