@@ -44,6 +44,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     private static boolean isUpdating;
     private Utils utils;
     private Button buttonContinue;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         Config.intSelectedDependent = 0;
 
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
-        ListView listView = (ListView) findViewById(R.id.listViewAdditionalServices);
+        listView = (ListView) findViewById(R.id.listViewAdditionalServices);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
 
         utils = new Utils(AdditionalServicesActivity.this);
@@ -155,7 +156,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //todo clear checkbox selection
+                clearCheckBox();
                 isUpdating = false;
                 selectedServiceModels.clear();
                 selectedServiceHistoryModels.clear();
@@ -179,6 +180,19 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         Config.intSelectedMenu = Config.intAccountScreen;
         startActivity(dashboardIntent);
         finish();
+    }
+
+    public void clearCheckBox() {
+        try {
+            CheckBox cb;
+
+            for (int i = 0; i < listView.getChildCount(); i++) {
+                cb = (CheckBox) listView.getChildAt(i).findViewById(R.id.checkBoxService);
+                cb.setChecked(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

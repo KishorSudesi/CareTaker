@@ -206,7 +206,7 @@ public class Utils {
                         } else {  // it is a file...
 
                             if (file.exists() && file.canRead() && file.canWrite()) {
-                                //TODO file
+                                //file
                             }
                         }
                     }
@@ -1961,7 +1961,7 @@ public class Utils {
         String key2 = "dependent_id";
         String value2 = Config.strDependentIds.get(iActivityCount);
 
-        //Query q1 = QueryBuilder.build(strKey1, value1, operator);//todo check logic
+        //Query q1 = QueryBuilder.build(strKey1, value1, operator);//check logic working
 
         // Build query q1 for key1 equal to name and value1 equal to Nick
         Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
@@ -2251,7 +2251,7 @@ public class Utils {
             String value2 = Config.strDependentIds.get(iActivityCount);
 
             Query q1 = QueryBuilder.build("provider_status", "scheduled", QueryBuilder.
-                    Operator.EQUALS);//todo check logic
+                    Operator.EQUALS);
 
             // Build query q1 for key1 equal to name and value1 equal to Nick
             Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
