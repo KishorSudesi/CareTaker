@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <supports-screens
         android:anyDensity="true"
@@ -24,33 +24,35 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.hdfc.caretaker.LoginActivity"
+            android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".DependantDetailPersonalActivity" />
+            <!-- <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>-->
+
+            <!-- <meta-data
+                 android:name="android.app.default_searchable"
+                 android:value=".DependantDetailPersonalActivity" />-->
         </activity>
         <activity
-            android:name="com.hdfc.caretaker.SignupActivity"
+            android:name=".SignupActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name="com.hdfc.caretaker.AccountSuccessActivity"
+            android:name=".AccountSuccessActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.hdfc.caretaker.CareSelectionActivity"
+            android:name=".CareSelectionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.hdfc.caretaker.DependentDetailPersonalActivity"
+            android:name=".DependentDetailPersonalActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
@@ -58,22 +60,24 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.hdfc.caretaker.DependentDetailsMedicalActivity"
+            android:name=".DependentDetailsMedicalActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name="com.hdfc.caretaker.DashboardActivity"
+            android:name=".DashboardActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
-        <!-- <activity
+        <!--
+         <activity
              android:name=".BasePackageActivity"
              android:screenOrientation="portrait"
              android:theme="@style/AppTheme.NoActionBar" />
@@ -81,19 +85,20 @@
          <activity
              android:name=".PackageBuyActivity"
              android:screenOrientation="portrait"
-             android:theme="@style/AppTheme.NoActionBar" />-->
+             android:theme="@style/AppTheme.NoActionBar" />
+        -->
         <activity
-            android:name="com.hdfc.caretaker.AdditionalServicesActivity"
+            android:name=".AdditionalServicesActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name="com.hdfc.caretaker.AddNewActivityActivity"
+            android:name=".AddNewActivityActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name="com.hdfc.caretaker.AddNewActivityStep2Activity"
+            android:name=".AddNewActivityStep2Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
@@ -107,6 +112,20 @@
 
         <service android:name="com.shephertz.app42.paas.sdk.android.App42DataSyncService" />
 
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".DependantDetailPersonalActivity" />
+        </activity>
     </application>
 
 </manifest>

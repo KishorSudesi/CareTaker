@@ -15,7 +15,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitXY" />
 
-    <com.hdfc.views.RoundedImageView
+    <!--<com.hdfc.views.RoundedImageView
         android:id="@+id/imageButtonCamera"
         android:layout_width="60dp"
         android:layout_height="30dp"
@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:background="@drawable/temp" />
+        android:background="@drawable/temp" />-->
 
     <EditText
         android:id="@+id/editEmail"
@@ -114,6 +114,7 @@
         android:background="@drawable/button_back_trans"
         android:gravity="center"
         android:onClick="goToWho"
-        android:text="@string/am_new_here" />
+        android:text="@string/am_new_here"
+        android:visibility="invisible" />
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CareTaker</string>
+    <string name="app_code_name">NewZeal</string>
 
     <!--Common Strings-->
     <string name="back">Back</string>
@@ -32,19 +33,20 @@
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
     <string name="take_me_in">Take Me In</string>
     <string name="am_new_here">I am New Here</string>
-    <string name="add_dependent">Add Dependent</string>
+    <string name="add_dependent">Add a Care Recipient</string>
     <string name="myself">Myself</string>
     <string name="loved_one">A Loved One</string>
+    <string name="existing_user">Existing User</string>
     <string name="who_needs_care">Who Needs Care?</string>
-    <string name="your_details">Your Details</string>
+    <string name="your_details">Personal Information</string>
     <string name="your_details_saved">Your Details Saved</string>
-    <string name="dependents">Dependents</string>
+    <string name="dependents">Care Recipients</string>
     <string name="number">9874560123</string>
     <string name="gurunathan">Mr.Gurunathan</string>
     <string name="string_email">abc@xyz.com</string>
     <string name="search_contacts">Search from Contacts</string>
-    <string name="dependent_name">Dependent Name</string>
-    <string name="dependent_details">Dependent Details</string>
+    <string name="dependent_name">Care Recipient Name</string>
+    <string name="dependent_details">Care Recipient Information</string>
     <string name="address">Address</string>
     <string name="relation">Relationship</string>
     <string name="illness">Any Major Illness</string>
@@ -54,15 +56,16 @@
     <string name="info_discard">All your Information will be Deleted, OK to Proceed?</string>
     <string name="add_new_activity">Add New Activity</string>
     <string name="coming_soon">Coming Soon</string>
-    <string name="dpndnt_medical_info_saved">Dependent Medical Details Saved</string>
-    <string name="dpndnt_details_saved">Dependent Details Saved</string>
+    <string name="dpndnt_medical_info_saved">Care Recipient Medical Details Saved</string>
+    <string name="dpndnt_details_saved">Care Recipient Details Saved</string>
     <string name="delete_info">All your Information will be Deleted, OK to Proceed?</string>
     <string name="account_updated">Account updated successfully</string>
     <string name="confirm_logout">Are you sure want to Logout !?</string>
+    <string name="confirm_reset_update">Previous Transaction was not Successful, Are you sure to Reset?</string>
     <string name="not_found">NOT FOUND</string>
     <string name="upcoming_activity">Upcoming Activity</string>
     <string name="completed_activity">Completed Activity</string>
-    <string name="buy_services">Buy Services</string>
+    <string name="buy_services">Get Services</string>
     <string name="buy_services_large_text">Pay as you go services that can be easily added to an existing package</string>
     <string name="date_time">21-Dec-15 at 6:00pm</string>
     <string name="paytm">Paytm</string>
@@ -74,6 +77,9 @@
     <string name="no_ratings">No Ratings</string>
     <string name="up_next">UP Next</string>
     <string name="activities_on">Activities On&#160;</string>
+    <string name="service_continue">Press Get Services</string>
+    <string name="existing_request">A Transaction is already in process, Please Wait…</string>
+    <string name="existing_recipient">Previous Care Recipient</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
@@ -93,7 +99,7 @@
     <string name="uploading_profile_pic">Setting Profile Images…</string>
 
     <!--Error Strings-->
-    <string name="dpndnt_details_not_saved">Dependent Not Saved. Check Name</string>
+    <string name="dpndnt_details_not_saved">Care Recipient Not Saved. Check Name</string>
     <string name="error_confirm_password">Invalid Confirm Password</string>
     <string name="error_invalid_email">Invalid Email</string>
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
@@ -108,7 +114,7 @@
     <string name="error_load_images">Error Loading Images. Try Again!!!</string>
     <string name="error_service">Select a Service</string>
     <string name="error_service_zero">Select a Valid Service</string>
-    <string name="dependent_data_lost">Something went wrong, Please create Dependent again</string>
+    <string name="dependent_data_lost">Something went wrong, Please create Care Recipient again</string>
     <string name="no_memory_camera">No storage mounted to save camera image</string>
     <string name="image_write_failed">Sorry!!! we may have lost your Profile Image</string>
 

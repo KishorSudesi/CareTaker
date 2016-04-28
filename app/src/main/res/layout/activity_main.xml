@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutLogin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <ImageView
+        android:id="@+id/imageBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
+
+    <com.hdfc.views.RoundedImageView
+        android:id="@+id/imageButtonCamera"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/temp" />
+
+    <Button
+        android:id="@+id/buttonLovedOne"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="118dp"
+        android:background="@drawable/button_white"
+        android:onClick="goToLogin"
+        android:text="@string/existing_user"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_alignLeft="@+id/buttonLovedOne"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/buttonLovedOne"
+        android:layout_marginBottom="42dp"
+        android:background="@drawable/button_white"
+        android:onClick="goToWho"
+        android:text="@string/am_new_here"
+        android:textAllCaps="false" />
+
+
+</RelativeLayout>

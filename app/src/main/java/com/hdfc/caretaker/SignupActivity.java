@@ -112,8 +112,9 @@ public class SignupActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        // super.onBackPressed();
+        super.onBackPressed();
         //do nothing
+        goBack();
     }
 
     @Override
@@ -133,9 +134,13 @@ public class SignupActivity extends FragmentActivity {
     }
 
     public void backToSelection(View v) {
+        goBack();
+    }
+
+    public void goBack() {
         //delete Temp Users
         final AlertDialog.Builder alertbox = new AlertDialog.Builder(SignupActivity.this);
-        alertbox.setTitle(getString(R.string.app_name));
+        alertbox.setTitle(getString(R.string.app_code_name));
         alertbox.setMessage(getString(R.string.info_discard));
         alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {

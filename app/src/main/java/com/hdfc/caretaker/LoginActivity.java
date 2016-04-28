@@ -1,7 +1,6 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -114,11 +113,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void goToWho(View v) {
-
+    /*public void goToWho(View v) {
         Intent selection = new Intent(LoginActivity.this, CareSelectionActivity.class);
         startActivity(selection);
-    }
+    }*/
 
     public void validateLogin(View v) {
 
@@ -227,12 +225,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         super.onBackPressed();
         moveTaskToBack(true);
         finish();
-    }
+    }*/
 
 
    /* public class BackgroundThread extends Thread {

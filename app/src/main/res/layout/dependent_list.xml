@@ -4,13 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/textViewLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_margin="@dimen/margin_general"
+        android:padding="@dimen/padding_general"
+        android:text="@string/existing_recipient" />
+
     <ImageView
         android:id="@+id/imageViewDpndt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@null"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:background="@null" />
 
     <TextView
         android:id="@+id/textViewRealtion"
@@ -18,8 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_general"
-        android:padding="@dimen/padding_general"
-        android:text="Relation" />
+        android:padding="@dimen/padding_general" />
 
     <TextView
         android:id="@+id/textViewName"
@@ -28,6 +36,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_general"
         android:padding="@dimen/padding_general"
-        android:text="Mr.Hangal"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
 </LinearLayout>

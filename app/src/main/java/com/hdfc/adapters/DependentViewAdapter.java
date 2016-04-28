@@ -58,6 +58,7 @@ public class DependentViewAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.textName = (TextView) vi.findViewById(R.id.textViewName);
             holder.textRelation = (TextView) vi.findViewById(R.id.textViewRealtion);
+            holder.textViewLabel = (TextView) vi.findViewById(R.id.textViewLabel);
             holder.image = (ImageView) vi.findViewById(R.id.imageViewDpndt);
 
             vi.setTag(holder);
@@ -88,6 +89,8 @@ public class DependentViewAdapter extends BaseAdapter {
                 } else {
 
                     holder.textRelation.setVisibility(View.GONE);
+                    holder.textViewLabel.setVisibility(View.GONE);
+
                     holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
                             R.drawable.plus_icon));
                 }
@@ -124,6 +127,7 @@ public class DependentViewAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView textName;
         public TextView textRelation;
+        public TextView textViewLabel;
         public ImageView image;
     }
 }

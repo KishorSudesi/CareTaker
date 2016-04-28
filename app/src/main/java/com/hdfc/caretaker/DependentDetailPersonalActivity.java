@@ -129,7 +129,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public void backToSelection() {
         final AlertDialog.Builder alertbox =
                 new AlertDialog.Builder(DependentDetailPersonalActivity.this);
-        alertbox.setTitle(getString(R.string.app_name));
+        alertbox.setTitle(getString(R.string.app_code_name));
         alertbox.setMessage(getString(R.string.delete_info));
         alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {

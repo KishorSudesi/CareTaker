@@ -7,13 +7,13 @@
         android:id="@+id/includeLayoutHeaderBack"
         layout="@layout/header_back"/>
 
-    <include
-        android:id="@+id/includeDashboardList"
-        layout="@layout/header_activities"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp" />
+    <!-- <include
+         android:id="@+id/includeDashboardList"
+         layout="@layout/header_activities"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+         android:layout_marginTop="60dp" />-->
 
     <TextView
         android:id="@+id/txtAdditionalServices"
@@ -22,7 +22,7 @@
         android:layout_below="@+id/includeLayoutHeaderBack"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="10dp"
         android:text="@string/buy_services"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/colorPrimary" />
@@ -69,6 +69,7 @@
         android:layout_marginRight="@dimen/edit_text_margin"
         android:layout_marginTop="20dp"
         android:background="@drawable/button_success"
+        android:enabled="false"
         android:text="@string/buy_services"
         android:textAllCaps="false" />
 </RelativeLayout>

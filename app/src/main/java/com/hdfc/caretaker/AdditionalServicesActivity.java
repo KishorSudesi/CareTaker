@@ -1,14 +1,15 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,28 +39,34 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     public static AdditionalServicesAdapter additionalServicesAdapter;
     private static ProgressDialog progressDialog;
     private static StorageService storageService;
-    private static LinearLayout dynamicUserTab;
+    //private static LinearLayout dynamicUserTab;
     private static int iServiceCount;
+    private static boolean isUpdating;
     private Utils utils;
+    private Button buttonContinue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional_services);
 
-        Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        Config.intSelectedDependent = 0;
+
+        buttonContinue = (Button) findViewById(R.id.buttonContinue);
         ListView listView = (ListView) findViewById(R.id.listViewAdditionalServices);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
 
         utils = new Utils(AdditionalServicesActivity.this);
         progressDialog = new ProgressDialog(AdditionalServicesActivity.this);
 
-        dynamicUserTab = (LinearLayout) findViewById(R.id.dynamicUserTab);
+        //dynamicUserTab = (LinearLayout) findViewById(R.id.dynamicUserTab);
 
         utils = new Utils(AdditionalServicesActivity.this);
 
         selectedServiceModels.clear();
         selectedServiceHistoryModels.clear();
+
+        isUpdating = false;
 
         if (buttonContinue != null) {
 
@@ -69,17 +76,22 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
                     if (selectedServiceModels.size() > 0) {
 
-                        if (utils.isConnectingToInternet()) {
-                            progressDialog.setMessage(getResources().getString(R.string.loading));
-                            progressDialog.setCancelable(false);
-                            progressDialog.show();
+                        if (!isUpdating) {
 
-                            storageService = new StorageService(AdditionalServicesActivity.this);
+                            if (utils.isConnectingToInternet()) {
+                                progressDialog.setMessage(getResources().getString(R.string.loading));
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
 
-                            iServiceCount = 0;
+                                storageService = new StorageService(AdditionalServicesActivity.this);
 
-                            addServices();
-                        } else utils.toast(2, 2, getString(R.string.warning_internet));
+                                iServiceCount = 0;
+                                isUpdating = true;
+
+                                addServices();
+                            } else utils.toast(2, 2, getString(R.string.warning_internet));
+
+                        } else utils.toast(2, 2, getString(R.string.existing_request));
 
                     } else utils.toast(2, 2, getResources().getString(R.string.error_service));
                 }
@@ -110,25 +122,60 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxService);
-                    ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
+                    if (!isUpdating) {
+                        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxService);
+                        ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
 
-                    if (checkBox.isChecked()) {
-                        selectedServiceModels.remove(serviceModel);
-                        checkBox.setChecked(false);
-                        checkBox.setButtonDrawable(getResources().getDrawable(R.mipmap.check_off));
-                    } else {
-                        selectedServiceModels.add(serviceModel);
-                        checkBox.setChecked(true);
-                        checkBox.setButtonDrawable(getResources().getDrawable(R.mipmap.check_on));
-                    }
+                        if (checkBox.isChecked()) {
+                            selectedServiceModels.remove(serviceModel);
+                            checkBox.setChecked(false);
+                            checkBox.setButtonDrawable(getResources().
+                                    getDrawable(R.mipmap.check_off));
+                        } else {
+                            selectedServiceModels.add(serviceModel);
+                            checkBox.setChecked(true);
+                            checkBox.setButtonDrawable(getResources().
+                                    getDrawable(R.mipmap.check_on));
+                        }
+
+                        if (selectedServiceModels.size() > 0 || selectedServiceHistoryModels.size() > 0)
+                            buttonContinue.setEnabled(true);
+                        else
+                            buttonContinue.setEnabled(false);
+
+                    } else resetUpdate();
                 }
             });
         }
     }
 
+    public void resetUpdate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AdditionalServicesActivity.this);
+        builder.setTitle(getString(R.string.confirm_reset_update));
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //todo clear checkbox selection
+                isUpdating = false;
+                selectedServiceModels.clear();
+                selectedServiceHistoryModels.clear();
+                buttonContinue.setEnabled(false);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                utils.toast(2, 2, getString(R.string.service_continue));
+                buttonContinue.setEnabled(true);
+            }
+        });
+        builder.show();
+    }
+
     public void goBack() {
-        Intent dashboardIntent = new Intent(AdditionalServicesActivity.this, DashboardActivity.class);
+        Intent dashboardIntent = new Intent(AdditionalServicesActivity.this,
+                DashboardActivity.class);
         Config.intSelectedMenu = Config.intAccountScreen;
         startActivity(dashboardIntent);
         finish();
@@ -143,7 +190,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        utils.populateHeaderDependents(dynamicUserTab, Config.intServiceScreen);
+        //utils.populateHeaderDependents(dynamicUserTab, Config.intServiceScreen);
 
         progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
@@ -230,7 +277,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             try {
                                 if (response != null) {
 
-                                    Utils.log(String.valueOf(selectedServiceHistoryModels.remove(iServiceCount)), " REMOVED ");
+                                    Utils.log(String.valueOf(selectedServiceHistoryModels.
+                                            remove(iServiceCount)), " REMOVED ");
 
                                     if (selectedServiceHistoryModels.size() <= 0)
                                         serviceAdded();
@@ -328,7 +376,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             try {
                                 if (o != null) {
 
-                                    Utils.log(String.valueOf(selectedServiceModels.remove(iServiceCount)), " REMOVED ");
+                                    Utils.log(String.valueOf(selectedServiceModels.
+                                            remove(iServiceCount)), " REMOVED ");
 
                                     selectedServiceHistoryModels.add(serviceModel);
 
@@ -392,7 +441,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             jsonObjectHistory.put("service_name", serviceModel.getStrServiceName());
             jsonObjectHistory.put("service_desc",
                     serviceModel.getStrServiceDesc());
-            jsonObjectHistory.put("service_features", utils.stringToJsonArray(serviceModel.getStrFeatures()));
+            jsonObjectHistory.put("service_features", utils.stringToJsonArray(serviceModel.
+                    getStrFeatures()));
             jsonObjectHistory.put("service_id", serviceModel.getStrServiceId());
 
             String strDate = utils.convertDateToString(new Date());
@@ -431,7 +481,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
-            //
 
             storageService.insertDocs(jsonObjectServices,
                     new AsyncApp42ServiceApi.App42StorageServiceListener() {
@@ -440,13 +489,12 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         public void onDocumentInserted(Storage response) {
                             if (response != null) {
 
-                                Utils.log(String.valueOf(selectedServiceModels.remove(iServiceCount)), " REMOVED ");
+                                Utils.log(String.valueOf(selectedServiceModels.
+                                        remove(iServiceCount)), " REMOVED ");
 
                                 selectedServiceHistoryModels.add(serviceModel);
 
-                                //iServiceCount++;
-
-                                if (selectedServiceModels.size() <= 0) //iServiceCount ==
+                                if (selectedServiceModels.size() <= 0)
                                     addServicesHistory();
                                 else
                                     addServices();
@@ -528,7 +576,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             try {
                                 if (o != null) {
 
-                                    //
                                     Storage response = (Storage) o;
 
                                     if (response.getJsonDocList().size() > 0) {
@@ -590,7 +637,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     public void addServices() {
 
-        //iServiceCount <
         if (selectedServiceModels.size() > 0) {
 
             storageService = new StorageService(AdditionalServicesActivity.this);
@@ -609,7 +655,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     public void addServicesHistory() {
 
-        //iServiceCount <
         if (selectedServiceHistoryModels.size() > 0) {
 
             storageService = new StorageService(AdditionalServicesActivity.this);
@@ -630,6 +675,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     public void serviceAdded() {
         if (progressDialog.isShowing())
             progressDialog.dismiss();
+        isUpdating = false;
+        //buttonContinue.setEnabled(false);
         utils.toast(1, 1, getString(R.string.service_added));
         goBack();
     }
