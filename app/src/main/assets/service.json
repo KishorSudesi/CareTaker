@@ -1,10 +1,83 @@
 {
-  "unit": 3,
-  "service_name": "Medical Checkup",
-  "cost": 600,
-  "service_desc": "Medical Checkup, BP, Heart Rate, Blood Test",
+  "unit": 50,
   "features": [
     "BP",
     "Heart Rate"
+  ],
+  "service_desc": "Selected Medical Test",
+  "service_name": "Medical Test",
+  "cost": 600,
+  "category_name": "Health Care",
+  "milestones": [
+    {
+      "name": "Appointment Confirmation",
+      "date": "2016-12-22T23:08:11.343Z",
+      "order": 1,
+      "fields": [
+        {
+          "label": "Lab Name",
+          "type": "text",
+          "required": true,
+          "data": "Mr. Doctor"
+        },
+        {
+          "label": "Test Performed",
+          "type": "text",
+          "required": true,
+          "data": "BP"
+        },
+        {
+          "label": "Date and Time",
+          "type": "datetime",
+          "required": true,
+          "data": "2016-12-22T23:08:11.343Z"
+        }
+      ]
+    },
+    {
+      "name": "Travel Update",
+      "date": "2016-12-22T23:08:11.343Z",
+      "order": 2,
+      "fields": [
+        {
+          "label": "Mode of Travel",
+          "type": "radio",
+          "required": true,
+          "data": "Accompany",
+          "values": [
+            "Self",
+            "Accompany",
+            "Car Booking"
+          ],
+          "additional_info": "Ola service"
+        }
+      ]
+    },
+    {
+      "name": "Activity closure",
+      "date": "2016-12-22T23:08:11.343Z",
+      "order": 3,
+      "fields": [
+        {
+          "label": "Delivery of Reports",
+          "type": "text",
+          "required": true,
+          "data": "Complete reports"
+        }
+      ]
+    },
+    {
+      "name": "Feedback Rating",
+      "date": "2016-12-22T23:08:11.343Z",
+      "order": 4,
+      "fields": [
+        {
+          "label": "Feedback",
+          "type": "text",
+          "required": true,
+          "data": "Good service"
+        }
+      ]
+    }
   ]
 }
