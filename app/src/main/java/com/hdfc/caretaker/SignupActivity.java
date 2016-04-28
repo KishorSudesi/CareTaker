@@ -112,7 +112,7 @@ public class SignupActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         //do nothing
         goBack();
     }
