@@ -232,6 +232,15 @@ public class DashboardActivity extends AppCompatActivity {
         AddRatingCompletedActivityFragment.setRating(v);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (Config.customerModel == null || Config.customerModel.getStrName() == null) {
+            Utils.logout();
+        }
+    }
+
     public class BackgroundThread extends Thread {
         @Override
         public void run() {

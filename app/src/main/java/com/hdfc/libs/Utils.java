@@ -663,22 +663,6 @@ public class Utils {
         }
     }
 
-    public void moveFile(File file, File newFile) throws IOException {
-        //File newFile = new File(dir, file.getName());
-        FileChannel outputChannel = null;
-        FileChannel inputChannel = null;
-        try {
-            outputChannel = new FileOutputStream(newFile).getChannel();
-            inputChannel = new FileInputStream(file).getChannel();
-            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
-            file.delete();
-        } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
-        }
-    }
-
     /*public void setupUI(View view) {
         //Set up touch listener for non-text box views to hide keyboard.
         //if (!(view instanceof EditText)) {
@@ -699,6 +683,22 @@ public class Utils {
             }
         }
     }*/
+
+    public void moveFile(File file, File newFile) throws IOException {
+        //File newFile = new File(dir, file.getName());
+        FileChannel outputChannel = null;
+        FileChannel inputChannel = null;
+        try {
+            outputChannel = new FileOutputStream(newFile).getChannel();
+            inputChannel = new FileInputStream(file).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+            file.delete();
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+        }
+    }
 
     public boolean isEmailValid(String email) {
         boolean b;
@@ -818,6 +818,17 @@ public class Utils {
         return file;
     }
 
+    /*private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
+
+        if (v == null)
+            return;
+
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
+    }*/
+
     public void selectImage(final String strFileName, final Fragment fragment,
                             final Activity activity) {
         final CharSequence[] items = {_ctxt.getResources().getString(R.string.take_photo),
@@ -836,7 +847,8 @@ public class Utils {
                     else
                         toast(2, 2, _ctxt.getResources().getString(R.string.no_memory_camera));
 
-                } else if (items[item].equals(_ctxt.getResources().getString(R.string.choose_library))) {
+                } else if (items[item].equals(_ctxt.getResources().
+                        getString(R.string.choose_library))) {
                     Intent intent = new Intent();
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -858,15 +870,14 @@ public class Utils {
         builder.show();
     }
 
-    /*private void updateView(int index, ListView listView) {
-        View v = listView.getChildAt(index -
-                listView.getFirstVisiblePosition());
-
-        if (v == null)
-            return;
-
-        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
-        //someText.setText("Hi! I updated you manually!");
+    /*public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }*/
 
     public void openCamera(String strFileName, Fragment fragment, final Activity activity) {
@@ -883,16 +894,6 @@ public class Utils {
                 activity.startActivityForResult(cameraIntent, Config.START_CAMERA_REQUEST_CODE);
         }
     }
-
-    /*public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }*/
 
     public void copyInputStreamToFile(InputStream in, File file) {
         try {
@@ -971,6 +972,23 @@ public class Utils {
         return strings;
     }
 
+    public JSONArray stringToJsonArray(String string[]) {
+
+        JSONArray jsonArray = new JSONArray();
+
+        try {
+            int iLength = string.length;
+
+            for (int i = 0; i < iLength; i++) {
+                jsonArray.put(string[i]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jsonArray;
+    }
+
     //load image from url
     public void loadImageFromWeb(String strFileName, String strFileUrl) {
 
@@ -986,7 +1004,8 @@ public class Utils {
             InputStream input;
             try {
 
-                URL url = new URL(strFileUrl);//URLEncoder.encode(fileModel.getStrFileUrl(), "UTF-8")
+                URL url = new URL(strFileUrl);
+                //URLEncoder.encode(fileModel.getStrFileUrl(), "UTF-8")
                 input = url.openStream();
                 byte[] buffer = new byte[1500];
                 OutputStream output = new FileOutputStream(fileImage);
@@ -1035,6 +1054,8 @@ public class Utils {
         return output;
     }
 
+    //Application Specigfic Start
+
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
@@ -1052,8 +1073,6 @@ public class Utils {
         }
         return original;
     }
-
-    //Application Specigfic Start
 
     public int getBitmapHeightFromFile(String strPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -1077,7 +1096,8 @@ public class Utils {
         return intSampleHeight;
     }
 
-    public void populateHeaderDependents(final LinearLayout dynamicUserTab, final int intWhichScreen) {
+    public void populateHeaderDependents(final LinearLayout dynamicUserTab,
+                                         final int intWhichScreen) {
 
         int tabWidth;
         //calculate tab width according to screen width so that no. of tabs will fit to screen
@@ -1106,12 +1126,9 @@ public class Utils {
 
         for (int i = 0; i < Config.dependentModels.size(); i++) {
 
-            //Creates tab button
             Button bt = new Button(_ctxt);
             bt.setId(i);
             bt.setText(Config.dependentModels.get(i).getStrName());
-
-            //log(Config.dependentNames.get(i), " Index ");
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
@@ -1194,8 +1211,6 @@ public class Utils {
                         @Override
                         public void onFindDocSuccess(Storage storage) {
 
-                            refreshNotificationAdapter();
-
                             if (storage != null) {
 
                                 if (storage.getJsonDocList().size() > 0) {
@@ -1217,6 +1232,7 @@ public class Utils {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                refreshNotifications();
                             }
                         }
 
@@ -1244,7 +1260,7 @@ public class Utils {
                             } else {
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
-                            refreshNotificationAdapter();
+                            refreshNotifications();
                         }
 
                         @Override
@@ -1257,18 +1273,9 @@ public class Utils {
                 progressDialog.dismiss();
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
 
-            refreshNotificationAdapter();
+            refreshNotifications();
         }
     }
-
-    public void refreshNotificationAdapter() {
-
-        NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
-                Config.dependentModels.
-                        get(Config.intSelectedDependent).
-                        getNotificationModels());
-    }
-
 
     public void createNotificationModel(String strDocumentId, String strDocument) {
         try {
@@ -1284,6 +1291,8 @@ public class Utils {
                         jsonObjectProvider.getString("created_by_type"),
                         jsonObjectProvider.getString("user_id"),
                         jsonObjectProvider.getString("created_by"), strDocumentId);
+
+                log(" 4 ", " IN ");
 
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
                     if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by")))
@@ -1511,7 +1520,8 @@ public class Utils {
 
                             if (response.getJsonDocList().size() > 0) {
 
-                                Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                                Storage.JSONDocument jsonDocument = response.getJsonDocList().
+                                        get(0);
 
                                 String strDocument = jsonDocument.getJsonDoc();
 
@@ -1611,8 +1621,6 @@ public class Utils {
             serviceModel.setStrServiceId(strDocumentId);
             serviceModel.setStrFeatures(arr);
 
-            log(String.valueOf(Config.serviceModels.contains(serviceModel)), " BOOLEAN ");
-
             if (!Config.strServcieIds.contains(strDocumentId)) {
                 Config.serviceModels.add(serviceModel);
                 Config.strServcieIds.add(strDocumentId);
@@ -1665,16 +1673,22 @@ public class Utils {
 
                     DependentModel dependentModel = new DependentModel();
 
-                    dependentModel.setStrIllness(jsonObjectDependent.getString("dependent_illness"));
+                    dependentModel.setStrIllness(jsonObjectDependent.
+                            getString("dependent_illness"));
                     dependentModel.setIntHealthBp(jsonObjectDependent.getInt("health_bp"));
-                    dependentModel.setIntHealthHeartRate(jsonObjectDependent.getInt("health_heart_rate"));
+                    dependentModel.setIntHealthHeartRate(jsonObjectDependent.
+                            getInt("health_heart_rate"));
 
-                    dependentModel.setStrRelation(jsonObjectDependent.getString("dependent_relation"));
-                    dependentModel.setStrAddress(jsonObjectDependent.getString("dependent_address"));
+                    dependentModel.setStrRelation(jsonObjectDependent.
+                            getString("dependent_relation"));
+                    dependentModel.setStrAddress(jsonObjectDependent.
+                            getString("dependent_address"));
                     dependentModel.setStrNotes(jsonObjectDependent.getString("dependent_notes"));
-                    dependentModel.setStrContacts(jsonObjectDependent.getString("dependent_contact_no"));
+                    dependentModel.setStrContacts(jsonObjectDependent.
+                            getString("dependent_contact_no"));
                     dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
-                    dependentModel.setStrImageUrl(jsonObjectDependent.getString("dependent_profile_url"));
+                    dependentModel.setStrImageUrl(jsonObjectDependent.
+                            getString("dependent_profile_url"));
                     dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
                     dependentModel.setIntAge(jsonObjectDependent.getInt("dependent_age"));
 
@@ -1686,7 +1700,7 @@ public class Utils {
 
                     //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
-                    if (jsonObjectDependent.has("services")) {
+                    /*if (jsonObjectDependent.has("services")) {
 
                         JSONArray jsonArrayServices = jsonObjectDependent.getJSONArray("services");
 
@@ -1709,12 +1723,12 @@ public class Utils {
                             );
 
                             //serviceModels.add(serviceModel);
-                            /*Config.dependentModels.get(iActivityCount).
-                                    setServiceModels(serviceModel);*/
+                            *//*Config.dependentModels.get(iActivityCount).
+                                    setServiceModels(serviceModel);*//*
 
                             dependentModel.setServiceModel(serviceModel);
                         }
-                    }
+                    }*/
 
                     Config.dependentModels.add(dependentModel);
 
@@ -1733,8 +1747,6 @@ public class Utils {
             JSONObject jsonObjectActivity =
                     new JSONObject(strDocument);
 
-            //log(strDocument, " Activity");
-
             if (jsonObjectActivity.has("activity_name")) {
 
                 ActivityModel activityModel = new ActivityModel();
@@ -1746,8 +1758,6 @@ public class Utils {
                 activityModel.setStrActivityDesc(jsonObjectActivity.getString("activity_desc"));
                 activityModel.setStrActivityMessage(jsonObjectActivity.
                         getString("activity_message"));
-
-                //log(jsonObjectActivity.getString("provider_id"), " PROVIDER ID ");
 
                 if (!Config.strProviderIds.contains(jsonObjectActivity.getString("provider_id")))
                     Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
@@ -1852,15 +1862,14 @@ public class Utils {
 
                 Config.dependentModels.get(iActivityCount).
                         setActivityModels(activityModel);
-
-                //Config.activityModels.add(activityModel);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void fetchDependents(String strCustomerId, final ProgressDialog progressDialog, final int iFlag) {
+    public void fetchDependents(String strCustomerId, final ProgressDialog progressDialog,
+                                final int iFlag) {
 
         if (isConnectingToInternet()) {
 
@@ -1889,15 +1898,13 @@ public class Utils {
 
                                     for (int i = 0; i < response.getJsonDocList().size(); i++) {
 
-                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().
-                                                get(i);
+                                        Storage.JSONDocument jsonDocument = response.
+                                                getJsonDocList().get(i);
 
                                         String strDocument = jsonDocument.getJsonDoc();
                                         String strDependentDocId = jsonDocument.getDocId();
                                         createDependentModel(strDependentDocId, strDocument);
                                     }
-
-                                    /**/
 
                                     if (iFlag == 1)
                                         fetchLatestActivities(progressDialog);
@@ -1963,16 +1970,12 @@ public class Utils {
         Query q3 = QueryBuilder.build("status", strStatus, QueryBuilder.Operator.EQUALS);
         Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
 
-        return q4; //query
+        return q4;
     }
 
     public void fetchLatestActivities(final ProgressDialog progressDialog) {
 
         if (iActivityCount < Config.strDependentIds.size()) {
-
-            //Config.activityModels.clear();
-
-            //log(String.valueOf(iActivityCount), " A Count 0 ");
 
             if (isConnectingToInternet()) {
 
@@ -2003,25 +2006,19 @@ public class Utils {
 
                                 if (response != null) {
 
-                                    //log(response.toString(), " RESPONSE ");
-
                                     if (response.getJsonDocList().size() > 0) {
 
                                         for (int i = 0; i < response.getJsonDocList().size(); i++) {
 
-                                            Storage.JSONDocument jsonDocument = response.getJsonDocList().
-                                                    get(i);
+                                            Storage.JSONDocument jsonDocument = response.
+                                                    getJsonDocList().get(i);
 
                                             String strDocument = jsonDocument.getJsonDoc();
                                             String strActivityId = jsonDocument.getDocId();
                                             createActivityModel(strActivityId, strDocument);
                                         }
 
-                                    }/* else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        toast(2, 2, _ctxt.getString(R.string.error));
-                                    }*/
+                                    }
                                     fetchLatestActivitiesUpcoming(progressDialog);
                                 } else {
                                     if (progressDialog.isShowing())
@@ -2062,23 +2059,20 @@ public class Utils {
             }
         }
     }
-    //
 
     public void fetchProviders(final ProgressDialog progressDialog, final int iFlag) {
-
-        log(String.valueOf(iProviderCount + " C " + Config.strProviderIds.size()), " Count ");
 
         if (iProviderCount < Config.strProviderIds.size()) { //todo check logic
 
             if (isConnectingToInternet()) {
 
-                if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.get(iProviderCount))) {
+                if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.
+                        get(iProviderCount))) {
 
                     StorageService storageService = new StorageService(_ctxt);
 
-                    // log(String.valueOf(iProviderCount), " Count ");
-
-                    storageService.findDocsByIdApp42CallBack(Config.strProviderIds.get(iProviderCount),
+                    storageService.findDocsByIdApp42CallBack(Config.strProviderIds.
+                                    get(iProviderCount),
                             Config.collectionProvider, new App42CallBack() {
                                 @Override
                                 public void onSuccess(Object o) {
@@ -2089,7 +2083,8 @@ public class Utils {
 
                                         if (storage.getJsonDocList().size() > 0) {
 
-                                            Storage.JSONDocument jsonDocument = storage.getJsonDocList().
+                                            Storage.JSONDocument jsonDocument = storage.
+                                                    getJsonDocList().
                                                     get(0);
 
                                             String strDocument = jsonDocument.getJsonDoc();
@@ -2099,8 +2094,6 @@ public class Utils {
 
                                         iProviderCount++;
 
-                                        //log(String.valueOf(iProviderCount), " Count 0 ");
-
                                         if (iProviderCount == Config.strProviderIds.size()) {
 
                                             if (progressDialog.isShowing())
@@ -2109,7 +2102,7 @@ public class Utils {
                                             if (iFlag == 0)
                                                 goToDashboard();
                                             if (iFlag == 1)
-                                                refreshNotifications();
+                                                refreshNotificationsImages();
 
                                         } else fetchProviders(progressDialog, iFlag);
 
@@ -2131,9 +2124,8 @@ public class Utils {
                                             JSONObject jsonObjectError =
                                                     jsonObject.getJSONObject("app42Fault");
 
-                                            int appErrorCode = jsonObjectError.getInt("appErrorCode");
-
-                                            //log(e.getMessage(), " MESS ");
+                                            int appErrorCode = jsonObjectError.
+                                                    getInt("appErrorCode");
 
                                             if (appErrorCode == 2608 || appErrorCode == 2600) {
                                                 iProviderCount++;
@@ -2147,7 +2139,7 @@ public class Utils {
                                                 if (iFlag == 0)
                                                     goToDashboard();
                                                 if (iFlag == 1)
-                                                    refreshNotifications();
+                                                    refreshNotificationsImages();
 
                                             } else fetchProviders(progressDialog, iFlag);
 
@@ -2173,7 +2165,7 @@ public class Utils {
                         if (iFlag == 0)
                             goToDashboard();
                         if (iFlag == 1)
-                            refreshNotifications();
+                            refreshNotificationsImages();
 
                     } else fetchProviders(progressDialog, iFlag);
                 }
@@ -2183,9 +2175,8 @@ public class Utils {
 
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
-
         } else {
-            //log(String.valueOf(iProviderCount + "g " + Config.strProviderIds.size()), " Count -2");
+
             if (iProviderCount == Config.strProviderIds.size()) {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -2193,7 +2184,7 @@ public class Utils {
                 if (iFlag == 0)
                     goToDashboard();
                 if (iFlag == 1)
-                    refreshNotifications();
+                    refreshNotificationsImages();
             }
         }
     }
@@ -2212,11 +2203,22 @@ public class Utils {
 
     public void refreshNotifications() {
 
-        if (NotificationFragment.listViewActivities != null
-                && NotificationFragment.notificationAdapter != null) {
+        if (NotificationFragment.listViewActivities != null) {
+
+            NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
+                    Config.dependentModels.
+                            get(Config.intSelectedDependent).
+                            getNotificationModels());
+
             NotificationFragment.listViewActivities.
                     setAdapter(NotificationFragment.notificationAdapter);
         }
+    }
+
+
+    public void refreshNotificationsImages() {
+
+        refreshNotifications();
 
         progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -2245,19 +2247,25 @@ public class Utils {
 
             StorageService storageService = new StorageService(_ctxt);
 
-            Query query = generateQuery("upcoming");
+            String key2 = "dependent_id";
+            String value2 = Config.strDependentIds.get(iActivityCount);
+
+            Query q1 = QueryBuilder.build("provider_status", "scheduled", QueryBuilder.
+                    Operator.EQUALS);//todo check logic
+
+            // Build query q1 for key1 equal to name and value1 equal to Nick
+            Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
+            // Build query q2 for key2 equal to age and value2
+
+            Query q3 = QueryBuilder.build("status", "upcoming", QueryBuilder.Operator.EQUALS);
+            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+
+            Query q5 = QueryBuilder.compoundOperator(q4, QueryBuilder.Operator.AND, q3);
 
             int max = 1;
             int offset = 0;
 
-          /*  HashMap<String, String> otherMetaHeaders = new HashMap<String, String>();
-            otherMetaHeaders.put("orderByAscending", "activity_date");// Use orderByDescending
-
-            //Query query = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
-
-            storageService.setOtherMetaHeaders(otherMetaHeaders);*/
-
-            storageService.findDocsByQueryOrderBy(Config.collectionActivity, query, max, offset,
+            storageService.findDocsByQueryOrderBy(Config.collectionActivity, q5, max, offset,
                     "activity_date", 0, //1 for descending
                     new App42CallBack() {
 
@@ -2272,27 +2280,16 @@ public class Utils {
 
                                     for (int i = 0; i < response.getJsonDocList().size(); i++) {
 
-                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().
-                                                get(i);
+                                        Storage.JSONDocument jsonDocument = response.
+                                                getJsonDocList().get(i);
 
                                         String strDocument = jsonDocument.getJsonDoc();
                                         String strActivityId = jsonDocument.getDocId();
                                         createActivityModel(strActivityId, strDocument);
                                     }
-
-
-                                } /*else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    toast(2, 2, _ctxt.getString(R.string.error));
-                                }*/
-
-                                /*Config.dependentModels.get(iActivityCount).
-                                        setActivityModels(Config.activityModels);*/
+                                }
 
                                 iActivityCount++;
-
-                                //log(String.valueOf(iActivityCount), " A Count 1 ");
 
                                 if (iActivityCount == Config.strDependentIds.size())
                                     fetchProviders(progressDialog, 0);
@@ -2323,7 +2320,6 @@ public class Utils {
                                     if (appErrorCode == 2608) {
                                         iActivityCount++;
                                     }
-                                    //log(String.valueOf(iActivityCount + " E " + Config.strDependentIds.size()), " A Count 2 ");
 
                                     if (iActivityCount == Config.strDependentIds.size())
                                         fetchProviders(progressDialog, 0);
@@ -2370,6 +2366,5 @@ public class Utils {
             }
         }
     }
-
     //Application Specig=fic End
 }

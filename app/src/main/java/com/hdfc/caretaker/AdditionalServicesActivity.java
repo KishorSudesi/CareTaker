@@ -34,11 +34,12 @@ import java.util.List;
 public class AdditionalServicesActivity extends AppCompatActivity {
 
     public static List<ServiceModel> selectedServiceModels = new ArrayList<>();
+    public static List<ServiceModel> selectedServiceHistoryModels = new ArrayList<>();
     public static AdditionalServicesAdapter additionalServicesAdapter;
     private static ProgressDialog progressDialog;
     private static StorageService storageService;
     private static LinearLayout dynamicUserTab;
-    private static int iServiceCount = 0, iServiceHistoryAddedCount = 0, iServiceDependentAddedCount = 0;
+    private static int iServiceCount;
     private Utils utils;
 
     @Override
@@ -58,6 +59,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         utils = new Utils(AdditionalServicesActivity.this);
 
         selectedServiceModels.clear();
+        selectedServiceHistoryModels.clear();
 
         if (buttonContinue != null) {
 
@@ -73,6 +75,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             progressDialog.show();
 
                             storageService = new StorageService(AdditionalServicesActivity.this);
+
+                            iServiceCount = 0;
 
                             addServices();
                         } else utils.toast(2, 2, getString(R.string.warning_internet));
@@ -106,9 +110,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    //int count = parent.getChildCount();
-                    //View v;
-
                     CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxService);
                     ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
 
@@ -117,23 +118,10 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         checkBox.setChecked(false);
                         checkBox.setButtonDrawable(getResources().getDrawable(R.mipmap.check_off));
                     } else {
-
-                        //for clearing previously selected check boxes
-                        /*for (int i = 0; i < count; i++) {
-                            if (i != position) {
-                                v = parent.getChildAt(i);
-                                CheckBox checkBoxAll = (CheckBox) v.findViewById(R.id.checkBoxService);
-                                checkBoxAll.setChecked(false);
-                                checkBox.setButtonDrawable(getResources().getDrawable(R.mipmap.check_off));
-                            }
-                        }
-                        selectedServiceModels.clear();*/
-
                         selectedServiceModels.add(serviceModel);
                         checkBox.setChecked(true);
                         checkBox.setButtonDrawable(getResources().getDrawable(R.mipmap.check_on));
                     }
-
                 }
             });
         }
@@ -148,7 +136,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         goBack();
     }
 
@@ -242,16 +229,13 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         public void onDocumentInserted(Storage response) {
                             try {
                                 if (response != null) {
-                                    iServiceHistoryAddedCount++;
 
-                                    if ((iServiceHistoryAddedCount - 1) == iServiceCount
-                                            && (iServiceDependentAddedCount - 1) == iServiceCount)
-                                        iServiceCount++;
+                                    Utils.log(String.valueOf(selectedServiceHistoryModels.remove(iServiceCount)), " REMOVED ");
 
-                                    if (iServiceCount == selectedServiceModels.size())
+                                    if (selectedServiceHistoryModels.size() <= 0)
                                         serviceAdded();
                                     else
-                                        addServices();
+                                        addServicesHistory();
 
                                 } else {
                                     if (progressDialog.isShowing())
@@ -310,8 +294,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         }
     }
 
-    public void updateServiceHistory(final String strDocumentId, final String strDocument,
-                                     final ServiceModel serviceModel) {
+    public void updateServiceDependent(final String strDocumentId, final String strDocument,
+                                       final ServiceModel serviceModel) {
 
         if (utils.isConnectingToInternet()) {
 
@@ -335,7 +319,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
             storageService.updateDocs(jsonObjectServices, strDocumentId,
                     Config.collectionServiceDependent,
                     new App42CallBack() {
@@ -344,11 +327,17 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         public void onSuccess(Object o) {
                             try {
                                 if (o != null) {
-                                    iServiceDependentAddedCount++;
 
-                                    JSONObject jsonObjectHistory = createServiceHistory(serviceModel);
+                                    Utils.log(String.valueOf(selectedServiceModels.remove(iServiceCount)), " REMOVED ");
 
-                                    addServiceHistory(jsonObjectHistory);
+                                    selectedServiceHistoryModels.add(serviceModel);
+
+                                    //iServiceCount++;
+
+                                    if (selectedServiceModels.size() <= 0) //iServiceCount ==
+                                        addServicesHistory();
+                                    else
+                                        addServices();
 
                                 } else {
                                     if (progressDialog.isShowing())
@@ -403,12 +392,14 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             jsonObjectHistory.put("service_name", serviceModel.getStrServiceName());
             jsonObjectHistory.put("service_desc",
                     serviceModel.getStrServiceDesc());
-            jsonObjectHistory.put("service_features", serviceModel.getStrFeatures());
+            jsonObjectHistory.put("service_features", utils.stringToJsonArray(serviceModel.getStrFeatures()));
             jsonObjectHistory.put("service_id", serviceModel.getStrServiceId());
 
             String strDate = utils.convertDateToString(new Date());
 
             jsonObjectHistory.put("purchased_date", strDate);
+
+            addServiceHistory(jsonObjectHistory);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -420,7 +411,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
         if (utils.isConnectingToInternet()) {
 
-            //
             JSONObject jsonObjectServices = null;
 
             try {
@@ -433,7 +423,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 jsonObjectServices.put("service_desc", serviceModel.getStrServiceDesc());
                 jsonObjectServices.put("service_id", serviceModel.getStrServiceId());
                 jsonObjectServices.put("updated_date", strDate);
-                jsonObjectServices.put("service_features", serviceModel);
+                jsonObjectServices.put("service_features", utils.stringToJsonArray(serviceModel.
+                        getStrFeatures()));
                 jsonObjectServices.put("dependent_id", Config.dependentModels.
                         get(Config.intSelectedDependent).getStrDependentID());
 
@@ -448,11 +439,17 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         @Override
                         public void onDocumentInserted(Storage response) {
                             if (response != null) {
-                                iServiceDependentAddedCount++;
 
-                                JSONObject jsonObjectHistory = createServiceHistory(serviceModel);
+                                Utils.log(String.valueOf(selectedServiceModels.remove(iServiceCount)), " REMOVED ");
 
-                                addServiceHistory(jsonObjectHistory);
+                                selectedServiceHistoryModels.add(serviceModel);
+
+                                //iServiceCount++;
+
+                                if (selectedServiceModels.size() <= 0) //iServiceCount ==
+                                    addServicesHistory();
+                                else
+                                    addServices();
 
                             } else {
                                 if (progressDialog.isShowing())
@@ -476,7 +473,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                     progressDialog.dismiss();
                                 if (ex != null) {
                                     JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                    JSONObject jsonObjectError = jsonObject.
+                                            getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
                                     utils.toast(2, 2, strMess);
@@ -535,13 +533,15 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
                                     if (response.getJsonDocList().size() > 0) {
 
-                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                                        Storage.JSONDocument jsonDocument = response.
+                                                getJsonDocList().get(0);
 
                                         String strDocument = jsonDocument.getJsonDoc();
 
                                         String strDocumentId = jsonDocument.getDocId();
 
-                                        updateServiceHistory(strDocumentId, strDocument, serviceModel);
+                                        updateServiceDependent(strDocumentId, strDocument,
+                                                serviceModel);
                                     }
                                 } else {
                                     if (progressDialog.isShowing())
@@ -590,7 +590,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     public void addServices() {
 
-        if (iServiceCount < selectedServiceModels.size()) {
+        //iServiceCount <
+        if (selectedServiceModels.size() > 0) {
 
             storageService = new StorageService(AdditionalServicesActivity.this);
             ServiceModel serviceModel = selectedServiceModels.get(iServiceCount);
@@ -601,10 +602,30 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            if (iServiceCount == selectedServiceModels.size())
+            if (selectedServiceModels.size() == 0)
+                addServicesHistory();
+        }
+    }
+
+    public void addServicesHistory() {
+
+        //iServiceCount <
+        if (selectedServiceHistoryModels.size() > 0) {
+
+            storageService = new StorageService(AdditionalServicesActivity.this);
+            ServiceModel serviceModel = selectedServiceHistoryModels.get(iServiceCount);
+
+            try {
+                createServiceHistory(serviceModel);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (selectedServiceHistoryModels.size() == 0)
                 serviceAdded();
         }
     }
+
 
     public void serviceAdded() {
         if (progressDialog.isShowing())
