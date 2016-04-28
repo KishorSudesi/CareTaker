@@ -1,6 +1,7 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -225,12 +226,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    /*@Override
+    @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        moveTaskToBack(true);
+        /*super.onBackPressed();
+        moveTaskToBack(true);*/
+        Intent selection = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(selection);
         finish();
-    }*/
+    }
 
 
    /* public class BackgroundThread extends Thread {
