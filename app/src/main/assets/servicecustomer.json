@@ -76,15 +76,10 @@
       ]
     }
   ],
-  "purchased_date": "2016-03-23T12:29:57.263Z",
   "unit": 50,
+  "updated_date": "2016-04-28T18:13:27.369Z",
   "category_name": "Health Care",
   "unit_consumed": 0,
-  "features": [
-    "BP",
-    "Heart Rate"
-  ],
-  "service_desc": "Selected Medical Test",
   "service_name": "Medical Test",
   "cost": 600,
   "customer_id": "56f53951e4b004bad20daf54"

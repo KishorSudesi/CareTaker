@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -444,10 +445,10 @@ public class Utils {
         mRecorder.start();
     }*/
 
-   /* public static String getDeviceID(Activity activity) {
+    public static String getDeviceID(Activity activity) {
         return Settings.Secure.getString(activity.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-    }*/
+    }
 
     /*public static String encrypt(String Data) {
 
@@ -1616,10 +1617,10 @@ public class Utils {
 
             serviceModel.setDoubleCost(jsonObject.getDouble("cost"));
             serviceModel.setStrServiceName(jsonObject.getString("service_name"));
-            serviceModel.setStrServiceDesc(jsonObject.getString("service_desc"));
+            //serviceModel.setStrServiceDesc(jsonObject.getString("service_desc"));
             serviceModel.setiUnit(jsonObject.getInt("unit"));
             serviceModel.setStrServiceId(strDocumentId);
-            serviceModel.setStrFeatures(arr);
+            //serviceModel.setStrFeatures(arr);
 
             if (!Config.strServcieIds.contains(strDocumentId)) {
                 Config.serviceModels.add(serviceModel);

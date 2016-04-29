@@ -1,12 +1,8 @@
 {
+  "service_no": 101,
   "unit": 50,
-  "features": [
-    "BP",
-    "Heart Rate"
-  ],
-  "service_desc": "Selected Medical Test",
   "service_name": "Medical Test",
-  "cost": 600,
+  "cost": 0.0,
   "category_name": "Health Care",
   "milestones": [
     {

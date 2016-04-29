@@ -453,10 +453,10 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
             jsonObjectHistory.put("unit", serviceModel.getiUnit());
             jsonObjectHistory.put("service_name", serviceModel.getStrServiceName());
-            jsonObjectHistory.put("service_desc",
+            /*jsonObjectHistory.put("service_desc",
                     serviceModel.getStrServiceDesc());
             jsonObjectHistory.put("service_features", utils.stringToJsonArray(serviceModel.
-                    getStrFeatures()));
+                    getStrFeatures()));*/
             jsonObjectHistory.put("service_id", serviceModel.getStrServiceId());
 
             String strDate = utils.convertDateToString(new Date());
@@ -484,11 +484,11 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 jsonObjectServices.put("unit", serviceModel.getiUnit());
                 jsonObjectServices.put("unit_consumed", 0);
                 jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
-                jsonObjectServices.put("service_desc", serviceModel.getStrServiceDesc());
+                //jsonObjectServices.put("service_desc", serviceModel.getStrServiceDesc());
                 jsonObjectServices.put("service_id", serviceModel.getStrServiceId());
                 jsonObjectServices.put("updated_date", strDate);
-                jsonObjectServices.put("service_features", utils.stringToJsonArray(serviceModel.
-                        getStrFeatures()));
+                /*jsonObjectServices.put("service_features", utils.stringToJsonArray(serviceModel.
+                        getStrFeatures()));*/
                 jsonObjectServices.put("dependent_id", Config.dependentModels.
                         get(Config.intSelectedDependent).getStrDependentID());
 

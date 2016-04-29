@@ -66,7 +66,7 @@ public class AdditionalServicesAdapter extends BaseAdapter {
                     String.valueOf(data.get(position).getiUnit() + ")");
 
             viewHolder.activityTitle.setText(strTemp);
-            viewHolder.activityDetails.setText(data.get(position).getStrServiceDesc());
+            //viewHolder.activityDetails.setText(data.get(position).getStrServiceDesc());
 
             viewHolder.checkBoxService.setTag(data.get(position));
         }

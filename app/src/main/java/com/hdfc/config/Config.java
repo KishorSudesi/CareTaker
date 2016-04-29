@@ -1,5 +1,8 @@
 package com.hdfc.config;
 
+import android.os.Build;
+
+import com.hdfc.caretaker.BuildConfig;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
@@ -27,9 +30,10 @@ public class Config {
     public static final String collectionActivity = "activity";
     public static final String collectionNotification = "notification";
 
-    //public static final String strServiceDocId = "56f280b0e4b003cbd56dcb38";//remove this
-    //for UAT 56f280b0e4b003cbd56dcb38
-    //for development 56c70aefe4b0067c8c7658bf
+    public static final int iSdkVersion = Build.VERSION.SDK_INT;
+    public static final int iAppVersion = BuildConfig.VERSION_CODE;
+    public static final String strOs = "android";
+
     public static final String string = Utils.getStringJni();
 
     public static final int START_CAMERA_REQUEST_CODE = 1;
@@ -45,7 +49,6 @@ public class Config {
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     public static final boolean isDebuggable = true;
-
     public static final boolean release = false;
 
     public static int intNotificationScreen = 2;
@@ -60,7 +63,6 @@ public class Config {
     public static int intScreenHeight = 0;
 
     //User Specific clear at logout or whenever needed
-    //public static JSONObject jsonObject = null;
     public static JSONObject jsonCustomer = null;
 
     public static int intSelectedMenu = 0;

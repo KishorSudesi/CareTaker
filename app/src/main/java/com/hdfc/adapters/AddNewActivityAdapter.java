@@ -62,7 +62,7 @@ public class AddNewActivityAdapter extends BaseAdapter {
         if (data.size() > 0) {
             viewHolder.activityTitle.setText(data.get(position).getStrServiceName() + " " +
                     (data.get(position).getiUnit() - data.get(position).getiUnitUsed()) + " Left");
-            viewHolder.activityDetails.setText(data.get(position).getStrServiceDesc());
+            //viewHolder.activityDetails.setText(data.get(position).getStrServiceDesc());
 
             viewHolder.checkBoxService.setTag(data.get(position));
         }
