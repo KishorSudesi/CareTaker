@@ -88,8 +88,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -100,13 +98,13 @@ public class Utils {
 
     //application specific
     public final static SimpleDateFormat readFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Config.locale);
     public final static SimpleDateFormat writeFormat =
-            new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+            new SimpleDateFormat("kk:mm aa dd MMM yyyy", Config.locale);
     public final static SimpleDateFormat writeFormatActivity =
-            new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
+            new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);
     public final static SimpleDateFormat writeFormatActivityMonthYear =
-            new SimpleDateFormat("MMM yyyy", Locale.US);
+            new SimpleDateFormat("MMM yyyy", Config.locale);
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
     private static Handler threadHandler;
@@ -130,7 +128,7 @@ public class Utils {
         Config.intScreenWidth = metrics.widthPixels;
         Config.intScreenHeight = metrics.heightPixels;
 
-        readFormat.setTimeZone(TimeZone.getDefault());
+        readFormat.setTimeZone(Config.timeZone); //TimeZone.getDefault()
     }
 
     public static native String getString();
@@ -2052,7 +2050,6 @@ public class Utils {
                                 }
                             }
                         });
-
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -2070,12 +2067,11 @@ public class Utils {
               /*  if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.
                         get(iProviderCount))) {*/
 
-                    StorageService storageService = new StorageService(_ctxt);
+                StorageService storageService = new StorageService(_ctxt);
 
                 Query query = new QueryBuilder().build("_id", Config.strProviderIds,
                         QueryBuilder.Operator.INLIST);
 
-                //todo use in list operator
                 storageService.findDocsByQuery(Config.collectionProvider, query,
                         new App42CallBack() {
 
@@ -2087,7 +2083,7 @@ public class Utils {
 
                                     if (o != null) {
 
-                                        Utils.log(o.toString(), " Response Success");
+                                        //Utils.log(o.toString(), " Response Success");
 
                                         Storage storage = (Storage) o;
 
@@ -2125,7 +2121,7 @@ public class Utils {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
                                 try {
-                                    Utils.log(e.getMessage(), " Response Failure");
+                                    //Utils.log(e.getMessage(), " Response Failure");
 
                                     if (e != null) {
                                         if (iFlag == 0)
