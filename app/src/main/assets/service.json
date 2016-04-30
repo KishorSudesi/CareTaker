@@ -60,6 +60,9 @@
           ],
           "child_value": [
             "Car Booking"
+          ],
+          "child_type": [
+            "text"
           ]
         },
         {
@@ -67,6 +70,7 @@
           "type": "text",
           "id": 22,
           "required": true,
+          "hide": true,
           "data": "Ola service"
         }
       ]
