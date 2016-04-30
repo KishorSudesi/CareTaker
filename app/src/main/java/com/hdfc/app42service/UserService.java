@@ -7,23 +7,16 @@ import com.shephertz.app42.paas.sdk.android.App42CallBack;
 
 import java.util.ArrayList;
 
-public class UserService/* implements
-        AsyncApp42ServiceApi.App42UserServiceListener*/ {
+public class UserService {
 
     private AsyncApp42ServiceApi asyncService;
-   /* private Context _ctxt;
-    private Utils utils;
-    private View formView, progressView;
-    private SharedPreferences sPre;*/
+
 
     public UserService(Context context) {
-        //this._ctxt = context;
         asyncService = AsyncApp42ServiceApi.instance(context);
-        // utils = new Utils(context);
     }
 
     public void authenticate(String userName, String password, App42CallBack app42CallBack) {
-        //utils.showProgress(true, formView, progressView);
         asyncService.authenticateUser(userName, password, app42CallBack);
     }
 
@@ -32,12 +25,12 @@ public class UserService/* implements
         //asyncService.addJSONObject(collectionCustomer, jsonDoc);
     }*/
 
-    public void onChangePassword(String userName, String oldPassword, String confirmPassword, App42CallBack app42CallBack) {
+    public void onChangePassword(String userName, String oldPassword, String confirmPassword,
+                                 App42CallBack app42CallBack) {
         asyncService.changePassword(userName, oldPassword, confirmPassword, app42CallBack);
     }
 
     public void getUser(String userName, App42CallBack app42CallBack) {
-        //utils.showProgress(true, formView, progressView);
         asyncService.getUser(userName, app42CallBack);
     }
 
@@ -133,7 +126,8 @@ public class UserService/* implements
         });
     }*/
 
-    public void onCreateUser(String userName, String password, String email, App42CallBack app42CallBack, ArrayList<String> roleList) {
+    public void onCreateUser(String userName, String password, String email, App42CallBack
+            app42CallBack, ArrayList<String> roleList) {
         asyncService.createUser(userName, password, email, roleList, app42CallBack);
     }
 
@@ -161,5 +155,4 @@ public class UserService/* implements
         utils.createAlertDialog(exception.getMessage());
         //utils.showProgress(false, formView, progressView);
     }*/
-
 }

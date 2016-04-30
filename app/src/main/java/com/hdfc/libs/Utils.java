@@ -88,8 +88,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -100,15 +98,16 @@ public class Utils {
 
     //application specific
     public final static SimpleDateFormat readFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Config.locale);
     public final static SimpleDateFormat writeFormat =
-            new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+            new SimpleDateFormat("kk:mm aa dd MMM yyyy", Config.locale);
     public final static SimpleDateFormat writeFormatActivity =
-            new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
+            new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);
     public final static SimpleDateFormat writeFormatActivityMonthYear =
             new SimpleDateFormat("MMM yyyy", Locale.US);
     public final static SimpleDateFormat writeFormatActivityYear =
             new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            new SimpleDateFormat("MMM yyyy", Config.locale);
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
     private static Handler threadHandler;
@@ -132,7 +131,7 @@ public class Utils {
         Config.intScreenWidth = metrics.widthPixels;
         Config.intScreenHeight = metrics.heightPixels;
 
-        readFormat.setTimeZone(TimeZone.getDefault());
+        readFormat.setTimeZone(Config.timeZone); //TimeZone.getDefault()
     }
 
     public static native String getString();
@@ -1295,7 +1294,7 @@ public class Utils {
                         jsonObjectProvider.getString("user_id"),
                         jsonObjectProvider.getString("created_by"), strDocumentId);
 
-                log(" 4 ", " IN ");
+                //log(" 4 ", " IN ");
 
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
                     if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by")))
@@ -2054,7 +2053,6 @@ public class Utils {
                                 }
                             }
                         });
-
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -2065,24 +2063,93 @@ public class Utils {
 
     public void fetchProviders(final ProgressDialog progressDialog, final int iFlag) {
 
-        if (iProviderCount < Config.strProviderIds.size()) { //todo check logic
+        //if (iProviderCount < Config.strProviderIds.size()) { //todo check logic
 
             if (isConnectingToInternet()) {
 
-                if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.
-                        get(iProviderCount))) {
+              /*  if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.
+                        get(iProviderCount))) {*/
 
-                    StorageService storageService = new StorageService(_ctxt);
+                StorageService storageService = new StorageService(_ctxt);
 
-                    storageService.findDocsByIdApp42CallBack(Config.strProviderIds.
+                Query query = new QueryBuilder().build("_id", Config.strProviderIds,
+                        QueryBuilder.Operator.INLIST);
+
+                storageService.findDocsByQuery(Config.collectionProvider, query,
+                        new App42CallBack() {
+
+                            @Override
+                            public void onSuccess(Object o) {
+                                try {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+
+                                    if (o != null) {
+
+                                        //Utils.log(o.toString(), " Response Success");
+
+                                        Storage storage = (Storage) o;
+
+                                        if (storage.getJsonDocList().size() > 0) {
+
+                                            for (int i = 0; i < storage.getJsonDocList().size(); i++) {
+
+                                                Storage.JSONDocument jsonDocument = storage.
+                                                        getJsonDocList().get(i);
+
+                                                String strDocument = jsonDocument.getJsonDoc();
+                                                String strProviderDocId = jsonDocument.
+                                                        getDocId();
+                                                createProviderModel(strProviderDocId,
+                                                        strDocument);
+                                            }
+                                        }
+
+                                        if (iFlag == 0)
+                                            goToDashboard();
+                                        if (iFlag == 1)
+                                            refreshNotificationsImages();
+
+                                    } else {
+                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                try {
+                                    //Utils.log(e.getMessage(), " Response Failure");
+
+                                    if (e != null) {
+                                        if (iFlag == 0)
+                                            goToDashboard();
+                                        if (iFlag == 1)
+                                            refreshNotificationsImages();
+                                    } else {
+                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                }
+                            }
+                        });
+
+                   /* storageService.findDocsByIdApp42CallBack(Config.strProviderIds.
                                     get(iProviderCount),
                             Config.collectionProvider, new App42CallBack() {
                                 @Override
                                 public void onSuccess(Object o) {
 
-                                    Storage storage = (Storage) o;
+                                    if (o != null) {
 
-                                    if (storage != null) {
+                                        Storage storage = (Storage) o;
 
                                         if (storage.getJsonDocList().size() > 0) {
 
@@ -2156,8 +2223,8 @@ public class Utils {
                                     }
                                 }
                             }
-                    );
-                } else {
+                    );*/
+              /*  } else {
                     iProviderCount++;
 
                     if (iProviderCount == Config.strProviderIds.size()) {
@@ -2171,14 +2238,14 @@ public class Utils {
                             refreshNotificationsImages();
 
                     } else fetchProviders(progressDialog, iFlag);
-                }
+                }*/
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
-        } else {
+       /* } else {
 
             if (iProviderCount == Config.strProviderIds.size()) {
                 if (progressDialog.isShowing())
@@ -2189,7 +2256,7 @@ public class Utils {
                 if (iFlag == 1)
                     refreshNotificationsImages();
             }
-        }
+        }*/
     }
 
     public void loadAllFiles() {

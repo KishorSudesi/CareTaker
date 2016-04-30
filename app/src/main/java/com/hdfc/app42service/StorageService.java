@@ -21,32 +21,37 @@ public class StorageService {
         asyncService.setOtherMetaHeaders(otherMetaHeaders);
     }*/
 
-    public void insertDocs(JSONObject jsonToSave, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack, String collectionCustomer) {
+    public void insertDocs(JSONObject jsonToSave, AsyncApp42ServiceApi.App42StorageServiceListener
+            app42CallBack, String collectionCustomer) {
         asyncService.insertJSONDoc(Config.dbName, collectionCustomer, jsonToSave, app42CallBack);
     }
 
-    /*public void findDocsByName(String checkValue) {
-        asyncService.findDocByDocId(Config.dbName, Config.collectionCustomer, checkValue, this);
-    }*/
-
-    public void findDocsById(String strDocId, String strCollectionName, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
+    public void findDocsById(String strDocId, String strCollectionName, AsyncApp42ServiceApi.
+            App42StorageServiceListener app42CallBack) {
         asyncService.findDocByDocId(Config.dbName, strCollectionName, strDocId, app42CallBack);
     }
 
-    public void findDocsByIdApp42CallBack(String strDocId, String strCollectionName, App42CallBack app42CallBack) {
-        asyncService.findDocByDocIdApp42CallBack(Config.dbName, strCollectionName, strDocId, app42CallBack);
+    public void findDocsByIdApp42CallBack(String strDocId, String strCollectionName, App42CallBack
+            app42CallBack) {
+        asyncService.findDocByDocIdApp42CallBack(Config.dbName, strCollectionName, strDocId,
+                app42CallBack);
     }
 
-    public void findDocsByKeyValue(String strCollectionName, String strKey, String strValue, AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
-        asyncService.findDocumentByKeyValue(Config.dbName, strCollectionName, strKey, strValue, app42CallBack);
+    public void findDocsByKeyValue(String strCollectionName, String strKey, String strValue,
+                                   AsyncApp42ServiceApi.App42StorageServiceListener app42CallBack) {
+        asyncService.findDocumentByKeyValue(Config.dbName, strCollectionName, strKey, strValue,
+                app42CallBack);
     }
 
-    /*public void findDocsByQuery(String strCollectionName, Query query, int max, int offset, App42CallBack app42CallBack) {
-        asyncService.findDocumentByQueryPaging(Config.dbName, strCollectionName, query, max, offset, app42CallBack);
-    }*/
+    public void findDocsByQuery(String strCollectionName, Query query,
+                                App42CallBack app42CallBack) {
+        asyncService.findDocumentByQuery(Config.dbName, strCollectionName, query, app42CallBack);
+    }
 
-    public void findDocsByQueryOrderBy(String strCollectionName, Query query, int max, int offset, String strKey, int iOrderFlag, App42CallBack app42CallBack) {
-        asyncService.findDocumentByQueryPagingOrderBy(Config.dbName, strCollectionName, query, max, offset, strKey, iOrderFlag, app42CallBack);
+    public void findDocsByQueryOrderBy(String strCollectionName, Query query, int max, int offset,
+                                       String strKey, int iOrderFlag, App42CallBack app42CallBack) {
+        asyncService.findDocumentByQueryPagingOrderBy(Config.dbName, strCollectionName, query, max,
+                offset, strKey, iOrderFlag, app42CallBack);
     }
     public void findAllDocs(String strCollectionName, App42CallBack app42CallBack) {
         asyncService.findAllDocuments(Config.dbName, strCollectionName, app42CallBack);
@@ -56,7 +61,9 @@ public class StorageService {
         asyncService.updateDocByKeyValue(Config.dbName, Config.collectionCustomer, fieldName, checkValue, jsonToUpdate, this);
     }*/
 
-    public void updateDocs(JSONObject jsonToUpdate, String strDocId, String strCollectionName, App42CallBack app42CallBack) {
-        asyncService.updateDocPartByKeyValue(Config.dbName, strCollectionName, strDocId, jsonToUpdate, app42CallBack);
+    public void updateDocs(JSONObject jsonToUpdate, String strDocId, String strCollectionName,
+                           App42CallBack app42CallBack) {
+        asyncService.updateDocPartByKeyValue(Config.dbName, strCollectionName, strDocId,
+                jsonToUpdate, app42CallBack);
     }
 }

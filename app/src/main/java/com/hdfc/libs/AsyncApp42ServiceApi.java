@@ -365,14 +365,15 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
-    public void findDocumentByQueryPaging(final String dbName, final String collectionName,
-                                          final Query query, final int max, final int offset, final App42CallBack callBack) {
+    public void findDocumentByQuery(final String dbName, final String collectionName,
+                                    final Query query, final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
             public void run() {
                 try {
-                    final Storage response = storageService.findDocumentsByQueryWithPaging(dbName, collectionName, query, max, offset);
+                    final Storage response = storageService.findDocumentsByQuery(dbName,
+                            collectionName, query);
                     callerThreadHandler.post(new Runnable() {
                         @Override
                         public void run() {

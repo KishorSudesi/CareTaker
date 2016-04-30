@@ -9,26 +9,13 @@ import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 public class UploadService {
 
     private AsyncApp42ServiceApi asyncService;
-    /*private Context _ctxt;
-    private Utils utils;
-    private View formView, progressView;
-    private ImageView imgView;*/
 
     public UploadService(Context context) {
-        //this._ctxt = context;
         asyncService = AsyncApp42ServiceApi.instance(context);
-        //utils = new Utils(context);
     }
 
-   /* public void uploadImage(String imagePath, String fileName, String desc, String userName, UploadFileType fileType, AsyncApp42ServiceApi.App42UploadServiceListener callBack) {
-        //utils.showProgress(true, formView, progressView);
-
-        asyncService.uploadImageForUser(fileName, userName, imagePath, fileType, desc, callBack);
-        //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
-        //desc, this);
-    }*/
-
-    public void uploadImageCommon(String imagePath, String fileName, String desc, String userName, UploadFileType fileType, App42CallBack callBack) {
+    public void uploadImageCommon(String imagePath, String fileName, String desc, String userName,
+                                  UploadFileType fileType, App42CallBack callBack) {
         //utils.showProgress(true, formView, progressView);
 
         asyncService.uploadImageForUser(fileName, userName, imagePath, fileType, desc, callBack);
@@ -36,13 +23,7 @@ public class UploadService {
         //desc, this);
     }
 
-    /*public void uploadFile(String imagePath, String fileName, String desc, UploadFileType fileType, App42CallBack callBack) {
-        // utils.showProgress(true, formView, progressView);
-        asyncService.uploadFile(fileName, imagePath, fileType, desc, callBack);
-        //asyncService.uploadImage(fileName, imagePath, UploadFileType.IMAGE,
-        //desc, this);
-    }
-
+    /*
     public void getFile(String fileName) {
         //utils.showProgress(true, formView, progressView);
         asyncService.getFile(fileName, this);
@@ -50,7 +31,7 @@ public class UploadService {
         //desc, this);
     }*/
 
-    public void getAllFilesByUser(String userName, App42CallBack app42CallBack) {
+   /* public void getAllFilesByUser(String userName, App42CallBack app42CallBack) {
 
         asyncService.getAllFilesByUser(userName, app42CallBack);
     }
@@ -58,7 +39,7 @@ public class UploadService {
     public void getFileByUser(String strFileName, String userName, App42CallBack app42CallBack) {
 
         asyncService.getImageByUser(strFileName, userName, app42CallBack);
-    }
+    }*/
 
     public void removeImage(String fileName, String userName, App42CallBack app42CallBack) {
         asyncService.removeImageByUser(fileName, userName, app42CallBack);
