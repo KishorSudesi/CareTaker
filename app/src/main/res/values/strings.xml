@@ -4,11 +4,13 @@
 
     <!--Common Strings-->
     <string name="back">Back</string>
+    <string name="skip">Skip</string>
     <string name="ok">OK</string>
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
     <string name="email">Email</string>
     <string name="name">Name</string>
+    <string name="DOB">DOB</string>
     <string name="password">Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>

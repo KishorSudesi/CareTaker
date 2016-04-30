@@ -2,6 +2,7 @@ package com.hdfc.caretaker.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,13 +10,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
@@ -31,7 +39,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Locale;
 
 public class GuruDetailsFragment extends Fragment {
 
@@ -45,9 +57,30 @@ public class GuruDetailsFragment extends Fragment {
     private static Handler backgroundThreadHandler;
     private static String strName, strEmail, strConfirmPass, strContactNo, strAddress;
     private static ProgressDialog mProgress = null;
-    private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editAddress;
+    private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editAddress,editTextDate,editAreaCode,editCountryCode;
     private Utils utils;
+    private String _strDate;
+    private RadioButton mobile,landline;
 
+    private SlideDateTimeListener listener = new SlideDateTimeListener() {
+
+        @Override
+        public void onDateTimeSet(Date date) {
+            // selectedDateTime = date.getDate()+"-"+date.getMonth()+"-"+date.getYear()+" "+
+            // date.getTime();
+            // Do something with the date. This Date object contains
+            // the date and time that the user has selected.
+
+            String strDate = Utils.writeFormatActivityYear.format(date);
+            _strDate = Utils.readFormat.format(date);
+            editTextDate.setText(strDate);
+        }
+
+        @Override
+        public void onDateTimeCancel() {
+            // Overriding onDateTimeCancel() is optional.
+        }
+    };
     public GuruDetailsFragment() {
     }
 
@@ -82,6 +115,37 @@ public class GuruDetailsFragment extends Fragment {
         editPass = (EditText) rootView.findViewById(R.id.editPassword);
         editConfirmPass = (EditText) rootView.findViewById(R.id.editConfirmPassword);
         editContactNo = (EditText) rootView.findViewById(R.id.editContactNo);
+        editAreaCode = (EditText)rootView.findViewById(R.id.editAreaCode);
+        editCountryCode = (EditText)rootView.findViewById(R.id.editCountryCode);
+
+        mobile = (RadioButton)rootView.findViewById(R.id.radioMobile);
+        landline =(RadioButton)rootView.findViewById(R.id.radioLandline);
+
+       mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+           @Override
+           public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               if (mobile.isChecked()){
+                   editAreaCode.setVisibility(View.GONE);
+               }else {
+                   editAreaCode.setVisibility(View.VISIBLE);
+               }
+           }
+       });
+       ///
+        /*TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        editContactNo.setText( telephonyManager.getNetworkCountryIso());*/
+
+        editTextDate = (EditText)rootView.findViewById(R.id.editDOB);
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SlideDateTimePicker.Builder(getActivity().getSupportFragmentManager())
+                        .setListener(listener)
+                        .setInitialDate(new Date())
+                        .build()
+                        .show();
+            }
+        });
         Button buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
         editAddress = (EditText) rootView.findViewById(R.id.editAddress);
 
@@ -104,6 +168,23 @@ public class GuruDetailsFragment extends Fragment {
                 validateUser();
             }
         });
+
+        Locale[] locale = Locale.getAvailableLocales();
+        ArrayList<String> countries = new ArrayList<String>();
+        String country;
+        for( Locale loc : locale ){
+            country = loc.getDisplayCountry();
+            if( country.length() > 0 && !countries.contains(country) ){
+                countries.add( country );
+            }
+        }
+        Collections.sort(countries, String.CASE_INSENSITIVE_ORDER);
+
+        Spinner citizenship = (Spinner)rootView.findViewById(R.id.input_citizenship);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, countries);
+        citizenship.setAdapter(adapter);
+
 
         return rootView;
     }

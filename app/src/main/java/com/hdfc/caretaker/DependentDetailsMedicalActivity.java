@@ -37,6 +37,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
         Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
+        Button buttonSkip = (Button)findViewById(R.id.buttonSkip);
 
         if (buttonBack != null) {
             buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +56,12 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 }
             });
         }
+        buttonSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                store();
+            }
+        });
 
         utils.setStatusBarColor("#cccccc");
 
@@ -152,6 +159,39 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             progressDialog.dismiss();
             utils.toast(2, 2, getString(R.string.dependent_data_lost));
         }
+    }
+    public void store(){
+
+        SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
+
+        Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
+        selection.putExtra("LIST_DEPENDANT", true);
+        DependentDetailPersonalActivity.strDependantName = "";
+        DependentDetailPersonalActivity.strImageName = "";
+        DependentDetailPersonalActivity.dependentModel = null;
+
+        //chk this
+        utils.retrieveDependants();
+
+        if (AddDependentFragment.adapter != null)
+            AddDependentFragment.adapter.notifyDataSetChanged();
+
+        utils.retrieveConfirmDependants();
+
+        if (ConfirmFragment.adapter != null)
+            ConfirmFragment.adapter.notifyDataSetChanged();
+        //
+
+        progressDialog.dismiss();
+        utils.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
+
+        startActivity(selection);
+        finish();
+
+    /*} else {
+        progressDialog.dismiss();
+        utils.toast(2, 2, getString(R.string.dependent_data_lost));
+    }*/
     }
 
     public void backToSelection() {

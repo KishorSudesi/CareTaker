@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    android:orientation="vertical">
+    android:orientation="vertical">-->
 
     <ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -55,6 +56,22 @@
                 android:padding="10dp" />
 
             <EditText
+                android:id="@+id/editDOB"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/edit_text"
+                android:drawableLeft="@drawable/person_icon"
+                android:drawablePadding="10dp"
+                android:hint="@string/DOB"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                android:focusableInTouchMode="false"/>
+
+            <EditText
                 android:id="@+id/editPassword"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
@@ -98,21 +115,94 @@
                 android:hint="@string/address"
                 android:inputType="text"
                 android:padding="10dp" />
-
-            <EditText
-                android:id="@+id/editContactNo"
+            <Spinner
+                android:id="@+id/input_citizenship"
+                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
                 android:background="@drawable/edit_text"
-                android:drawableLeft="@drawable/receiver_icon"
                 android:drawablePadding="10dp"
-                android:hint="@string/contact_number"
+                android:padding="10dp" >
+            </Spinner>
+
+
+            <RadioGroup
+                android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+            <RadioButton
+                android:id="@+id/radioMobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mobile"
+                android:layout_weight="1"
+                >
+                            </RadioButton>
+            <RadioButton
+                android:id="@+id/radioLandline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LandLine"
+                android:layout_weight="1">
+            </RadioButton>
+                </RadioGroup>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="2"
+    android:padding="10dp"
+    android:layout_marginTop="0dp">
+            <EditText
+                android:id="@+id/editCountryCode"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/edit_text_margin"
+                android:layout_marginRight="@dimen/edit_text_margin"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/edit_text"
+                android:drawablePadding="10dp"
                 android:inputType="number"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:layout_weight="0.4"/>
+    <EditText
+        android:id="@+id/editAreaCode"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/edit_text_margin"
+        android:layout_marginRight="@dimen/edit_text_margin"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edit_text"
+        android:drawablePadding="10dp"
+        android:inputType="number"
+        android:padding="10dp"
+        android:layout_weight="0.5"
+        />
+
+    <EditText
+        android:id="@+id/editContactNo"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/edit_text_margin"
+        android:layout_marginRight="@dimen/edit_text_margin"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/edit_text"
+        android:drawablePadding="10dp"
+        android:hint="@string/contact_number"
+        android:inputType="number"
+        android:padding="10dp"
+        android:layout_weight="1.1"/>
+
+</LinearLayout>
 
             <Button
                 android:id="@+id/buttonContinue"
@@ -132,4 +222,3 @@
 
     </ScrollView>
 
-</LinearLayout>

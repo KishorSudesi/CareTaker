@@ -107,6 +107,8 @@ public class Utils {
             new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US);
     public final static SimpleDateFormat writeFormatActivityMonthYear =
             new SimpleDateFormat("MMM yyyy", Locale.US);
+    public final static SimpleDateFormat writeFormatActivityYear =
+            new SimpleDateFormat("dd-MM-yyyy", Locale.US);
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
     private static Handler threadHandler;

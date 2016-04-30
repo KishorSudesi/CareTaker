@@ -25,20 +25,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.log.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Array;
 import java.util.Calendar;
+import java.util.Date;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnShowRationale;
@@ -59,10 +68,32 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
     private static SearchView searchView;
-    private static EditText editName, editContactNo, editAddress, editRelation, editDependantEmail;
+    private static EditText editName, editContactNo, editAddress, editRelation, editDependantEmail,editTextDate;
     private static ProgressDialog mProgress = null;
     private Utils utils;
+    private String _strDate;
+    private String Relation[] = {"Father","Mother","Uncle","Aunt","Grand Father","Grand Mother","Father-in-law","Mother-in-law","Other"};
+private String Relationship;
 
+    private SlideDateTimeListener listener = new SlideDateTimeListener() {
+
+        @Override
+        public void onDateTimeSet(Date date) {
+            // selectedDateTime = date.getDate()+"-"+date.getMonth()+"-"+date.getYear()+" "+
+            // date.getTime();
+            // Do something with the date. This Date object contains
+            // the date and time that the user has selected.
+
+            String strDate = Utils.writeFormatActivityYear.format(date);
+            _strDate = Utils.readFormat.format(date);
+            editTextDate.setText(strDate);
+        }
+
+        @Override
+        public void onDateTimeCancel() {
+            // Overriding onDateTimeCancel() is optional.
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +104,38 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         editName = (EditText) findViewById(R.id.editDependantName);
         editContactNo = (EditText) findViewById(R.id.editContactNo);
         editAddress = (EditText) findViewById(R.id.editAddress);
-        editRelation = (EditText) findViewById(R.id.editRelation);
+        editTextDate = (EditText)findViewById(R.id.editDOB);
+      //  editRelation = (EditText) findViewById(R.id.editRelation);
+
+        editTextDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SlideDateTimePicker.Builder(getSupportFragmentManager())
+                        .setListener(listener)
+                        .setInitialDate(new Date())
+                        .build()
+                        .show();
+            }
+        });
+
+        Spinner citizenship = (Spinner)findViewById(R.id.editRelation);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, Relation);
+        citizenship.setAdapter(adapter);
+
+        citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Utils.log("item", (String) parent.getItemAtPosition(position));
+                Relationship = (String)parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         editDependantEmail = (EditText) findViewById(R.id.editDependantEmail);
 
         mProgress = new ProgressDialog(DependentDetailPersonalActivity.this);
@@ -162,28 +224,28 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         editName.setError(null);
         editContactNo.setError(null);
         editAddress.setError(null);
-        editRelation.setError(null);
+       //editRelation.setError(null);
 
         strDependantName = editName.getText().toString().trim();
         final String strContactNo = editContactNo.getText().toString().trim();
         final String strAddress = editAddress.getText().toString().trim();
-        final String strRelation = editRelation.getText().toString().trim();
+        final String strRelation = Relationship;
         final String strEmail = editDependantEmail.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (strImageName != null && TextUtils.isEmpty(strImageName) && dependentModel == null) {
+        /*if (strImageName != null && TextUtils.isEmpty(strImageName) && dependentModel == null) {
             utils.toast(2, 2, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
-        } else {
+        } else {*/
 
-            if (TextUtils.isEmpty(strRelation)) {
+           /* if (TextUtils.isEmpty(strRelation)) {
                 editRelation.setError(getString(R.string.error_field_required));
                 focusView = editRelation;
                 cancel = true;
-            }
+            }*/
 
             if (TextUtils.isEmpty(strAddress)) {
                 editAddress.setError(getString(R.string.error_field_required));
@@ -218,7 +280,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 focusView = editName;
                 cancel = true;
             }
-        }
+
 
         if (cancel) {
             focusView.requestFocus();
