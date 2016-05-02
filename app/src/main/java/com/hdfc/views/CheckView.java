@@ -16,16 +16,14 @@ import java.util.Random;
  * åŠŸèƒ½ï¼šè‡ªå®šä¹‰éªŒè¯�ç �å®žçŽ°ç±» 
  */  
 public class CheckView extends ImageView  
-{     
-    //éªŒè¯�ç �å›¾ç‰‡  
-    private Bitmap bitmap = null;  
-    //éš�æœºç”Ÿæˆ�æ‰€æœ‰çš„æ•°ç»„  
+{
+    //éš�æœºç”Ÿæˆ�æ‰€æœ‰çš„æ•°ç»„
     final char[] charContent = new char[]{ '0', '1', '2', '3', '4', '5', '6',
-            '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
-            'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+            '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
             'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
             'X', 'Y', 'Z' };
+    //éªŒè¯�ç �å›¾ç‰‡
+    private Bitmap bitmap = null;
       
     //æž„é€ å‡½æ•°  
     public CheckView(Context context, AttributeSet attrs) {  
@@ -77,10 +75,10 @@ public class CheckView extends ImageView
           
         //åˆ›å»ºå›¾ç‰‡å’Œç”»å¸ƒ  
         Bitmap sourceBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);  
-        Canvas canvas = new Canvas(sourceBitmap);  
-        canvas.drawColor(Color.YELLOW);  
-        Paint numPaint = new Paint();  
-        numPaint.setTextSize(40);  
+        Canvas canvas = new Canvas(sourceBitmap);
+        canvas.drawColor(Color.WHITE);
+        Paint numPaint = new Paint();
+        numPaint.setTextSize(50);
         numPaint.setFakeBoldText(true);  
         numPaint.setColor(Color.BLACK);  
           
@@ -110,7 +108,7 @@ public class CheckView extends ImageView
         interferencePaint.setStyle(Paint.Style.FILL);    //è®¾ç½®paintçš„style  
           
         //ç»˜åˆ¶ç›´çº¿  
-        int [] line;  
+       /* int [] line;
         for(int i = 0; i < 2; i ++)  
             {  
             line = CheckGetUtil.getLine(height, width);
@@ -122,7 +120,7 @@ public class CheckView extends ImageView
             {  
             point= CheckGetUtil.getPoint(height, width);
             canvas.drawCircle(point[0], point[1], 1, interferencePaint);  
-            }  
+            }  */
           
         canvas.save();  
         return sourceBitmap;  

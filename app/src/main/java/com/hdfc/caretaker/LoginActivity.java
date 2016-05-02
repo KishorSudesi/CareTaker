@@ -1,7 +1,6 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -9,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
@@ -31,12 +31,12 @@ public class LoginActivity extends AppCompatActivity {
     public static Utils utils;
     private static ProgressDialog progressDialog;
     private static String userName;
-    private TextView txtForgotPassword;
     /* private static Thread backgroundThread;
      private static Handler threadHandler;*/
     private RelativeLayout relLayout;
     private EditText editEmail, editPassword;
     private RelativeLayout layoutLogin;
+    private TextView txtForgotPassword;
 
     private CheckView checkView;
     private TextView editTextCaptcha;
@@ -112,7 +112,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showForgotPasswordDialog(){
 
-        // get prompts.xml view
         LayoutInflater li = LayoutInflater.from(LoginActivity.this);
         View promptsView = li.inflate(R.layout.forgot_password_custom_dialog, null);
 
@@ -130,70 +129,59 @@ public class LoginActivity extends AppCompatActivity {
                 res = checkView.getValidataAndSetImage();
             }
         });
+        // Create the dialog (without showing)
+        final AlertDialog d = new AlertDialog.Builder(this).setTitle("Forgot Password?")
+                .setPositiveButton("OK", null)
+                .setNegativeButton("CANCEL", null).setView(promptsView).create();
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-        alertDialogBuilder.setView(promptsView);
+        d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        d.show();
+        d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        // set dialog message
-        alertDialogBuilder.setTitle("Forgot Password?").setCancelable(false)
-                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // get user input and set it to result
 
-                        String scheck = new String(res);
-                        String string = editTextCaptcha.getText().toString();
-                        boolean b = string.equals(scheck);
+                // get user input and set it to result
 
-                        email = forgotpasswordUserName.getText().toString();
-                        if (TextUtils.isEmpty(email)){
+                String scheck = new String(res);
+                String string = editTextCaptcha.getText().toString();
+                boolean b = string.equals(scheck);
 
-                            utils.toast(2, 2, "Enter Username");
-                            showForgotPasswordDialog();
+                email = forgotpasswordUserName.getText().toString();
+                if (TextUtils.isEmpty(email)) {
 
-                        }else if (!utils.isEmailValid(email)){
+                    utils.toast(2, 2, "Enter Username");
 
-                            utils.toast(2, 2, "Enter Valid Username");
-                            showForgotPasswordDialog();
+                } else if (!utils.isEmailValid(email)) {
 
-                        }else if (!b){
+                    utils.toast(2, 2, "Enter Valid Username");
 
-                            utils.toast(2, 2, "Enter valid captcha");
-                            showForgotPasswordDialog();
+                } else if (!b) {
 
-                        }else {
+                    utils.toast(2, 2, "Enter valid captcha");
 
-                            resetPassword(email);
-                            dialog.dismiss();
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                dialog.cancel();
-                            }
-                        });
+                } else {
 
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-
+                    resetPassword(email);
+                    d.dismiss();
+                }
+            }
+        });
     }
+
 
     private void resetPassword(String userEmail){
 
         if (utils.isConnectingToInternet()) {
 
-            progressDialog.setMessage(getString(R.string.process_login));
+            progressDialog.setMessage(getString(R.string.verify_identity_password));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
             UserService userService = new UserService(LoginActivity.this);
 
 
-            userService.resetUserPassword(userEmail,  new App42CallBack() {
+            userService.resetUserPassword(userEmail, new App42CallBack() {
                 @Override
                 public void onSuccess(Object o) {
                     progressDialog.dismiss();
@@ -218,6 +206,7 @@ public class LoginActivity extends AppCompatActivity {
         } else utils.toast(2, 2, getString(R.string.warning_internet));
 
     }
+
 
     private void showPasswordfield() {
         if (relLayout.getVisibility() == View.GONE) {
