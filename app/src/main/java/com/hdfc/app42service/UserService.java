@@ -34,6 +34,11 @@ public class UserService {
         asyncService.getUser(userName, app42CallBack);
     }
 
+    public void resetUserPassword(String userName, App42CallBack app42CallBack) {
+        //utils.showProgress(true, formView, progressView);
+        asyncService.resetUserPassword(userName, app42CallBack);
+    }
+
    /* public void onGetUserRoles(String userName) {
         // utils.showProgress(true, formView, progressView);
         asyncService.getRolesByUser(userName, new App42CallBack() {

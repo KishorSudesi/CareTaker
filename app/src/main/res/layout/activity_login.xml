@@ -72,7 +72,7 @@
             android:singleLine="true" />
 
         <TextView
-            android:id="@+id/id_search_button1"
+            android:id="@+id/txtForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/editPassword"

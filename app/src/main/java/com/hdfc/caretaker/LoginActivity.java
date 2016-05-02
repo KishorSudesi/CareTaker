@@ -1,20 +1,26 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
+import com.hdfc.views.CheckView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 
 import org.json.JSONException;
@@ -25,11 +31,19 @@ public class LoginActivity extends AppCompatActivity {
     public static Utils utils;
     private static ProgressDialog progressDialog;
     private static String userName;
+    private TextView txtForgotPassword;
     /* private static Thread backgroundThread;
      private static Handler threadHandler;*/
     private RelativeLayout relLayout;
     private EditText editEmail, editPassword;
     private RelativeLayout layoutLogin;
+
+    private CheckView checkView;
+    private TextView editTextCaptcha;
+    private EditText forgotpasswordUserName;
+    private ImageButton reloadCaptcha;
+    private char[] res = new char[4];
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         layoutLogin = (RelativeLayout) findViewById(R.id.layoutLogin);
         editEmail = (EditText) findViewById(R.id.editEmail);
         editPassword = (EditText) findViewById(R.id.editPassword);
+        txtForgotPassword = (TextView) findViewById(R.id.txtForgotPassword);
 
         utils = new Utils(LoginActivity.this);
         progressDialog = new ProgressDialog(LoginActivity.this);
@@ -60,6 +75,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showPasswordfield();
+            }
+        });
+
+        txtForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showForgotPasswordDialog();
             }
         });
 
@@ -86,6 +108,115 @@ public class LoginActivity extends AppCompatActivity {
        /* byte[] encrypted_data = myCipherData.getData();
         IvParameterSpec iv = new IvParameterSpec(myCipherData.getIV());
         Utils.log(myCipher.decryptUTF8(encrypted_data, iv), "");*/
+    }
+
+    private void showForgotPasswordDialog(){
+
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from(LoginActivity.this);
+        View promptsView = li.inflate(R.layout.forgot_password_custom_dialog, null);
+
+        editTextCaptcha = (EditText) promptsView.findViewById(R.id.editTextCaptcha);
+        checkView = (CheckView) promptsView.findViewById(R.id.checkview2);
+        forgotpasswordUserName = (EditText) promptsView.findViewById(R.id.editTextUserName);
+        reloadCaptcha = (ImageButton) promptsView.findViewById(R.id.reloadCaptcha);
+
+        res = checkView.getValidataAndSetImage();
+
+        reloadCaptcha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+                res = checkView.getValidataAndSetImage();
+            }
+        });
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+        alertDialogBuilder.setView(promptsView);
+
+        // set dialog message
+        alertDialogBuilder.setTitle("Forgot Password?").setCancelable(false)
+                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // get user input and set it to result
+
+                        String scheck = new String(res);
+                        String string = editTextCaptcha.getText().toString();
+                        boolean b = string.equals(scheck);
+
+                        email = forgotpasswordUserName.getText().toString();
+                        if (TextUtils.isEmpty(email)){
+
+                            utils.toast(2, 2, "Enter Username");
+                            showForgotPasswordDialog();
+
+                        }else if (!utils.isEmailValid(email)){
+
+                            utils.toast(2, 2, "Enter Valid Username");
+                            showForgotPasswordDialog();
+
+                        }else if (!b){
+
+                            utils.toast(2, 2, "Enter valid captcha");
+                            showForgotPasswordDialog();
+
+                        }else {
+
+                            resetPassword(email);
+                            dialog.dismiss();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+    }
+
+    private void resetPassword(String userEmail){
+
+        if (utils.isConnectingToInternet()) {
+
+            progressDialog.setMessage(getString(R.string.process_login));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            UserService userService = new UserService(LoginActivity.this);
+
+
+            userService.resetUserPassword(userEmail,  new App42CallBack() {
+                @Override
+                public void onSuccess(Object o) {
+                    progressDialog.dismiss();
+                    utils.toast(1, 1, "New password has been sent to your E-mail id");
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    progressDialog.dismiss();
+                    try {
+                        JSONObject jsonObject = new JSONObject(e.getMessage());
+                        JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                        String strMess = jsonObjectError.getString("details");
+
+                        utils.toast(2, 2, strMess);
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+
+        } else utils.toast(2, 2, getString(R.string.warning_internet));
+
     }
 
     private void showPasswordfield() {

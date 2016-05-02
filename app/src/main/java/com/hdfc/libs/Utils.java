@@ -88,6 +88,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,10 +105,9 @@ public class Utils {
     public final static SimpleDateFormat writeFormatActivity =
             new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);
     public final static SimpleDateFormat writeFormatActivityMonthYear =
-            new SimpleDateFormat("MMM yyyy", Locale.US);
-    public final static SimpleDateFormat writeFormatActivityYear =
-            new SimpleDateFormat("dd-MM-yyyy", Locale.US);
             new SimpleDateFormat("MMM yyyy", Config.locale);
+    public final static SimpleDateFormat writeFormatActivityYear =
+            new SimpleDateFormat("dd-MM-yyyy", Config.locale);//now commit
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
     private static Handler threadHandler;
