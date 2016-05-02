@@ -59,7 +59,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         buttonSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                store();
+                DependentData();
             }
         });
 
@@ -120,13 +120,29 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         }
     }
 
+    public void DependentData(){
+        strAge = editAge.getText().toString().trim();
+        strDiseases = editDiseases.getText().toString().trim();
+        strNotes = editNotes.getText().toString().trim();
+
+        int tempIntAge;
+
+        boolean cancel = false;
+        View focusView = null;
+
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            storeData();
+        }
+    }
     public void storeData() {
 
         if (DependentDetailPersonalActivity.dependentModel != null) {
 
-            DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
-            DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
-            DependentDetailPersonalActivity.dependentModel.setStrNotes(strNotes);
+           // DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
+           //DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
+           //DependentDetailPersonalActivity.dependentModel.setStrNotes(strNotes);
             DependentDetailPersonalActivity.dependentModel.setStrImageUrl("");
 
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
@@ -159,39 +175,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             progressDialog.dismiss();
             utils.toast(2, 2, getString(R.string.dependent_data_lost));
         }
-    }
-    public void store(){
-
-        SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
-
-        Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
-        selection.putExtra("LIST_DEPENDANT", true);
-        DependentDetailPersonalActivity.strDependantName = "";
-        DependentDetailPersonalActivity.strImageName = "";
-        DependentDetailPersonalActivity.dependentModel = null;
-
-        //chk this
-        utils.retrieveDependants();
-
-        if (AddDependentFragment.adapter != null)
-            AddDependentFragment.adapter.notifyDataSetChanged();
-
-        utils.retrieveConfirmDependants();
-
-        if (ConfirmFragment.adapter != null)
-            ConfirmFragment.adapter.notifyDataSetChanged();
-        //
-
-        progressDialog.dismiss();
-        utils.toast(1, 1, getString(R.string.dpndnt_medical_info_saved));
-
-        startActivity(selection);
-        finish();
-
-    /*} else {
-        progressDialog.dismiss();
-        utils.toast(2, 2, getString(R.string.dependent_data_lost));
-    }*/
     }
 
     public void backToSelection() {

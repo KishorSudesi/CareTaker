@@ -87,7 +87,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             holder.textEmail.setText(tempValues.getStrEmail());
 
 
-            if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
+          /*  if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
 
                 holder.textDesc.setText(tempValues.getStrDesc());
                 holder.tableRow.setVisibility(View.VISIBLE);
@@ -95,7 +95,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             } else {
                 holder.tableRow.setVisibility(View.GONE);
 
-            }
+            }*/
 
             try {
 

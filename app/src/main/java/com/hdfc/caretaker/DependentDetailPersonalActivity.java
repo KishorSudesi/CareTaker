@@ -105,6 +105,8 @@ private String Relationship;
         editContactNo = (EditText) findViewById(R.id.editContactNo);
         editAddress = (EditText) findViewById(R.id.editAddress);
         editTextDate = (EditText)findViewById(R.id.editDOB);
+        Button buttonSkip = (Button)findViewById(R.id.buttonSkip);
+        buttonSkip.setVisibility(View.GONE);
       //  editRelation = (EditText) findViewById(R.id.editRelation);
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
