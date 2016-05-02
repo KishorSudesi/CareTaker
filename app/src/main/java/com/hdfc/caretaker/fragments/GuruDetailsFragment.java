@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -28,6 +29,7 @@ import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
+import com.hdfc.libs.Data;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.views.CustomViewPager;
@@ -135,7 +137,7 @@ public class GuruDetailsFragment extends Fragment {
         editCountryCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GetCountryZipCode();
+
             }
         });
        ///
@@ -176,7 +178,7 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
-        Locale[] locale = Locale.getAvailableLocales();
+        /*Locale[] locale = Locale.getAvailableLocales();
         ArrayList<String> countries = new ArrayList<String>();
         String country;
         for( Locale loc : locale ){
@@ -185,13 +187,23 @@ public class GuruDetailsFragment extends Fragment {
                 countries.add( country );
             }
         }
-        Collections.sort(countries, String.CASE_INSENSITIVE_ORDER);
+        Collections.sort(countries, String.CASE_INSENSITIVE_ORDER);*/
 
         Spinner citizenship = (Spinner)rootView.findViewById(R.id.input_citizenship);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, countries);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, Data.countryNames);
         citizenship.setAdapter(adapter);
+  citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        editCountryCode.setText(Data.countryAreaCodes[position]);
+    }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+});
 
         return rootView;
     }
@@ -490,21 +502,5 @@ public class GuruDetailsFragment extends Fragment {
         }
     }
 
-    public String GetCountryZipCode(){
-        String CountryID="";
-        String CountryZipCode="";
 
-        TelephonyManager manager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-        //getNetworkCountryIso
-        CountryID= manager.getSimCountryIso().toUpperCase();
-        String[] rl=this.getResources().getStringArray(R.array.CountryCodes);
-        for(int i=0;i<rl.length;i++){
-            String[] g=rl[i].split(",");
-            if(g[1].trim().equals(CountryID.trim())){
-                CountryZipCode=g[0];
-                break;
-            }
-        }
-        return CountryZipCode;
-    }
 }
