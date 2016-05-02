@@ -106,7 +106,7 @@ public class Utils {
     public final static SimpleDateFormat writeFormatActivityMonthYear =
             new SimpleDateFormat("MMM yyyy", Config.locale);
     public final static SimpleDateFormat writeFormatActivityYear =
-            new SimpleDateFormat("dd-MM-yyyy", Config.locale);//now commit
+            new SimpleDateFormat("dd-MM-yyyy", Config.locale);
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
     private static Handler threadHandler;
@@ -115,9 +115,10 @@ public class Utils {
     //
 
     private static Context _ctxt;
-    static {
+
+    /*static {
         System.loadLibrary("stringGen");
-    }
+    }*/
 
     public Utils(Context context) {
         _ctxt = context;
@@ -132,14 +133,10 @@ public class Utils {
         readFormat.setTimeZone(Config.timeZone); //TimeZone.getDefault()
     }
 
-    public static native String getString();
+    //public static native String getString();
 
     public static String getStringJni() {
-        try {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return getString();
+        return "KaEO19Fc";//getString(); //for temp fix on Native crash
     }
 
     public static double round(double value, int places) {
