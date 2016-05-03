@@ -33,7 +33,6 @@
                         android:layout_margin="@dimen/margin_general"
                         android:layout_weight="1"
                         android:padding="@dimen/padding_general"
-                        android:text="Gurunathan M."
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
                 </TableRow>
@@ -50,7 +49,6 @@
                         android:layout_margin="@dimen/margin_general"
                         android:layout_weight="1"
                         android:padding="@dimen/padding_general"
-                        android:text="Description"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
                 </TableRow>
@@ -91,7 +89,6 @@
                 android:id="@+id/textAddress"
                     android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                    android:text="E-26, Elizabeth Square, San Fransisco, USA"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
             </LinearLayout>
@@ -111,7 +108,6 @@
                     android:drawableLeft="@drawable/receiver_icon"
                     android:drawablePadding="10dp"
                 android:padding="@dimen/padding_general"
-                android:text="9876543210"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <View
@@ -129,8 +125,6 @@
                 android:drawableLeft="@drawable/mail_icon"
                 android:drawablePadding="10dp"
                 android:padding="8dp"
-                android:text="abc@xyz.com"
-
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             </LinearLayout>

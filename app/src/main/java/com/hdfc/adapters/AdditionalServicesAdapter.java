@@ -1,49 +1,103 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.models.ServiceModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by Admin on 2/23/2016.
  */
-public class AdditionalServicesAdapter extends BaseAdapter {
+public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
 
     private static LayoutInflater inflater = null;
     private Context _context;
-    private List<ServiceModel> data;
+    private List<String> _listDataHeader;
+    private HashMap<String, List<ServiceModel>> _listDataChild;
 
-    public AdditionalServicesAdapter(Context context, List<ServiceModel> r) {
+    public AdditionalServicesAdapter(Context context, HashMap<String, List<ServiceModel>>
+            listChildData, List<String> listDataHeader) {
         _context = context;
-        data = r;
+        this._listDataHeader = listDataHeader;
+        this._listDataChild = listChildData;
     }
 
     @Override
-    public int getCount() {
-        return data.size();
+    public boolean hasStableIds() {
+        return false;
     }
 
     @Override
-    public Object getItem(int position) {
-        return data.get(position);
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return true;
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
+    public int getChildrenCount(int groupPosition) {
+        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+                .size();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public Object getGroup(int groupPosition) {
+        return this._listDataHeader.get(groupPosition);
+    }
+
+    @Override
+    public int getGroupCount() {
+        return this._listDataHeader.size();
+    }
+
+    @Override
+    public long getGroupId(int groupPosition) {
+        return groupPosition;
+    }
+
+    @Override
+    public View getGroupView(int groupPosition, boolean isExpanded,
+                             View convertView, ViewGroup parent) {
+        String headerTitle = (String) getGroup(groupPosition);
+
+        if (convertView == null) {
+            LayoutInflater infalInflater = (LayoutInflater) this._context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = infalInflater.inflate(R.layout.list_service_group, null);
+        }
+
+        TextView lblListHeader = (TextView) convertView
+                .findViewById(R.id.lblListHeader);
+        lblListHeader.setTypeface(null, Typeface.BOLD);
+        lblListHeader.setText(headerTitle);
+
+        return convertView;
+    }
+
+    @Override
+    public Object getChild(int groupPosition, int childPosititon) {
+        return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return childPosition;
+    }
+
+    @Override
+    public View getChildView(int groupPosition, final int childPosition,
+                             boolean isLastChild, View convertView, ViewGroup parent) {
+
+        final ServiceModel serviceModel = (ServiceModel) getChild(groupPosition, childPosition);
+
         final ViewHolder viewHolder;
         if (inflater == null) {
             inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -59,17 +113,16 @@ public class AdditionalServicesAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (data.size() > 0) {
+        String strTemp = serviceModel.getStrServiceName() + "-" +
+                String.valueOf(serviceModel.getDoubleCost()) + "(" +
+                String.valueOf(serviceModel.getiUnit() + ")");
 
-            String strTemp = data.get(position).getStrServiceName() + "-" +
-                    String.valueOf(data.get(position).getDoubleCost()) + "(" +
-                    String.valueOf(data.get(position).getiUnit() + ")");
+        viewHolder.activityTitle.setText(strTemp);
+        viewHolder.activityDetails.setText(serviceModel.getStrServiceName());
 
-            viewHolder.activityTitle.setText(strTemp);
-            //viewHolder.activityDetails.setText(data.get(position).getStrServiceDesc());
+        viewHolder.checkBoxService.setTag(serviceModel);
 
-            viewHolder.checkBoxService.setTag(data.get(position));
-        }
+
         return convertView;
     }
 

@@ -4,11 +4,11 @@ import android.os.Build;
 
 import com.hdfc.caretaker.BuildConfig;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.CategoryServiceModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ProviderModel;
-import com.hdfc.models.ServiceModel;
 
 import org.json.JSONObject;
 
@@ -25,7 +25,7 @@ public class Config {
 
     public static final String collectionService = "service";
     public static final String collectionServiceHistory = "servicehistory";
-    public static final String collectionServiceDependent = "servicedependent";
+    public static final String collectionServiceCustomer = "servicecustomer";
     public static final String collectionProvider = "provider";
     public static final String collectionCustomer = "customer";
     public static final String collectionDependent = "dependent";
@@ -47,52 +47,7 @@ public class Config {
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public static final boolean isDebuggable = true;
     public static final boolean release = false;
-
-    public static Locale locale = Locale.ENGLISH;
-    public static TimeZone timeZone = TimeZone.getDefault();
-
-    public static int intNotificationScreen = 2;
-    public static int intServiceScreen = 7;
-    public static int intActivityScreen = 5;
-    public static int intListActivityScreen = 6;
-    public static int intAccountScreen = 3;
-    public static int intDashboardScreen = 1;
-    public static int intReportsScreen = 4;
-
-    public static int intScreenWidth = 0;
-    public static int intScreenHeight = 0;
-
-    //User Specific clear at logout or whenever needed
-    public static JSONObject jsonCustomer = null;
-
-    public static int intSelectedMenu = 0;
-    public static int intDependentsCount = 0;
-
-    public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
-
-    public static ArrayList<String> dependentNames = new ArrayList<>();
-
-    public static ArrayList<String> strDependentIds = new ArrayList<>();
-    public static ArrayList<String> strNotificationIds = new ArrayList<>();
-    public static ArrayList<String> strServcieIds = new ArrayList<>();
-
-    public static ArrayList<String> strProviderIds = new ArrayList<>();
-    public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
-
-    public static int intSelectedDependent = 0;
-    public static boolean boolIsLoggedIn = false;
-
-    public static CustomerModel customerModel = null;
-    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
-    public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
-
-    public static String strUserName = "";
-
-    public static ArrayList<FileModel> fileModels = new ArrayList<>();
-
-    //public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
-
-    public static final String[] countryNames = { "Afghanistan", "Albania",
+    public static final String[] countryNames = {"Afghanistan", "Albania",
             "Algeria", "Andorra", "Angola", "Antarctica", "Argentina",
             "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
             "Bahrain", "Bangladesh", "Belarus", "Belgium", "Belize", "Benin",
@@ -135,9 +90,8 @@ public class Config {
             "United Arab Emirates", "Uganda", "United Kingdom", "Ukraine",
             "Uruguay", "United States", "Uzbekistan", "Vanuatu",
             "Holy See (vatican City State)", "Venezuela", "Viet Nam",
-            "Wallis And Futuna", "Yemen", "Zambia", "Zimbabwe" };
-
-    public static final String[] countryAreaCodes = { "93", "355", "213",
+            "Wallis And Futuna", "Yemen", "Zambia", "Zimbabwe"};
+    public static final String[] countryAreaCodes = {"93", "355", "213",
             "376", "244", "672", "54", "374", "297", "61", "43", "994", "973",
             "880", "375", "32", "501", "229", "975", "591", "387", "267", "55",
             "673", "359", "226", "95", "257", "855", "237", "1", "238", "236",
@@ -158,9 +112,8 @@ public class Config {
             "82", "34", "94", "290", "508", "249", "597", "268", "46", "41",
             "963", "886", "992", "255", "66", "228", "690", "676", "216", "90",
             "993", "688", "971", "256", "44", "380", "598", "1", "998", "678",
-            "39", "58", "84", "681", "967", "260", "263" };
-
-    public static final String[] countryCodes = { "AF", "AL", "DZ", "AD", "AO",
+            "39", "58", "84", "681", "967", "260", "263"};
+    public static final String[] countryCodes = {"AF", "AL", "DZ", "AD", "AO",
             "AQ", "AR", "AM", "AW", "AU", "AT", "AZ", "BH", "BD", "BY", "BE",
             "BZ", "BJ", "BT", "BO", "BA", "BW", "BR", "BN", "BG", "BF", "MM",
             "BI", "KH", "CM", "CA", "CV", "CF", "TD", "CL", "CN", "CX", "CC",
@@ -182,4 +135,38 @@ public class Config {
             "ZM", "ZW",
 
     };
+    public static Locale locale = Locale.ENGLISH;
+    public static TimeZone timeZone = TimeZone.getDefault();
+    public static int intNotificationScreen = 2;
+    public static int intServiceScreen = 7;
+    public static int intActivityScreen = 5;
+    public static int intListActivityScreen = 6;
+    public static int intAccountScreen = 3;
+    public static int intDashboardScreen = 1;
+    public static int intReportsScreen = 4;
+    public static int intScreenWidth = 0;
+    public static int intScreenHeight = 0;
+
+    //public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+    //User Specific clear at logout or whenever needed
+    public static JSONObject jsonCustomer = null;
+    public static int intSelectedMenu = 0;
+    public static int intDependentsCount = 0;
+    public static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
+    public static ArrayList<String> dependentNames = new ArrayList<>();
+    public static ArrayList<String> strDependentIds = new ArrayList<>();
+    public static ArrayList<String> strNotificationIds = new ArrayList<>();
+    public static ArrayList<String> strServcieIds = new ArrayList<>();
+    public static ArrayList<String> strProviderIds = new ArrayList<>();
+    public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
+    public static int intSelectedDependent = 0;
+    public static boolean boolIsLoggedIn = false;
+    public static CustomerModel customerModel = null;
+    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
+    public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
+
+    //public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
+    public static String strUserName = "";
+    public static ArrayList<FileModel> fileModels = new ArrayList<>();
+    public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
 }

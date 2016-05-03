@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="@string/buy_services"
+        android:text="@string/get_services"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/colorPrimary" />
 
@@ -51,12 +51,13 @@
         android:text="@string/no_services"
         android:visibility="gone" />
 
-    <ListView
+    <ExpandableListView
         android:id="@+id/listViewAdditionalServices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonContinue"
-        android:layout_below="@+id/txt"/>
+        android:layout_below="@+id/txt"
+        android:layout_marginTop="15dp" />
 
     <Button
         android:id="@+id/buttonContinue"
@@ -72,4 +73,5 @@
         android:enabled="false"
         android:text="@string/buy_services"
         android:textAllCaps="false" />
+
 </RelativeLayout>

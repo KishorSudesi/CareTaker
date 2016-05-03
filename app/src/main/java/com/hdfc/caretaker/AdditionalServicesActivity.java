@@ -7,10 +7,9 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.AdditionalServicesAdapter;
@@ -18,6 +17,9 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.FieldModel;
+import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.ServiceModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -25,17 +27,20 @@ import com.shephertz.app42.paas.sdk.android.storage.Query;
 import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class AdditionalServicesActivity extends AppCompatActivity {
 
     public static List<ServiceModel> selectedServiceModels = new ArrayList<>();
     public static List<ServiceModel> selectedServiceHistoryModels = new ArrayList<>();
+
     public static AdditionalServicesAdapter additionalServicesAdapter;
     private static ProgressDialog progressDialog;
     private static StorageService storageService;
@@ -44,7 +49,11 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     private static boolean isUpdating;
     private Utils utils;
     private Button buttonContinue;
-    private ListView listView;
+
+    private List<String> listDataHeader = new ArrayList<>();
+    private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
+
+    private ExpandableListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +63,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         Config.intSelectedDependent = 0;
 
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
-        listView = (ListView) findViewById(R.id.listViewAdditionalServices);
+        listView = (ExpandableListView) findViewById(R.id.listViewAdditionalServices);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
 
         utils = new Utils(AdditionalServicesActivity.this);
@@ -110,16 +119,17 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             });
         }
 
-        additionalServicesAdapter = new AdditionalServicesAdapter(this, Config.serviceModels);
-
         if (listView != null) {
-            listView.setAdapter(additionalServicesAdapter);
             listView.setEmptyView(textViewEmpty);
+
+            additionalServicesAdapter = new AdditionalServicesAdapter(this, listDataChild,
+                    listDataHeader);
+            listView.setAdapter(additionalServicesAdapter);
         }
 
         if (listView != null) {
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -145,6 +155,39 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             buttonContinue.setEnabled(false);
 
                     } else resetUpdate();
+                }
+            });*/
+
+            //
+            listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View v,
+                                            int groupPosition, int childPosition, long id) {
+                    if (!isUpdating) {
+                        CheckBox checkBox = (CheckBox) v.findViewById(R.id.checkBoxService);
+                        ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
+
+                        if (checkBox.isChecked()) {
+                            selectedServiceModels.remove(serviceModel);
+                            checkBox.setChecked(false);
+                            checkBox.setButtonDrawable(getResources().
+                                    getDrawable(R.mipmap.check_off));
+                        } else {
+                            selectedServiceModels.add(serviceModel);
+                            checkBox.setChecked(true);
+                            checkBox.setButtonDrawable(getResources().
+                                    getDrawable(R.mipmap.check_on));
+                        }
+
+                        if (selectedServiceModels.size() > 0 || selectedServiceHistoryModels.size() > 0)
+                            buttonContinue.setEnabled(true);
+                        else
+                            buttonContinue.setEnabled(false);
+
+                    } else resetUpdate();
+
+                    return false;
                 }
             });
         }
@@ -274,10 +317,30 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     }
 
     public void refreshAdapter() {
-        if (progressDialog.isShowing())
-            progressDialog.dismiss();
-        additionalServicesAdapter.notifyDataSetChanged();
+
+        try {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+
+            if (listView != null) {
+
+                listDataHeader.clear();
+                listDataChild.clear();
+
+                for (CategoryServiceModel categoryServiceModel : Config.categoryServiceModels) {
+
+                    listDataHeader.add(categoryServiceModel.getStrCategoryName());
+                    listDataChild.put(categoryServiceModel.getStrCategoryName(),
+                            categoryServiceModel.getServiceModels());
+                }
+
+                additionalServicesAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     public void addServiceHistory(final JSONObject jsonObject) {
 
@@ -368,21 +431,16 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
                 JSONObject jsonObject = new JSONObject(strDocument);
 
-                jsonObjectServices.put("unit", serviceModel.getiUnit());
-
                 //todo check to update this
-                /*jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
-                jsonObjectServices.put("service_desc", serviceModel.getStrServiceDesc());
-                jsonObjectServices.put("service_features", serviceModel);*/
-
                 jsonObjectServices.put("updated_date", strDate);
                 jsonObjectServices.put("unit", jsonObject.getInt("unit") + serviceModel.getiUnit());
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             storageService.updateDocs(jsonObjectServices, strDocumentId,
-                    Config.collectionServiceDependent,
+                    Config.collectionServiceCustomer,
                     new App42CallBack() {
 
                         @Override
@@ -448,20 +506,74 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         try {
             jsonObjectHistory = new JSONObject();
 
-            jsonObjectHistory.put("dependent_id", Config.dependentModels.
-                    get(Config.intSelectedDependent).getStrDependentID());
-
-            jsonObjectHistory.put("unit", serviceModel.getiUnit());
-            jsonObjectHistory.put("service_name", serviceModel.getStrServiceName());
-            /*jsonObjectHistory.put("service_desc",
-                    serviceModel.getStrServiceDesc());
-            jsonObjectHistory.put("service_features", utils.stringToJsonArray(serviceModel.
-                    getStrFeatures()));*/
-            jsonObjectHistory.put("service_id", serviceModel.getStrServiceId());
-
             String strDate = utils.convertDateToString(new Date());
 
             jsonObjectHistory.put("purchased_date", strDate);
+            jsonObjectHistory.put("unit", serviceModel.getiUnit());
+            jsonObjectHistory.put("service_name", serviceModel.getStrServiceName());
+            jsonObjectHistory.put("service_no", serviceModel.getiServiceNo());
+            jsonObjectHistory.put("service_id", serviceModel.getStrServiceId());
+            jsonObjectHistory.put("purchased_date", strDate);
+            jsonObjectHistory.put("cost", serviceModel.getDoubleCost());
+            jsonObjectHistory.put("category_name", serviceModel.getStrCategoryName());
+            jsonObjectHistory.put("service_type", serviceModel.getStrServiceType());
+            jsonObjectHistory.put("customer_id", Config.customerModel.getStrCustomerID());
+
+            JSONArray jsonArrayMilestones = new JSONArray();
+
+            for (MilestoneModel milestoneModel : serviceModel.getMilestoneModels()) {
+
+                JSONObject jsonObjectMilestone = new JSONObject();
+
+                jsonObjectMilestone.put("id", milestoneModel.getiMilestoneId());
+                jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
+                jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
+                jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
+
+                JSONArray jsonArrayFields = new JSONArray();
+
+                for (FieldModel fieldModel : milestoneModel.getFieldModels()) {
+
+                    JSONObject jsonObjectField = new JSONObject();
+
+                    jsonObjectField.put("id", fieldModel.getiFieldID());
+
+                    if (fieldModel.isFieldView())
+                        jsonObjectField.put("hide", fieldModel.isFieldView());
+
+                    jsonObjectField.put("required", fieldModel.isFieldRequired());
+                    jsonObjectField.put("data", fieldModel.getStrFieldData());
+                    jsonObjectField.put("label", fieldModel.getStrFieldLabel());
+                    jsonObjectField.put("type", fieldModel.getStrFieldType());
+
+                    if (fieldModel.getStrFieldValues() != null && fieldModel.getStrFieldValues().length > 0)
+                        jsonObjectField.put("values", utils.stringToJsonArray(fieldModel.getStrFieldValues()));
+
+                    if (fieldModel.isChild()) {
+
+                        jsonObjectField.put("child", fieldModel.isChild());
+
+                        if (fieldModel.getStrChildType() != null && fieldModel.getStrChildType().length > 0)
+                            jsonObjectField.put("child_type", utils.stringToJsonArray(fieldModel.getStrChildType()));
+
+                        if (fieldModel.getStrChildValue() != null && fieldModel.getStrChildValue().length > 0)
+                            jsonObjectField.put("child_value", utils.stringToJsonArray(fieldModel.getStrChildValue()));
+
+                        if (fieldModel.getStrChildCondition() != null && fieldModel.getStrChildCondition().length > 0)
+                            jsonObjectField.put("child_condition", utils.stringToJsonArray(fieldModel.getStrChildCondition()));
+
+                        if (fieldModel.getiChildfieldID() != null && fieldModel.getiChildfieldID().length > 0)
+                            jsonObjectField.put("values", utils.intToJsonArray(fieldModel.getiChildfieldID()));
+                    }
+
+                    jsonArrayFields.put(jsonObjectField);
+
+                    jsonObjectMilestone.put("fields", jsonArrayFields);
+                }
+                jsonArrayMilestones.put(jsonObjectMilestone);
+            }
+
+            jsonObjectHistory.put("milestones", jsonArrayMilestones);
 
             addServiceHistory(jsonObjectHistory);
 
@@ -470,6 +582,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         }
         return jsonObjectHistory;
     }
+
 
     public void addServiceDependent(final ServiceModel serviceModel) {
 
@@ -484,13 +597,71 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 jsonObjectServices.put("unit", serviceModel.getiUnit());
                 jsonObjectServices.put("unit_consumed", 0);
                 jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
-                //jsonObjectServices.put("service_desc", serviceModel.getStrServiceDesc());
+                jsonObjectServices.put("service_no", serviceModel.getiServiceNo());
                 jsonObjectServices.put("service_id", serviceModel.getStrServiceId());
                 jsonObjectServices.put("updated_date", strDate);
-                /*jsonObjectServices.put("service_features", utils.stringToJsonArray(serviceModel.
-                        getStrFeatures()));*/
-                jsonObjectServices.put("dependent_id", Config.dependentModels.
-                        get(Config.intSelectedDependent).getStrDependentID());
+                jsonObjectServices.put("cost", serviceModel.getDoubleCost());
+                jsonObjectServices.put("category_name", serviceModel.getStrCategoryName());
+                jsonObjectServices.put("service_type", serviceModel.getStrServiceType());
+                jsonObjectServices.put("customer_id", Config.customerModel.getStrCustomerID());
+
+                //todo add milestones
+
+                JSONArray jsonArrayMilestones = new JSONArray();
+
+                for (MilestoneModel milestoneModel : serviceModel.getMilestoneModels()) {
+
+                    JSONObject jsonObjectMilestone = new JSONObject();
+
+                    jsonObjectMilestone.put("id", milestoneModel.getiMilestoneId());
+                    jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
+                    jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
+                    jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
+
+                    JSONArray jsonArrayFields = new JSONArray();
+
+                    for (FieldModel fieldModel : milestoneModel.getFieldModels()) {
+
+                        JSONObject jsonObjectField = new JSONObject();
+
+                        jsonObjectField.put("id", fieldModel.getiFieldID());
+
+                        if (fieldModel.isFieldView())
+                            jsonObjectField.put("hide", fieldModel.isFieldView());
+
+                        jsonObjectField.put("required", fieldModel.isFieldRequired());
+                        jsonObjectField.put("data", fieldModel.getStrFieldData());
+                        jsonObjectField.put("label", fieldModel.getStrFieldLabel());
+                        jsonObjectField.put("type", fieldModel.getStrFieldType());
+
+                        if (fieldModel.getStrFieldValues() != null && fieldModel.getStrFieldValues().length > 0)
+                            jsonObjectField.put("values", utils.stringToJsonArray(fieldModel.getStrFieldValues()));
+
+                        if (fieldModel.isChild()) {
+
+                            jsonObjectField.put("child", fieldModel.isChild());
+
+                            if (fieldModel.getStrChildType() != null && fieldModel.getStrChildType().length > 0)
+                                jsonObjectField.put("child_type", utils.stringToJsonArray(fieldModel.getStrChildType()));
+
+                            if (fieldModel.getStrChildValue() != null && fieldModel.getStrChildValue().length > 0)
+                                jsonObjectField.put("child_value", utils.stringToJsonArray(fieldModel.getStrChildValue()));
+
+                            if (fieldModel.getStrChildCondition() != null && fieldModel.getStrChildCondition().length > 0)
+                                jsonObjectField.put("child_condition", utils.stringToJsonArray(fieldModel.getStrChildCondition()));
+
+                            if (fieldModel.getiChildfieldID() != null && fieldModel.getiChildfieldID().length > 0)
+                                jsonObjectField.put("values", utils.intToJsonArray(fieldModel.getiChildfieldID()));
+                        }
+
+                        jsonArrayFields.put(jsonObjectField);
+
+                        jsonObjectMilestone.put("fields", jsonArrayFields);
+                    }
+                    jsonArrayMilestones.put(jsonObjectMilestone);
+                }
+
+                jsonObjectServices.put("milestones", jsonArrayMilestones);
 
             } catch (JSONException e1) {
                 e1.printStackTrace();
@@ -557,7 +728,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         public void onUpdateDocFailed(App42Exception ex) {
                         }
                     },
-                    Config.collectionServiceDependent);
+                    Config.collectionServiceCustomer);
 
         } else {
             if (progressDialog.isShowing())
@@ -573,15 +744,14 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             String key1 = "service_id";
             String value1 = serviceModel.getStrServiceId();
 
-            String key2 = "dependent_id";
-            String value2 = Config.dependentModels.get(Config.intSelectedDependent).
-                    getStrDependentID();
+            String key2 = "customer_id";
+            String value2 = Config.customerModel.getStrCustomerID();
 
             Query q1 = QueryBuilder.build(key1, value1, QueryBuilder.Operator.EQUALS);
             Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
             Query q3 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
 
-            storageService.findDocsByQueryOrderBy(Config.collectionServiceDependent, q3, 1, 0,
+            storageService.findDocsByQueryOrderBy(Config.collectionServiceCustomer, q3, 1, 0,
                     "updated_date", 1,
                     new App42CallBack() {
 

@@ -132,6 +132,7 @@ public class ConfirmFragment extends Fragment {
 
         Intent intent = new Intent(getActivity(), AccountSuccessActivity.class);
         startActivity(intent);
+        getActivity().finish();
     }
 
     public void uploadDependentImages() {

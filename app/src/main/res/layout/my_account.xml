@@ -150,7 +150,7 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="@string/buy_services"
+                    android:text="@string/get_services"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <LinearLayout

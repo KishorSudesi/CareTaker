@@ -38,8 +38,8 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.1'*/
     //compile 'com.google.code.gson:gson:2.4'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:support-v4:23.3.0'
     compile 'com.github.hotchemi:permissionsdispatcher:2.0.7'
     compile 'com.scottyab:aescrypt:0.0.1'
 

@@ -4,6 +4,7 @@
   "service_name": "Medical Test",
   "cost": 0.0,
   "category_name": "Health Care",
+  "service_type": "adhoc",
   "milestones": [
     {
       "name": "Appointment Confirmation",
