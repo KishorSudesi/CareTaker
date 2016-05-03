@@ -122,7 +122,7 @@ private String Relationship;
 
         Spinner citizenship = (Spinner)findViewById(R.id.editRelation);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, Relation);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.spinner_item, Relation);
         citizenship.setAdapter(adapter);
 
         citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -237,17 +237,17 @@ private String Relationship;
         boolean cancel = false;
         View focusView = null;
 
-        /*if (strImageName != null && TextUtils.isEmpty(strImageName) && dependentModel == null) {
+       /* if (strImageName != null && TextUtils.isEmpty(strImageName) && dependentModel == null) {
             utils.toast(2, 2, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
-        } else {*/
+        }*/
 
-           /* if (TextUtils.isEmpty(strRelation)) {
+            if (TextUtils.isEmpty(strRelation)) {
                 editRelation.setError(getString(R.string.error_field_required));
                 focusView = editRelation;
                 cancel = true;
-            }*/
+            }
 
             if (TextUtils.isEmpty(strAddress)) {
                 editAddress.setError(getString(R.string.error_field_required));

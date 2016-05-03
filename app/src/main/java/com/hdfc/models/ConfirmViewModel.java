@@ -7,6 +7,7 @@ public class ConfirmViewModel {
 
     private String strName = "";
     private String strDesc = "";
+    private String strRela = "";
     private String strImg = "";
     private String strAddress = "";
     private String strContacts = "";
@@ -60,4 +61,7 @@ public class ConfirmViewModel {
     public void setStrDesc(String strDesc) {
         this.strDesc = strDesc;
     }
+    public String getStrRela() {return strRela;}
+
+    public void setStrRela(String strRela) {this.strRela = strRela;}
 }

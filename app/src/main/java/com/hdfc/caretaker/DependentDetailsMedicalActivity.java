@@ -125,7 +125,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         strDiseases = editDiseases.getText().toString().trim();
         strNotes = editNotes.getText().toString().trim();
 
-        int tempIntAge;
+
 
         boolean cancel = false;
         View focusView = null;

@@ -54,6 +54,21 @@
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
                 </TableRow>
+                <TableRow
+                    android:id="@+id/tableRela"
+                    android:background="@drawable/bottom_border_grey">
+
+                    <TextView
+                        android:id="@+id/textRela"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_general"
+                        android:layout_weight="1"
+                        android:padding="@dimen/padding_general"
+                        android:text="Relationship"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
 
             </TableLayout>
 

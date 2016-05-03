@@ -1398,6 +1398,7 @@ public class Utils {
                         confirmViewModel.setStrContacts(dependentModel.getStrContacts());
                         confirmViewModel.setStrEmail(dependentModel.getStrEmail());
                         confirmViewModel.setStrImg(dependentModel.getStrImagePath());
+                        confirmViewModel.setStrRela(dependentModel.getStrRelation());
 
                         ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
                         count++;

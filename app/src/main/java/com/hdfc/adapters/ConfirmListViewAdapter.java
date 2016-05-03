@@ -60,10 +60,12 @@ public class ConfirmListViewAdapter extends BaseAdapter {
 
             holder.textName = (TextView) vi.findViewById(R.id.textName);
             holder.textDesc = (TextView) vi.findViewById(R.id.textDesc);
+            holder.textRela = (TextView) vi.findViewById(R.id.textRela);
             holder.textAddress = (TextView) vi.findViewById(R.id.textAddress);
             holder.textContact = (TextView) vi.findViewById(R.id.textContacNo);
             holder.textEmail = (TextView) vi.findViewById(R.id.textEmail);
             holder.tableRow = (TableRow) vi.findViewById(R.id.tableDesc);
+            holder.tableRela = (TableRow) vi.findViewById(R.id.tableRela);
 
             try {
                 holder.linearLayoutRoot = (LinearLayout) vi.findViewById(R.id.confirmLayoutRoot);
@@ -87,7 +89,7 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             holder.textEmail.setText(tempValues.getStrEmail());
 
 
-          /*  if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
+           /* if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
 
                 holder.textDesc.setText(tempValues.getStrDesc());
                 holder.tableRow.setVisibility(View.VISIBLE);
@@ -96,6 +98,16 @@ public class ConfirmListViewAdapter extends BaseAdapter {
                 holder.tableRow.setVisibility(View.GONE);
 
             }*/
+            if (!tempValues.getStrRela().equalsIgnoreCase("")) {
+
+                holder.textRela.setText(tempValues.getStrRela());
+                holder.tableRow.setVisibility(View.VISIBLE);
+
+            } else {
+                holder.tableRow.setVisibility(View.GONE);
+
+            }
+
 
             try {
 
@@ -138,11 +150,12 @@ public class ConfirmListViewAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView textName;
         public TextView textDesc;
+        public TextView textRela;
         public TextView textAddress;
         public TextView textContact;
         public TextView textEmail;
         public ImageView image;
-        public TableRow tableRow;
+        public TableRow tableRow,tableRela;
         public LinearLayout linearLayoutRoot;
     }
 

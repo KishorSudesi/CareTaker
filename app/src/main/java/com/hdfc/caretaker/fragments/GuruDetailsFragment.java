@@ -2,7 +2,6 @@ package com.hdfc.caretaker.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +27,6 @@ import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Data;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.views.CustomViewPager;
@@ -41,11 +38,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
 
 public class GuruDetailsFragment extends Fragment {
 
@@ -122,6 +116,7 @@ public class GuruDetailsFragment extends Fragment {
 
         mobile = (RadioButton)rootView.findViewById(R.id.radioMobile);
         landline =(RadioButton)rootView.findViewById(R.id.radioLandline);
+        landline.setChecked(true);
 
        mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
            @Override
@@ -134,12 +129,7 @@ public class GuruDetailsFragment extends Fragment {
            }
        });
 
-        editCountryCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
        ///
         /*TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         editContactNo.setText( telephonyManager.getNetworkCountryIso());*/
@@ -178,32 +168,22 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
-        /*Locale[] locale = Locale.getAvailableLocales();
-        ArrayList<String> countries = new ArrayList<String>();
-        String country;
-        for( Locale loc : locale ){
-            country = loc.getDisplayCountry();
-            if( country.length() > 0 && !countries.contains(country) ){
-                countries.add( country );
-            }
-        }
-        Collections.sort(countries, String.CASE_INSENSITIVE_ORDER);*/
 
         Spinner citizenship = (Spinner)rootView.findViewById(R.id.input_citizenship);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, Data.countryNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, Config.countryNames);
         citizenship.setAdapter(adapter);
-  citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        editCountryCode.setText(Data.countryAreaCodes[position]);
-    }
+         citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       @Override
+       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        editCountryCode.setText(Config.countryAreaCodes[position]);
+        }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+       @Override
+        public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-});
+        }
+     });
 
         return rootView;
     }
@@ -233,7 +213,7 @@ public class GuruDetailsFragment extends Fragment {
         editPass.setError(null);
         editConfirmPass.setError(null);
         editContactNo.setError(null);
-        //editAddress.setError(null);
+        editAddress.setError(null);
 
         strName = editName.getText().toString().trim();
         strEmail = editEmail.getText().toString().trim();
@@ -245,14 +225,14 @@ public class GuruDetailsFragment extends Fragment {
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strCustomerImgName)
-                && Config.customerModel != null
-                && Config.customerModel.getStrName().equalsIgnoreCase("")) {
+        if (TextUtils.isEmpty(strCustomerImgName) && Config.customerModel != null
+                && Config.customerModel.getStrImgUrl().equalsIgnoreCase("")) {
             utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
 
-        } else {
+        }
+
 
             if (TextUtils.isEmpty(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_field_required));
@@ -264,12 +244,11 @@ public class GuruDetailsFragment extends Fragment {
                 cancel = true;
             }
 
-        /*if (TextUtils.isEmpty(strAddress)) {
+        if (TextUtils.isEmpty(strAddress)) {
             editAddress.setError(getString(R.string.error_field_required));
             focusView = editAddress;
             cancel = true;
         }
-*/
             if (!TextUtils.isEmpty(strPass) && utils.isPasswordValid(strPass)
                     && !TextUtils.isEmpty(strConfirmPass) && utils.isPasswordValid(strConfirmPass)) {
 
@@ -307,7 +286,7 @@ public class GuruDetailsFragment extends Fragment {
                 focusView = editName;
                 cancel = true;
             }
-        }
+
 
         if (cancel) {
             focusView.requestFocus();
