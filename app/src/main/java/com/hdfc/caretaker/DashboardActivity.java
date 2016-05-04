@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.hdfc.app42service.App42GCMController;
+import com.hdfc.app42service.App42GCMService;
 import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.AddRatingCompletedActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
@@ -19,11 +21,12 @@ import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
+import com.shephertz.app42.paas.sdk.android.App42API;
 
 /**
  * Created by user on 08-01-2016.
  */
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements App42GCMController.App42GCMListener {
 
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
@@ -158,6 +161,60 @@ public class DashboardActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        App42API.setLoggedInUser(Config.customerModel.getStrEmail());
+    }
+
+    @Override
+    public void onError(String var1) {
+
+    }
+
+    @Override
+    public void onGCMRegistrationId(String gcmRegId) {
+        //Log.e("Registr" , gcmRegId);
+        App42GCMController.storeRegistrationId(this, gcmRegId);
+        if (!App42GCMController.isApp42Registerd(DashboardActivity.this))
+            App42GCMController.registerOnApp42(App42API.getLoggedInUser(), gcmRegId, this);
+    }
+
+    @Override
+    public void onApp42Response(String var1) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (App42GCMController.isPlayServiceAvailable(this)) {
+            App42GCMController.getRegistrationId(DashboardActivity.this,
+                    Config.strAppId, this);//prod. - 272065924531
+        } else {
+            /*Log.i("App42PushNotification",
+					"No valid Google Play Services APK found.");*/
+        }
+    }
+
+    @Override
+    public void onRegisterApp42(String var1) {
+        App42GCMController.storeApp42Success(DashboardActivity.this);
+    }
+
+    public void unregisterGcm() {
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    App42GCMService.unRegisterGcm();
+                } catch (Exception bug) {
+                    bug.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 
     public void goToNotifications() {

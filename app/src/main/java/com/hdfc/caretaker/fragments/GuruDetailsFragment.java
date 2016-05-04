@@ -57,6 +57,7 @@ public class GuruDetailsFragment extends Fragment {
     private Utils utils;
     private String _strDate;
     private RadioButton mobile,landline;
+    private Spinner citizenship;
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -118,16 +119,16 @@ public class GuruDetailsFragment extends Fragment {
         landline =(RadioButton)rootView.findViewById(R.id.radioLandline);
         landline.setChecked(true);
 
-       mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-           @Override
-           public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-               if (mobile.isChecked()){
-                   editAreaCode.setVisibility(View.GONE);
-               }else {
-                   editAreaCode.setVisibility(View.VISIBLE);
-               }
-           }
-       });
+        mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mobile.isChecked()) {
+                    editAreaCode.setVisibility(View.GONE);
+                } else {
+                    editAreaCode.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
 
        ///
@@ -145,6 +146,7 @@ public class GuruDetailsFragment extends Fragment {
                         .show();
             }
         });
+
         Button buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
         editAddress = (EditText) rootView.findViewById(R.id.editAddress);
 
@@ -169,21 +171,22 @@ public class GuruDetailsFragment extends Fragment {
         });
 
 
-        Spinner citizenship = (Spinner)rootView.findViewById(R.id.input_citizenship);
+        citizenship = (Spinner) rootView.findViewById(R.id.input_citizenship);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, Config.countryNames);
         citizenship.setAdapter(adapter);
-         citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-       @Override
-       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        editCountryCode.setText(Config.countryAreaCodes[position]);
-        }
+        citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-       @Override
-        public void onNothingSelected(AdapterView<?> parent) {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editCountryCode.setText(Config.countryAreaCodes[position]);
+            }
 
-        }
-     });
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         return rootView;
     }
@@ -214,25 +217,38 @@ public class GuruDetailsFragment extends Fragment {
         editConfirmPass.setError(null);
         editContactNo.setError(null);
         editAddress.setError(null);
+        editTextDate.setError(null);
+        //citizenship.setError(null);
+        editAreaCode.setError(null);
+        editCountryCode.setError(null);
 
         strName = editName.getText().toString().trim();
         strEmail = editEmail.getText().toString().trim();
         String strPass = editPass.getText().toString().trim();
         strConfirmPass = editConfirmPass.getText().toString().trim();
         strContactNo = editContactNo.getText().toString().trim();
+
+        String strCountryCode, strAreaCode;
+
+        if (editAreaCode.getVisibility() == View.VISIBLE) {
+            strAreaCode = editAreaCode.getText().toString().trim();
+        }
+
         strAddress = editAddress.getText().toString().trim();
+        String strDob = editTextDate.getText().toString().trim();
+        String strCountry = citizenship.getSelectedItem().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strCustomerImgName) && Config.customerModel != null
-                && Config.customerModel.getStrImgUrl().equalsIgnoreCase("")) {
+        if (TextUtils.isEmpty(strCustomerImgName)
+                && Config.customerModel != null
+                && Config.customerModel.getStrName().equalsIgnoreCase("")) {
             utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
 
-        }
-
+        } else {
 
             if (TextUtils.isEmpty(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_field_required));
@@ -244,11 +260,36 @@ public class GuruDetailsFragment extends Fragment {
                 cancel = true;
             }
 
-        if (TextUtils.isEmpty(strAddress)) {
-            editAddress.setError(getString(R.string.error_field_required));
-            focusView = editAddress;
-            cancel = true;
-        }
+            if (TextUtils.isEmpty(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_field_required));
+                focusView = editContactNo;
+                cancel = true;
+            } else if (!utils.validCellPhone(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_invalid_contact_no));
+                focusView = editContactNo;
+                cancel = true;
+            }
+
+            if (TextUtils.isEmpty(strAddress)) {
+                editAddress.setError(getString(R.string.error_field_required));
+                focusView = editAddress;
+                cancel = true;
+            }
+
+            //todo contact no
+            if (TextUtils.isEmpty(strCountry) || strCountry.equalsIgnoreCase("Select Country")) {
+                //editAddress.setError(getString(R.string.error_field_required));
+                focusView = citizenship;
+                cancel = true;
+                utils.toast(2, 2, getString(R.string.select_country));
+            }
+
+            if (TextUtils.isEmpty(strAddress)) {
+                editAddress.setError(getString(R.string.error_field_required));
+                focusView = editAddress;
+                cancel = true;
+            }
+
             if (!TextUtils.isEmpty(strPass) && utils.isPasswordValid(strPass)
                     && !TextUtils.isEmpty(strConfirmPass) && utils.isPasswordValid(strConfirmPass)) {
 
@@ -271,6 +312,12 @@ public class GuruDetailsFragment extends Fragment {
                 cancel = true;
             }
 
+            if (TextUtils.isEmpty(strDob)) {
+                editTextDate.setError(getString(R.string.error_field_required));
+                focusView = editTextDate;
+                cancel = true;
+            }
+
             if (TextUtils.isEmpty(strEmail)) {
                 editEmail.setError(getString(R.string.error_field_required));
                 focusView = editEmail;
@@ -286,7 +333,7 @@ public class GuruDetailsFragment extends Fragment {
                 focusView = editName;
                 cancel = true;
             }
-
+        }
 
         if (cancel) {
             focusView.requestFocus();
@@ -480,6 +527,4 @@ public class GuruDetailsFragment extends Fragment {
             }
         }
     }
-
-
 }

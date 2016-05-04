@@ -12,6 +12,11 @@ public class CustomerModel {
     private String strAddress = "";
     private String strContacts = "";
     private String strEmail = "";
+    private String strDob = "";
+    private String strCountryCode = "";
+    private String strCountryIsdCode = "";
+    private String strCountryAreaCode = "";
+    private String strLandLine = "";
 
     private String strCustomerID;
 
@@ -29,6 +34,46 @@ public class CustomerModel {
         this.strEmail = strEmail;
         this.strCustomerID = strCustomerID;
         this.strImgPath = strImgPath;
+    }
+
+    public String getStrDob() {
+        return strDob;
+    }
+
+    public void setStrDob(String strDob) {
+        this.strDob = strDob;
+    }
+
+    public String getStrCountryCode() {
+        return strCountryCode;
+    }
+
+    public void setStrCountryCode(String strCountryCode) {
+        this.strCountryCode = strCountryCode;
+    }
+
+    public String getStrCountryIsdCode() {
+        return strCountryIsdCode;
+    }
+
+    public void setStrCountryIsdCode(String strCountryIsdCode) {
+        this.strCountryIsdCode = strCountryIsdCode;
+    }
+
+    public String getStrCountryAreaCode() {
+        return strCountryAreaCode;
+    }
+
+    public void setStrCountryAreaCode(String strCountryAreaCode) {
+        this.strCountryAreaCode = strCountryAreaCode;
+    }
+
+    public String getStrLandLine() {
+        return strLandLine;
+    }
+
+    public void setStrLandLine(String strLandLine) {
+        this.strLandLine = strLandLine;
     }
 
     public String getStrName() {

@@ -13,6 +13,7 @@
   // added newly
   "customer_mobile": "9874563210",
   // added newly
-  "customer_landline": "12345698720"
+  "customer_landline": "12345698720",
+  "customer_area_code": "123456"
   // added newly
 }

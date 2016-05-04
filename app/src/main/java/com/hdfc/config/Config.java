@@ -36,6 +36,8 @@ public class Config {
     public static final int iAppVersion = BuildConfig.VERSION_CODE;
     public static final String strOs = "android";
 
+    public static final String strAppId = "910502819263";
+
     public static final String string = Utils.getStringJni();
     public static final int START_CAMERA_REQUEST_CODE = 1;
     public static final int START_GALLERY_REQUEST_CODE = 2;
@@ -47,7 +49,8 @@ public class Config {
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public static final boolean isDebuggable = true;
     public static final boolean release = false;
-    public static final String[] countryNames = {"Afghanistan", "Albania",
+
+    public static final String[] countryNames = {"Select Country", "Afghanistan", "Albania",
             "Algeria", "Andorra", "Angola", "Antarctica", "Argentina",
             "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
             "Bahrain", "Bangladesh", "Belarus", "Belgium", "Belize", "Benin",
@@ -91,7 +94,8 @@ public class Config {
             "Uruguay", "United States", "Uzbekistan", "Vanuatu",
             "Holy See (vatican City State)", "Venezuela", "Viet Nam",
             "Wallis And Futuna", "Yemen", "Zambia", "Zimbabwe"};
-    public static final String[] countryAreaCodes = {"93", "355", "213",
+
+    public static final String[] countryAreaCodes = {"0", "93", "355", "213",
             "376", "244", "672", "54", "374", "297", "61", "43", "994", "973",
             "880", "375", "32", "501", "229", "975", "591", "387", "267", "55",
             "673", "359", "226", "95", "257", "855", "237", "1", "238", "236",
@@ -113,7 +117,8 @@ public class Config {
             "963", "886", "992", "255", "66", "228", "690", "676", "216", "90",
             "993", "688", "971", "256", "44", "380", "598", "1", "998", "678",
             "39", "58", "84", "681", "967", "260", "263"};
-    public static final String[] countryCodes = {"AF", "AL", "DZ", "AD", "AO",
+
+    public static final String[] countryCodes = {"", "AF", "AL", "DZ", "AD", "AO",
             "AQ", "AR", "AM", "AW", "AU", "AT", "AZ", "BH", "BD", "BY", "BE",
             "BZ", "BJ", "BT", "BO", "BA", "BW", "BR", "BN", "BG", "BF", "MM",
             "BI", "KH", "CM", "CA", "CV", "CF", "TD", "CL", "CN", "CX", "CC",
@@ -135,6 +140,7 @@ public class Config {
             "ZM", "ZW",
 
     };
+
     public static Locale locale = Locale.ENGLISH;
     public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;

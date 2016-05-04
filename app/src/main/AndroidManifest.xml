@@ -8,6 +8,17 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="com.hdfc.caretaker.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
+
+    <permission
+        android:name="com.hdfc.caretaker.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -23,6 +34,9 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
@@ -60,9 +74,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
-
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
@@ -128,6 +139,25 @@
                 android:name="android.app.default_searchable"
                 android:value=".DependantDetailPersonalActivity" />
         </activity>
+
+        <service android:name="com.hdfc.app42service.App42GCMService"></service>
+
+        <receiver
+            android:name="com.hdfc.app42service.App42GCMReceiver"
+            android:enabled="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.hdfc.caretaker" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.service.notificationModel.NotificationListenerService" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
