@@ -110,13 +110,14 @@ public class Utils {
     public final static SimpleDateFormat writeFormatActivityMonthYear =
             new SimpleDateFormat("MMM yyyy", Config.locale);
     public final static SimpleDateFormat writeFormatActivityYear =
-            new SimpleDateFormat("MM/dd/yyyy", Config.locale);
+            new SimpleDateFormat("dd/MM/yyyy", Config.locale);
 
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
     private static Handler threadHandler;
     private static int iActivityCount = 0;
     private static ProgressDialog progressDialog;
+    Date dat;
     //
 
     private static Context _ctxt;
@@ -127,7 +128,7 @@ public class Utils {
 
     public Utils(Context context) {
         _ctxt = context;
-
+        dat = new Date();
         WindowManager wm = (WindowManager) _ctxt.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -757,11 +758,12 @@ public class Utils {
      *
      * @return ageS String The user's age in years based on the supplied DoB.
      */
-    public String getAge(int year, int month, int day) {
-        Calendar dob = Calendar.getInstance();
-        Calendar today = Calendar.getInstance();
+    public String getAge( Date date) {
 
-        dob.set(year, month, day);
+        Calendar today = Calendar.getInstance();
+        Calendar dob = Calendar.getInstance();
+
+        dob.setTime( date);
 
         int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 

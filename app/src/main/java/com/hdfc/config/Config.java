@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -178,6 +179,7 @@ public class Config {
 
     //public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
     public static String strUserName = "";
+    public static Date dat= null;
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
     public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
 }

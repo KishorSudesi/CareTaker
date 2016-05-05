@@ -15,7 +15,10 @@ import android.widget.EditText;
 
 import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
+
+import java.util.Date;
 
 public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
@@ -24,6 +27,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     private String strAge, strDiseases, strNotes;
     private ProgressDialog progressDialog;
     private Button buttonContinue;
+   Date dat;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -255,8 +259,10 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        strAge = utils.getAge(DependentDetailPersonalActivity.iYear, DependentDetailPersonalActivity.iMonth, DependentDetailPersonalActivity.iDate);
+       // strAge = utils.getAge(DependentDetailPersonalActivity.iDate, DependentDetailPersonalActivity.iMonth,DependentDetailPersonalActivity.iYear);
 
+
+       strAge = utils.getAge(Config.dat);
         editAge.setText(strAge);
 
         DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));

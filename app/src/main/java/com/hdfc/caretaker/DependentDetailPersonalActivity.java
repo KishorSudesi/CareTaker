@@ -84,6 +84,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
             String strDate = Utils.writeFormatActivityYear.format(date);
             //String _strDate = Utils.readFormat.format(date);
+            Config.dat = date;
             editTextDate.setText(strDate);
 
             //todo check year and date
