@@ -3,22 +3,32 @@ package com.hdfc.caretaker;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.hdfc.adapters.AddNewActivityAdapter;
+import com.hdfc.adapters.ActivityServicesAdapter;
+import com.hdfc.app42service.StorageService;
+import com.hdfc.config.Config;
+import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.FieldModel;
+import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.ServiceModel;
+import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AddNewActivityActivity extends AppCompatActivity {
@@ -26,10 +36,18 @@ public class AddNewActivityActivity extends AppCompatActivity {
     public static List<ServiceModel> dependentServiceModels = new ArrayList<>();
     public static List<ServiceModel> selectedDependentServiceModels = new ArrayList<>();
     private static ProgressDialog progressDialog;
-    private static AddNewActivityAdapter addNewActivityAdapter;
     private static Button buttonContinue;
-    private static Handler threadHandler;
+    private static ArrayList<String> strServcieIds = new ArrayList<>();
+    private static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
+    private static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
     private Utils utils;
+
+    private List<String> listDataHeader = new ArrayList<>();
+    private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
+
+    private ExpandableListView listView;
+    private ActivityServicesAdapter activityServicesAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +55,50 @@ public class AddNewActivityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new);
 
         utils = new Utils(AddNewActivityActivity.this);
-        ListView listView = (ListView) findViewById(R.id.listView1);
+        listView = (ExpandableListView) findViewById(R.id.listView1);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
         ImageButton imageButtonBuyServices = (ImageButton) findViewById(R.id.imageButtonBuyServices);
 
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
 
-        addNewActivityAdapter = new AddNewActivityAdapter(this, dependentServiceModels);
+        strServcieIds.clear();
+        categoryServiceModels.clear();
+        strServiceCategoryNames.clear();
 
         if (listView != null) {
-            listView.setAdapter(addNewActivityAdapter);
+            listView.setEmptyView(textViewEmpty);
+
+            activityServicesAdapter = new ActivityServicesAdapter(this, listDataChild,
+                    listDataHeader);
+            listView.setAdapter(activityServicesAdapter);
+
+            listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View v,
+                                            int groupPosition, int childPosition, long id) {
+
+                    RadioButton checkBox = (RadioButton) v.findViewById(R.id.checkBoxService);
+                    ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
+
+                    if (checkBox.isChecked()) {
+                        checkBox.setChecked(false);
+                        checkBox.setButtonDrawable(getResources().
+                                getDrawable(R.mipmap.check_off));
+                    } else {
+                        checkBox.setChecked(true);
+                        checkBox.setButtonDrawable(getResources().
+                                getDrawable(R.mipmap.check_on));
+                    }
+
+                    return false;
+                }
+            });
+        }
+
+        /*if (listView != null) {
+            listView.setAdapter(activityServicesAdapter);
             listView.setEmptyView(textViewEmpty);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,7 +131,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                 }
             });
-        }
+        }*/
 
         Button cancelButton = (Button) findViewById(R.id.buttonCancel);
         if (cancelButton != null) {
@@ -107,6 +158,42 @@ public class AddNewActivityActivity extends AppCompatActivity {
         Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
         startActivity(newIntent);
         finish();
+    }
+
+    public void refreshAdapter() {
+
+        Utils.log(" 4 ", " IN ");
+
+        try {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+
+            Utils.log(" 5 ", " IN ");
+
+            if (listView != null) {
+
+                Utils.log(" 6 ", " IN ");
+
+                listDataHeader.clear();
+                listDataChild.clear();
+
+                Utils.log(String.valueOf(categoryServiceModels.size()), " IN 4");
+
+                for (CategoryServiceModel categoryServiceModel : categoryServiceModels) {
+
+                    Utils.log(categoryServiceModel.getStrCategoryName(), " CAT ");
+                    Utils.log(String.valueOf(categoryServiceModel.getServiceModels().size()), " CAT S");
+
+                    listDataHeader.add(categoryServiceModel.getStrCategoryName());
+                    listDataChild.put(categoryServiceModel.getStrCategoryName(),
+                            categoryServiceModel.getServiceModels());
+                }
+
+                activityServicesAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addNewActivityStep2(View v) {
@@ -140,70 +227,204 @@ public class AddNewActivityActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        threadHandler = new ThreadHandler();
-        Thread backgroundThread = new BackgroundThread();
-        backgroundThread.start();
-    }
+        StorageService storageService = new StorageService(AddNewActivityActivity.this);
 
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            if (dependentServiceModels.size() > 0)
-                buttonContinue.setVisibility(View.VISIBLE);
+        storageService.findDocsByKeyValue(Config.collectionServiceCustomer, "customer_id",
+                Config.customerModel.getStrCustomerID(),
+                new AsyncApp42ServiceApi.App42StorageServiceListener() {
 
-            addNewActivityAdapter.notifyDataSetChanged();
+                    @Override
+                    public void onDocumentInserted(Storage response) {
+                    }
 
-            progressDialog.dismiss();
-        }
-    }
+                    @Override
+                    public void onUpdateDocSuccess(Storage response) {
+                    }
 
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
+                    @Override
+                    public void onFindDocSuccess(Storage storage) {
 
-            try {
+                        try {
+                            if (storage != null) {
 
-                dependentServiceModels.clear();
-                selectedDependentServiceModels.clear();
+                                Utils.log(storage.toString(), "RESP");
 
-               /* if (Config.jsonObject.has("customer_name")) {
+                                ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
 
-                    if (Config.jsonObject.has("dependents")) {
+                                for (int i = 0; i < jsonDocList.size(); i++) {
 
-                        JSONArray jsonArray = Config.jsonObject.getJSONArray("dependents");
+                                    Storage.JSONDocument jsonDocument = jsonDocList.get(i);
+                                    String strDocumentId = jsonDocument.getDocId();
+                                    String strServices = jsonDocument.getJsonDoc();
 
-                        JSONObject jsonObject = jsonArray.getJSONObject(Config.intSelectedDependent);
+                                    try {
+                                        JSONObject jsonObjectServcies = new JSONObject(strServices);
+                                        if (jsonObjectServcies.has("unit"))
+                                            createActivityServiceModel(strDocumentId,
+                                                    jsonObjectServcies);
 
-                        if (jsonObject.has("services")) {
-
-                            JSONArray jsonArrayNotifications = jsonObject.getJSONArray("services");
-
-                            for (int j = 0; j < jsonArrayNotifications.length(); j++) {
-
-                                JSONObject jsonObjectNotification = jsonArrayNotifications.getJSONObject(j);
-
-                                if(jsonObjectNotification.has("service_name")) {
-
-                                   *//* ServiceModel serviceModel = new ServiceModel(
-                                            jsonObjectNotification.getString("service_name"),
-                                            jsonObjectNotification.getInt("service_id"),
-                                            jsonObjectNotification.getInt("unit"),
-                                            jsonObjectNotification.getInt("unit_consumed"),
-                                            jsonObjectNotification.getJSONArray("service_features"),
-                                            jsonObjectNotification.getString("service_desc")
-                                    );
-
-                                    dependentServiceModels.add(serviceModel);*//*
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
+
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
+
+                            refreshAdapter();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-                }*/
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                    @Override
+                    public void onInsertionFailed(App42Exception ex) {
+                    }
+
+                    @Override
+                    public void onFindDocFailed(App42Exception ex) {
+                        try {
+                            refreshAdapter();
+                            if (ex != null) {
+                                JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                String strMess = jsonObjectError.getString("details");
+
+                                utils.toast(2, 2, strMess);
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onUpdateDocFailed(App42Exception ex) {
+                    }
+                });
+
+    }
+
+    public void createActivityServiceModel(String strDocumentId, JSONObject jsonObject) {
+
+        try {
+            ServiceModel serviceModel = new ServiceModel();
+
+            serviceModel.setDoubleCost(jsonObject.getDouble("cost"));
+            serviceModel.setStrServiceName(jsonObject.getString("service_name"));
+            serviceModel.setiServiceNo(jsonObject.getInt("service_no"));
+            serviceModel.setStrCategoryName(jsonObject.getString("category_name"));
+            serviceModel.setiUnit(jsonObject.getInt("unit"));
+            serviceModel.setiUnitUsed(jsonObject.getInt("unit_consumed"));
+            serviceModel.setStrServiceType(jsonObject.getString("service_type"));
+
+            if (jsonObject.has("milestones")) {
+
+                JSONArray jsonArrayMilestones = jsonObject.
+                        getJSONArray("milestones");
+
+                for (int k = 0; k < jsonArrayMilestones.length(); k++) {
+
+                    JSONObject jsonObjectMilestone =
+                            jsonArrayMilestones.getJSONObject(k);
+
+                    MilestoneModel milestoneModel = new MilestoneModel();
+
+                    milestoneModel.setiMilestoneId(jsonObjectMilestone.getInt("id"));
+                    milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
+                    milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
+                    milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
+
+                    //
+                    if (jsonObjectMilestone.has("fields")) {
+
+                        JSONArray jsonArrayFields = jsonObjectMilestone.
+                                getJSONArray("fields");
+
+                        for (int l = 0; l < jsonArrayFields.length(); l++) {
+
+                            JSONObject jsonObjectField =
+                                    jsonArrayFields.getJSONObject(l);
+
+                            FieldModel fieldModel = new FieldModel();
+
+                            fieldModel.setiFieldID(jsonObjectField.getInt("id"));
+
+                            if (jsonObjectField.has("hide"))
+                                fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+
+                            fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
+                            fieldModel.setStrFieldData(jsonObjectField.getString("data"));
+                            fieldModel.setStrFieldLabel(jsonObjectField.getString("label"));
+                            fieldModel.setStrFieldType(jsonObjectField.getString("type"));
+
+                            if (jsonObjectField.has("values")) {
+
+                                fieldModel.setStrFieldValues(utils.jsonToStringArray(jsonObjectField.
+                                        getJSONArray("values")));
+                            }
+
+                            if (jsonObjectField.has("child")) {
+
+                                fieldModel.setChild(jsonObjectField.getBoolean("child"));
+
+                                if (jsonObjectField.has("child_type"))
+                                    fieldModel.setStrChildType(utils.jsonToStringArray(jsonObjectField.
+                                            getJSONArray("child_type")));
+
+                                if (jsonObjectField.has("child_value"))
+                                    fieldModel.setStrChildValue(utils.jsonToStringArray(jsonObjectField.
+                                            getJSONArray("child_value")));
+
+                                if (jsonObjectField.has("child_condition"))
+                                    fieldModel.setStrChildCondition(utils.jsonToStringArray(jsonObjectField.
+                                            getJSONArray("child_condition")));
+
+                                if (jsonObjectField.has("child_field"))
+                                    fieldModel.setiChildfieldID(utils.jsonToIntArray(jsonObjectField.
+                                            getJSONArray("child_field")));
+                            }
+
+                            milestoneModel.setFieldModel(fieldModel);
+                        }
+                    }
+
+                    serviceModel.setMilestoneModels(milestoneModel);
+                }
             }
-            threadHandler.sendEmptyMessage(0);
+
+            serviceModel.setStrServiceId(strDocumentId);
+
+            if (!strServcieIds.contains(strDocumentId)) {
+                strServcieIds.add(strDocumentId);
+
+                Utils.log(" 1 ", " IN ");
+
+                if (!strServiceCategoryNames.contains(jsonObject.getString("category_name"))) {
+                    strServiceCategoryNames.add(jsonObject.getString("category_name"));
+
+                    Utils.log(" 2 ", " IN ");
+
+                    CategoryServiceModel categoryServiceModel = new CategoryServiceModel();
+                    categoryServiceModel.setStrCategoryName(jsonObject.getString("category_name"));
+                    categoryServiceModel.setServiceModels(serviceModel);
+
+                    categoryServiceModels.add(categoryServiceModel);
+                } else {
+                    int iPosition = strServiceCategoryNames.indexOf(jsonObject.getString("category_name"));
+
+                    Utils.log(" 3 ", " IN ");
+                    categoryServiceModels.get(iPosition).setServiceModels(serviceModel);
+                }
+                //
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
+
 }

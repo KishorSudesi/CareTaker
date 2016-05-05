@@ -67,19 +67,35 @@
                     android:paddingLeft="10dp" />
 
                 <EditText
-                    android:id="@+id/editTextCity"
+                    android:id="@+id/editDob"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
                     android:background="@drawable/edit_text"
-                    android:drawableLeft="@drawable/address_icon"
-                    android:drawablePadding="15dip"
-                    android:drawableStart="@drawable/address_icon"
-                    android:hint="@string/address"
-                    android:paddingLeft="10dp" />
+                    android:drawableLeft="@drawable/activity_icon_32"
+                    android:drawablePadding="10dp"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/DOB"
+                    android:inputType="textPersonName"
+                    android:padding="10dp" />
+                <!--
+                                <EditText
+                                    android:id="@+id/editTextCity"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="50dp"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="10dp"
+                                    android:layout_marginTop="25dp"
+                                    android:background="@drawable/edit_text"
+                                    android:drawableLeft="@drawable/address_icon"
+                                    android:drawablePadding="15dip"
+                                    android:drawableStart="@drawable/address_icon"
+                                    android:hint="@string/address"
+                                    android:paddingLeft="10dp" />-->
 
                 <EditText
                     android:id="@+id/editOldPassword"
@@ -142,6 +158,103 @@
                     android:inputType="number"
                     android:maxLength="10"
                     android:paddingLeft="10dp" />
+
+                <Spinner
+                    android:id="@+id/input_citizenship"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/edit_text"
+                    android:drawableLeft="@drawable/address_icon"
+                    android:drawablePadding="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radioMobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/mobile" />
+
+                    <RadioButton
+                        android:id="@+id/radioLandline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/landline" />
+
+                </RadioGroup>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:weightSum="2">
+
+                    <EditText
+                        android:id="@+id/editCountryCode"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:layout_marginTop="2dp"
+                        android:layout_weight="0.4"
+                        android:background="@drawable/edit_text"
+                        android:drawablePadding="10dp"
+                        android:enabled="false"
+                        android:hint="@string/country_code"
+                        android:inputType="number"
+                        android:padding="10dp" />
+
+                    <EditText
+                        android:id="@+id/editAreaCode"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:layout_marginTop="2dp"
+                        android:layout_weight="0.5"
+                        android:background="@drawable/edit_text"
+                        android:drawablePadding="10dp"
+                        android:hint="@string/area_code"
+                        android:inputType="number"
+                        android:padding="10dp" />
+
+                    <EditText
+                        android:id="@+id/editContactNo"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:layout_marginTop="2dp"
+                        android:layout_weight="1.1"
+                        android:background="@drawable/edit_text"
+                        android:drawablePadding="10dp"
+                        android:hint="@string/contact_number"
+                        android:inputType="number"
+                        android:padding="10dp" />
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/buttonSaveSetting"

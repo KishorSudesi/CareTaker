@@ -117,14 +117,14 @@ public class Utils {
     private static Handler threadHandler;
     private static int iActivityCount = 0;
     private static ProgressDialog progressDialog;
-    Date dat;
-    //
-
     private static Context _ctxt;
+    //
 
     static {
         System.loadLibrary("stringGen");
     }
+
+    Date dat;
 
     public Utils(Context context) {
         _ctxt = context;
@@ -143,7 +143,7 @@ public class Utils {
 
     public static String getStringJni() {
         return "KaEO19Fc"; //"KaEO19Fc"
-        //getString()for temp fix on Native crash
+        //return getString();//for temp fix on Native crash
     }
 
     public static double round(double value, int places) {
@@ -1317,7 +1317,7 @@ public class Utils {
                                         String strMess = jsonObjectError.getString("details");
 
                                         toast(2, 2, strMess);*/
-                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                    //toast(2, 2, _ctxt.getString(R.string.error));
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
                                 }
@@ -2210,7 +2210,7 @@ public class Utils {
 
     public void fetchProviders(final ProgressDialog progressDialog, final int iFlag) {
 
-        //if (iProviderCount < Config.strProviderIds.size()) { //todo check logic
+        if (Config.strProviderIds.size() > 0) {
 
             if (isConnectingToInternet()) {
 
@@ -2219,7 +2219,7 @@ public class Utils {
 
                 StorageService storageService = new StorageService(_ctxt);
 
-                Query query = new QueryBuilder().build("_id", Config.strProviderIds,
+                Query query = QueryBuilder.build("_id", Config.strProviderIds,
                         QueryBuilder.Operator.INLIST);
 
                 storageService.findDocsByQuery(Config.collectionProvider, query,
@@ -2287,123 +2287,18 @@ public class Utils {
                                 }
                             }
                         });
-
-                   /* storageService.findDocsByIdApp42CallBack(Config.strProviderIds.
-                                    get(iProviderCount),
-                            Config.collectionProvider, new App42CallBack() {
-                                @Override
-                                public void onSuccess(Object o) {
-
-                                    if (o != null) {
-
-                                        Storage storage = (Storage) o;
-
-                                        if (storage.getJsonDocList().size() > 0) {
-
-                                            Storage.JSONDocument jsonDocument = storage.
-                                                    getJsonDocList().
-                                                    get(0);
-
-                                            String strDocument = jsonDocument.getJsonDoc();
-                                            String strProviderDocId = jsonDocument.getDocId();
-                                            createProviderModel(strProviderDocId, strDocument);
-                                        }
-
-                                        iProviderCount++;
-
-                                        if (iProviderCount == Config.strProviderIds.size()) {
-
-                                            if (progressDialog.isShowing())
-                                                progressDialog.dismiss();
-
-                                            if (iFlag == 0)
-                                                goToDashboard();
-                                            if (iFlag == 1)
-                                                refreshNotificationsImages();
-
-                                        } else fetchProviders(progressDialog, iFlag);
-
-                                    } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                                    }
-                                }
-
-                                @Override
-                                public void onException(Exception e) {
-
-                                    try {
-
-                                        if (e != null) {
-
-                                            JSONObject jsonObject = new JSONObject(e.getMessage());
-                                            JSONObject jsonObjectError =
-                                                    jsonObject.getJSONObject("app42Fault");
-
-                                            int appErrorCode = jsonObjectError.
-                                                    getInt("appErrorCode");
-
-                                            if (appErrorCode == 2608 || appErrorCode == 2600) {
-                                                iProviderCount++;
-                                            }
-
-                                            if (iProviderCount == Config.strProviderIds.size()) {
-
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-
-                                                if (iFlag == 0)
-                                                    goToDashboard();
-                                                if (iFlag == 1)
-                                                    refreshNotificationsImages();
-
-                                            } else fetchProviders(progressDialog, iFlag);
-
-                                        } else {
-                                            if (progressDialog.isShowing())
-                                                progressDialog.dismiss();
-                                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                                        }
-                                    } catch (JSONException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            }
-                    );*/
-              /*  } else {
-                    iProviderCount++;
-
-                    if (iProviderCount == Config.strProviderIds.size()) {
-
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
-
-                        if (iFlag == 0)
-                            goToDashboard();
-                        if (iFlag == 1)
-                            refreshNotificationsImages();
-
-                    } else fetchProviders(progressDialog, iFlag);
-                }*/
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
 
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
-       /* } else {
-
-            if (iProviderCount == Config.strProviderIds.size()) {
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-
-                if (iFlag == 0)
-                    goToDashboard();
-                if (iFlag == 1)
-                    refreshNotificationsImages();
-            }
-        }*/
+        } else {
+            if (iFlag == 0)
+                goToDashboard();
+            if (iFlag == 1)
+                refreshNotificationsImages();
+        }
     }
 
     public void loadAllFiles() {

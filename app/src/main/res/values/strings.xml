@@ -87,6 +87,7 @@
     <string name="service_continue">Press Get Services</string>
     <string name="existing_request">A Transaction is already in process, Please Wait…</string>
     <string name="existing_recipient">Previous Care Recipient</string>
+    <string name="left">Left</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

@@ -60,7 +60,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional_services);
 
-        Config.intSelectedDependent = 0;
+        //Config.intSelectedDependent = 0;
 
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
         listView = (ExpandableListView) findViewById(R.id.listViewAdditionalServices);

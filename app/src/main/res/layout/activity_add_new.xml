@@ -3,11 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="false"
-
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
     android:focusableInTouchMode="false"
-
     android:orientation="vertical">
 
     <include
@@ -25,14 +23,21 @@
         android:text="@string/no_services"
         android:visibility="gone" />
 
-    <ListView
+    <!--  <ListView
+          android:id="@+id/listView1"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_above="@+id/buttonContinue"
+          android:layout_below="@+id/includeDashboardList">
+
+      </ListView>-->
+
+    <ExpandableListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttonContinue"
-        android:layout_below="@+id/includeDashboardList">
-
-    </ListView>
+        android:layout_below="@+id/includeDashboardList" />
 
 
     <Button

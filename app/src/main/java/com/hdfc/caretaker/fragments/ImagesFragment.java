@@ -82,6 +82,7 @@ public class ImagesFragment extends Fragment {
     public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
+            Utils.log("IN", "1");
             loadingPanel.setVisibility(View.GONE);
             if (bitmap != null)
                 imageView.setImageBitmap(bitmap);
@@ -100,7 +101,7 @@ public class ImagesFragment extends Fragment {
                 bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                         utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
                         Config.intWidth, Config.intHeight);
-
+                Utils.log("IN", "0");
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();

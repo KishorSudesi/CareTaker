@@ -155,59 +155,66 @@ public class ConfirmFragment extends Fragment {
                     if (!dependentModel.getStrName().equalsIgnoreCase(
                             getActivity().getResources().getString(R.string.add_dependent))) {
 
-                        uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                utils.replaceSpace(dependentModel.getStrName()), "Profile Picture",
-                                dependentModel.getStrEmail(),
-                                UploadFileType.IMAGE, new App42CallBack() {
+                        if (dependentModel.getStrImagePath() != null &&
+                                !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
-                                    public void onSuccess(Object response) {
+                            uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
+                                    utils.replaceSpace(dependentModel.getStrName()), "Profile Picture",
+                                    dependentModel.getStrEmail(),
+                                    UploadFileType.IMAGE, new App42CallBack() {
 
-                                        if (response != null) {
+                                        public void onSuccess(Object response) {
 
-                                            Upload upload = (Upload) response;
-                                            ArrayList<Upload.File> fileList = upload.getFileList();
+                                            if (response != null) {
 
-                                            if (fileList.size() > 0) {
-                                                String strImagePath = fileList.get(0).getUrl();
-                                                SignupActivity.dependentModels.get(progress)
-                                                        .setStrImageUrl(strImagePath);
-                                                uploadingCount++;
-                                        }
-                                            if (uploadingCount == uploadSize) {
-                                                uploadImage();
-                                            } else uploadDependentImages();
+                                                Upload upload = (Upload) response;
+                                                ArrayList<Upload.File> fileList = upload.getFileList();
 
-                                        } else {
-                                            if (pDialog.isShowing())
-                                                pDialog.dismiss();
-                                            utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                    }
+                                                if (fileList.size() > 0) {
+                                                    String strImagePath = fileList.get(0).getUrl();
+                                                    SignupActivity.dependentModels.get(progress)
+                                                            .setStrImageUrl(strImagePath);
+                                                    uploadingCount++;
+                                                }
+                                                if (uploadingCount == uploadSize) {
+                                                    uploadImage();
+                                                } else uploadDependentImages();
 
-                                    public void onException(Exception ex) {
-
-                                        if (ex != null) {
-
-                                            App42Exception exception = (App42Exception) ex;
-                                            int appErrorCode = exception.getAppErrorCode();
-
-                                            if (appErrorCode == 2100) {
-                                                uploadingCount++;
+                                            } else {
+                                                if (pDialog.isShowing())
+                                                    pDialog.dismiss();
+                                                utils.toast(2, 2, getString(R.string.warning_internet));
                                             }
+                                        }
 
-                                            if (uploadingCount == uploadSize) {
-                                                uploadImage();
-                                            } else uploadDependentImages();
+                                        public void onException(Exception ex) {
 
-                                        } else {
-                                            if (pDialog.isShowing())
-                                                pDialog.dismiss();
-                                            utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                    }
-                                });
+                                            if (ex != null) {
 
-                    } else{
+                                                App42Exception exception = (App42Exception) ex;
+                                                int appErrorCode = exception.getAppErrorCode();
+
+                                                if (appErrorCode == 2100) {
+                                                    uploadingCount++;
+                                                }
+
+                                                if (uploadingCount == uploadSize) {
+                                                    uploadImage();
+                                                } else uploadDependentImages();
+
+                                            } else {
+                                                if (pDialog.isShowing())
+                                                    pDialog.dismiss();
+                                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                            }
+                                        }
+                                    });
+
+                        } else {
+                            uploadingCount++;
+                            uploadDependentImages();
+                        }
+                    } else {
                         uploadingCount++;
                         uploadDependentImages();
                     }
@@ -219,6 +226,9 @@ public class ConfirmFragment extends Fragment {
                     uploadingCount=0;
                     utils.toast(2, 2, getString(R.string.warning_internet));
                 }
+            } else {
+                if (uploadingCount == uploadSize)
+                    uploadImage();
             }
 
         } catch (Exception e) {
@@ -395,7 +405,7 @@ public class ConfirmFragment extends Fragment {
             Config.jsonCustomer = new JSONObject();
 
             Config.jsonCustomer.put("customer_name", Config.customerModel.getStrName());
-            Config.jsonCustomer.put("customer_address", "");// Config.customerModel.getStrAddress()
+            Config.jsonCustomer.put("customer_address", Config.customerModel.getStrCountryCode());//
             Config.jsonCustomer.put("customer_city", "");
             Config.jsonCustomer.put("customer_state", "");
             Config.jsonCustomer.put("customer_contact_no", Config.customerModel.getStrContacts());
@@ -569,7 +579,15 @@ public class ConfirmFragment extends Fragment {
 
                     JSONObject jsonDependant = new JSONObject();
                     jsonDependant.put("dependent_name", dependentModel.getStrName());
+
+                    if (dependentModel.getStrIllness() == null || dependentModel.getStrIllness().equalsIgnoreCase(""))
+                        dependentModel.setStrIllness("NA");
+
+                    if (dependentModel.getStrNotes() == null || dependentModel.getStrNotes().equalsIgnoreCase(""))
+                        dependentModel.setStrNotes("NA");
+
                     jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
+
                     jsonDependant.put("dependent_address", dependentModel.getStrAddress());
                     jsonDependant.put("dependent_email", dependentModel.getStrEmail());
 

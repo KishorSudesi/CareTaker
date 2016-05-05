@@ -15,10 +15,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
@@ -52,14 +59,38 @@ public class MyAccountEditFragment extends Fragment {
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static boolean isImageChanged = false;
-    private EditText name, number, city, editTextOldPassword, editTextPassword,
-            editTextConfirmPassword;
+    private EditText name, number, editTextOldPassword, editTextPassword,
+            editTextConfirmPassword, editDob, editAreaCode, editCountryCode;
+
+    //city
     private String strName;
     private String strContactNo;
     private String strPass;
     private String strAddress;
     private String strOldPass;
-    private String strCustomerImagePath="";
+    private String strCustomerImagePath = "", strAreaCode;
+
+    private RadioButton mobile;
+    private Spinner citizenship;
+
+    private SlideDateTimeListener listener = new SlideDateTimeListener() {
+
+        @Override
+        public void onDateTimeSet(Date date) {
+            // selectedDateTime = date.getDate()+"-"+date.getMonth()+"-"+date.getYear()+" "+
+            // date.getTime();
+            // Do something with the date. This Date object contains
+            // the date and time that the user has selected.
+
+            String strDate = Utils.writeFormatActivityYear.format(date);
+            editDob.setText(strDate);
+        }
+
+        @Override
+        public void onDateTimeCancel() {
+            // Overriding onDateTimeCancel() is optional.
+        }
+    };
 
     public static MyAccountEditFragment newInstance() {
         MyAccountEditFragment fragment = new MyAccountEditFragment();
@@ -95,25 +126,85 @@ public class MyAccountEditFragment extends Fragment {
         editTextOldPassword = (EditText) view.findViewById(R.id.editOldPassword);
         editTextPassword = (EditText) view.findViewById(R.id.editPassword);
         editTextConfirmPassword = (EditText) view.findViewById(R.id.editConfirmPassword);
+        editDob = (EditText) view.findViewById(R.id.editDob);
+        editAreaCode = (EditText) view.findViewById(R.id.editAreaCode);
+        editCountryCode = (EditText) view.findViewById(R.id.editCountryCode);
 
         number = (EditText) view.findViewById(R.id.editTextNumber);
-        city = (EditText) view.findViewById(R.id.editTextCity);
+        //city = (EditText) view.findViewById(R.id.editTextCity);
 
-        strCustomerImgNameCamera = String.valueOf(new Date().getDate() + "" + new Date().getTime())
-                + ".jpeg";
+        editDob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SlideDateTimePicker.Builder(getActivity().getSupportFragmentManager())
+                        .setListener(listener)
+                        .setInitialDate(new Date())
+                        .build()
+                        .show();
+            }
+        });
+
+
+        mobile = (RadioButton) view.findViewById(R.id.radioMobile);
+        //RadioButton landline = (RadioButton) rootView.findViewById(R.id.radioLandline);
+
+        mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mobile.isChecked()) {
+                    editAreaCode.setVisibility(View.GONE);
+                } else {
+                    editAreaCode.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        citizenship = (Spinner) view.findViewById(R.id.input_citizenship);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, Config.countryNames);
+        citizenship.setAdapter(adapter);
+        citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                editCountryCode.setText(Config.countryAreaCodes[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.selectImage(strCustomerImgNameCamera, MyAccountEditFragment.this, null);
+                utils.selectImage(String.valueOf(new Date().getDate() + "" + new Date().getTime())
+                        + ".jpeg", MyAccountEditFragment.this, null);
             }
         });
 
         name.setText(Config.customerModel.getStrName());
         number.setText(Config.customerModel.getStrContacts());
 
-        if (Config.customerModel.getStrAddress() != null)
-            city.setText(Config.customerModel.getStrAddress());
+       /* if (Config.customerModel.getStrAddress() != null)
+            city.setText(Config.customerModel.getStrAddress());*/
+
+        //
+        editDob.setText(Config.customerModel.getStrDob());
+        editCountryCode.setText(Config.customerModel.getStrCountryIsdCode());
+
+
+        if (Config.customerModel.getStrCountryAreaCode().equalsIgnoreCase("")) {
+            mobile.setChecked(true);
+            editAreaCode.setVisibility(View.GONE);
+        } else {
+            editAreaCode.setVisibility(View.VISIBLE);
+            editAreaCode.setText(Config.customerModel.getStrCountryAreaCode());
+        }
+
+        citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
+        //
 
         txtViewHeader.setText(getActivity().getString(R.string.my_account_edit));
         Button goToDashBoard = (Button) view.findViewById(R.id.buttonSaveSetting);
@@ -149,14 +240,27 @@ public class MyAccountEditFragment extends Fragment {
                 //
                 name.setError(null);
                 number.setError(null);
-                city.setError(null);
+                //city.setError(null);
                 editTextOldPassword.setError(null);
                 editTextPassword.setError(null);
                 editTextConfirmPassword.setError(null);
 
+                editAreaCode.setError(null);
+                editDob.setError(null);
+
+                if (editAreaCode.getVisibility() == View.VISIBLE) {
+                    strAreaCode = editAreaCode.getText().toString().trim();
+                }
+
+                final String strCountryCode = editCountryCode.getText().toString().trim();
+
+                //strAddress = editAddress.getText().toString().trim();
+                final String strDob = editDob.getText().toString().trim();
+                final String strCountry = citizenship.getSelectedItem().toString().trim();
+
                 strName = name.getText().toString().trim();
                 strContactNo = number.getText().toString();
-                strAddress = city.getText().toString().trim();
+                //strAddress = city.getText().toString().trim();
                 strOldPass = editTextOldPassword.getText().toString().trim();
                 strPass = editTextPassword.getText().toString().trim();
                 String strConfirmPass = editTextConfirmPassword.getText().toString().trim();
@@ -172,6 +276,26 @@ public class MyAccountEditFragment extends Fragment {
                     number.setError(getString(R.string.error_invalid_contact_no));
                     focusView = number;
                     cancel = true;
+                }
+
+                if (editAreaCode.getVisibility() == View.VISIBLE) {
+
+                    if (TextUtils.isEmpty(strAreaCode)) {
+                        editAreaCode.setError(getString(R.string.error_field_required));
+                        focusView = editAreaCode;
+                        cancel = true;
+                    } else if (!utils.validCellPhone(strAreaCode)) {
+                        editAreaCode.setError(getString(R.string.error_invalid_area_code));
+                        focusView = editAreaCode;
+                        cancel = true;
+                    }
+                }
+
+                if (TextUtils.isEmpty(strCountry) || strCountry.equalsIgnoreCase("Select Country")) {
+                    //editAddress.setError(getString(R.string.error_field_required));
+                    focusView = citizenship;
+                    cancel = true;
+                    utils.toast(2, 2, getString(R.string.select_country));
                 }
 
                 if (!Utils.isEmpty(strOldPass) && !Utils.isEmpty(strPass) &&
@@ -196,6 +320,13 @@ public class MyAccountEditFragment extends Fragment {
                     cancel = true;
                 }*/
 
+                if (TextUtils.isEmpty(strDob)) {
+                    editDob.setError(getString(R.string.error_field_required));
+                    focusView = editDob;
+                    cancel = true;
+                }
+
+
                 if (TextUtils.isEmpty(strName)) {
                     name.setError(getString(R.string.error_field_required));
                     focusView = name;
@@ -219,7 +350,12 @@ public class MyAccountEditFragment extends Fragment {
                         try {
                             jsonToUpdate.put("customer_name", strName);
                             jsonToUpdate.put("customer_contact_no", strContactNo);
-                            jsonToUpdate.put("customer_address", strAddress);
+                            jsonToUpdate.put("customer_address", strCountry);
+
+                            Config.jsonCustomer.put("customer_dob", strDob);
+                            Config.jsonCustomer.put("customer_country", strCountry);
+                            Config.jsonCustomer.put("customer_country_code", strCountryCode);
+                            Config.jsonCustomer.put("customer_area_code", strAreaCode);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -233,6 +369,12 @@ public class MyAccountEditFragment extends Fragment {
                                 Config.customerModel.setStrAddress(strAddress);
                                 Config.customerModel.setStrContacts(strContactNo);
                                 Config.customerModel.setStrName(strName);
+
+                                Config.customerModel.setStrDob(strDob);
+                                Config.customerModel.setStrCountryCode(strCountry);
+                                Config.customerModel.setStrAddress(strCountry);
+                                Config.customerModel.setStrCountryIsdCode(strCountryCode);
+                                Config.customerModel.setStrCountryAreaCode(strAreaCode);
 
                                 if (strPass != null && !strPass.equalsIgnoreCase("")) {
 

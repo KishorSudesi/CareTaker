@@ -94,14 +94,18 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
             for (int i = 0; i < Config.dependentModels.size(); i++) {
 
-                Utils.log(Config.dependentModels.get(i).getStrImagePath() + " ~ " +
-                        Config.dependentModels.get(i).getStrDependentID(), " PATH ");
+                if (Config.dependentModels.get(i).getStrImagePath() != null
+                        && !Config.dependentModels.get(i).getStrImagePath().equalsIgnoreCase("")) {
 
-                fromFile1 = new File(Config.dependentModels.get(i).getStrImagePath());
-                toFile1 = utils.getInternalFileImages(Config.dependentModels.get(i).
-                        getStrDependentID());
+                    Utils.log(Config.dependentModels.get(i).getStrImagePath() + " ~ " +
+                            Config.dependentModels.get(i).getStrDependentID(), " PATH ");
 
-                utils.moveFile(fromFile1, toFile1);
+                    fromFile1 = new File(Config.dependentModels.get(i).getStrImagePath());
+                    toFile1 = utils.getInternalFileImages(Config.dependentModels.get(i).
+                            getStrDependentID());
+
+                    utils.moveFile(fromFile1, toFile1);
+                }
             }
 
         } catch (IOException e) {

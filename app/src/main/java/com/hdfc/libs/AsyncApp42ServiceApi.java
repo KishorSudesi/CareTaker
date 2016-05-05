@@ -24,7 +24,6 @@ import org.json.JSONObject;
 
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AsyncApp42ServiceApi {
 
@@ -58,6 +57,50 @@ public class AsyncApp42ServiceApi {
         this.uploadService = App42API.buildUploadService();
     }
 
+   /* public void sendPush(){
+
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = userService.getRolesByUser(userName);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+
+        PushNotificationService pushNotificationService = App42API.buildPushNotificationService();
+        pushNotificationService.sendPushMessageToUser(userName, message, new App42CallBack() {
+            public void onSuccess(Object response)
+            {
+                PushNotification pushNotification  = (PushNotification)response;
+                System.out.println("userName is " + pushNotification.getUserName());
+                System.out.println("Message is " + pushNotification.getMessage());
+                System.out.println("Expiry is"+pushNotification.getExpiry());
+            }
+            public void onException(Exception ex)
+            {
+                System.out.println("Exception Message"+ex.getMessage());
+            }
+        });
+    }*/
+
     public static AsyncApp42ServiceApi instance(Context context) {
 
         if (mInstance == null) {
@@ -67,9 +110,9 @@ public class AsyncApp42ServiceApi {
         return mInstance;
     }
 
-    public void setOtherMetaHeaders(HashMap<String, String> otherMetaHeaders) {
+   /* public void setOtherMetaHeaders(HashMap<String, String> otherMetaHeaders) {
         uploadService.setOtherMetaHeaders(otherMetaHeaders);
-    }
+    }*/
 
 
     /*
