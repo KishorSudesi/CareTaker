@@ -46,18 +46,19 @@ public class GuruDetailsFragment extends Fragment {
     public static RoundedImageView imgButtonCamera;
 
     public static String strCustomerImgName = "";
-    public static String strCustomerImgNameCamera;
     public static Bitmap bitmap = null;
     public static Uri uri;
     private static Thread backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo, strAddress;
+    private static String strName, strEmail, strConfirmPass, strContactNo;//strAddress
     private static ProgressDialog mProgress = null;
-    private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editAddress,editTextDate,editAreaCode,editCountryCode;
+    private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
+
+    //editAddress
     private Utils utils;
-    private String _strDate;
-    private RadioButton mobile,landline;
+    private RadioButton mobile;
     private Spinner citizenship;
+    private String strAreaCode = "";
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -69,7 +70,7 @@ public class GuruDetailsFragment extends Fragment {
             // the date and time that the user has selected.
 
             String strDate = Utils.writeFormatActivityYear.format(date);
-            _strDate = Utils.readFormat.format(date);
+            String _strDate = Utils.readFormat.format(date);
             editTextDate.setText(strDate);
         }
 
@@ -116,8 +117,7 @@ public class GuruDetailsFragment extends Fragment {
         editCountryCode = (EditText)rootView.findViewById(R.id.editCountryCode);
 
         mobile = (RadioButton)rootView.findViewById(R.id.radioMobile);
-        landline =(RadioButton)rootView.findViewById(R.id.radioLandline);
-        landline.setChecked(true);
+        //RadioButton landline = (RadioButton) rootView.findViewById(R.id.radioLandline);
 
         mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -136,6 +136,7 @@ public class GuruDetailsFragment extends Fragment {
         editContactNo.setText( telephonyManager.getNetworkCountryIso());*/
 
         editTextDate = (EditText)rootView.findViewById(R.id.editDOB);
+
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,18 +149,15 @@ public class GuruDetailsFragment extends Fragment {
         });
 
         Button buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
-        editAddress = (EditText) rootView.findViewById(R.id.editAddress);
+        //editAddress = (EditText) rootView.findViewById(R.id.editAddress);
 
         mProgress = new ProgressDialog(getActivity());
-
-        Calendar calendar = Calendar.getInstance();
-
-        strCustomerImgNameCamera = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
 
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.selectImage(strCustomerImgNameCamera, GuruDetailsFragment.this, null);
+                Calendar calendar = Calendar.getInstance();
+                utils.selectImage(String.valueOf(calendar.getTimeInMillis()) + ".jpeg", GuruDetailsFragment.this, null);
             }
         });
 
@@ -201,7 +199,21 @@ public class GuruDetailsFragment extends Fragment {
             editName.setText(Config.customerModel.getStrName());
             editEmail.setText(Config.customerModel.getStrEmail());
             editContactNo.setText(Config.customerModel.getStrContacts());
-            editAddress.setText(Config.customerModel.getStrAddress());
+            //editAddress.setText(Config.customerModel.getStrAddress());
+
+            editTextDate.setText(Config.customerModel.getStrDob());
+            editCountryCode.setText(Config.customerModel.getStrCountryIsdCode());
+
+
+            if (Config.customerModel.getStrCountryAreaCode().equalsIgnoreCase("")) {
+                mobile.setChecked(true);
+                editAreaCode.setVisibility(View.GONE);
+            } else {
+                editAreaCode.setVisibility(View.VISIBLE);
+                editAreaCode.setText(Config.customerModel.getStrCountryAreaCode());
+            }
+
+            citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
 
             backgroundThreadHandler = new BackgroundThreadHandler();
             backgroundThreadCamera = new BackgroundThreadCamera();
@@ -216,11 +228,11 @@ public class GuruDetailsFragment extends Fragment {
         editPass.setError(null);
         editConfirmPass.setError(null);
         editContactNo.setError(null);
-        editAddress.setError(null);
+        //editAddress.setError(null);
         editTextDate.setError(null);
         //citizenship.setError(null);
         editAreaCode.setError(null);
-        editCountryCode.setError(null);
+        //editCountryCode.setError(null);
 
         strName = editName.getText().toString().trim();
         strEmail = editEmail.getText().toString().trim();
@@ -228,22 +240,23 @@ public class GuruDetailsFragment extends Fragment {
         strConfirmPass = editConfirmPass.getText().toString().trim();
         strContactNo = editContactNo.getText().toString().trim();
 
-        String strCountryCode, strAreaCode;
 
         if (editAreaCode.getVisibility() == View.VISIBLE) {
             strAreaCode = editAreaCode.getText().toString().trim();
         }
 
-        strAddress = editAddress.getText().toString().trim();
-        String strDob = editTextDate.getText().toString().trim();
-        String strCountry = citizenship.getSelectedItem().toString().trim();
+        final String strCountryCode = editCountryCode.getText().toString().trim();
+
+        //strAddress = editAddress.getText().toString().trim();
+        final String strDob = editTextDate.getText().toString().trim();
+        final String strCountry = citizenship.getSelectedItem().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(strCustomerImgName)
-                && Config.customerModel != null
-                && Config.customerModel.getStrName().equalsIgnoreCase("")) {
+        if (TextUtils.isEmpty(strCustomerImgName)) {
+            /* && Config.customerModel != null
+                && Config.customerModel.getStrName().equalsIgnoreCase("")*/
             utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
@@ -260,23 +273,25 @@ public class GuruDetailsFragment extends Fragment {
                 cancel = true;
             }
 
-            if (TextUtils.isEmpty(strContactNo)) {
-                editContactNo.setError(getString(R.string.error_field_required));
-                focusView = editContactNo;
-                cancel = true;
-            } else if (!utils.validCellPhone(strContactNo)) {
-                editContactNo.setError(getString(R.string.error_invalid_contact_no));
-                focusView = editContactNo;
-                cancel = true;
+            if (editAreaCode.getVisibility() == View.VISIBLE) {
+
+                if (TextUtils.isEmpty(strAreaCode)) {
+                    editAreaCode.setError(getString(R.string.error_field_required));
+                    focusView = editAreaCode;
+                    cancel = true;
+                } else if (!utils.validCellPhone(strAreaCode)) {
+                    editAreaCode.setError(getString(R.string.error_invalid_area_code));
+                    focusView = editAreaCode;
+                    cancel = true;
+                }
             }
 
-            if (TextUtils.isEmpty(strAddress)) {
-                editAddress.setError(getString(R.string.error_field_required));
-                focusView = editAddress;
+           /* if (TextUtils.isEmpty(strCountryCode)||strCountryCode.equalsIgnoreCase("0")) {
+                editCountryCode.setError(getString(R.string.error_field_required));
+                focusView = editCountryCode;
                 cancel = true;
-            }
+            }*/
 
-            //todo contact no
             if (TextUtils.isEmpty(strCountry) || strCountry.equalsIgnoreCase("Select Country")) {
                 //editAddress.setError(getString(R.string.error_field_required));
                 focusView = citizenship;
@@ -284,11 +299,11 @@ public class GuruDetailsFragment extends Fragment {
                 utils.toast(2, 2, getString(R.string.select_country));
             }
 
-            if (TextUtils.isEmpty(strAddress)) {
+         /*   if (TextUtils.isEmpty(strAddress)) {
                 editAddress.setError(getString(R.string.error_field_required));
                 focusView = editAddress;
                 cancel = true;
-            }
+            }*/
 
             if (!TextUtils.isEmpty(strPass) && utils.isPasswordValid(strPass)
                     && !TextUtils.isEmpty(strConfirmPass) && utils.isPasswordValid(strConfirmPass)) {
@@ -388,7 +403,7 @@ public class GuruDetailsFragment extends Fragment {
 
                                         if (!Config.customerModel.getStrAddress().
                                                 equalsIgnoreCase(""))
-                                            Config.customerModel.setStrAddress(strAddress);
+                                            //Config.customerModel.setStrAddress(strAddress);
 
                                         Config.customerModel.setStrContacts(strContactNo);
                                         Config.customerModel.setStrEmail(strEmail);
@@ -399,9 +414,17 @@ public class GuruDetailsFragment extends Fragment {
                                     } else {
 
                                         Config.customerModel = new CustomerModel(strName, "", "",
-                                                strAddress, strContactNo, strEmail, "",
+                                                "", strContactNo, strEmail, "",
                                                 strCustomerImgName);
+
+                                        //strAddress
                                     }
+
+                                    Config.customerModel.setStrDob(strDob);
+                                    Config.customerModel.setStrCountryCode(strCountry);
+                                    Config.customerModel.setStrAddress(strCountry);
+                                    Config.customerModel.setStrCountryIsdCode(strCountryCode);
+                                    Config.customerModel.setStrCountryAreaCode(strAreaCode);
 
                                     if (strConfirmPass != null && !strConfirmPass.equalsIgnoreCase(""))
                                         SignupActivity.strCustomerPass = strConfirmPass;

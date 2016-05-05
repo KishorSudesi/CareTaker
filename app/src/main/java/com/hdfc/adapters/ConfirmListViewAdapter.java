@@ -89,23 +89,18 @@ public class ConfirmListViewAdapter extends BaseAdapter {
             holder.textEmail.setText(tempValues.getStrEmail());
 
 
-           /* if (!tempValues.getStrDesc().equalsIgnoreCase("")) {
-
+            if (tempValues.getStrDesc() != null && !tempValues.getStrDesc().equalsIgnoreCase("")) {
                 holder.textDesc.setText(tempValues.getStrDesc());
                 holder.tableRow.setVisibility(View.VISIBLE);
-
             } else {
                 holder.tableRow.setVisibility(View.GONE);
+            }
 
-            }*/
-            if (!tempValues.getStrRela().equalsIgnoreCase("")) {
-
+            if (tempValues.getStrRela() != null && !tempValues.getStrRela().equalsIgnoreCase("")) {
                 holder.textRela.setText(tempValues.getStrRela());
-                holder.tableRow.setVisibility(View.VISIBLE);
-
+                holder.tableRela.setVisibility(View.VISIBLE);
             } else {
-                holder.tableRow.setVisibility(View.GONE);
-
+                holder.tableRela.setVisibility(View.GONE);
             }
 
 

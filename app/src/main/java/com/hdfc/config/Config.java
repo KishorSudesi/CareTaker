@@ -13,6 +13,7 @@ import com.hdfc.models.ProviderModel;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -49,6 +50,8 @@ public class Config {
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public static final boolean isDebuggable = true;
     public static final boolean release = false;
+
+    public static final String strRelations[] = {"Select a Relation", "Father", "Mother", "Uncle", "Aunt", "Grand Father", "Grand Mother", "Father-in-law", "Mother-in-law", "Other"};
 
     public static final String[] countryNames = {"Select Country", "Afghanistan", "Albania",
             "Algeria", "Andorra", "Angola", "Antarctica", "Argentina",
@@ -137,9 +140,11 @@ public class Config {
             "LK", "SH", "PM", "SD", "SR", "SZ", "SE", "CH", "SY", "TW", "TJ",
             "TZ", "TH", "TG", "TK", "TO", "TN", "TR", "TM", "TV", "AE", "UG",
             "GB", "UA", "UY", "US", "UZ", "VU", "VA", "VE", "VN", "WF", "YE",
-            "ZM", "ZW",
-
+            "ZM", "ZW"
     };
+
+    public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
+    public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
 
     public static Locale locale = Locale.ENGLISH;
     public static TimeZone timeZone = TimeZone.getDefault();

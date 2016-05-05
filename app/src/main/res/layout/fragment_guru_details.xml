@@ -101,25 +101,25 @@
                 android:inputType="textPassword"
                 android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/editAddress"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/edit_text"
-                android:drawableLeft="@drawable/address_icon"
-                android:drawablePadding="10dp"
-                android:hint="@string/address"
-                android:inputType="text"
-                android:padding="10dp" />
+            <!-- <EditText
+                 android:id="@+id/editAddress"
+                 android:layout_width="match_parent"
+                 android:layout_height="45dp"
+                 android:layout_centerHorizontal="true"
+                 android:layout_marginLeft="@dimen/edit_text_margin"
+                 android:layout_marginRight="@dimen/edit_text_margin"
+                 android:layout_marginTop="25dp"
+                 android:background="@drawable/edit_text"
+                 android:drawableLeft="@drawable/address_icon"
+                 android:drawablePadding="10dp"
+                 android:hint="@string/address"
+                 android:inputType="text"
+                 android:padding="10dp" />-->
 
             <Spinner
                 android:id="@+id/input_citizenship"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
+                android:layout_height="45dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
@@ -145,14 +145,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Mobile" />
+                    android:text="@string/mobile" />
 
                 <RadioButton
                     android:id="@+id/radioLandline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="LandLine" />
+                    android:checked="true"
+                    android:text="@string/landline" />
 
             </RadioGroup>
 

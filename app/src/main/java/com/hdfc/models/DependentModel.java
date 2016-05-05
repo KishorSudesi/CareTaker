@@ -16,6 +16,7 @@ public class DependentModel {
     private String strIllness;
     private String strImagePath;
     private String strImageUrl;
+    private String strDob;
 
     private int intAge;
     private int intHealthBp;
@@ -51,6 +52,22 @@ public class DependentModel {
         this.strDependentID = strDependentID;
         this.strCustomerID = strCustomerID;
         this.serviceModels = serviceModels;
+    }
+
+    public String getStrDob() {
+        return strDob;
+    }
+
+    public void setStrDob(String strDob) {
+        this.strDob = strDob;
+    }
+
+    public void setActivityModels(ArrayList<ActivityModel> activityModels) {
+        this.activityModels = activityModels;
+    }
+
+    public void setNotificationModels(ArrayList<NotificationModel> notificationModels) {
+        this.notificationModels = notificationModels;
     }
 
     public ArrayList<ActivityModel> getActivityModels() {

@@ -90,6 +90,7 @@ import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,7 +110,7 @@ public class Utils {
     public final static SimpleDateFormat writeFormatActivityMonthYear =
             new SimpleDateFormat("MMM yyyy", Config.locale);
     public final static SimpleDateFormat writeFormatActivityYear =
-            new SimpleDateFormat("dd-MM-yyyy", Config.locale);
+            new SimpleDateFormat("MM/dd/yyyy", Config.locale);
 
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
@@ -751,6 +752,29 @@ public class Utils {
         return date; //
     }
 
+    /**
+     * Method to extract the user's age from the entered Date of Birth.
+     *
+     * @return ageS String The user's age in years based on the supplied DoB.
+     */
+    public String getAge(int year, int month, int day) {
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.set(year, month, day);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+
+        Integer ageInt = new Integer(age);
+        String ageS = ageInt.toString();
+
+        return ageS;
+    }
+
     public boolean isConnectingToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
@@ -801,7 +825,7 @@ public class Utils {
 
         boolean isValid = false;
 
-        if (number.length() >= 9 && number.length() <= 15)
+        if (number.length() >= 6 && number.length() <= 15)
             isValid = true;
 
         return isValid;

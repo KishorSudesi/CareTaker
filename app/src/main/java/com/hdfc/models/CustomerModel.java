@@ -10,6 +10,8 @@ public class CustomerModel {
     private String strImgUrl = "";
     private String strImgPath = "";
     private String strAddress = "";
+    private String strCity = "";
+    private String strState = "";
     private String strContacts = "";
     private String strEmail = "";
     private String strDob = "";
@@ -34,6 +36,22 @@ public class CustomerModel {
         this.strEmail = strEmail;
         this.strCustomerID = strCustomerID;
         this.strImgPath = strImgPath;
+    }
+
+    public String getStrCity() {
+        return strCity;
+    }
+
+    public void setStrCity(String strCity) {
+        this.strCity = strCity;
+    }
+
+    public String getStrState() {
+        return strState;
+    }
+
+    public void setStrState(String strState) {
+        this.strState = strState;
     }
 
     public String getStrDob() {

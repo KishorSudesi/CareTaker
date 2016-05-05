@@ -285,7 +285,7 @@ public class CrashLogger implements Thread.UncaughtExceptionHandler {
 
     public void createNotification(Context context, String log) {
 
-        String applicationName = "NewZeal";
+        String applicationName = context.getString(R.string.app_name);
         //NotificationManager mNotificationManager = (NotificationManager)
         //context.getSystemService(Context.NOTIFICATION_SERVICE);
 

@@ -10,7 +10,7 @@
     <string name="cancel">Cancel</string>
     <string name="email">Email</string>
     <string name="name">Name</string>
-    <string name="DOB">DOB</string>
+    <string name="DOB">Dob</string>
     <string name="password">Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
@@ -32,6 +32,8 @@
     <string name="at">&#160;at&#160;</string>
     <string name="image">Image</string>
     <string name="by">By&#160;</string>
+    <string name="mobile">Mobile</string>
+    <string name="landline">Landline</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
@@ -108,6 +110,7 @@
     <string name="error_confirm_password">Invalid Confirm Password</string>
     <string name="error_invalid_email">Invalid Email</string>
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
+    <string name="error_invalid_area_code">Invalid Area Code</string>
     <string name="error_invalid_age">Invalid Age</string>
     <string name="email_exists">Email Id Already Exists!!!</string>
     <string name="error_field_required">This Field is Required</string>
@@ -123,6 +126,7 @@
     <string name="no_memory_camera">No storage mounted to save camera image</string>
     <string name="image_write_failed">Sorry!!! we may have lost your Profile Image</string>
     <string name="select_country">Select a Country</string>
+    <string name="select_relation">Select a Relation</string>
 
     <!--Dashboard Menu Strings-->
     <string name="menu_activities">Activities</string>
@@ -154,5 +158,8 @@
     <string name="choose_library">Choose From Library</string>
     <string name="add_profile">Add a Profile picture</string>
     <string name="select_picture">Select a Picture</string>
+
+    <!--Google Strings-->
+    <string name="google_app_id">910502819263</string>
 
 </resources>

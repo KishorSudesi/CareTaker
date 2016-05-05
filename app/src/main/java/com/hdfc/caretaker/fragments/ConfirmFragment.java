@@ -28,7 +28,6 @@ import com.shephertz.app42.paas.sdk.android.storage.Storage;
 import com.shephertz.app42.paas.sdk.android.upload.Upload;
 import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -396,11 +395,19 @@ public class ConfirmFragment extends Fragment {
             Config.jsonCustomer = new JSONObject();
 
             Config.jsonCustomer.put("customer_name", Config.customerModel.getStrName());
-            Config.jsonCustomer.put("customer_address", Config.customerModel.getStrAddress());
+            Config.jsonCustomer.put("customer_address", "");// Config.customerModel.getStrAddress()
+            Config.jsonCustomer.put("customer_city", "");
+            Config.jsonCustomer.put("customer_state", "");
             Config.jsonCustomer.put("customer_contact_no", Config.customerModel.getStrContacts());
             Config.jsonCustomer.put("customer_email", Config.customerModel.getStrEmail());
             Config.jsonCustomer.put("customer_profile_url", strCustomerImageUrl);
             Config.jsonCustomer.put("paytm_account", "paytm_account");
+
+            Config.jsonCustomer.put("customer_dob", Config.customerModel.getStrDob());
+            Config.jsonCustomer.put("customer_country", Config.customerModel.getStrCountryCode());
+            Config.jsonCustomer.put("customer_country_code", Config.customerModel.getStrCountryIsdCode());
+            Config.jsonCustomer.put("customer_area_code", Config.customerModel.getStrCountryAreaCode());
+
 
             isFormed = true;
 
@@ -568,6 +575,7 @@ public class ConfirmFragment extends Fragment {
 
                     jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
                     jsonDependant.put("dependent_age", dependentModel.getIntAge());
+                    jsonDependant.put("dependent_dob", dependentModel.getStrDob());
                     jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
 
                     jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
@@ -586,7 +594,7 @@ public class ConfirmFragment extends Fragment {
                             setIntHealthHeartRate(80 + iDependentCount);
                     SignupActivity.dependentModels.get(iDependentCount).setStrCustomerID(jsonDocId);
 
-                    jsonDependant.put("services", new JSONArray());
+                    //jsonDependant.put("services", new JSONArray());
 
                     if (utils.isConnectingToInternet()) {
 

@@ -131,6 +131,8 @@ public class SignupActivity extends FragmentActivity {
             _mViewPager.setCurrentItem(1);
             btnAction(1);
         } else btnAction(0);
+
+        getIntent().putExtra("LIST_DEPENDANT", false);
     }
 
     public void backToSelection(View v) {

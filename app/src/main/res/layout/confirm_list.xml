@@ -37,6 +37,21 @@
                         android:textAppearance="?android:attr/textAppearanceLarge" />
                 </TableRow>
 
+                <TableRow
+                    android:id="@+id/tableRela"
+                    android:background="@drawable/bottom_border_grey">
+
+                    <TextView
+                        android:id="@+id/textRela"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_general"
+                        android:layout_weight="1"
+                        android:padding="@dimen/padding_general"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </TableRow>
+
 
                 <TableRow
                     android:id="@+id/tableDesc"
@@ -49,21 +64,6 @@
                         android:layout_margin="@dimen/margin_general"
                         android:layout_weight="1"
                         android:padding="@dimen/padding_general"
-                        android:textAlignment="center"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
-                </TableRow>
-                <TableRow
-                    android:id="@+id/tableRela"
-                    android:background="@drawable/bottom_border_grey">
-
-                    <TextView
-                        android:id="@+id/textRela"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_general"
-                        android:layout_weight="1"
-                        android:padding="@dimen/padding_general"
-                        android:text="Relationship"
                         android:textAlignment="center"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
                 </TableRow>
@@ -86,9 +86,9 @@
                     android:background="@drawable/address_icon" />
 
                 <TextView
-                android:id="@+id/textAddress"
+                    android:id="@+id/textAddress"
                     android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                    android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
             </LinearLayout>

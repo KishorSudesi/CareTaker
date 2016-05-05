@@ -30,7 +30,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
@@ -40,12 +39,10 @@ import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.log.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Array;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -64,16 +61,17 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public static Bitmap bitmap = null;
     public static Uri uri;
     public static DependentModel dependentModel = null;
+    public static int iDate, iMonth, iYear;
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
     private static SearchView searchView;
-    private static EditText editName, editContactNo, editAddress, editRelation, editDependantEmail,editTextDate;
+    private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private static ProgressDialog mProgress = null;
     private Utils utils;
-    private String _strDate;
-    private String Relation[] = {"Father","Mother","Uncle","Aunt","Grand Father","Grand Mother","Father-in-law","Mother-in-law","Other"};
-private String Relationship;
+    private Spinner spinnerRelation;
+
+    private String strRelation;
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -85,8 +83,13 @@ private String Relationship;
             // the date and time that the user has selected.
 
             String strDate = Utils.writeFormatActivityYear.format(date);
-            _strDate = Utils.readFormat.format(date);
+            //String _strDate = Utils.readFormat.format(date);
             editTextDate.setText(strDate);
+
+            //todo check year and date
+            iDate = date.getDate();
+            iMonth = date.getMonth();
+            iYear = date.getYear();
         }
 
         @Override
@@ -105,9 +108,12 @@ private String Relationship;
         editContactNo = (EditText) findViewById(R.id.editContactNo);
         editAddress = (EditText) findViewById(R.id.editAddress);
         editTextDate = (EditText)findViewById(R.id.editDOB);
-        Button buttonSkip = (Button)findViewById(R.id.buttonSkip);
-        buttonSkip.setVisibility(View.GONE);
-      //  editRelation = (EditText) findViewById(R.id.editRelation);
+        //Button buttonSkip = (Button)findViewById(R.id.buttonSkip);
+
+        /*if (buttonSkip != null) {
+            buttonSkip.setVisibility(View.GONE);
+        }*/
+        //  editRelation = (EditText) findViewById(R.id.editRelation);
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,26 +126,28 @@ private String Relationship;
             }
         });
 
-        Spinner citizenship = (Spinner)findViewById(R.id.editRelation);
+        spinnerRelation = (Spinner) findViewById(R.id.editRelation);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.spinner_item, Relation);
-        citizenship.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, Config.strRelations);
 
-        citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Utils.log("item", (String) parent.getItemAtPosition(position));
-                Relationship = (String)parent.getItemAtPosition(position);
-            }
+        if (spinnerRelation != null) {
+            spinnerRelation.setAdapter(adapter);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            spinnerRelation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    strRelation = (String) parent.getItemAtPosition(position);
+                }
 
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
+
 
         editDependantEmail = (EditText) findViewById(R.id.editDependantEmail);
-
         mProgress = new ProgressDialog(DependentDetailPersonalActivity.this);
 
         Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
@@ -226,13 +234,14 @@ private String Relationship;
         editName.setError(null);
         editContactNo.setError(null);
         editAddress.setError(null);
-       //editRelation.setError(null);
+        editTextDate.setError(null);
+        //editRelation.setError(null);
 
         strDependantName = editName.getText().toString().trim();
         final String strContactNo = editContactNo.getText().toString().trim();
         final String strAddress = editAddress.getText().toString().trim();
-        final String strRelation = Relationship;
         final String strEmail = editDependantEmail.getText().toString().trim();
+        final String strDob = editTextDate.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -243,10 +252,11 @@ private String Relationship;
             cancel = true;
         }*/
 
-            if (TextUtils.isEmpty(strRelation)) {
-                editRelation.setError(getString(R.string.error_field_required));
-                focusView = editRelation;
+        if (TextUtils.isEmpty(strRelation) || strRelation.equalsIgnoreCase("Select a Relation")) {
+                /*editRelation.setError(getString(R.string.error_field_required));
+                focusView = editRelation;*/
                 cancel = true;
+            utils.toast(2, 2, getString(R.string.select_relation));
             }
 
             if (TextUtils.isEmpty(strAddress)) {
@@ -264,6 +274,12 @@ private String Relationship;
                 focusView = editContactNo;
                 cancel = true;
             }
+
+        if (TextUtils.isEmpty(strDob)) {
+            editTextDate.setError(getString(R.string.error_field_required));
+            focusView = editTextDate;
+            cancel = true;
+        }
 
             if (TextUtils.isEmpty(strEmail)) {
                 editDependantEmail.setError(getString(R.string.error_field_required));
@@ -285,7 +301,8 @@ private String Relationship;
 
 
         if (cancel) {
-            focusView.requestFocus();
+            if (focusView != null)
+                focusView.requestFocus();
         } else {
             try {
 
@@ -331,18 +348,20 @@ private String Relationship;
                                 dependentModel.setStrAddress(strAddress);
                                 dependentModel.setStrContacts(strContactNo);
                                 dependentModel.setStrEmail(strEmail);
-
+                                dependentModel.setStrDob(strDob);
                                 SignupActivity.dependentNames.add(strDependantName);
                             } else {
                                 if (dependentModel != null &&
                                         SignupActivity.dependentNames.contains(strDependantName)
                                         && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
 
+                                    dependentModel.setStrName(strDependantName);
                                     dependentModel.setStrRelation(strRelation);
                                     dependentModel.setStrImagePath(strImageName);
                                     dependentModel.setStrAddress(strAddress);
                                     dependentModel.setStrContacts(strContactNo);
                                     dependentModel.setStrEmail(strEmail);
+                                    dependentModel.setStrDob(strDob);
                                 } else {
                                     utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                                 }
@@ -548,8 +567,13 @@ private String Relationship;
                 editName.setText(dependentModel.getStrName());
                 editContactNo.setText(dependentModel.getStrContacts());
                 editAddress.setText(dependentModel.getStrAddress());
-                editRelation.setText(dependentModel.getStrRelation());
+                //editRelation.setText(dependentModel.getStrRelation());
                 editDependantEmail.setText(dependentModel.getStrEmail());
+                editTextDate.setText(dependentModel.getStrDob());
+
+                //
+                spinnerRelation.setSelection(Config.strRelationsList.indexOf(dependentModel.getStrRelation()));
+                //
 
                 if (!strDependantName.equalsIgnoreCase("") && !isCamera) {
                     strImageName = dependentModel.getStrImagePath();
