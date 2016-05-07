@@ -3,14 +3,12 @@ package com.hdfc.libs;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import android.widget.ImageView;
 
-import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 
 import java.lang.ref.WeakReference;
@@ -22,7 +20,7 @@ import java.lang.ref.WeakReference;
 public class MultiBitmapLoader {
 
     private static Context _context;
-    private static Bitmap preLoadBitmap;
+    //private static Bitmap preLoadBitmap;
     private static Utils utils;
     private LruCache<String, Bitmap> mMemoryCache;
 
@@ -31,7 +29,7 @@ public class MultiBitmapLoader {
         utils = new Utils(context);
 
         final int maxMemory = utils.getMemory();
-        preLoadBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
+        //preLoadBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
 
         // Use 1/8th of the available memory for this memory cache.
         final int cacheSize = maxMemory / 8;
@@ -98,7 +96,7 @@ public class MultiBitmapLoader {
                     imgView.setImageBitmap(bitmap);
                 } else {
                     BitmapWorkerTask task = new BitmapWorkerTask(imgView);
-                    final AsyncDrawable asyncDrawable = new AsyncDrawable(_context.getResources(), preLoadBitmap, task);
+                    final AsyncDrawable asyncDrawable = new AsyncDrawable(_context.getResources(), Utils.noBitmap, task);
                     imgView.setImageDrawable(asyncDrawable);
                     task.execute(strPath);
                 }

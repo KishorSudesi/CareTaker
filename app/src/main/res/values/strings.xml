@@ -34,6 +34,7 @@
     <string name="by">By&#160;</string>
     <string name="mobile">Mobile</string>
     <string name="landline">Landline</string>
+    <string name="left">Left</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
@@ -87,12 +88,13 @@
     <string name="service_continue">Press Get Services</string>
     <string name="existing_request">A Transaction is already in process, Please Wait…</string>
     <string name="existing_recipient">Previous Care Recipient</string>
-    <string name="left">Left</string>
+    <string name="milestones">Services Involved in &#160;</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
     <string name="success_login">You are In, Please wait…</string>
     <string name="service_added">Services Added Successfully</string>
+    <string name="activity_added">Activity Created Successfully</string>
     <string name="register_success">Account Registered Successfully</string>
     <string name="update_profile_image">Profile Image Updated Successfully</string>
     <string name="rating_added">Rating Added</string>
@@ -162,5 +164,9 @@
 
     <!--Google Strings-->
     <string name="google_app_id">910502819263</string>
+
+
+    <!--Dialog Strings-->
+    <string name="activity_not_saved">Your Activity created partially, Press Ok to proceed</string>
 
 </resources>

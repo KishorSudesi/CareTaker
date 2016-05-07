@@ -99,11 +99,11 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 isUpdating = true;
 
                                 addServices();
-                            } else utils.toast(2, 2, getString(R.string.warning_internet));
+                            } else Utils.toast(2, 2, getString(R.string.warning_internet));
 
-                        } else utils.toast(2, 2, getString(R.string.existing_request));
+                        } else Utils.toast(2, 2, getString(R.string.existing_request));
 
-                    } else utils.toast(2, 2, getResources().getString(R.string.error_service));
+                    } else Utils.toast(2, 2, getResources().getString(R.string.error_service));
                 }
             });
         }
@@ -210,7 +210,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                utils.toast(2, 2, getString(R.string.service_continue));
+                Utils.toast(2, 2, getString(R.string.service_continue));
                 buttonContinue.setEnabled(true);
             }
         });
@@ -288,7 +288,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             }
 
                         } else {
-                            utils.toast(2, 2, getString(R.string.warning_internet));
+                            Utils.toast(2, 2, getString(R.string.warning_internet));
                         }
 
                         refreshAdapter();
@@ -304,9 +304,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                 String strMess = jsonObjectError.getString("details");
 
-                                utils.toast(2, 2, strMess);
+                                Utils.toast(2, 2, strMess);
                             } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
                         } catch (JSONException e1) {
@@ -335,6 +335,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 }
 
                 additionalServicesAdapter.notifyDataSetChanged();
+                int count = additionalServicesAdapter.getGroupCount();
+                for (int i = 0; i < count; i++)
+                    listView.expandGroup(i);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -365,7 +368,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
                             } catch (Exception e1) {
@@ -392,9 +395,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                             getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
-                                    utils.toast(2, 2, strMess);
+                                    Utils.toast(2, 2, strMess);
                                 } else {
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
                             } catch (JSONException e1) {
@@ -415,7 +418,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.warning_internet));
+            Utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 
@@ -434,6 +437,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 //todo check to update this
                 jsonObjectServices.put("updated_date", strDate);
                 jsonObjectServices.put("unit", jsonObject.getInt("unit") + serviceModel.getiUnit());
+                jsonObjectServices.put("unit_value", serviceModel.getiUnitValue());
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -463,7 +467,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
                                 e1.printStackTrace();
@@ -481,9 +485,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                             getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
-                                    utils.toast(2, 2, strMess);
+                                    Utils.toast(2, 2, strMess);
                                 } else {
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
                             } catch (JSONException e1) {
@@ -495,7 +499,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.warning_internet));
+            Utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 
@@ -510,6 +514,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
             jsonObjectHistory.put("purchased_date", strDate);
             jsonObjectHistory.put("unit", serviceModel.getiUnit());
+            jsonObjectHistory.put("unit_value", serviceModel.getiUnitValue());
             jsonObjectHistory.put("service_name", serviceModel.getStrServiceName());
             jsonObjectHistory.put("service_no", serviceModel.getiServiceNo());
             jsonObjectHistory.put("service_id", serviceModel.getStrServiceId());
@@ -596,6 +601,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
                 jsonObjectServices.put("unit", serviceModel.getiUnit());
                 jsonObjectServices.put("unit_consumed", 0);
+                jsonObjectServices.put("unit_value", serviceModel.getiUnitValue());
                 jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
                 jsonObjectServices.put("service_no", serviceModel.getiServiceNo());
                 jsonObjectServices.put("service_id", serviceModel.getStrServiceId());
@@ -604,8 +610,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 jsonObjectServices.put("category_name", serviceModel.getStrCategoryName());
                 jsonObjectServices.put("service_type", serviceModel.getStrServiceType());
                 jsonObjectServices.put("customer_id", Config.customerModel.getStrCustomerID());
-
-                //todo add milestones
 
                 JSONArray jsonArrayMilestones = new JSONArray();
 
@@ -687,7 +691,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -710,9 +714,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                             getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
-                                    utils.toast(2, 2, strMess);
+                                    Utils.toast(2, 2, strMess);
                                 } else {
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
                             } catch (JSONException e1) {
@@ -733,7 +737,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.warning_internet));
+            Utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 
@@ -777,7 +781,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
                             } catch (Exception e1) {
@@ -798,12 +802,12 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                     else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
-                                        utils.toast(2, 2, getString(R.string.error));
+                                        Utils.toast(2, 2, getString(R.string.error));
                                     }
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
                             } catch (Exception e1) {
@@ -815,7 +819,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.warning_internet));
+            Utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 
@@ -861,7 +865,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             progressDialog.dismiss();
         isUpdating = false;
         //buttonContinue.setEnabled(false);
-        utils.toast(1, 1, getString(R.string.service_added));
+        Utils.toast(1, 1, getString(R.string.service_added));
         goBack();
     }
 }

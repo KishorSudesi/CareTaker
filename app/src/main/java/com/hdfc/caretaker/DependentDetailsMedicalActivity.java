@@ -15,19 +15,18 @@ import android.widget.EditText;
 
 import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
-import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 
 import java.util.Date;
 
 public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
+    public static Date date = null;
     private Utils utils;
     private EditText editAge, editDiseases, editNotes;
     private String strAge, strDiseases, strNotes;
     private ProgressDialog progressDialog;
     private Button buttonContinue;
-   Date dat;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -195,7 +194,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
         } else {
             progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.dependent_data_lost));
+            Utils.toast(2, 2, getString(R.string.dependent_data_lost));
         }
 
     }
@@ -220,7 +219,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         //
 
         progressDialog.dismiss();
-        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+        Utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
 
         startActivity(selection);
         finish();
@@ -244,7 +243,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             gotoDependnetList();
         } else {
             progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.dependent_data_lost));
+            Utils.toast(2, 2, getString(R.string.dependent_data_lost));
         }
     }
 
@@ -262,7 +261,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
        // strAge = utils.getAge(DependentDetailPersonalActivity.iDate, DependentDetailPersonalActivity.iMonth,DependentDetailPersonalActivity.iYear);
 
 
-       strAge = utils.getAge(Config.dat);
+        strAge = utils.getAge(date);
         editAge.setText(strAge);
 
         DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));

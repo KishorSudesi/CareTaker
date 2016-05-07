@@ -7,6 +7,7 @@
   "customer_id": "56f53951e4b004bad20daf54",
   "service_id": "56f53980e4b003cbd56f2cea",
   "purchased_date": "2016-04-28T18:13:27.369Z",
+  "unit_value": 1,
   "milestones": [
     {
       "name": "Appointment Confirmation",

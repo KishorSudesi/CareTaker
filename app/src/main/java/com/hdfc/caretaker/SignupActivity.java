@@ -132,6 +132,9 @@ public class SignupActivity extends FragmentActivity {
             btnAction(1);
         } else btnAction(0);
 
+        if (dependentModels.size() > 0)
+            CustomViewPager.setPagingEnabled(true);
+
         getIntent().putExtra("LIST_DEPENDANT", false);
     }
 

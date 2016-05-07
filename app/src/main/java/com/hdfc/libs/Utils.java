@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hdfc.adapters.NotificationAdapter;
+import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.LoginActivity;
@@ -92,6 +93,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,7 +104,8 @@ public class Utils {
 
     //application specific
     public final static SimpleDateFormat readFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Config.locale);
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
+
     public final static SimpleDateFormat writeFormat =
             new SimpleDateFormat("kk:mm aa dd MMM yyyy", Config.locale);
     public final static SimpleDateFormat writeFormatActivity =
@@ -114,6 +117,7 @@ public class Utils {
 
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
+    public static Bitmap noBitmap;
     private static Handler threadHandler;
     private static int iActivityCount = 0;
     private static ProgressDialog progressDialog;
@@ -136,7 +140,13 @@ public class Utils {
         Config.intScreenWidth = metrics.widthPixels;
         Config.intScreenHeight = metrics.heightPixels;
 
-        readFormat.setTimeZone(Config.timeZone); //TimeZone.getDefault()
+        readFormat.setTimeZone(TimeZone.getTimeZone("UTC")); //TimeZone.getDefault()
+
+        try {
+            noBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
+        } catch (Exception | OutOfMemoryError e) {
+            e.printStackTrace();
+        }
     }
 
     public static native String getString();
@@ -639,7 +649,7 @@ public class Utils {
         try {
 
             Config.intSelectedMenu = 0;
-            Config.intDependentsCount = 0;
+            //Config.intDependentsCount = 0;
 
             //Config.serviceModels.clear();
             Config.dependentNames.clear();
@@ -655,6 +665,8 @@ public class Utils {
 
             //todo clear shared pref.
 
+            unregisterGcm();
+
             File fileImage = createFileInternal("images/");
             deleteAllFiles(fileImage);
 
@@ -665,6 +677,22 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void unregisterGcm() {
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    App42GCMService.unRegisterGcm();
+                } catch (Exception bug) {
+                    bug.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 
     /*public void setupUI(View view) {
@@ -687,6 +715,52 @@ public class Utils {
             }
         }
     }*/
+
+    public static void toast(int type, int duration, String message) {
+
+        String strColor = "#ffffff";
+
+        if (type == 2)
+            strColor = "#fcc485";
+
+        try {
+            LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
+            View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).
+                    findViewById(R.id.toast_layout_root));
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText(message);
+            text.setTextColor(Color.parseColor(strColor));
+
+            Toast toast = new Toast(_ctxt);
+            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+
+            if (duration == 2)
+                toast.setDuration(Toast.LENGTH_LONG);
+            else
+                toast.setDuration(Toast.LENGTH_SHORT);
+
+            toast.setView(layout);
+            toast.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(_ctxt, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void refreshNotifications() {
+
+        if (NotificationFragment.listViewActivities != null) {
+
+            NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
+                    Config.dependentModels.
+                            get(Config.intSelectedDependent).
+                            getNotificationModels());
+
+            NotificationFragment.listViewActivities.
+                    setAdapter(NotificationFragment.notificationAdapter);
+        }
+    }
 
     public void moveFile(File file, File newFile) throws IOException {
         //File newFile = new File(dir, file.getName());
@@ -758,12 +832,12 @@ public class Utils {
      *
      * @return ageS String The user's age in years based on the supplied DoB.
      */
-    public String getAge( Date date) {
+    public String getAge(Date date) {
 
         Calendar today = Calendar.getInstance();
         Calendar dob = Calendar.getInstance();
 
-        dob.setTime( date);
+        dob.setTime(date);
 
         int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
@@ -771,10 +845,9 @@ public class Utils {
             age--;
         }
 
-        Integer ageInt = new Integer(age);
-        String ageS = ageInt.toString();
+        Integer ageInt = age;
 
-        return ageS;
+        return ageInt.toString();
     }
 
     public boolean isConnectingToInternet() {
@@ -790,6 +863,17 @@ public class Utils {
         }
         return false;
     }
+
+    /*private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
+
+        if (v == null)
+            return;
+
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
+    }*/
 
     /**
      * Shows the progress UI and hides the login form.
@@ -833,6 +917,16 @@ public class Utils {
         return isValid;
     }
 
+    /*public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }*/
+
     public File createFileInternalImage(String strFileName) {
 
         File file = null;
@@ -845,17 +939,6 @@ public class Utils {
 
         return file;
     }
-
-    /*private void updateView(int index, ListView listView) {
-        View v = listView.getChildAt(index -
-                listView.getFirstVisiblePosition());
-
-        if (v == null)
-            return;
-
-        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
-        //someText.setText("Hi! I updated you manually!");
-    }*/
 
     public void selectImage(final String strFileName, final Fragment fragment,
                             final Activity activity) {
@@ -897,16 +980,6 @@ public class Utils {
         });
         builder.show();
     }
-
-    /*public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }*/
 
     public void openCamera(String strFileName, Fragment fragment, final Activity activity) {
 
@@ -1053,6 +1126,8 @@ public class Utils {
         return jsonArray;
     }
 
+    //Application Specigfic Start
+
     //load image from url
     public void loadImageFromWeb(String strFileName, String strFileUrl) {
 
@@ -1061,8 +1136,8 @@ public class Utils {
 
         File fileImage = createFileInternal("images/" + strFileName);
 
-        log(strFileName + " ~ " + strFileUrl, " Path ");
-        //fileImage.
+        log(strFileName + " ~ " + fileImage.lastModified(), " Load Image ");
+
         if (fileImage.length() <= 0) {
 
             InputStream input;
@@ -1078,6 +1153,7 @@ public class Utils {
                     while ((bytesRead = input.read(buffer, 0, buffer.length)) >= 0) {
                         output.write(buffer, 0, bytesRead);
                     }
+                    log(" Done ", " Load Image ");
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -1117,8 +1193,6 @@ public class Utils {
         }
         return output;
     }
-
-    //Application Specigfic Start
 
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -1387,12 +1461,14 @@ public class Utils {
 
     protected void updateTabColor(int id, View v) {
 
-        for (int i = 0; i < Config.dependentNames.size(); i++) {
+        for (int i = 0; i < Config.dependentModels.size(); i++) {
             Button tab = (Button) v.findViewById(i);
             if (i == id) {
                 tab.setBackgroundResource(R.drawable.one_side_border);
+                tab.setTextColor(_ctxt.getResources().getColor(R.color.colorPrimaryDark));
             } else {
                 tab.setBackgroundResource(R.drawable.button_back_trans);
+                tab.setTextColor(_ctxt.getResources().getColor(R.color.colorAccentDark));
             }
 
         }
@@ -1429,6 +1505,34 @@ public class Utils {
 
         return count;
     }
+
+   /* public String formatDateActivity(String strDate){
+
+        String strDisplayDate="06-03-2016 20:55:00";
+
+        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+            Date date = convertStringToDate(strDate);
+
+            if(date!=null)
+                strDisplayDate = writeFormatActivity.format(date);
+        }
+
+        return strDisplayDate;
+    }
+
+    public String formatDateActivityMonthYear(String strDate){
+
+        String strDisplayDate="06-03-2016 20:55:00";
+
+        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+            Date date = convertStringToDate(strDate);
+
+            if(date!=null)
+                strDisplayDate = writeFormatActivityMonthYear.format(date);
+        }
+
+        return strDisplayDate;
+    }*/
 
     public int retrieveConfirmDependants() {
 
@@ -1494,66 +1598,6 @@ public class Utils {
         return strDisplayDate;
     }
 
-   /* public String formatDateActivity(String strDate){
-
-        String strDisplayDate="06-03-2016 20:55:00";
-
-        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
-            Date date = convertStringToDate(strDate);
-
-            if(date!=null)
-                strDisplayDate = writeFormatActivity.format(date);
-        }
-
-        return strDisplayDate;
-    }
-
-    public String formatDateActivityMonthYear(String strDate){
-
-        String strDisplayDate="06-03-2016 20:55:00";
-
-        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
-            Date date = convertStringToDate(strDate);
-
-            if(date!=null)
-                strDisplayDate = writeFormatActivityMonthYear.format(date);
-        }
-
-        return strDisplayDate;
-    }*/
-
-    public void toast(int type, int duration, String message) {
-
-        String strColor = "#ffffff";
-
-        if (type == 2)
-            strColor = "#fcc485";
-
-        try {
-            LayoutInflater inflater = ((Activity) _ctxt).getLayoutInflater();
-            View layout = inflater.inflate(R.layout.custom_toast, (ViewGroup) ((Activity) _ctxt).
-                    findViewById(R.id.toast_layout_root));
-
-            TextView text = (TextView) layout.findViewById(R.id.text);
-            text.setText(message);
-            text.setTextColor(Color.parseColor(strColor));
-
-            Toast toast = new Toast(_ctxt);
-            toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-
-            if (duration == 2)
-                toast.setDuration(Toast.LENGTH_LONG);
-            else
-                toast.setDuration(Toast.LENGTH_SHORT);
-
-            toast.setView(layout);
-            toast.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(_ctxt, message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public boolean isPasswordValid(String password) {
         return password.length() > 1;
     }
@@ -1591,9 +1635,9 @@ public class Utils {
                                 String strDocument = jsonDocument.getJsonDoc();
 
                                 try {
-                                    Config.jsonCustomer = new JSONObject(strDocument);
-                                    createCustomerModel(jsonDocument.getDocId());
-                                } catch (JSONException e) {
+                                    //Config.jsonCustomer = new JSONObject(strDocument);
+                                    createCustomerModel(jsonDocument.getDocId(), strDocument);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
@@ -1645,21 +1689,29 @@ public class Utils {
         }
     }
 
-    public void createCustomerModel(String strDocumentId) {
+    public void createCustomerModel(String strDocumentId, String strDocument) {
         try {
-            if (Config.jsonCustomer.has("customer_name")) {
+            JSONObject jsonObject = new JSONObject(strDocument);
+            if (jsonObject.has("customer_name")) {
 
                 Config.customerModel = new CustomerModel(
-                        Config.jsonCustomer.getString("customer_name"),
-                        Config.jsonCustomer.getString("paytm_account"),
-                        Config.jsonCustomer.getString("customer_profile_url"),
-                        Config.jsonCustomer.getString("customer_address"),
-                        Config.jsonCustomer.getString("customer_contact_no"),
-                        Config.jsonCustomer.getString("customer_email"),
+                        jsonObject.getString("customer_name"),
+                        jsonObject.getString("paytm_account"),
+                        jsonObject.getString("customer_profile_url"),
+                        jsonObject.getString("customer_address"),
+                        jsonObject.getString("customer_contact_no"),
+                        jsonObject.getString("customer_email"),
                         strDocumentId, "");
 
+                Config.customerModel.setStrDob(jsonObject.getString("customer_dob"));
+                Config.customerModel.setStrCountryCode(jsonObject.getString("customer_country"));
+                Config.customerModel.setStrCountryIsdCode(jsonObject.getString("customer_country_code"));
+                Config.customerModel.setStrCountryAreaCode(jsonObject.getString("customer_area_code"));
+                Config.customerModel.setStrCity(jsonObject.getString("customer_city"));
+                Config.customerModel.setStrState(jsonObject.getString("customer_state"));
+
                 Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(),
-                        Config.jsonCustomer.getString("customer_profile_url"), "IMAGE"));
+                        jsonObject.getString("customer_profile_url"), "IMAGE"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1677,6 +1729,7 @@ public class Utils {
             serviceModel.setStrCategoryName(jsonObject.getString("category_name"));
             serviceModel.setiUnit(jsonObject.getInt("unit"));
             serviceModel.setStrServiceType(jsonObject.getString("service_type"));
+            serviceModel.setiUnitValue(jsonObject.getInt("unit_value"));
 
             if (jsonObject.has("milestones")) {
 
@@ -1905,15 +1958,15 @@ public class Utils {
                 activityModel.setStrProviderID(jsonObjectActivity.getString("provider_id"));
                 activityModel.setStrActivityStatus(jsonObjectActivity.getString("status"));
                 activityModel.setStrActivityDesc(jsonObjectActivity.getString("activity_desc"));
-                activityModel.setStrActivityMessage(jsonObjectActivity.
-                        getString("activity_message"));
+              /*  activityModel.setStrActivityMessage(jsonObjectActivity.
+                        getString("activity_message"));*/
 
                 if (!Config.strProviderIds.contains(jsonObjectActivity.getString("provider_id")))
                     Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
 
                 activityModel.setStrServcieID(jsonObjectActivity.getString("service_id"));
                 activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
-                activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));
+               /* activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));*/
 
                 activityModel.setStrActivityDate(jsonObjectActivity.getString("activity_date"));
                 activityModel.setStrActivityDoneDate(jsonObjectActivity.
@@ -1924,7 +1977,7 @@ public class Utils {
                 activityModel.setStrActivityProviderStatus(jsonObjectActivity.
                         getString("provider_status"));
 
-                String strFeatures[] = jsonToStringArray(jsonObjectActivity.
+               /* String strFeatures[] = jsonToStringArray(jsonObjectActivity.
                         getJSONArray("features"));
 
                 activityModel.setStrFeatures(strFeatures);
@@ -1932,7 +1985,7 @@ public class Utils {
                 String strFeaturesDone[] = jsonToStringArray(jsonObjectActivity.
                         getJSONArray("features"));
 
-                activityModel.setStrFeaturesDone(strFeaturesDone);
+                activityModel.setStrFeaturesDone(strFeaturesDone);*/
 
                 ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
                 ArrayList<VideoModel> videoModels = new ArrayList<>();
@@ -2313,24 +2366,7 @@ public class Utils {
         }
     }
 
-    public void refreshNotifications() {
-
-        if (NotificationFragment.listViewActivities != null) {
-
-            NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
-                    Config.dependentModels.
-                            get(Config.intSelectedDependent).
-                            getNotificationModels());
-
-            NotificationFragment.listViewActivities.
-                    setAdapter(NotificationFragment.notificationAdapter);
-        }
-    }
-
-
     public void refreshNotificationsImages() {
-
-        refreshNotifications();
 
         progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -2344,13 +2380,16 @@ public class Utils {
 
     public void goToDashboard() {
 
-        toast(1, 1, _ctxt.getString(R.string.success_login));
+        progressDialog = new ProgressDialog(_ctxt);
+        progressDialog.setMessage(_ctxt.getResources().getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         Config.intSelectedMenu = Config.intDashboardScreen;
-        Config.boolIsLoggedIn = true;
 
-        Intent intent = new Intent(_ctxt, DashboardActivity.class);
-        _ctxt.startActivity(intent);
+        threadHandler = new ThreadHandler();
+        Thread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
     }
 
     public void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog) {
@@ -2464,6 +2503,17 @@ public class Utils {
 
             if (progressDialog != null && progressDialog.isShowing())
                 progressDialog.dismiss();
+
+            if (Config.intSelectedMenu == Config.intNotificationScreen)
+                refreshNotifications();
+
+            if (Config.intSelectedMenu == Config.intDashboardScreen) {
+                toast(1, 1, _ctxt.getString(R.string.success_login));
+                Config.boolIsLoggedIn = true;
+                Intent intent = new Intent(_ctxt, DashboardActivity.class);
+                _ctxt.startActivity(intent);
+            }
+
         }
     }
 

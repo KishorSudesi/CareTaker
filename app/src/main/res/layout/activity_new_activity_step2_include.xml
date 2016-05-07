@@ -5,13 +5,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="250dp"
         android:layout_gravity="center_horizontal">
 
         <ImageView
             android:id="@+id/carlaImage"
             android:layout_width="match_parent"
-            android:layout_height="340dp"
+            android:layout_height="250dp"
             android:background="@null" />
 
         <TextView
@@ -35,6 +35,30 @@
             android:textColor="@color/colorWhite" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textViewLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_general"
+        android:layout_weight="0"
+        android:padding="@dimen/padding_general"
+        android:text="@string/milestones"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:id="@+id/milestoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_general"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_general"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

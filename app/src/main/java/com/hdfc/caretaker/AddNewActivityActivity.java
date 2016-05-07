@@ -33,10 +33,8 @@ import java.util.List;
 
 public class AddNewActivityActivity extends AppCompatActivity {
 
-    public static List<ServiceModel> dependentServiceModels = new ArrayList<>();
-    public static List<ServiceModel> selectedDependentServiceModels = new ArrayList<>();
+    public static ServiceModel selectedServiceModel = null;
     private static ProgressDialog progressDialog;
-    private static Button buttonContinue;
     private static ArrayList<String> strServcieIds = new ArrayList<>();
     private static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
     private static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
@@ -45,9 +43,10 @@ public class AddNewActivityActivity extends AppCompatActivity {
     private List<String> listDataHeader = new ArrayList<>();
     private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
 
+    private Button buttonContinue;
+
     private ExpandableListView listView;
     private ActivityServicesAdapter activityServicesAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +68,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
         if (listView != null) {
             listView.setEmptyView(textViewEmpty);
 
+            // listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+
             activityServicesAdapter = new ActivityServicesAdapter(this, listDataChild,
                     listDataHeader);
             listView.setAdapter(activityServicesAdapter);
@@ -79,6 +80,13 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 public boolean onChildClick(ExpandableListView parent, View v,
                                             int groupPosition, int childPosition, long id) {
 
+                   /* int count = parent.getChildCount();
+                    View v1;
+
+                    View v2 = parent.getChildAt(groupPosition);*/
+
+
+
                     RadioButton checkBox = (RadioButton) v.findViewById(R.id.checkBoxService);
                     ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
 
@@ -86,11 +94,27 @@ public class AddNewActivityActivity extends AppCompatActivity {
                         checkBox.setChecked(false);
                         checkBox.setButtonDrawable(getResources().
                                 getDrawable(R.mipmap.check_off));
+                        selectedServiceModel = null;
                     } else {
+
+                       /* //
+                        for (int i = 0; i < count; i++) {
+                                v1 = parent.getChildAt(i);
+                                RadioButton checkBoxAll = (RadioButton) v1.findViewById(R.id.checkBoxService);
+                                checkBoxAll.setChecked(false);
+                        }
+                        //
+*/
                         checkBox.setChecked(true);
                         checkBox.setButtonDrawable(getResources().
                                 getDrawable(R.mipmap.check_on));
+                        selectedServiceModel = serviceModel;
                     }
+
+                    if (selectedServiceModel == null)
+                        buttonContinue.setVisibility(View.INVISIBLE);
+                    else
+                        buttonContinue.setVisibility(View.VISIBLE);
 
                     return false;
                 }
@@ -162,27 +186,16 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
     public void refreshAdapter() {
 
-        Utils.log(" 4 ", " IN ");
-
         try {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
 
-            Utils.log(" 5 ", " IN ");
-
             if (listView != null) {
-
-                Utils.log(" 6 ", " IN ");
 
                 listDataHeader.clear();
                 listDataChild.clear();
 
-                Utils.log(String.valueOf(categoryServiceModels.size()), " IN 4");
-
                 for (CategoryServiceModel categoryServiceModel : categoryServiceModels) {
-
-                    Utils.log(categoryServiceModel.getStrCategoryName(), " CAT ");
-                    Utils.log(String.valueOf(categoryServiceModel.getServiceModels().size()), " CAT S");
 
                     listDataHeader.add(categoryServiceModel.getStrCategoryName());
                     listDataChild.put(categoryServiceModel.getStrCategoryName(),
@@ -190,6 +203,10 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 }
 
                 activityServicesAdapter.notifyDataSetChanged();
+
+                int count = activityServicesAdapter.getGroupCount();
+                for (int i = 0; i < count; i++)
+                    listView.expandGroup(i);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,18 +215,17 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
     public void addNewActivityStep2(View v) {
 
-        if (selectedDependentServiceModels.size() > 0) {
+        if (selectedServiceModel != null) {
 
-            ServiceModel serviceModel = selectedDependentServiceModels.get(0);
-
-            if((serviceModel.getiUnit()-serviceModel.getiUnitUsed())>0) {
+            if ((selectedServiceModel.getiUnit() - selectedServiceModel.getiUnitUsed()) > 0) {
 
                 Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
                 startActivity(newIntent);
                 finish();
-            } else utils.toast(2, 2, getResources().getString(R.string.error_service_zero));
 
-        } else utils.toast(2, 2, getResources().getString(R.string.error_service));
+            } else Utils.toast(2, 2, getResources().getString(R.string.error_service_zero));
+
+        } else Utils.toast(2, 2, getResources().getString(R.string.error_service));
     }
 
     @Override
@@ -247,8 +263,6 @@ public class AddNewActivityActivity extends AppCompatActivity {
                         try {
                             if (storage != null) {
 
-                                Utils.log(storage.toString(), "RESP");
-
                                 ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
 
                                 for (int i = 0; i < jsonDocList.size(); i++) {
@@ -269,7 +283,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
                             refreshAdapter();
@@ -290,10 +304,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(ex.getMessage());
                                 JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                 String strMess = jsonObjectError.getString("details");
-
-                                utils.toast(2, 2, strMess);
+                                //Utils.toast(2, 2, strMess);
                             } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
                         } catch (JSONException e1) {
@@ -320,6 +333,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
             serviceModel.setiUnit(jsonObject.getInt("unit"));
             serviceModel.setiUnitUsed(jsonObject.getInt("unit_consumed"));
             serviceModel.setStrServiceType(jsonObject.getString("service_type"));
+            serviceModel.setiUnitValue(jsonObject.getInt("unit_value"));
 
             if (jsonObject.has("milestones")) {
 
@@ -338,7 +352,6 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
                     milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
 
-                    //
                     if (jsonObjectMilestone.has("fields")) {
 
                         JSONArray jsonArrayFields = jsonObjectMilestone.
@@ -396,17 +409,13 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 }
             }
 
-            serviceModel.setStrServiceId(strDocumentId);
+            serviceModel.setStrServiceId(jsonObject.getString("service_id"));
 
             if (!strServcieIds.contains(strDocumentId)) {
                 strServcieIds.add(strDocumentId);
 
-                Utils.log(" 1 ", " IN ");
-
                 if (!strServiceCategoryNames.contains(jsonObject.getString("category_name"))) {
                     strServiceCategoryNames.add(jsonObject.getString("category_name"));
-
-                    Utils.log(" 2 ", " IN ");
 
                     CategoryServiceModel categoryServiceModel = new CategoryServiceModel();
                     categoryServiceModel.setStrCategoryName(jsonObject.getString("category_name"));
@@ -415,11 +424,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     categoryServiceModels.add(categoryServiceModel);
                 } else {
                     int iPosition = strServiceCategoryNames.indexOf(jsonObject.getString("category_name"));
-
-                    Utils.log(" 3 ", " IN ");
                     categoryServiceModels.get(iPosition).setServiceModels(serviceModel);
                 }
-                //
             }
 
         } catch (JSONException e) {

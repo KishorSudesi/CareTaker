@@ -1,10 +1,7 @@
 package com.hdfc.caretaker;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hdfc.app42service.App42GCMController;
-import com.hdfc.app42service.App42GCMService;
 import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.AddRatingCompletedActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
@@ -28,16 +24,12 @@ import com.shephertz.app42.paas.sdk.android.App42API;
  */
 public class DashboardActivity extends AppCompatActivity implements App42GCMController.App42GCMListener {
 
-    private static Handler threadHandler;
-    private static ProgressDialog progressDialog;
-    private Utils utils;
+    //private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_layout);
-
-        progressDialog = new ProgressDialog(DashboardActivity.this);
 
         ImageButton buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
         TextView txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
@@ -127,6 +119,11 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             });
         }
 
+        if (Config.intSelectedMenu == Config.intDashboardScreen) {
+            //Config.intSelectedMenu = 0;
+            goToDashboard();
+        }
+
         if (Config.intSelectedMenu == Config.intNotificationScreen) {
             // Config.intSelectedMenu = 0;
             goToNotifications();
@@ -143,17 +140,17 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             goToActivity();
         }
 
-        utils = new Utils(DashboardActivity.this);
+        //utils = new Utils(DashboardActivity.this);
 
         try {
             if (!AccountSuccessActivity.isCreatedNow) {
-                threadHandler = new ThreadHandler();
+                /*threadHandler = new ThreadHandler();
                 Thread backgroundThread = new BackgroundThread();
                 backgroundThread.start();
 
                 progressDialog.setMessage(getResources().getString(R.string.loading));
                 progressDialog.setCancelable(false);
-                progressDialog.show();
+                progressDialog.show();*/
             } else {
                 //Config.intSelectedMenu = 0;
                 goToDashboard();
@@ -199,22 +196,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     @Override
     public void onRegisterApp42(String var1) {
         App42GCMController.storeApp42Success(DashboardActivity.this);
-    }
-
-    public void unregisterGcm() {
-
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    App42GCMService.unRegisterGcm();
-                } catch (Exception bug) {
-                    bug.printStackTrace();
-                }
-            }
-        });
-        thread.start();
     }
 
     public void goToNotifications() {
@@ -298,7 +279,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         }
     }
 
-    public class BackgroundThread extends Thread {
+   /* public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {
@@ -320,5 +301,5 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 goToDashboard();
             }
         }
-    }
+    }*/
 }

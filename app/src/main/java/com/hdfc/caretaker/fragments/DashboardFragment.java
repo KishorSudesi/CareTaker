@@ -50,8 +50,8 @@ public class DashboardFragment extends Fragment {
     private static Handler threadHandler;
     private static int iPosition;
     private static Context context;
+    private static Utils utils;
     public CarouselPagerAdapter adapter;
-    private Utils utils;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -113,6 +113,7 @@ public class DashboardFragment extends Fragment {
 
         pager = (ViewPager) rootView.findViewById(R.id.dpndntCarousel);
 
+
         textView1 = (TextView) rootView.findViewById(R.id.textView1);
         textView2 = (TextView) rootView.findViewById(R.id.textView2);
         textView3 = (TextView) rootView.findViewById(R.id.textView3);
@@ -149,7 +150,7 @@ public class DashboardFragment extends Fragment {
 
                 int intPosition, intReversePosition;
 
-                if (pager.getCurrentItem() == Config.intDependentsCount - 1) {
+                if (pager.getCurrentItem() == Config.dependentNames.size() - 1) {
                     intPosition = 0;
                     intReversePosition = intPosition + 1;
                 } else {
@@ -203,6 +204,8 @@ public class DashboardFragment extends Fragment {
 
             if (bitmap != null)
                 roundedImageView.setImageBitmap(bitmap);
+            else
+                roundedImageView.setImageBitmap(Utils.noBitmap);
         }
     }
 
@@ -223,7 +226,8 @@ public class DashboardFragment extends Fragment {
 
             // Necessary or the pager will only have one extra page to show
             // make this at least however many pages you can see
-            pager.setOffscreenPageLimit(Config.intDependentsCount); //1
+            pager.setOffscreenPageLimit(Config.dependentModels.size()); //1
+            //
 
             // Set margin for pages as a negative number, so a part of next and
             // previous pages will be showed

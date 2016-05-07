@@ -20,12 +20,12 @@ import com.hdfc.views.MyLinearView;
 
 public class ImagesFragment extends Fragment {
 
-    private static Bitmap bitmap;
     private static Utils utils;
-    private static int intPosition;
     private static Handler threadHandler;
-    private static ImageView imageView;
-    private static RelativeLayout loadingPanel;
+    private Bitmap bitmap;
+    private int intPosition;
+    private ImageView imageView;
+    private RelativeLayout loadingPanel;
 
     public static Fragment newInstance(Context context, int pos,
                                        float scale) {
@@ -56,6 +56,8 @@ public class ImagesFragment extends Fragment {
 
         try {
 
+            Utils.log(" 3 ", " IN ");
+
             loadingPanel.setVisibility(View.VISIBLE);
 
             threadHandler = new ThreadHandler();
@@ -65,7 +67,6 @@ public class ImagesFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         MyLinearView root = (MyLinearView) l.findViewById(R.id.root);
         float scale = this.getArguments().getFloat("scale");
@@ -77,15 +78,18 @@ public class ImagesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Utils.log(" 4 ", " IN ");
     }
 
-    public static class ThreadHandler extends Handler {
+    public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            Utils.log("IN", "1");
             loadingPanel.setVisibility(View.GONE);
+            Utils.log(" 5 ", " IN ");
             if (bitmap != null)
                 imageView.setImageBitmap(bitmap);
+            else
+                imageView.setImageBitmap(Utils.noBitmap);
         }
     }
 
@@ -93,15 +97,11 @@ public class ImagesFragment extends Fragment {
         @Override
         public void run() {
             try {
-
-               /* bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
-                        utils.replaceSpace(Config.dependentNames.get(intPosition))).getAbsolutePath(),
-                        Config.intWidth, Config.intHeight);
-*/
                 bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                         utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
                         Config.intWidth, Config.intHeight);
-                Utils.log("IN", "0");
+                Utils.log(Config.dependentModels.get(intPosition).getStrDependentID() + " ~ " +
+                        Config.dependentModels.get(intPosition).getStrName(), " Pah ");
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();

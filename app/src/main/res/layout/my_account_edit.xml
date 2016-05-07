@@ -142,22 +142,22 @@
                     android:inputType="textPassword"
                     android:padding="10dp" />
 
-                <EditText
-                    android:id="@+id/editTextNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="25dp"
-                    android:background="@drawable/edit_text"
-                    android:drawableLeft="@drawable/receiver_icon"
-                    android:drawablePadding="15dp"
-                    android:drawableStart="@drawable/receiver_icon"
-                    android:hint="@string/number"
-                    android:inputType="number"
-                    android:maxLength="10"
-                    android:paddingLeft="10dp" />
+                <!-- <EditText
+                     android:id="@+id/editTextNumber"
+                     android:layout_width="match_parent"
+                     android:layout_height="50dp"
+                     android:layout_gravity="center_horizontal"
+                     android:layout_marginLeft="10dp"
+                     android:layout_marginRight="10dp"
+                     android:layout_marginTop="25dp"
+                     android:background="@drawable/edit_text"
+                     android:drawableLeft="@drawable/receiver_icon"
+                     android:drawablePadding="15dp"
+                     android:drawableStart="@drawable/receiver_icon"
+                     android:hint="@string/number"
+                     android:inputType="number"
+                     android:maxLength="10"
+                     android:paddingLeft="10dp" />-->
 
                 <Spinner
                     android:id="@+id/input_citizenship"

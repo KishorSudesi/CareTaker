@@ -1,17 +1,21 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -20,9 +24,13 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.FieldModel;
+import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.ServiceModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
+import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
@@ -35,22 +43,22 @@ import java.util.Date;
 public class AddNewActivityStep2Activity extends AppCompatActivity {
 
     private static final String[] CARLAS = new String[]{"carla1@gmail.com"};
+    private static final int iActivityCreated = 1;
     public static String message, time;
     public static JSONObject jsonObjectCarla;
-    private static Storage findObj;
     private static StorageService storageService;
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
     private static Bitmap bitmap;
     private static Handler threadHandler;
     private static String strSelectedCarla;
+    private static int iUpdateFlag = 0;
+    private static String strInsertedDocumentId;
     private EditText editTextDate, editTextMessage;
     private TextView textView6, textView7;
     private Utils utils;
-    private JSONObject jsonObjectAct, responseJSONDoc, jsonObjectActCarla, responseJSONDocCarla;
-    private String _strDate;
-    private String strCarlaJsonId, strCarlaImagepath;
-    private String getStrSelectedCarla;
+    private String strCarlaImagepath, _strDate;
+    private String getStrSelectedCarla, strProviderId;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -76,6 +84,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_activity_step2);
 
+        iUpdateFlag = 0;
+
         utils = new Utils(AddNewActivityStep2Activity.this);
         progressDialog = new ProgressDialog(AddNewActivityStep2Activity.this);
 
@@ -88,19 +98,51 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         textView7 = (TextView) findViewById(R.id.textView7);
         imageViewCarla = (ImageView) findViewById(R.id.carlaImage);
 
+        TextView textViewLabel = (TextView) findViewById(R.id.textViewLabel);
+
+        try {
+
+            if (textViewLabel != null)
+                textViewLabel.append(AddNewActivityActivity.selectedServiceModel.getStrServiceName());
+
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.milestoneLayout);
+
+            for (MilestoneModel milestoneModel : AddNewActivityActivity.selectedServiceModel.
+                    getMilestoneModels()) {
+
+                TextView textViewName = new TextView(AddNewActivityStep2Activity.this);
+                textViewName.setTextAppearance(this, R.style.MilestoneStyle);
+                textViewName.setText(milestoneModel.getStrMilestoneName());
+                textViewName.setTextColor(getResources().getColor(R.color.colorWhite));
+                textViewName.setPadding(10, 10, 10, 10);
+                textViewName.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_success));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+                params.setMargins(10, 10, 10, 10);
+
+                textViewName.setLayoutParams(params);
+
+
+                Utils.log(milestoneModel.getStrMilestoneName(), " MS ");
+
+                if (linearLayout != null) {
+                    linearLayout.addView(textViewName);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //
                 new SlideDateTimePicker.Builder(getSupportFragmentManager())
                         .setListener(listener)
                         .setInitialDate(new Date())
                         .build()
                         .show();
-                //
             }
         });
 
@@ -147,287 +189,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                             storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-                            jsonObjectAct = new JSONObject();
-                            jsonObjectActCarla = new JSONObject();
-
-                            progressDialog.setMessage(getResources().getString(R.string.loading));
+                            progressDialog.setMessage(getString(R.string.loading));
                             progressDialog.setCancelable(false);
                             progressDialog.show();
 
-                            if (AddNewActivityActivity.selectedDependentServiceModels.size() == 1) {
-
-                                ServiceModel dependentServiceModel = AddNewActivityActivity.
-                                        selectedDependentServiceModels.get(0);
-
-                                try {
-
-                                    if (jsonObjectCarla != null && jsonObjectCarla.has("provider_email")) {
-
-                                        //for customer
-                                        jsonObjectAct.put("provider_email", jsonObjectCarla.getString("provider_email"));
-                                        jsonObjectAct.put("provider_contact_no", jsonObjectCarla.getString("provider_contact_no"));
-                                        jsonObjectAct.put("provider_description", "description");
-                                        jsonObjectAct.put("provider_name", jsonObjectCarla.getString("provider_name"));
-                                        jsonObjectAct.put("provider_image_url", strCarlaImagepath);
-                                        jsonObjectAct.put("activity_message", message);
-                                        jsonObjectAct.put("status", "upcoming");
-                                        jsonObjectAct.put("activity_name", dependentServiceModel.getStrServiceName());
-
-                                        //jsonObjectAct.put("activity_description", dependentServiceModel.getStrServiceDesc());
-                                        jsonObjectAct.put("service_id", dependentServiceModel.getStrServiceId());
-                                        //jsonObjectAct.put("features",dependentServiceModel.getJsonArrayFeatures());
-
-                                        JSONArray jsonArray = new JSONArray();
-
-                                        jsonObjectAct.put("features_done", jsonArray);
-
-                                        jsonObjectAct.put("activity_date", _strDate);
-                                        jsonObjectAct.put("activity_done_date", _strDate);
-
-
-                                        jsonObjectAct.put("feedbacks", jsonArray);
-                                        jsonObjectAct.put("videos", jsonArray);
-                                        jsonObjectAct.put("images", jsonArray);
-
-                                        //for provider
-                                        jsonObjectActCarla.put("customer_email", Config.customerModel.getStrEmail());
-                                        jsonObjectActCarla.put("activity_message", message);
-                                        jsonObjectActCarla.put("activity_name", dependentServiceModel.getStrServiceName());
-
-                                        //jsonObjectActCarla.put("activity_description", dependentServiceModel.getStrServiceDesc());
-                                        jsonObjectActCarla.put("service_id", dependentServiceModel.getStrServiceId());
-
-                                        jsonObjectActCarla.put("features_done", jsonArray);
-
-                                        jsonObjectActCarla.put("activity_date", _strDate);
-                                        jsonObjectActCarla.put("activity_done_date", _strDate);
-
-                                        jsonObjectActCarla.put("dependent_name", Config.dependentNames.get(Config.intSelectedDependent));
-                                        jsonObjectActCarla.put("status", "upcoming");
-
-                                        //jsonObjectActCarla.put("features",dependentServiceModel.getJsonArrayFeatures());
-
-                                        jsonObjectActCarla.put("videos", jsonArray);
-                                        jsonObjectActCarla.put("images", jsonArray);
-                                        jsonObjectActCarla.put("feedbacks", jsonArray);
-
-                                        //
-                                    }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    jsonObjectAct = null;
-                                }
-                        }
-
-                            if (jsonObjectAct != null) {
-
-                                storageService.findDocsByIdApp42CallBack(
-                                        Config.customerModel.getStrCustomerID(),
-                                        Config.collectionCustomer, new App42CallBack() {
-                                            @Override
-                                            public void onSuccess(Object o) {
-
-                                                if (o != null) {
-
-                                                    findObj = (Storage) o;
-
-                                                    try {
-                                                        responseJSONDoc = new JSONObject(findObj.getJsonDocList().get(0).getJsonDoc());
-                                                        if (responseJSONDoc.has("dependents")) {
-                                                            JSONArray dependantsA = responseJSONDoc.getJSONArray("dependents");
-                                                            if (Config.intSelectedDependent <= dependantsA.length()) {
-                                                                JSONObject dependantsObject = dependantsA.getJSONObject(Config.intSelectedDependent);
-
-                                                                jsonObjectActCarla.put("dependent_image_url", dependantsObject.getString("dependent_profile_url"));
-
-                                                                if (dependantsObject.has("activities")) {
-                                                                    JSONArray activitiesA = dependantsObject.getJSONArray("activities");
-                                                                    activitiesA.put(jsonObjectAct);
-
-                                                                    //unit update
-                                                                    if (dependantsObject.has("services")) {
-
-                                                                        JSONArray jsonArrayServices = dependantsObject.getJSONArray("services");
-
-                                                                        int iSize = jsonArrayServices.length();
-
-                                                                        if (iSize > 0) {
-
-                                                                            for (int j = 0; j < iSize; j++) {
-
-                                                                                JSONObject jsonObjectService = jsonArrayServices.getJSONObject(j);
-
-                                                                                if (jsonObjectService.getInt("service_id") == jsonObjectAct.getInt("service_id")) {
-
-                                                                                    Double aDouble = Utils.round(jsonObjectService.getDouble("unit_consumed") + 1, 2);
-                                                                                    jsonObjectService.put("unit_consumed",
-                                                                                            aDouble);
-                                                                                    jsonArrayServices.remove(j);
-                                                                                    jsonArrayServices.put(jsonObjectService);
-                                                                                }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                                    } catch (JSONException jSe) {
-                                                        jSe.printStackTrace();
-                                                        progressDialog.dismiss();
-                                        }
-
-
-                                                    if (utils.isConnectingToInternet()) {
-
-                                                        storageService.updateDocs(responseJSONDoc,
-                                                                Config.customerModel.getStrCustomerID()
-                                                                , Config.collectionCustomer,
-                                                                new App42CallBack() {
-                                                                    @Override
-                                                                    public void onSuccess(Object o) {
-
-                                                                        if (o != null) {
-
-                                                                            // Config.jsonObject = responseJSONDoc;
-
-                                                                            storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email", getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                                                                                @Override
-                                                                                public void onDocumentInserted(Storage response) {
-                                                                                }
-
-                                                                                @Override
-                                                                                public void onUpdateDocSuccess(Storage response) {
-                                                                                }
-
-                                                                                @Override
-                                                                                public void onFindDocSuccess(Storage response) {
-
-                                                                                    if (response != null) {
-
-                                                                                        if (response.getJsonDocList().size() > 0) {
-
-                                                                                            Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-
-                                                                                            strCarlaJsonId = response.getJsonDocList().get(0).getDocId();
-
-                                                                                            String strDocument = jsonDocument.getJsonDoc();
-
-                                                                                            try {
-                                                                                                responseJSONDocCarla = new JSONObject(strDocument);
-
-                                                                                                if (responseJSONDocCarla.has("activities")) {
-                                                                                                    JSONArray dependantsA = responseJSONDocCarla.getJSONArray("activities");
-                                                                                                    dependantsA.put(jsonObjectActCarla);
-                                                                                                }
-
-                                                                                                //
-                                                                                                storageService.updateDocs(responseJSONDocCarla, strCarlaJsonId, Config.collectionProvider, new App42CallBack() {
-                                                                                                    @Override
-                                                                                                    public void onSuccess(Object o) {
-
-                                                                                                        if (o != null) {
-                                                                                                            Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
-                                                                                                            if (progressDialog.isShowing())
-                                                                                                                progressDialog.dismiss();
-                                                                                                            startActivity(newIntent);
-                                                                                                            finish();
-
-                                                                                                        } else {
-                                                                                                            if (progressDialog.isShowing())
-                                                                                                                progressDialog.dismiss();
-                                                                                                            utils.toast(2, 2, getString(R.string.warning_internet));
-                                                                                                        }
-                                                                                                    }
-
-                                                                                                    @Override
-                                                                                                    public void onException(Exception e) {
-                                                                                    if(progressDialog.isShowing())
-                                                                                        progressDialog.dismiss();
-                                                                                                        if (e != null) {
-                                                                                                            utils.toast(2, 2, e.getMessage());
-                                                                                                        } else {
-                                                                                                            utils.toast(2, 2, getString(R.string.warning_internet));
-                                                                                                        }
-                                                                                }
-                                                                                                });
-
-                                                                                            } catch (JSONException e) {
-                                                                                                e.printStackTrace();
-                                                                                            }
-                                                                    }
-
-                                                                                    } else {
-                                                                                        if (progressDialog.isShowing())
-                                                                                            progressDialog.dismiss();
-                                                                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                                                                    }
-                                                            }
-
-                                                                                @Override
-                                                                                public void onInsertionFailed(App42Exception ex) {
-
-                                                                                }
-
-                                                                                @Override
-                                                                                public void onFindDocFailed(App42Exception ex) {
-                                                                                    if (progressDialog.isShowing())
-                                                                                        progressDialog.dismiss();
-
-                                                                                    if (ex != null) {
-                                                                                        utils.toast(2, 2, ex.getMessage());
-                                                                                    } else {
-                                                                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                                                                    }
-                                                            }
-
-                                                                                @Override
-                                                                                public void onUpdateDocFailed(App42Exception ex) {
-
-                                                                                }
-                                                                            });
-                                                                        }
-                                                }
-
-                                                                    @Override
-                                                                    public void onException(Exception e) {
-                                                                        if (progressDialog.isShowing())
-                                                                            progressDialog.dismiss();
-                                                                        if (e != null) {
-                                                                            utils.toast(2, 2, e.getMessage());
-                                                                        } else {
-                                                                            utils.toast(2, 2, getString(R.string.warning_internet));
-                                                                        }
-                                                }
-                                                                });
-
-                                                    } else {
-                                                        if (progressDialog.isShowing())
-                                                            progressDialog.dismiss();
-                                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                                    }
-
-                                                } else {
-                                        if(progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                            }
-
-                                            @Override
-                                            public void onException(Exception e) {
-                                    if(progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                                if (e != null) {
-                                                    utils.toast(2, 2, e.getMessage());
-                                                } else {
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                }
-                                }
-                                        });
-                            } else utils.toast(2, 2, getString(R.string.error));
-
-                        } else utils.toast(2, 2, getString(R.string.warning_internet));
+                            if (iUpdateFlag != iActivityCreated)
+                                addActivity(AddNewActivityActivity.selectedServiceModel);
+                            if (iUpdateFlag == iActivityCreated)
+                                fetchService(AddNewActivityActivity.selectedServiceModel);
+
+                        } else Utils.toast(2, 2, getString(R.string.warning_internet));
 
                     }
                 }
@@ -436,9 +207,29 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     }
 
     public void goBack(){
-        Intent newIntent = new Intent(AddNewActivityStep2Activity.this, AddNewActivityActivity.class);
-        startActivity(newIntent);
-        finish();
+
+        if (iUpdateFlag < iActivityCreated) {
+            Intent newIntent = new Intent(AddNewActivityStep2Activity.this, AddNewActivityActivity.class);
+            startActivity(newIntent);
+            finish();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(AddNewActivityStep2Activity.this);
+            builder.setTitle(getString(R.string.activity_not_saved));
+            builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //todo delete created activity
+                    //iInsertedDocumentId
+                }
+            });
+            builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
     }
 
     @Override
@@ -448,19 +239,17 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
-        //
+
         StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
 
         storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email",
                 getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
             @Override
             public void onDocumentInserted(Storage response) {
-
             }
 
             @Override
             public void onUpdateDocSuccess(Storage response) {
-
             }
 
             @Override
@@ -471,17 +260,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                     if (response.getJsonDocList().size() > 0) {
 
                         Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-
                         String strDocument = jsonDocument.getJsonDoc();
 
                         try {
                             jsonObjectCarla = new JSONObject(strDocument);
                             textView6.setText(jsonObjectCarla.getString("provider_name"));
                             textView7.setText(jsonObjectCarla.getString("provider_email"));
-
                             strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
-
                             strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
+
+                            strProviderId = jsonDocument.getDocId();
 
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
@@ -497,20 +285,18 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
 
                 }else{
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
-                    utils.toast(2, 2, getString(R.string.warning_internet));
+                    Utils.toast(2, 2, getString(R.string.warning_internet));
                 }
 
             }
 
             @Override
             public void onInsertionFailed(App42Exception ex) {
-
             }
 
             @Override
@@ -519,15 +305,14 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                     progressDialog.dismiss();
 
                 if(ex!=null) {
-                    utils.toast(2, 2, ex.getMessage());
+                    Utils.toast(2, 2, ex.getMessage());
                 }else{
-                    utils.toast(2, 2, getString(R.string.warning_internet));
+                    Utils.toast(2, 2, getString(R.string.warning_internet));
                 }
             }
 
             @Override
             public void onUpdateDocFailed(App42Exception ex) {
-
             }
         });
     }
@@ -536,6 +321,324 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
         goBack();
+    }
+
+    public void addActivity(final ServiceModel serviceModel) {
+
+        JSONObject jsonObjectServices = null;
+
+        try {
+            jsonObjectServices = new JSONObject();
+            //String strDate = utils.convertDateToString(new Date());
+
+            jsonObjectServices.put("service_id", serviceModel.getStrServiceId());
+            jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
+            jsonObjectServices.put("service_no", serviceModel.getiServiceNo());
+            jsonObjectServices.put("service_type", serviceModel.getStrServiceType());
+            jsonObjectServices.put("category_name", serviceModel.getStrCategoryName());
+
+            jsonObjectServices.put("customer_id", Config.customerModel.getStrCustomerID());
+            jsonObjectServices.put("dependent_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+            jsonObjectServices.put("provider_id", strProviderId);
+
+            jsonObjectServices.put("status", "new");
+            jsonObjectServices.put("provider_status", "new");
+            jsonObjectServices.put("provider_message", "");
+
+            jsonObjectServices.put("activity_date", _strDate);
+            jsonObjectServices.put("activity_done_date", "");
+            jsonObjectServices.put("activity_name", serviceModel.getStrServiceName());
+            jsonObjectServices.put("activity_desc", message);
+            jsonObjectServices.put("overdue", "false");
+
+            JSONArray jsonArray = new JSONArray();
+
+            jsonArray.put("empty");
+
+            jsonObjectServices.put("feedbacks", jsonArray);
+            jsonObjectServices.put("videos", jsonArray);
+            jsonObjectServices.put("images", jsonArray);
+
+
+            JSONArray jsonArrayMilestones = new JSONArray();
+
+            for (MilestoneModel milestoneModel : serviceModel.getMilestoneModels()) {
+
+                JSONObject jsonObjectMilestone = new JSONObject();
+
+                jsonObjectMilestone.put("id", milestoneModel.getiMilestoneId());
+                jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
+                jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
+                jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
+
+                JSONArray jsonArrayFields = new JSONArray();
+
+                for (FieldModel fieldModel : milestoneModel.getFieldModels()) {
+
+                    JSONObject jsonObjectField = new JSONObject();
+
+                    jsonObjectField.put("id", fieldModel.getiFieldID());
+
+                    if (fieldModel.isFieldView())
+                        jsonObjectField.put("hide", fieldModel.isFieldView());
+
+                    jsonObjectField.put("required", fieldModel.isFieldRequired());
+                    jsonObjectField.put("data", fieldModel.getStrFieldData());
+                    jsonObjectField.put("label", fieldModel.getStrFieldLabel());
+                    jsonObjectField.put("type", fieldModel.getStrFieldType());
+
+                    if (fieldModel.getStrFieldValues() != null && fieldModel.getStrFieldValues().length > 0)
+                        jsonObjectField.put("values", utils.stringToJsonArray(fieldModel.getStrFieldValues()));
+
+                    if (fieldModel.isChild()) {
+
+                        jsonObjectField.put("child", fieldModel.isChild());
+
+                        if (fieldModel.getStrChildType() != null && fieldModel.getStrChildType().length > 0)
+                            jsonObjectField.put("child_type", utils.stringToJsonArray(fieldModel.getStrChildType()));
+
+                        if (fieldModel.getStrChildValue() != null && fieldModel.getStrChildValue().length > 0)
+                            jsonObjectField.put("child_value", utils.stringToJsonArray(fieldModel.getStrChildValue()));
+
+                        if (fieldModel.getStrChildCondition() != null && fieldModel.getStrChildCondition().length > 0)
+                            jsonObjectField.put("child_condition", utils.stringToJsonArray(fieldModel.getStrChildCondition()));
+
+                        if (fieldModel.getiChildfieldID() != null && fieldModel.getiChildfieldID().length > 0)
+                            jsonObjectField.put("values", utils.intToJsonArray(fieldModel.getiChildfieldID()));
+                    }
+
+                    jsonArrayFields.put(jsonObjectField);
+
+                    jsonObjectMilestone.put("fields", jsonArrayFields);
+                }
+                jsonArrayMilestones.put(jsonObjectMilestone);
+            }
+
+            jsonObjectServices.put("milestones", jsonArrayMilestones);
+
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+
+        storageService.insertDocs(jsonObjectServices,
+                new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                    @Override
+                    public void onDocumentInserted(Storage response) {
+                        try {
+                            if (response != null) {
+
+                                if (response.getJsonDocList().size() > 0) {
+                                    strInsertedDocumentId = response.getJsonDocList().get(0).getDocId();
+                                    iUpdateFlag = iActivityCreated;
+                                    fetchService(serviceModel);
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    Utils.toast(2, 2, getString(R.string.error));
+                                }
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            Utils.toast(2, 2, getString(R.string.error));
+                        }
+                    }
+
+                    @Override
+                    public void onUpdateDocSuccess(Storage response) {
+                    }
+
+                    @Override
+                    public void onFindDocSuccess(Storage response) {
+                    }
+
+                    @Override
+                    public void onInsertionFailed(App42Exception ex) {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        try {
+                            if (ex != null) {
+                                JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                JSONObject jsonObjectError = jsonObject.
+                                        getJSONObject("app42Fault");
+                                String strMess = jsonObjectError.getString("details");
+                                Utils.toast(2, 2, strMess);
+                            } else {
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                            Utils.toast(2, 2, getString(R.string.error));
+                        }
+                    }
+
+                    @Override
+                    public void onFindDocFailed(App42Exception ex) {
+                    }
+
+                    @Override
+                    public void onUpdateDocFailed(App42Exception ex) {
+                    }
+                },
+                Config.collectionActivity);
+    }
+
+    public void fetchService(final ServiceModel serviceModel) {
+
+        if (utils.isConnectingToInternet()) {
+
+            String key1 = "service_id";
+            String value1 = serviceModel.getStrServiceId();
+
+            String key2 = "customer_id";
+            String value2 = Config.customerModel.getStrCustomerID();
+
+            Query q1 = QueryBuilder.build(key1, value1, QueryBuilder.Operator.EQUALS);
+            Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
+            Query q3 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+
+            storageService.findDocsByQueryOrderBy(Config.collectionServiceCustomer, q3, 1, 0,
+                    "updated_date", 1,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                            try {
+                                if (o != null) {
+                                    //57221947e4b0fa5b108f35dc
+                                    //572b4f14e4b0492b68fbc9b1
+
+                                    Storage response = (Storage) o;
+
+                                    if (response.getJsonDocList().size() > 0) {
+
+                                        Storage.JSONDocument jsonDocument = response.
+                                                getJsonDocList().get(0);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+
+                                        String strDocumentId = jsonDocument.getDocId();
+
+                                        updateServiceDependent(strDocumentId, strDocument,
+                                                serviceModel);
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+
+                            } catch (Exception e1) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                Utils.toast(2, 2, getString(R.string.error));
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            try {
+                                if (e != null) {
+                                    Utils.toast(2, 2, getString(R.string.error));
+                                } else {
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            Utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+    }
+
+    public void updateServiceDependent(final String strDocumentId, final String strDocument,
+                                       ServiceModel serviceModel) {
+
+        if (utils.isConnectingToInternet()) {
+
+            JSONObject jsonObjectServices = new JSONObject();
+            String strDate = utils.convertDateToString(new Date());
+
+            try {
+
+                JSONObject jsonObject = new JSONObject(strDocument);
+
+                //todo check single item units
+                jsonObjectServices.put("updated_date", strDate);
+                jsonObjectServices.put("unit", jsonObject.getInt("unit") -
+                        serviceModel.getiUnitValue());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            storageService.updateDocs(jsonObjectServices, strDocumentId,
+                    Config.collectionServiceCustomer,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            try {
+                                if (o != null) {
+                                    Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    Config.intSelectedMenu = Config.intListActivityScreen;
+                                    Utils.toast(2, 2, getString(R.string.activity_added));
+                                    startActivity(newIntent);
+                                    finish();
+
+                                } else {
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            } catch (Exception e1) {
+                                Utils.toast(2, 2, getString(R.string.error));
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception ex) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            try {
+                                if (ex != null) {
+                                    JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                    JSONObject jsonObjectError = jsonObject.
+                                            getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+                                    Utils.toast(2, 2, strMess);
+                                } else {
+                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                                Utils.toast(2, 2, getString(R.string.error));
+                            }
+                        }
+                    });
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            Utils.toast(2, 2, getString(R.string.warning_internet));
+        }
     }
 
     public static class ThreadHandler extends Handler {

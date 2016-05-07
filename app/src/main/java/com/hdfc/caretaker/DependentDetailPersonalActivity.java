@@ -84,13 +84,12 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
             String strDate = Utils.writeFormatActivityYear.format(date);
             //String _strDate = Utils.readFormat.format(date);
-            Config.dat = date;
+            DependentDetailsMedicalActivity.date = date;
             editTextDate.setText(strDate);
 
-            //todo check year and date
-            iDate = date.getDate();
+            /*iDate = date.getDate();
             iMonth = date.getMonth();
-            iYear = date.getYear();
+            iYear = date.getYear();*/
         }
 
         @Override
@@ -257,7 +256,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 /*editRelation.setError(getString(R.string.error_field_required));
                 focusView = editRelation;*/
                 cancel = true;
-            utils.toast(2, 2, getString(R.string.select_relation));
+            Utils.toast(2, 2, getString(R.string.select_relation));
             }
 
             if (TextUtils.isEmpty(strAddress)) {
@@ -321,9 +320,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                             mProgress.dismiss();
 
                         if (o != null) {
-                            utils.toast(2, 2, getString(R.string.email_exists));
+                            Utils.toast(2, 2, getString(R.string.email_exists));
                         } else {
-                            utils.toast(2, 2, getString(R.string.warning_internet));
+                            Utils.toast(2, 2, getString(R.string.warning_internet));
                         }
                     }
 
@@ -364,18 +363,18 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                                     dependentModel.setStrEmail(strEmail);
                                     dependentModel.setStrDob(strDob);
                                 } else {
-                                    utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                                    Utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                                 }
                             }
 
-                            utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                            Utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
                             strImageName = "";
                             Intent selection = new Intent(DependentDetailPersonalActivity.this,
                                     DependentDetailsMedicalActivity.class);
                             startActivity(selection);
                             finish();
                         } else {
-                            utils.toast(2, 2, getString(R.string.warning_internet));
+                            Utils.toast(2, 2, getString(R.string.warning_internet));
                         }
                     }
                 });

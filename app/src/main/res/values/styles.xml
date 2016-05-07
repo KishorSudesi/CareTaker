@@ -29,4 +29,9 @@
         <item name="android:indeterminate">true</item>
     </style>
 
+    <style name="MilestoneStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

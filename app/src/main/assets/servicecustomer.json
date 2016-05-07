@@ -8,6 +8,7 @@
   "service_id": "56f53980e4b003cbd56f2cea",
   "updated_date": "2016-04-28T18:13:27.369Z",
   "unit_consumed": 0,
+  "unit_value": 1,
   "milestones": [
     {
       "name": "Appointment Confirmation",

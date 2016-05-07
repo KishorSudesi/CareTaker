@@ -70,7 +70,7 @@ public class GuruDetailsFragment extends Fragment {
             // the date and time that the user has selected.
 
             String strDate = Utils.writeFormatActivityYear.format(date);
-            String _strDate = Utils.readFormat.format(date);
+            // String _strDate = Utils.readFormat.format(date);
             editTextDate.setText(strDate);
         }
 
@@ -257,7 +257,7 @@ public class GuruDetailsFragment extends Fragment {
         if (TextUtils.isEmpty(strCustomerImgName)) {
             /* && Config.customerModel != null
                 && Config.customerModel.getStrName().equalsIgnoreCase("")*/
-            utils.toast(1, 1, getString(R.string.warning_profile_pic));
+            Utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
 
@@ -296,7 +296,7 @@ public class GuruDetailsFragment extends Fragment {
                 //editAddress.setError(getString(R.string.error_field_required));
                 focusView = citizenship;
                 cancel = true;
-                utils.toast(2, 2, getString(R.string.select_country));
+                Utils.toast(2, 2, getString(R.string.select_country));
             }
 
          /*   if (TextUtils.isEmpty(strAddress)) {
@@ -369,9 +369,9 @@ public class GuruDetailsFragment extends Fragment {
                             if (mProgress.isShowing())
                                 mProgress.dismiss();
                             if(o!=null) {
-                                utils.toast(2, 2, getString(R.string.email_exists));
+                                Utils.toast(2, 2, getString(R.string.email_exists));
                             }else{
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -441,26 +441,26 @@ public class GuruDetailsFragment extends Fragment {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
 
-                                    utils.toast(1, 1, getString(R.string.your_details_saved));
+                                    Utils.toast(1, 1, getString(R.string.your_details_saved));
 
                                     SignupActivity._mViewPager.setCurrentItem(1);
 
                                 }else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
-                                    utils.toast(2, 2, getString(R.string.error));
+                                    Utils.toast(2, 2, getString(R.string.error));
                                 }
                             }else{
                                 if (mProgress.isShowing())
                                     mProgress.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
                 } else {
                     if (mProgress.isShowing())
                         mProgress.dismiss();
-                    utils.toast(2, 2, getString(R.string.warning_internet));
+                    Utils.toast(2, 2, getString(R.string.warning_internet));
                 }
 
             } catch (Exception e) {

@@ -78,7 +78,7 @@ public class MyAccountFragment extends Fragment {
             textViewEmail.setText(Config.customerModel.getStrEmail());
 
             if (Config.customerModel.getStrAddress() != null)
-                txtAddress.setText(Config.customerModel.getStrAddress());
+                txtAddress.setText(Config.customerModel.getStrCountryCode());
         }
 
         txtviewBuyServices.setOnClickListener(new View.OnClickListener() {

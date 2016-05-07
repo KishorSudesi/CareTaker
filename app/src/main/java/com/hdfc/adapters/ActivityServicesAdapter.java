@@ -96,6 +96,9 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
+        final ViewGroup viewGroup = parent;
+        final int pos = childPosition;
+
         final ServiceModel serviceModel = (ServiceModel) getChild(groupPosition, childPosition);
 
         final ViewHolder viewHolder;
@@ -113,6 +116,8 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        View c = parent.getChildAt(childPosition);
+
         String strTemp = serviceModel.getStrServiceName() + " - (" +
                 String.valueOf(serviceModel.getiUnit() - serviceModel.getiUnitUsed()) + " " +
                 _context.getString(R.string.left) + ")";
@@ -121,6 +126,22 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
         viewHolder.activityDetails.setText(serviceModel.getStrServiceName());
 
         viewHolder.checkBoxService.setTag(serviceModel);
+
+        viewHolder.checkBoxService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //
+
+                /*parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
+
+                    View v1 = viewGroup.getChildAt(groupPosition);
+                    RadioButton checkBoxAll = (RadioButton) v1.findViewById(R.id.checkBoxService);
+                    checkBoxAll.setChecked(false);*/
+
+                //
+
+            }
+        });
 
 
         return convertView;

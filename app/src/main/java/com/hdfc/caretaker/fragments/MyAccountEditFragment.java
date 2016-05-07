@@ -130,7 +130,7 @@ public class MyAccountEditFragment extends Fragment {
         editAreaCode = (EditText) view.findViewById(R.id.editAreaCode);
         editCountryCode = (EditText) view.findViewById(R.id.editCountryCode);
 
-        number = (EditText) view.findViewById(R.id.editTextNumber);
+        number = (EditText) view.findViewById(R.id.editContactNo);
         //city = (EditText) view.findViewById(R.id.editTextCity);
 
         editDob.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +195,8 @@ public class MyAccountEditFragment extends Fragment {
         editCountryCode.setText(Config.customerModel.getStrCountryIsdCode());
 
 
-        if (Config.customerModel.getStrCountryAreaCode().equalsIgnoreCase("")) {
+        if (Config.customerModel.getStrCountryAreaCode() != null &&
+                Config.customerModel.getStrCountryAreaCode().equalsIgnoreCase("")) {
             mobile.setChecked(true);
             editAreaCode.setVisibility(View.GONE);
         } else {
@@ -295,7 +296,7 @@ public class MyAccountEditFragment extends Fragment {
                     //editAddress.setError(getString(R.string.error_field_required));
                     focusView = citizenship;
                     cancel = true;
-                    utils.toast(2, 2, getString(R.string.select_country));
+                    Utils.toast(2, 2, getString(R.string.select_country));
                 }
 
                 if (!Utils.isEmpty(strOldPass) && !Utils.isEmpty(strPass) &&
@@ -352,10 +353,12 @@ public class MyAccountEditFragment extends Fragment {
                             jsonToUpdate.put("customer_contact_no", strContactNo);
                             jsonToUpdate.put("customer_address", strCountry);
 
-                            Config.jsonCustomer.put("customer_dob", strDob);
-                            Config.jsonCustomer.put("customer_country", strCountry);
-                            Config.jsonCustomer.put("customer_country_code", strCountryCode);
-                            Config.jsonCustomer.put("customer_area_code", strAreaCode);
+                            jsonToUpdate.put("customer_dob", strDob);
+                            jsonToUpdate.put("customer_country", strCountry);
+                            jsonToUpdate.put("customer_country_code", strCountryCode);
+
+                            if (editAreaCode.getVisibility() == View.VISIBLE)
+                                jsonToUpdate.put("customer_area_code", strAreaCode);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -374,7 +377,9 @@ public class MyAccountEditFragment extends Fragment {
                                 Config.customerModel.setStrCountryCode(strCountry);
                                 Config.customerModel.setStrAddress(strCountry);
                                 Config.customerModel.setStrCountryIsdCode(strCountryCode);
-                                Config.customerModel.setStrCountryAreaCode(strAreaCode);
+
+                                if (editAreaCode.getVisibility() == View.VISIBLE)
+                                    Config.customerModel.setStrCountryAreaCode(strAreaCode);
 
                                 if (strPass != null && !strPass.equalsIgnoreCase("")) {
 
@@ -396,7 +401,7 @@ public class MyAccountEditFragment extends Fragment {
                                             @Override
                                             public void onSuccess(Object o) {
                                                 progressDialog.dismiss();
-                                                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                                Utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                                 goToAccount();
                                             }
 
@@ -408,18 +413,18 @@ public class MyAccountEditFragment extends Fragment {
                                                     JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                                     String strMess = jsonObjectError.getString("details");
 
-                                                    utils.toast(2, 2, strMess);
+                                                    Utils.toast(2, 2, strMess);
                                                 } catch (JSONException e1) {
                                                     e1.printStackTrace();
                                                 }
                                             }
                                         });
 
-                                    } else utils.toast(2, 2, getString(R.string.warning_internet));
+                                    } else Utils.toast(2, 2, getString(R.string.warning_internet));
 
                                 } else {
                                     progressDialog.dismiss();
-                                    utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                    Utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                     goToAccount();
                                 }
                             }
@@ -427,11 +432,11 @@ public class MyAccountEditFragment extends Fragment {
                             @Override
                             public void onException(Exception e) {
                                 progressDialog.dismiss();
-                                utils.toast(2, 2, e.getMessage());
+                                Utils.toast(2, 2, e.getMessage());
                             }
                         });
 
-                    } else utils.toast(2, 2, getString(R.string.warning_internet));
+                    } else Utils.toast(2, 2, getString(R.string.warning_internet));
                 }
             }
         });
@@ -502,7 +507,7 @@ public class MyAccountEditFragment extends Fragment {
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                         @Override
@@ -516,25 +521,25 @@ public class MyAccountEditFragment extends Fragment {
                                 if (appErrorCode != 1401 ) {
                                     uploadImage();
                                 } else {
-                                    utils.toast(2, 2, getString(R.string.error));
+                                    Utils.toast(2, 2, getString(R.string.error));
                                 }
 
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
 
             } else {
-                utils.toast(2, 2, getString(R.string.warning_internet));
+                Utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
             e.printStackTrace();
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.error));
+            Utils.toast(2, 2, getString(R.string.error));
         }
     }
 
@@ -603,7 +608,7 @@ public class MyAccountEditFragment extends Fragment {
                                                     if (progressDialog.isShowing())
                                                         progressDialog.dismiss();
 
-                                                    utils.toast(2, 2, getString(R.string.update_profile_image));
+                                                    Utils.toast(2, 2, getString(R.string.update_profile_image));
 
                                                    /* if (Config.jsonObject.has("customer_profile_url")) {
 
@@ -617,7 +622,7 @@ public class MyAccountEditFragment extends Fragment {
                                                     isImageChanged = false;
 
                                                 } else {
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
 
@@ -628,9 +633,9 @@ public class MyAccountEditFragment extends Fragment {
 
                                                 if (e != null) {
                                                     Utils.log(e.toString(), "response");
-                                                    utils.toast(2, 2, e.getMessage());
+                                                    Utils.toast(2, 2, e.getMessage());
                                                 } else {
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                                    Utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
                                         });
@@ -644,12 +649,12 @@ public class MyAccountEditFragment extends Fragment {
                                 } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.error));
+                                    Utils.toast(2, 2, getString(R.string.error));
                                     }
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -661,9 +666,9 @@ public class MyAccountEditFragment extends Fragment {
 
                             if(e!=null) {
                                 Utils.log(e.toString(), "response");
-                                utils.toast(2, 2, e.getMessage());
+                                Utils.toast(2, 2, e.getMessage());
                             }else{
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
@@ -671,13 +676,13 @@ public class MyAccountEditFragment extends Fragment {
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
-                utils.toast(2, 2, getString(R.string.warning_internet));
+                Utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
             e.printStackTrace();
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.error));
+            Utils.toast(2, 2, getString(R.string.error));
         }
     }
 
@@ -691,7 +696,7 @@ public class MyAccountEditFragment extends Fragment {
                 if (bitmap != null)
                     roundedImageView.setImageBitmap(bitmap);
                 else
-                    utils.toast(2, 2, getString(R.string.error));
+                    Utils.toast(2, 2, getString(R.string.error));
             }
 
             if (isImageChanged && bitmap != null) {

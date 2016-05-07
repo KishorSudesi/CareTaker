@@ -26,6 +26,8 @@ import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 public class LoginActivity extends AppCompatActivity {
 
     public static Utils utils;
@@ -69,6 +71,9 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception | OutOfMemoryError e) {
             e.printStackTrace();
         }
+
+        //todo date format
+        Utils.log(utils.convertDateToString(new Date()), "DATE");
 
 
         editEmail.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +130,6 @@ public class LoginActivity extends AppCompatActivity {
         reloadCaptcha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                // TODO Auto-generated method stub
                 res = checkView.getValidataAndSetImage();
             }
         });
@@ -150,15 +154,15 @@ public class LoginActivity extends AppCompatActivity {
                 email = forgotpasswordUserName.getText().toString();
                 if (TextUtils.isEmpty(email)) {
 
-                    utils.toast(2, 2, "Enter Username");
+                    Utils.toast(2, 2, "Enter Username");
 
                 } else if (!utils.isEmailValid(email)) {
 
-                    utils.toast(2, 2, "Enter Valid Username");
+                    Utils.toast(2, 2, "Enter Valid Username");
 
                 } else if (!b) {
 
-                    utils.toast(2, 2, "Enter valid captcha");
+                    Utils.toast(2, 2, "Enter valid captcha");
 
                 } else {
 
@@ -185,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Object o) {
                     progressDialog.dismiss();
-                    utils.toast(1, 1, "New password has been sent to your E-mail id");
+                    Utils.toast(1, 1, "New password has been sent to your E-mail id");
                 }
 
                 @Override
@@ -196,14 +200,14 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                         String strMess = jsonObjectError.getString("details");
 
-                        utils.toast(2, 2, strMess);
+                        Utils.toast(2, 2, strMess);
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
                 }
             });
 
-        } else utils.toast(2, 2, getString(R.string.warning_internet));
+        } else Utils.toast(2, 2, getString(R.string.warning_internet));
 
     }
 
@@ -314,7 +318,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -330,17 +334,17 @@ public class LoginActivity extends AppCompatActivity {
                                     JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
-                                    utils.toast(2, 2, strMess);
+                                    Utils.toast(2, 2, strMess);
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
                             } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
 
-                } else utils.toast(2, 2, getString(R.string.warning_internet));
+                } else Utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }
     }
