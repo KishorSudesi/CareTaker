@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
@@ -57,8 +58,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private EditText editTextDate, editTextMessage;
     private TextView textView6, textView7;
     private Utils utils;
-    private String strCarlaImagepath, _strDate;
-    private String getStrSelectedCarla, strProviderId;
+    private String strCarlaImagepath, _strDate, strDate, strAlert;
+    private String getStrSelectedCarla, strProviderId, strPushMessage;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -68,7 +69,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             // Do something with the date. This Date object contains
             // the date and time that the user has selected.
 
-            String strDate = Utils.writeFormat.format(date);
+            strDate = Utils.writeFormat.format(date);
             _strDate = Utils.readFormat.format(date);
             editTextDate.setText(strDate);
         }
@@ -198,7 +199,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                             if (iUpdateFlag == iActivityCreated)
                                 fetchService(AddNewActivityActivity.selectedServiceModel);
 
-                        } else Utils.toast(2, 2, getString(R.string.warning_internet));
+                        } else utils.toast(2, 2, getString(R.string.warning_internet));
 
                     }
                 }
@@ -266,6 +267,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                             jsonObjectCarla = new JSONObject(strDocument);
                             textView6.setText(jsonObjectCarla.getString("provider_name"));
                             textView7.setText(jsonObjectCarla.getString("provider_email"));
+                            getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
                             strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
                             strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
@@ -290,7 +292,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 }else{
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
-                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                    utils.toast(2, 2, getString(R.string.warning_internet));
                 }
 
             }
@@ -305,9 +307,9 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                     progressDialog.dismiss();
 
                 if(ex!=null) {
-                    Utils.toast(2, 2, ex.getMessage());
+                    utils.toast(2, 2, ex.getMessage());
                 }else{
-                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                    utils.toast(2, 2, getString(R.string.warning_internet));
                 }
             }
 
@@ -358,6 +360,11 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             jsonObjectServices.put("feedbacks", jsonArray);
             jsonObjectServices.put("videos", jsonArray);
             jsonObjectServices.put("images", jsonArray);
+
+            strPushMessage = Config.customerModel.getStrName() + getString(R.string.has_created) +
+                    serviceModel.getStrServiceName() + getString(R.string.to) +
+                    Config.dependentModels.get(Config.intSelectedDependent).getStrName() +
+                    getString(R.string.on) + strDate;
 
 
             JSONArray jsonArrayMilestones = new JSONArray();
@@ -435,18 +442,18 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    Utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                 }
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
-                            Utils.toast(2, 2, getString(R.string.error));
+                            utils.toast(2, 2, getString(R.string.error));
                         }
                     }
 
@@ -468,14 +475,14 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 JSONObject jsonObjectError = jsonObject.
                                         getJSONObject("app42Fault");
                                 String strMess = jsonObjectError.getString("details");
-                                Utils.toast(2, 2, strMess);
+                                utils.toast(2, 2, strMess);
                             } else {
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
                         } catch (JSONException e1) {
                             e1.printStackTrace();
-                            Utils.toast(2, 2, getString(R.string.error));
+                            utils.toast(2, 2, getString(R.string.error));
                         }
                     }
 
@@ -532,13 +539,13 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
                             } catch (Exception e1) {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                Utils.toast(2, 2, getString(R.string.error));
+                                utils.toast(2, 2, getString(R.string.error));
                                 e1.printStackTrace();
                             }
                         }
@@ -549,9 +556,9 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 progressDialog.dismiss();
                             try {
                                 if (e != null) {
-                                    Utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                 } else {
-                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
                                 e1.printStackTrace();
@@ -562,7 +569,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         } else {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            Utils.toast(2, 2, getString(R.string.warning_internet));
+            utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 
@@ -593,23 +600,18 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                         @Override
                         public void onSuccess(Object o) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
                             try {
                                 if (o != null) {
-                                    Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
+                                    sendPushToProvider(getStrSelectedCarla, strPushMessage);
+                                } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    Config.intSelectedMenu = Config.intListActivityScreen;
-                                    Utils.toast(2, 2, getString(R.string.activity_added));
-                                    startActivity(newIntent);
-                                    finish();
-
-                                } else {
-                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
-                                Utils.toast(2, 2, getString(R.string.error));
+                                utils.toast(2, 2, getString(R.string.error));
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
                                 e1.printStackTrace();
                             }
                         }
@@ -624,21 +626,71 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                     JSONObject jsonObjectError = jsonObject.
                                             getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
-                                    Utils.toast(2, 2, strMess);
+                                    utils.toast(2, 2, strMess);
                                 } else {
-                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
-                                Utils.toast(2, 2, getString(R.string.error));
+                                utils.toast(2, 2, getString(R.string.error));
                             }
                         }
                     });
         } else {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            Utils.toast(2, 2, getString(R.string.warning_internet));
+            utils.toast(2, 2, getString(R.string.warning_internet));
         }
+    }
+
+    public void sendPushToProvider(String strUserName, String strMessage) {
+
+        if (utils.isConnectingToInternet()) {
+
+            PushNotificationService pushNotificationService = new PushNotificationService(AddNewActivityStep2Activity.this);
+
+            pushNotificationService.sendPushToUser(strUserName, strMessage,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+
+                            strAlert = getString(R.string.activity_added);
+
+                            if (o == null)
+                                strAlert = getString(R.string.no_push_actiity_added);
+
+                            goToActivityList(strAlert);
+                        }
+
+                        @Override
+                        public void onException(Exception ex) {
+                            strAlert = getString(R.string.no_push_actiity_added);
+
+                            if (ex == null)
+                                strAlert = getString(R.string.activity_added);
+
+                            goToActivityList(strAlert);
+                        }
+                    });
+        } else {
+            strAlert = getString(R.string.no_push_actiity_added);
+
+            goToActivityList(strAlert);
+        }
+    }
+
+    public void goToActivityList(String strMess) {
+
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+
+        utils.toast(2, 2, strMess);
+
+        Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
+        Config.intSelectedMenu = Config.intListActivityScreen;
+        startActivity(newIntent);
+        finish();
     }
 
     public static class ThreadHandler extends Handler {

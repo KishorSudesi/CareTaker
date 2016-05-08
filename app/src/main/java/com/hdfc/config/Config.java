@@ -160,18 +160,23 @@ public class Config {
 
     //public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     //User Specific clear at logout or whenever needed
+
     public static JSONObject jsonCustomer = null;
     public static int intSelectedMenu = 0;
     //public static int intDependentsCount = 0;
     public static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
     public static ArrayList<String> dependentNames = new ArrayList<>();
+
     public static ArrayList<String> strDependentIds = new ArrayList<>();
     public static ArrayList<String> strNotificationIds = new ArrayList<>();
     public static ArrayList<String> strServcieIds = new ArrayList<>();
+
     public static ArrayList<String> strProviderIds = new ArrayList<>();
     public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
+
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
+
     public static CustomerModel customerModel = null;
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
     public static ArrayList<ProviderModel> providerModels = new ArrayList<>();

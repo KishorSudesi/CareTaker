@@ -22,10 +22,12 @@ import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.CheckView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.user.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
@@ -133,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                 res = checkView.getValidataAndSetImage();
             }
         });
+
         // Create the dialog (without showing)
         final AlertDialog d = new AlertDialog.Builder(this).setTitle("Forgot Password?")
                 .setPositiveButton("OK", null)
@@ -144,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 // get user input and set it to result
 
                 String scheck = new String(res);
@@ -152,17 +154,18 @@ public class LoginActivity extends AppCompatActivity {
                 boolean b = string.equals(scheck);
 
                 email = forgotpasswordUserName.getText().toString();
+
                 if (TextUtils.isEmpty(email)) {
 
-                    Utils.toast(2, 2, "Enter Username");
+                    utils.toast(2, 2, getString(R.string.error_invalid_email));
 
                 } else if (!utils.isEmailValid(email)) {
 
-                    Utils.toast(2, 2, "Enter Valid Username");
+                    utils.toast(2, 2, getString(R.string.error_invalid_email));
 
                 } else if (!b) {
 
-                    Utils.toast(2, 2, "Enter valid captcha");
+                    utils.toast(2, 2, getString(R.string.enter_captcha));
 
                 } else {
 
@@ -189,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Object o) {
                     progressDialog.dismiss();
-                    Utils.toast(1, 1, "New password has been sent to your E-mail id");
+                    utils.toast(1, 1, "New password has been sent to your E-mail id");
                 }
 
                 @Override
@@ -200,14 +203,14 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                         String strMess = jsonObjectError.getString("details");
 
-                        Utils.toast(2, 2, strMess);
+                        utils.toast(2, 2, strMess);
                     } catch (JSONException e1) {
                         e1.printStackTrace();
                     }
                 }
             });
 
-        } else Utils.toast(2, 2, getString(R.string.warning_internet));
+        } else utils.toast(2, 2, getString(R.string.warning_internet));
 
     }
 
@@ -314,11 +317,19 @@ public class LoginActivity extends AppCompatActivity {
                             if (o != null) {
                                 Config.strUserName = userName;
 
+                                User user = (User) o;
+
+                                ArrayList<String> roleList = user.getRoleList();
+
+                                //todo check rolelist
+                                Utils.log(roleList.get(0), " ROLE ");
+                                //roleList.size()>0 && roleList.get(0).equalsIgnoreCase("provider");
+
                                 utils.fetchCustomer(progressDialog, 1);
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -334,17 +345,17 @@ public class LoginActivity extends AppCompatActivity {
                                     JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
-                                    Utils.toast(2, 2, strMess);
+                                    utils.toast(2, 2, strMess);
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }
                             } else {
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
 
-                } else Utils.toast(2, 2, getString(R.string.warning_internet));
+                } else utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }
     }

@@ -223,9 +223,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 startActivity(newIntent);
                 finish();
 
-            } else Utils.toast(2, 2, getResources().getString(R.string.error_service_zero));
+            } else utils.toast(2, 2, getResources().getString(R.string.error_service_zero));
 
-        } else Utils.toast(2, 2, getResources().getString(R.string.error_service));
+        } else utils.toast(2, 2, getResources().getString(R.string.error_service));
     }
 
     @Override
@@ -283,7 +283,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
                             refreshAdapter();
@@ -306,7 +306,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                 String strMess = jsonObjectError.getString("details");
                                 //Utils.toast(2, 2, strMess);
                             } else {
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
                         } catch (JSONException e1) {

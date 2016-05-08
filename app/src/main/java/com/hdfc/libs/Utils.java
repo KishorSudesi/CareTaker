@@ -716,7 +716,21 @@ public class Utils {
         }
     }*/
 
-    public static void toast(int type, int duration, String message) {
+    public static void refreshNotifications() {
+
+        if (NotificationFragment.listViewActivities != null) {
+
+            NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
+                    Config.dependentModels.
+                            get(Config.intSelectedDependent).
+                            getNotificationModels());
+
+            NotificationFragment.listViewActivities.
+                    setAdapter(NotificationFragment.notificationAdapter);
+        }
+    }
+
+    public void toast(int type, int duration, String message) {
 
         String strColor = "#ffffff";
 
@@ -745,20 +759,6 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(_ctxt, message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public static void refreshNotifications() {
-
-        if (NotificationFragment.listViewActivities != null) {
-
-            NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
-                    Config.dependentModels.
-                            get(Config.intSelectedDependent).
-                            getNotificationModels());
-
-            NotificationFragment.listViewActivities.
-                    setAdapter(NotificationFragment.notificationAdapter);
         }
     }
 
@@ -1606,9 +1606,11 @@ public class Utils {
 
         if (isConnectingToInternet()) {
 
-            Config.fileModels.clear();
-            iActivityCount = 0;
-            iProviderCount = 0;
+            if (iFlag == 1) {
+                Config.fileModels.clear();
+                iActivityCount = 0;
+                iProviderCount = 0;
+            }
 
             StorageService storageService = new StorageService(_ctxt);
 
@@ -2109,7 +2111,7 @@ public class Utils {
                                     }
 
                                     if (iFlag == 1)
-                                        fetchLatestActivities(progressDialog);
+                                        fetchLatestActivities(progressDialog, iFlag);
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -2175,7 +2177,7 @@ public class Utils {
         return q4;
     }
 
-    public void fetchLatestActivities(final ProgressDialog progressDialog) {
+    public void fetchLatestActivities(final ProgressDialog progressDialog, final int iFlag) {
 
         if (iActivityCount < Config.strDependentIds.size()) {
 
@@ -2221,7 +2223,7 @@ public class Utils {
                                         }
 
                                     }
-                                    fetchLatestActivitiesUpcoming(progressDialog);
+                                    fetchLatestActivitiesUpcoming(progressDialog, iFlag);
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -2240,7 +2242,7 @@ public class Utils {
                                         int appErrorCode = jsonObjectError.getInt("appErrorCode");
 
                                         if (appErrorCode == 2608) {
-                                            fetchLatestActivitiesUpcoming(progressDialog);
+                                            fetchLatestActivitiesUpcoming(progressDialog, iFlag);
                                         }
 
                                     } else {
@@ -2392,7 +2394,7 @@ public class Utils {
         backgroundThread.start();
     }
 
-    public void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog) {
+    public void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog, final int iFlag) {
 
         if (isConnectingToInternet()) {
 
@@ -2445,7 +2447,7 @@ public class Utils {
                                 if (iActivityCount == Config.strDependentIds.size())
                                     fetchProviders(progressDialog, 0);
                                 else
-                                    fetchLatestActivities(progressDialog);
+                                    fetchLatestActivities(progressDialog, iFlag);
 
                             } else {
                                 if (progressDialog.isShowing())
@@ -2475,7 +2477,7 @@ public class Utils {
                                     if (iActivityCount == Config.strDependentIds.size())
                                         fetchProviders(progressDialog, 0);
                                     else
-                                        fetchLatestActivities(progressDialog);
+                                        fetchLatestActivities(progressDialog, iFlag);
 
                                     //log(e.getMessage(), " test 2");
 
@@ -2497,7 +2499,7 @@ public class Utils {
         }
     }
 
-    public static class ThreadHandler extends Handler {
+    public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
 

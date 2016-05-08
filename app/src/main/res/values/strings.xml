@@ -35,6 +35,9 @@
     <string name="mobile">Mobile</string>
     <string name="landline">Landline</string>
     <string name="left">Left</string>
+    <string name="to">&#160;for&#160;</string>
+    <string name="on">\nOn: &#160;</string>
+    <string name="has_created">&#160;has created&#160;</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
@@ -130,6 +133,8 @@
     <string name="image_write_failed">Sorry!!! we may have lost your Profile Image</string>
     <string name="select_country">Select a Country</string>
     <string name="select_relation">Select a Relation</string>
+    <string name="no_push_actiity_added">Activity Added. Not able to Notify the Carla</string>
+    <string name="enter_captcha">Valid Captcha required</string>
 
     <!--Dashboard Menu Strings-->
     <string name="menu_activities">Activities</string>

@@ -142,22 +142,24 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         //utils = new Utils(DashboardActivity.this);
 
-        try {
+        goToDashboard();
+
+       /* try {
             if (!AccountSuccessActivity.isCreatedNow) {
-                /*threadHandler = new ThreadHandler();
+                *//*threadHandler = new ThreadHandler();
                 Thread backgroundThread = new BackgroundThread();
                 backgroundThread.start();
 
                 progressDialog.setMessage(getResources().getString(R.string.loading));
                 progressDialog.setCancelable(false);
-                progressDialog.show();*/
+                progressDialog.show();*//*
             } else {
                 //Config.intSelectedMenu = 0;
-                goToDashboard();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         App42API.setLoggedInUser(Config.customerModel.getStrEmail());
     }
@@ -276,6 +278,33 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         if (Config.customerModel == null || Config.customerModel.getStrName() == null) {
             Utils.logout();
+        } else {
+            try {
+                boolean isPushReceived = getIntent().getBooleanExtra("message_delivered", false);
+                String strPushMess = getIntent().getStringExtra("message");
+
+                if (isPushReceived && strPushMess != null && !strPushMess.equalsIgnoreCase("")) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+                    builder.setTitle(getString(R.string.app_name));
+                    builder.setMessage(strPushMess);
+                    builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

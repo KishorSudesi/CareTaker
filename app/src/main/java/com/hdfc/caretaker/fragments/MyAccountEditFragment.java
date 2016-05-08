@@ -296,7 +296,7 @@ public class MyAccountEditFragment extends Fragment {
                     //editAddress.setError(getString(R.string.error_field_required));
                     focusView = citizenship;
                     cancel = true;
-                    Utils.toast(2, 2, getString(R.string.select_country));
+                    utils.toast(2, 2, getString(R.string.select_country));
                 }
 
                 if (!Utils.isEmpty(strOldPass) && !Utils.isEmpty(strPass) &&
@@ -401,7 +401,7 @@ public class MyAccountEditFragment extends Fragment {
                                             @Override
                                             public void onSuccess(Object o) {
                                                 progressDialog.dismiss();
-                                                Utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                                 goToAccount();
                                             }
 
@@ -413,18 +413,18 @@ public class MyAccountEditFragment extends Fragment {
                                                     JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                                     String strMess = jsonObjectError.getString("details");
 
-                                                    Utils.toast(2, 2, strMess);
+                                                    utils.toast(2, 2, strMess);
                                                 } catch (JSONException e1) {
                                                     e1.printStackTrace();
                                                 }
                                             }
                                         });
 
-                                    } else Utils.toast(2, 2, getString(R.string.warning_internet));
+                                    } else utils.toast(2, 2, getString(R.string.warning_internet));
 
                                 } else {
                                     progressDialog.dismiss();
-                                    Utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                    utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                     goToAccount();
                                 }
                             }
@@ -432,11 +432,11 @@ public class MyAccountEditFragment extends Fragment {
                             @Override
                             public void onException(Exception e) {
                                 progressDialog.dismiss();
-                                Utils.toast(2, 2, e.getMessage());
+                                utils.toast(2, 2, e.getMessage());
                             }
                         });
 
-                    } else Utils.toast(2, 2, getString(R.string.warning_internet));
+                    } else utils.toast(2, 2, getString(R.string.warning_internet));
                 }
             }
         });
@@ -507,7 +507,7 @@ public class MyAccountEditFragment extends Fragment {
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                         @Override
@@ -521,25 +521,25 @@ public class MyAccountEditFragment extends Fragment {
                                 if (appErrorCode != 1401 ) {
                                     uploadImage();
                                 } else {
-                                    Utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                 }
 
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
 
             } else {
-                Utils.toast(2, 2, getString(R.string.warning_internet));
+                utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
             e.printStackTrace();
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            Utils.toast(2, 2, getString(R.string.error));
+            utils.toast(2, 2, getString(R.string.error));
         }
     }
 
@@ -608,7 +608,7 @@ public class MyAccountEditFragment extends Fragment {
                                                     if (progressDialog.isShowing())
                                                         progressDialog.dismiss();
 
-                                                    Utils.toast(2, 2, getString(R.string.update_profile_image));
+                                                    utils.toast(2, 2, getString(R.string.update_profile_image));
 
                                                    /* if (Config.jsonObject.has("customer_profile_url")) {
 
@@ -622,7 +622,7 @@ public class MyAccountEditFragment extends Fragment {
                                                     isImageChanged = false;
 
                                                 } else {
-                                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
 
@@ -633,9 +633,9 @@ public class MyAccountEditFragment extends Fragment {
 
                                                 if (e != null) {
                                                     Utils.log(e.toString(), "response");
-                                                    Utils.toast(2, 2, e.getMessage());
+                                                    utils.toast(2, 2, e.getMessage());
                                                 } else {
-                                                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
                                         });
@@ -649,12 +649,12 @@ public class MyAccountEditFragment extends Fragment {
                                 } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
-                                    Utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                     }
                             }else{
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -666,9 +666,9 @@ public class MyAccountEditFragment extends Fragment {
 
                             if(e!=null) {
                                 Utils.log(e.toString(), "response");
-                                Utils.toast(2, 2, e.getMessage());
+                                utils.toast(2, 2, e.getMessage());
                             }else{
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
@@ -676,13 +676,13 @@ public class MyAccountEditFragment extends Fragment {
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
-                Utils.toast(2, 2, getString(R.string.warning_internet));
+                utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
             e.printStackTrace();
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
-            Utils.toast(2, 2, getString(R.string.error));
+            utils.toast(2, 2, getString(R.string.error));
         }
     }
 
@@ -696,7 +696,7 @@ public class MyAccountEditFragment extends Fragment {
                 if (bitmap != null)
                     roundedImageView.setImageBitmap(bitmap);
                 else
-                    Utils.toast(2, 2, getString(R.string.error));
+                    utils.toast(2, 2, getString(R.string.error));
             }
 
             if (isImageChanged && bitmap != null) {

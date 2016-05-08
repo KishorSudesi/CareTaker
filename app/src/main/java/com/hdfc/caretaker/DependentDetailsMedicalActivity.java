@@ -194,7 +194,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
         } else {
             progressDialog.dismiss();
-            Utils.toast(2, 2, getString(R.string.dependent_data_lost));
+            utils.toast(2, 2, getString(R.string.dependent_data_lost));
         }
 
     }
@@ -219,7 +219,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         //
 
         progressDialog.dismiss();
-        Utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
 
         startActivity(selection);
         finish();
@@ -243,7 +243,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             gotoDependnetList();
         } else {
             progressDialog.dismiss();
-            Utils.toast(2, 2, getString(R.string.dependent_data_lost));
+            utils.toast(2, 2, getString(R.string.dependent_data_lost));
         }
     }
 

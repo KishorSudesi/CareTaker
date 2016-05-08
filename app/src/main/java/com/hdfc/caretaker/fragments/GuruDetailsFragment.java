@@ -257,7 +257,7 @@ public class GuruDetailsFragment extends Fragment {
         if (TextUtils.isEmpty(strCustomerImgName)) {
             /* && Config.customerModel != null
                 && Config.customerModel.getStrName().equalsIgnoreCase("")*/
-            Utils.toast(1, 1, getString(R.string.warning_profile_pic));
+            utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
 
@@ -296,7 +296,7 @@ public class GuruDetailsFragment extends Fragment {
                 //editAddress.setError(getString(R.string.error_field_required));
                 focusView = citizenship;
                 cancel = true;
-                Utils.toast(2, 2, getString(R.string.select_country));
+                utils.toast(2, 2, getString(R.string.select_country));
             }
 
          /*   if (TextUtils.isEmpty(strAddress)) {
@@ -369,9 +369,9 @@ public class GuruDetailsFragment extends Fragment {
                             if (mProgress.isShowing())
                                 mProgress.dismiss();
                             if(o!=null) {
-                                Utils.toast(2, 2, getString(R.string.email_exists));
+                                utils.toast(2, 2, getString(R.string.email_exists));
                             }else{
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
 
@@ -441,26 +441,26 @@ public class GuruDetailsFragment extends Fragment {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
 
-                                    Utils.toast(1, 1, getString(R.string.your_details_saved));
+                                    utils.toast(1, 1, getString(R.string.your_details_saved));
 
                                     SignupActivity._mViewPager.setCurrentItem(1);
 
                                 }else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
-                                    Utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.error));
                                 }
                             }else{
                                 if (mProgress.isShowing())
                                     mProgress.dismiss();
-                                Utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
                 } else {
                     if (mProgress.isShowing())
                         mProgress.dismiss();
-                    Utils.toast(2, 2, getString(R.string.warning_internet));
+                    utils.toast(2, 2, getString(R.string.warning_internet));
                 }
 
             } catch (Exception e) {

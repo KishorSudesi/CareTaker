@@ -10,6 +10,7 @@ import com.shephertz.app42.paas.sdk.android.App42CacheManager;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.App42Response;
+import com.shephertz.app42.paas.sdk.android.push.PushNotificationService;
 import com.shephertz.app42.paas.sdk.android.storage.OrderByType;
 import com.shephertz.app42.paas.sdk.android.storage.Query;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
@@ -33,6 +34,7 @@ public class AsyncApp42ServiceApi {
     private UserService userService;
     private StorageService storageService;
     private UploadService uploadService;
+    private PushNotificationService pushNotificationService;
 
 
     private AsyncApp42ServiceApi(Context context) {
@@ -55,6 +57,7 @@ public class AsyncApp42ServiceApi {
         this.userService = App42API.buildUserService();
         this.storageService = App42API.buildStorageService();
         this.uploadService = App42API.buildUploadService();
+        this.pushNotificationService = App42API.buildPushNotificationService();
     }
 
    /* public void sendPush(){
@@ -856,6 +859,39 @@ public class AsyncApp42ServiceApi {
             }
         }.start();
     }
+
+    public void sendPushToUser(final String userName, final String strMessage,
+                               final App42CallBack callBack) {
+
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = pushNotificationService.sendPushMessageToUser(
+                            userName, strMessage);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+
 
    /* public interface App42UserServiceListener {
         void onUserCreated(User response);

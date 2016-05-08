@@ -256,7 +256,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 /*editRelation.setError(getString(R.string.error_field_required));
                 focusView = editRelation;*/
                 cancel = true;
-            Utils.toast(2, 2, getString(R.string.select_relation));
+            utils.toast(2, 2, getString(R.string.select_relation));
             }
 
             if (TextUtils.isEmpty(strAddress)) {
@@ -320,9 +320,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                             mProgress.dismiss();
 
                         if (o != null) {
-                            Utils.toast(2, 2, getString(R.string.email_exists));
+                            utils.toast(2, 2, getString(R.string.email_exists));
                         } else {
-                            Utils.toast(2, 2, getString(R.string.warning_internet));
+                            utils.toast(2, 2, getString(R.string.warning_internet));
                         }
                     }
 
@@ -363,18 +363,18 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                                     dependentModel.setStrEmail(strEmail);
                                     dependentModel.setStrDob(strDob);
                                 } else {
-                                    Utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                                    utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                                 }
                             }
 
-                            Utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                            utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
                             strImageName = "";
                             Intent selection = new Intent(DependentDetailPersonalActivity.this,
                                     DependentDetailsMedicalActivity.class);
                             startActivity(selection);
                             finish();
                         } else {
-                            Utils.toast(2, 2, getString(R.string.warning_internet));
+                            utils.toast(2, 2, getString(R.string.warning_internet));
                         }
                     }
                 });
