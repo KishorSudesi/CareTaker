@@ -66,4 +66,10 @@ public class StorageService {
         asyncService.updateDocPartByKeyValue(Config.dbName, strCollectionName, strDocId,
                 jsonToUpdate, app42CallBack);
     }
+
+    public void deleteDocById(String strCollectionName, String strDocId,
+                              App42CallBack app42CallBack) {
+        asyncService.deleteDocById(Config.dbName, strCollectionName, strDocId,
+                app42CallBack);
+    }
 }

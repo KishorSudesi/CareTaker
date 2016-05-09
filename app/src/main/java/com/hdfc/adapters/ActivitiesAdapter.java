@@ -117,7 +117,7 @@ public class ActivitiesAdapter extends BaseAdapter {
                     String strTemp = providerModel.getStrName() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
 
-                    viewHolder.textViewText.setText(activityModel.getStrActivityMessage());
+                    viewHolder.textViewText.setText(activityModel.getStrActivityDesc());
                 } else {
 
                     String strDisplayDate = _context.getResources().getString(R.string.space) +

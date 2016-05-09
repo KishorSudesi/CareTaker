@@ -92,7 +92,7 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.dateTime.setText(strTimeStamp);
 
-            viewHolder.Message.setText(activityListModel.getStrActivityMessage());
+            viewHolder.Message.setText(activityListModel.getStrActivityDesc());
 
             String strAuthor = activityListModel.getStrActivityName() + _context.getResources().getString(R.string.space) + _context.getResources().getString(R.string.at) + _context.getResources().getString(R.string.space);
 

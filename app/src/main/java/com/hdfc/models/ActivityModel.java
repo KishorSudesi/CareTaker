@@ -16,22 +16,27 @@ public class ActivityModel implements Serializable {
 
     private String strActivityName;
     private String strActivityDesc;
-    private String strActivityMessage;
     private String strActivityStatus;
-    private String strServiceName;
-    private String strServiceDesc;
+
+
     private String strActivityDate;
     private String strActivityDoneDate;
     private String strActivityProviderStatus;
+    private String strActivityProviderMessage;
+
+    private String strServiceName;
+    private String strServiceNo;
+    private String strServiceType;
+    private String strServiceCateogoryName;
+
 
     private boolean bActivityOverdue;
-
-    private String[] strFeatures;
-    private String[] strFeaturesDone;
 
     private ArrayList<ImageModel> imageModels = new ArrayList<>();
     private ArrayList<VideoModel> videoModels = new ArrayList<>();
     private ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
+
+    private ArrayList<MilestoneModel> milestoneModels = new ArrayList<>();
 
     public ActivityModel() {
     }
@@ -51,19 +56,27 @@ public class ActivityModel implements Serializable {
         this.strServcieID = strServcieID;
         this.strActivityName = strActivityName;
         this.strActivityDesc = strActivityDesc;
-        this.strActivityMessage = strActivityMessage;
         this.strActivityStatus = strActivityStatus;
         this.strServiceName = strServiceName;
-        this.strServiceDesc = strServiceDesc;
         this.strActivityDate = strActivityDate;
         this.strActivityDoneDate = strActivityDoneDate;
         this.strActivityProviderStatus = strActivityProviderStatus;
         this.bActivityOverdue = bActivityOverdue;
-        this.strFeatures = strFeatures;
-        this.strFeaturesDone = strFeaturesDone;
         this.imageModels = imageModels;
         this.videoModels = videoModels;
         this.feedBackModels = feedBackModels;
+    }
+
+    public ArrayList<MilestoneModel> getMilestoneModels() {
+        return milestoneModels;
+    }
+
+    public void setMilestoneModels(ArrayList<MilestoneModel> milestoneModels) {
+        this.milestoneModels = milestoneModels;
+    }
+
+    public void setMilestoneModel(MilestoneModel milestoneModel) {
+        this.milestoneModels.add(milestoneModel);
     }
 
     public String getStrActivityID() {
@@ -122,14 +135,6 @@ public class ActivityModel implements Serializable {
         this.strActivityDesc = strActivityDesc;
     }
 
-    public String getStrActivityMessage() {
-        return strActivityMessage;
-    }
-
-    public void setStrActivityMessage(String strActivityMessage) {
-        this.strActivityMessage = strActivityMessage;
-    }
-
     public String getStrActivityStatus() {
         return strActivityStatus;
     }
@@ -146,13 +151,6 @@ public class ActivityModel implements Serializable {
         this.strServiceName = strServiceName;
     }
 
-    public String getStrServiceDesc() {
-        return strServiceDesc;
-    }
-
-    public void setStrServiceDesc(String strServiceDesc) {
-        this.strServiceDesc = strServiceDesc;
-    }
 
     public String getStrActivityDate() {
         return strActivityDate;
@@ -186,22 +184,6 @@ public class ActivityModel implements Serializable {
         this.bActivityOverdue = bActivityOverdue;
     }
 
-    public String[] getStrFeatures() {
-        return strFeatures;
-    }
-
-    public void setStrFeatures(String[] strFeatures) {
-        this.strFeatures = strFeatures;
-    }
-
-    public String[] getStrFeaturesDone() {
-        return strFeaturesDone;
-    }
-
-    public void setStrFeaturesDone(String[] strFeaturesDone) {
-        this.strFeaturesDone = strFeaturesDone;
-    }
-
     public ArrayList<ImageModel> getImageModels() {
         return imageModels;
     }
@@ -224,5 +206,37 @@ public class ActivityModel implements Serializable {
 
     public void setFeedBackModels(ArrayList<FeedBackModel> feedBackModels) {
         this.feedBackModels = feedBackModels;
+    }
+
+    public String getStrActivityProviderMessage() {
+        return strActivityProviderMessage;
+    }
+
+    public void setStrActivityProviderMessage(String strActivityProviderMessage) {
+        this.strActivityProviderMessage = strActivityProviderMessage;
+    }
+
+    public String getStrServiceNo() {
+        return strServiceNo;
+    }
+
+    public void setStrServiceNo(String strServiceNo) {
+        this.strServiceNo = strServiceNo;
+    }
+
+    public String getStrServiceType() {
+        return strServiceType;
+    }
+
+    public void setStrServiceType(String strServiceType) {
+        this.strServiceType = strServiceType;
+    }
+
+    public String getStrServiceCateogoryName() {
+        return strServiceCateogoryName;
+    }
+
+    public void setStrServiceCateogoryName(String strServiceCateogoryName) {
+        this.strServiceCateogoryName = strServiceCateogoryName;
     }
 }

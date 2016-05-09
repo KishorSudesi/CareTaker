@@ -26,6 +26,11 @@
                 <RelativeLayout
                     android:id="@+id/loadingPanel"
                     style="@style/GenericProgressBackground"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:padding="5dp"
                     android:visibility="gone">
                     <ProgressBar style="@style/GenericProgressIndicator" />
                 </RelativeLayout>

@@ -219,8 +219,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //todo delete created activity
-                    //iInsertedDocumentId
+                    if (strInsertedDocumentId != null && !strInsertedDocumentId.equalsIgnoreCase(""))
+                        deleteCreatedActivity();
                 }
             });
             builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -343,6 +343,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             jsonObjectServices.put("dependent_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
             jsonObjectServices.put("provider_id", strProviderId);
 
+            //todo check for unit_value update
+
             jsonObjectServices.put("status", "new");
             jsonObjectServices.put("provider_status", "new");
             jsonObjectServices.put("provider_message", "");
@@ -355,7 +357,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
             JSONArray jsonArray = new JSONArray();
 
-            jsonArray.put("empty");
+            jsonArray.put("{\"0\":\"empty\"}");
 
             jsonObjectServices.put("feedbacks", jsonArray);
             jsonObjectServices.put("videos", jsonArray);
@@ -677,6 +679,45 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             strAlert = getString(R.string.no_push_actiity_added);
 
             goToActivityList(strAlert);
+        }
+    }
+
+    public void deleteCreatedActivity() {
+
+        if (utils.isConnectingToInternet()) {
+
+            storageService.deleteDocById(Config.collectionActivity, strInsertedDocumentId,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            if (o != null) {
+                                utils.toast(2, 2, getString(R.string.activity_deleted));
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            if (e != null) {
+                                utils.toast(2, 2, getString(R.string.error));
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        }
+                    });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.AdditionalServicesActivity;
@@ -30,7 +31,7 @@ public class MyAccountFragment extends Fragment {
     private static Bitmap bitmap;
     private static RoundedImageView roundedImageView;
     private static Handler threadHandler;
-   // private RelativeLayout loadingPanel;
+    private static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
     TextView txtviewBuyServices;
     TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
@@ -58,7 +59,7 @@ public class MyAccountFragment extends Fragment {
 
         utils = new Utils(getActivity());
 
-        //loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
+        loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
         progressDialog = new ProgressDialog(getActivity());
 
@@ -125,15 +126,15 @@ public class MyAccountFragment extends Fragment {
             }
         });
 
+        loadingPanel.setVisibility(View.VISIBLE);
+
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
 
-        progressDialog.setMessage(getResources().getString(R.string.loading));
+        /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        //loadingPanel.setVisibility(View.VISIBLE);
+        progressDialog.show();*/
 
         return view;
     }
@@ -155,7 +156,7 @@ public class MyAccountFragment extends Fragment {
             if (bitmap != null)
                 roundedImageView.setImageBitmap(bitmap);
 
-            //loadingPanel.setVisibility(View.GONE);
+            loadingPanel.setVisibility(View.GONE);
         }
     }
 
@@ -169,10 +170,10 @@ public class MyAccountFragment extends Fragment {
                     bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 }
 
-                threadHandler.sendEmptyMessage(0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            threadHandler.sendEmptyMessage(0);
         }
     }
 }

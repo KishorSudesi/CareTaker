@@ -101,6 +101,7 @@
     <string name="register_success">Account Registered Successfully</string>
     <string name="update_profile_image">Profile Image Updated Successfully</string>
     <string name="rating_added">Rating Added</string>
+    <string name="activity_deleted">Activity Deleted</string>
 
     <!--Process Strings-->
     <string name="uploading">Uploading…</string>

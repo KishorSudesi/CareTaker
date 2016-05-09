@@ -322,7 +322,7 @@ public class LoginActivity extends AppCompatActivity {
                                 ArrayList<String> roleList = user.getRoleList();
 
                                 //todo check rolelist
-                                Utils.log(roleList.get(0), " ROLE ");
+                                //Utils.log(String.valueOf(roleList.size()), " ROLE ");
                                 //roleList.size()>0 && roleList.get(0).equalsIgnoreCase("provider");
 
                                 utils.fetchCustomer(progressDialog, 1);

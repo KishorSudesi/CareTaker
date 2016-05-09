@@ -75,7 +75,7 @@ public class CarlaCompletedActivityFragment extends Fragment {
 
         if (activityModel != null) {
 
-            txtViewHead2.setText(activityModel.getStrActivityMessage());
+            txtViewHead2.setText(activityModel.getStrActivityDesc());
             String strHead = activityModel.getStrProviderID() + getActivity().getResources().getString(R.string.assisted_in);
             txtViewHead1.setText(strHead);
             String strDate = getActivity().getResources().getString(R.string.at) + activityModel.getStrActivityDate();

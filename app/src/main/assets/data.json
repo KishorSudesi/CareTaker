@@ -3,20 +3,17 @@
   "dependent_id": "572b4f17e4b049ca81c3e9e9",
   "provider_status": "scheduled",
   "provider_id": "5715c39ee4b0d2aca6fe5d17",
-  "status": "upcoming",
+  "status": "completed",
   "provider_message": "message",
   "videos": [
     {
-      "video_taken": "2016-05-07T11:52:08.706+0000",
-      "video_description": "1458733599660.jpeg",
-      "video_name": "1458733599660.jpeg",
-      "video_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/d7a52ac9c15c52737969410cf0d1c7b0ade68f78/1458733599660.jpeg"
+      "0": "empty"
     }
   ],
   "feedbacks": [
     {
       "feedback_message": "Testing",
-      "feedback_by": "572b4f14e4b0492b68fbc9b1",
+      "feedback_by": "572b4f17e4b049ca81c3e9e9",
       "feedback_report": "false",
       "feedback_time": "2016-05-07T11:52:08.706+0000",
       "feedback_by_type": "customer",
@@ -132,10 +129,7 @@
   "overdue": false,
   "images": [
     {
-      "image_name": "1458733599660.jpeg",
-      "image_url": "http://cdn.shephertz.com/repository/files/458f7884154a3afc67bd5c5f24df3d1e6c0852e01e4e272ea3ed79a8d8ac6439/d7a52ac9c15c52737969410cf0d1c7b0ade68f78/1458733599660.jpeg",
-      "image_description": "1458733599660.jpeg",
-      "image_taken": "2016-05-07T11:52:08.706+0000"
+      "0": "empty"
     }
   ],
   "activity_desc": "desc",

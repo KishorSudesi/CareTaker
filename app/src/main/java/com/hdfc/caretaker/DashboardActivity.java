@@ -1,5 +1,6 @@
 package com.hdfc.caretaker;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +25,20 @@ import com.shephertz.app42.paas.sdk.android.App42API;
  */
 public class DashboardActivity extends AppCompatActivity implements App42GCMController.App42GCMListener {
 
-    //private Utils utils;
+    private static ProgressDialog progressDialog;
+    private static AppCompatActivity appCompatActivity;
+    private Utils utils;
+
+    public static void goToDashboard() {
+        //if (Config.intSelectedMenu != Config.intDashboardScreen) {
+        Config.intSelectedMenu = Config.intDashboardScreen;
+        DashboardFragment newFragment = DashboardFragment.newInstance();
+        FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_dashboard, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        //}
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +118,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 @Override
                 public void onClick(View v) {
                     //Config.intSelectedMenu = 0;
-                    goToDashboard();
+                    goToDashboardMenu();
                 }
             });
         }
@@ -114,15 +128,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 @Override
                 public void onClick(View v) {
                     //Config.intSelectedMenu = 0;
-                    goToDashboard();
+                    goToDashboardMenu();
                 }
             });
         }
 
-        if (Config.intSelectedMenu == Config.intDashboardScreen) {
+        /*if (Config.intSelectedMenu == Config.intDashboardScreen) {
             //Config.intSelectedMenu = 0;
             goToDashboard();
-        }
+        }*/
 
         if (Config.intSelectedMenu == Config.intNotificationScreen) {
             // Config.intSelectedMenu = 0;
@@ -140,26 +154,10 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             goToActivity();
         }
 
-        //utils = new Utils(DashboardActivity.this);
+        utils = new Utils(DashboardActivity.this);
+        progressDialog = new ProgressDialog(DashboardActivity.this);
 
-        goToDashboard();
-
-       /* try {
-            if (!AccountSuccessActivity.isCreatedNow) {
-                *//*threadHandler = new ThreadHandler();
-                Thread backgroundThread = new BackgroundThread();
-                backgroundThread.start();
-
-                progressDialog.setMessage(getResources().getString(R.string.loading));
-                progressDialog.setCancelable(false);
-                progressDialog.show();*//*
-            } else {
-                //Config.intSelectedMenu = 0;
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        appCompatActivity = DashboardActivity.this;
 
         App42API.setLoggedInUser(Config.customerModel.getStrEmail());
     }
@@ -235,14 +233,14 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         //}
     }
 
-    public void goToDashboard() {
+    public void goToDashboardMenu() {
         //if (Config.intSelectedMenu != Config.intDashboardScreen) {
-            Config.intSelectedMenu = Config.intDashboardScreen;
-            DashboardFragment newFragment = DashboardFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_dashboard, newFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        progressDialog.setMessage(getResources().getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        utils.fetchDependents(Config.customerModel.getStrCustomerID(),
+                progressDialog, 0);
         //}
     }
 
@@ -279,7 +277,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         if (Config.customerModel == null || Config.customerModel.getStrName() == null) {
             Utils.logout();
         } else {
+
             try {
+
                 boolean isPushReceived = getIntent().getBooleanExtra("message_delivered", false);
                 String strPushMess = getIntent().getStringExtra("message");
 
@@ -301,7 +301,34 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                         }
                     });
                     builder.show();
+                } else {
+
+                    try {
+                        if (!AccountSuccessActivity.isCreatedNow) {
+
+                           /* threadHandler = new ThreadHandler();
+                            Thread backgroundThread = new BackgroundThread();
+                            backgroundThread.start();*/
+
+                            progressDialog.setMessage(getResources().getString(R.string.loading));
+                            progressDialog.setCancelable(false);
+                            progressDialog.show();
+
+
+                            Utils.iActivityCount = 0;
+                            Utils.iProviderCount = 0;
+
+                            utils.fetchDependents(Config.customerModel.getStrCustomerID(),
+                                    progressDialog, 0);
+
+                        } else {
+                            //Config.intSelectedMenu = 0;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

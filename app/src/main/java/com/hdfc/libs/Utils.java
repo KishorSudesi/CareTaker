@@ -118,8 +118,8 @@ public class Utils {
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
     public static Bitmap noBitmap;
+    public static int iActivityCount = 0;
     private static Handler threadHandler;
-    private static int iActivityCount = 0;
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
     //
@@ -1627,6 +1627,9 @@ public class Utils {
                     @Override
                     public void onFindDocSuccess(Storage response) {
 
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+
                         if (response != null) {
 
                             if (response.getJsonDocList().size() > 0) {
@@ -1643,18 +1646,13 @@ public class Utils {
                                     e.printStackTrace();
                                 }
 
-                                if (iFlag == 1) {
-                                    fetchDependents(Config.customerModel.getStrCustomerID(),
-                                            progressDialog, 1);
-                                }
+                                if (iFlag == 1)
+                                    goToDashboard();
+
                             } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
                                 toast(2, 2, _ctxt.getString(R.string.error));
                             }
                         } else {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
                             toast(2, 2, _ctxt.getString(R.string.warning_internet));
                         }
                     }
@@ -1672,9 +1670,16 @@ public class Utils {
                             JSONObject jsonObject = new JSONObject(ex.getMessage());
                             JSONObject jsonObjectError =
                                     jsonObject.getJSONObject("app42Fault");
+
+                            int appErrorCode = jsonObjectError.getInt("appErrorCode");
+
                             String strMess = jsonObjectError.getString("details");
 
-                            toast(2, 2, strMess);
+                            if (appErrorCode == 2601)
+                                toast(2, 2, _ctxt.getString(R.string.invalid_credentials));
+                            else
+                                toast(2, 2, strMess);
+
                         } catch (JSONException e1) {
                             e1.printStackTrace();
                         }
@@ -1979,16 +1984,6 @@ public class Utils {
                 activityModel.setStrActivityProviderStatus(jsonObjectActivity.
                         getString("provider_status"));
 
-               /* String strFeatures[] = jsonToStringArray(jsonObjectActivity.
-                        getJSONArray("features"));
-
-                activityModel.setStrFeatures(strFeatures);
-
-                String strFeaturesDone[] = jsonToStringArray(jsonObjectActivity.
-                        getJSONArray("features"));
-
-                activityModel.setStrFeaturesDone(strFeaturesDone);*/
-
                 ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
                 ArrayList<VideoModel> videoModels = new ArrayList<>();
                 ArrayList<ImageModel> imageModels = new ArrayList<>();
@@ -2003,15 +1998,18 @@ public class Utils {
                         JSONObject jsonObjectFeedback =
                                 jsonArrayFeedback.getJSONObject(k);
 
-                        FeedBackModel feedBackModel = new FeedBackModel(
-                                jsonObjectFeedback.getString("feedback_message"),
-                                jsonObjectFeedback.getString("feedback_by"),
-                                jsonObjectFeedback.getInt("feedback_rating"),
-                                jsonObjectFeedback.getBoolean("feedback_report"),
-                                jsonObjectFeedback.getString("feedback_time"),
-                                jsonObjectFeedback.getString("feedback_by_type"));
+                        if (jsonObjectFeedback.has("feedback_message")) {
 
-                        feedBackModels.add(feedBackModel);
+                            FeedBackModel feedBackModel = new FeedBackModel(
+                                    jsonObjectFeedback.getString("feedback_message"),
+                                    jsonObjectFeedback.getString("feedback_by"),
+                                    jsonObjectFeedback.getInt("feedback_rating"),
+                                    jsonObjectFeedback.getBoolean("feedback_report"),
+                                    jsonObjectFeedback.getString("feedback_time"),
+                                    jsonObjectFeedback.getString("feedback_by_type"));
+
+                            feedBackModels.add(feedBackModel);
+                        }
                     }
                     activityModel.setFeedBackModels(feedBackModels);
                 }
@@ -2026,16 +2024,19 @@ public class Utils {
                         JSONObject jsonObjectVideo = jsonArrayVideos.
                                 getJSONObject(k);
 
-                        VideoModel videoModel = new VideoModel(
-                                jsonObjectVideo.getString("video_name"),
-                                jsonObjectVideo.getString("video_url"),
-                                jsonObjectVideo.getString("video_description"),
-                                jsonObjectVideo.getString("video_taken"));
+                        if (jsonObjectVideo.has("video_name")) {
 
-                        Config.fileModels.add(new FileModel(jsonObjectVideo.getString("video_name"),
-                                jsonObjectVideo.getString("video_url"), "VIDEO"));
+                            VideoModel videoModel = new VideoModel(
+                                    jsonObjectVideo.getString("video_name"),
+                                    jsonObjectVideo.getString("video_url"),
+                                    jsonObjectVideo.getString("video_description"),
+                                    jsonObjectVideo.getString("video_taken"));
 
-                        videoModels.add(videoModel);
+                            Config.fileModels.add(new FileModel(jsonObjectVideo.getString("video_name"),
+                                    jsonObjectVideo.getString("video_url"), "VIDEO"));
+
+                            videoModels.add(videoModel);
+                        }
                     }
                     activityModel.setVideoModels(videoModels);
                 }
@@ -2050,16 +2051,20 @@ public class Utils {
                         JSONObject jsonObjectImage = jsonArrayVideos.
                                 getJSONObject(k);
 
-                        ImageModel imageModel = new ImageModel(
-                                jsonObjectImage.getString("image_name"),
-                                jsonObjectImage.getString("image_url"),
-                                jsonObjectImage.getString("image_description"),
-                                jsonObjectImage.getString("image_taken"));
+                        if (jsonObjectImage.has("image_name")) {
 
-                        Config.fileModels.add(new FileModel(jsonObjectImage.getString("image_name"),
-                                jsonObjectImage.getString("image_url"), "IMAGE"));
+                            ImageModel imageModel = new ImageModel(
+                                    jsonObjectImage.getString("image_name"),
+                                    jsonObjectImage.getString("image_url"),
+                                    jsonObjectImage.getString("image_description"),
+                                    jsonObjectImage.getString("image_taken"));
 
-                        imageModels.add(imageModel);
+                            Config.fileModels.add(new FileModel(jsonObjectImage.getString("image_name"),
+                                    jsonObjectImage.getString("image_url"), "IMAGE"));
+
+                            imageModels.add(imageModel);
+
+                        }
                     }
                     activityModel.setImageModels(imageModels);
                 }
@@ -2110,8 +2115,9 @@ public class Utils {
                                         createDependentModel(strDependentDocId, strDocument);
                                     }
 
-                                    if (iFlag == 1)
+                                    //if (iFlag == 1)
                                         fetchLatestActivities(progressDialog, iFlag);
+
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -2282,10 +2288,9 @@ public class Utils {
 
                             @Override
                             public void onSuccess(Object o) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
                                 try {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-
                                     if (o != null) {
 
                                         //Utils.log(o.toString(), " Response Success");
@@ -2308,7 +2313,7 @@ public class Utils {
                                         }
 
                                         if (iFlag == 0)
-                                            goToDashboard();
+                                            loadImages();
                                         if (iFlag == 1)
                                             refreshNotificationsImages();
 
@@ -2330,7 +2335,7 @@ public class Utils {
 
                                     if (e != null) {
                                         if (iFlag == 0)
-                                            goToDashboard();
+                                            loadImages();
                                         if (iFlag == 1)
                                             refreshNotificationsImages();
                                     } else {
@@ -2350,7 +2355,7 @@ public class Utils {
             }
         } else {
             if (iFlag == 0)
-                goToDashboard();
+                loadImages();
             if (iFlag == 1)
                 refreshNotificationsImages();
         }
@@ -2382,12 +2387,20 @@ public class Utils {
 
     public void goToDashboard() {
 
+        Config.intSelectedMenu = Config.intDashboardScreen;
+
+        toast(1, 1, _ctxt.getString(R.string.success_login));
+        Config.boolIsLoggedIn = true;
+        Intent intent = new Intent(_ctxt, DashboardActivity.class);
+        _ctxt.startActivity(intent);
+    }
+
+    public void loadImages() {
+
         progressDialog = new ProgressDialog(_ctxt);
-        progressDialog.setMessage(_ctxt.getResources().getString(R.string.loading));
+        progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
         progressDialog.show();
-
-        Config.intSelectedMenu = Config.intDashboardScreen;
 
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -2470,12 +2483,12 @@ public class Utils {
                                    /* Config.dependentModels.get(iActivityCount).
                                             setActivityModels(Config.activityModels);*/
 
-                                    if (appErrorCode == 2608) {
+                                    if (appErrorCode == 2608) { //no document exists for query
                                         iActivityCount++;
                                     }
 
                                     if (iActivityCount == Config.strDependentIds.size())
-                                        fetchProviders(progressDialog, 0);
+                                        fetchProviders(progressDialog, iFlag);
                                     else
                                         fetchLatestActivities(progressDialog, iFlag);
 
@@ -2510,10 +2523,7 @@ public class Utils {
                 refreshNotifications();
 
             if (Config.intSelectedMenu == Config.intDashboardScreen) {
-                toast(1, 1, _ctxt.getString(R.string.success_login));
-                Config.boolIsLoggedIn = true;
-                Intent intent = new Intent(_ctxt, DashboardActivity.class);
-                _ctxt.startActivity(intent);
+                DashboardActivity.goToDashboard();
             }
 
         }

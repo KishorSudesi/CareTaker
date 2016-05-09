@@ -206,7 +206,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                                                     if (jsonObjectActivity.getString("activity_date").equalsIgnoreCase(_activityModel.getStrActivityDate()) &&
                                                             jsonObjectActivity.getString("activity_name").equalsIgnoreCase(_activityModel.getStrActivityName()) &&
-                                                            jsonObjectActivity.getString("activity_message").equalsIgnoreCase(_activityModel.getStrActivityMessage())) {
+                                                            jsonObjectActivity.getString("activity_message").equalsIgnoreCase(_activityModel.getStrActivityDesc())) {
 
                                                         jsonArrayFeatures = jsonObjectActivity.getJSONArray("feedbacks");
 
