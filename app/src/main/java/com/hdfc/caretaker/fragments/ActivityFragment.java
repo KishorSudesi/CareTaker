@@ -215,4 +215,11 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             setGridCellAdapterToDate(month, year);
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+    }
 }

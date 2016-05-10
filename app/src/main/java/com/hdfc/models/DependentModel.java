@@ -27,6 +27,7 @@ public class DependentModel {
 
     private ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     private ArrayList<ActivityModel> activityModels = new ArrayList<>();
+    private ArrayList<ActivityModel> monthActivityModel = new ArrayList<>();
     private ArrayList<NotificationModel> notificationModels = new ArrayList<>();
 
     public DependentModel() {
@@ -80,6 +81,18 @@ public class DependentModel {
 
     public void setActivityModels(ActivityModel activityModel) {
         this.activityModels.add(activityModel);
+    }
+
+    public ArrayList<ActivityModel> getMonthActivityModel() {
+        return monthActivityModel;
+    }
+
+    public void setMonthActivityModel(ActivityModel monthActivityModel) {
+        this.monthActivityModel.add(monthActivityModel);
+    }
+
+    public void setMonthActivityModel(ArrayList<ActivityModel> monthActivityModel) {
+        this.monthActivityModel = monthActivityModel;
     }
 
     public String getStrName() {

@@ -1351,6 +1351,8 @@ public class Utils {
 
                             if (storage != null) {
 
+                                Utils.log(storage.toString(), "not ");
+
                                 if (storage.getJsonDocList().size() > 0) {
 
                                     ArrayList<Storage.JSONDocument> jsonDocList = storage.
@@ -1950,7 +1952,7 @@ public class Utils {
         }
     }
 
-    public void createActivityModel(String strActivityId, String strDocument) {
+    public void createActivityModel(String strActivityId, String strDocument, int iFlag) {
         try {
 
             JSONObject jsonObjectActivity =
@@ -2069,8 +2071,19 @@ public class Utils {
                     activityModel.setImageModels(imageModels);
                 }
 
-                Config.dependentModels.get(iActivityCount).
-                        setActivityModels(activityModel);
+                if (iFlag == 0) {
+                    Config.dependentModels.get(iActivityCount).
+                            setActivityModels(activityModel);
+                }
+
+                if (iFlag == 1) {
+                    if (!Config.strActivityIds.contains(strActivityId)) {
+                        Config.dependentModels.get(iActivityCount).
+                                setMonthActivityModel(activityModel);
+
+                        Config.strActivityIds.add(strActivityId);
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -2225,7 +2238,7 @@ public class Utils {
 
                                             String strDocument = jsonDocument.getJsonDoc();
                                             String strActivityId = jsonDocument.getDocId();
-                                            createActivityModel(strActivityId, strDocument);
+                                            createActivityModel(strActivityId, strDocument, 0);
                                         }
 
                                     }
@@ -2451,7 +2464,7 @@ public class Utils {
 
                                         String strDocument = jsonDocument.getJsonDoc();
                                         String strActivityId = jsonDocument.getDocId();
-                                        createActivityModel(strActivityId, strDocument);
+                                        createActivityModel(strActivityId, strDocument, 0);
                                     }
                                 }
 
@@ -2497,6 +2510,90 @@ public class Utils {
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
+                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+            );
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+        }
+    }
+
+    public void fetchLatestActivitiesByMonth(String strDependentId, final ProgressDialog progressDialog) {
+
+        if (isConnectingToInternet()) {
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            String key2 = "dependent_id";
+            //String value2 = Config.strDependentIds.get(iActivityCount);
+
+            /*Query q1 = QueryBuilder.build("provider_status", "scheduled", QueryBuilder.
+                    Operator.EQUALS);*/
+
+            // Build query q1 for key1 equal to name and value1 equal to Nick
+            Query q2 = QueryBuilder.build(key2, strDependentId, QueryBuilder.Operator.EQUALS);
+            // Build query q2 for key2 equal to age and value2
+
+            /*Query q3 = QueryBuilder.build("status", "upcoming", QueryBuilder.Operator.EQUALS);
+            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+
+            Query q5 = QueryBuilder.compoundOperator(q4, QueryBuilder.Operator.AND, q3);*/
+
+            int max = 1;
+            int offset = 0;
+
+            storageService.findDocsByQuery(Config.collectionActivity, q2, //1 for descending
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+
+                            Storage response = (Storage) o;
+
+                            if (response != null) {
+
+                                if (response.getJsonDocList().size() > 0) {
+
+                                    for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                        Storage.JSONDocument jsonDocument = response.
+                                                getJsonDocList().get(i);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        String strActivityId = jsonDocument.getDocId();
+                                        createActivityModel(strActivityId, strDocument, 1);
+                                    }
+                                }
+
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            try {
+                                if (e != null) {
+                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                    JSONObject jsonObjectError =
+                                            jsonObject.getJSONObject("app42Fault");
+
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    toast(2, 2, strMess);
+
+                                } else {
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
                             } catch (JSONException e1) {

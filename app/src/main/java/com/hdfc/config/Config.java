@@ -171,6 +171,8 @@ public class Config {
     public static ArrayList<String> strNotificationIds = new ArrayList<>();
     public static ArrayList<String> strServcieIds = new ArrayList<>();
 
+    public static ArrayList<String> strActivityIds = new ArrayList<>();
+
     public static ArrayList<String> strProviderIds = new ArrayList<>();
     public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
 
