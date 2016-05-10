@@ -1,16 +1,22 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hdfc.app42service.App42GCMController;
+import com.hdfc.app42service.App42GCMService;
 import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.AddRatingCompletedActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
@@ -27,6 +33,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     private static ProgressDialog progressDialog;
     private static AppCompatActivity appCompatActivity;
+    final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent
+                    .getStringExtra(App42GCMService.ExtraMessage);
+            Log.i("mBroadcastReceiver", "" + " : "
+                    + message);
+        }
+    };
     private Utils utils;
 
     public static void goToDashboard() {
@@ -235,9 +250,13 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     public void goToDashboardMenu() {
         //if (Config.intSelectedMenu != Config.intDashboardScreen) {
+        Config.intSelectedMenu = Config.intDashboardScreen;
         progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
+
+        Utils.iActivityCount = 0;
+        Utils.iProviderCount = 0;
 
         utils.fetchDependents(Config.customerModel.getStrCustomerID(),
                 progressDialog, 0);
@@ -332,10 +351,30 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            try {
+                IntentFilter filter = new IntentFilter(
+                        App42GCMService.DisplayMessageAction);
+                filter.setPriority(2);
+                registerReceiver(mBroadcastReceiver, filter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-   /* public class BackgroundThread extends Thread {
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            unregisterReceiver(mBroadcastReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /* public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {

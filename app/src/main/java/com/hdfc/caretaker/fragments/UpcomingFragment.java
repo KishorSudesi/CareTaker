@@ -20,6 +20,7 @@ import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
+import com.hdfc.models.ProviderModel;
 
 import java.io.File;
 
@@ -75,7 +76,12 @@ public class UpcomingFragment extends Fragment {
 
         if (activityModel != null) {
             txtViewHead2.setText(activityModel.getStrActivityName());
-            String strHead = activityModel.getStrProviderID() + getActivity().getResources().getString(R.string.will_assist);
+
+            int iPosition = Config.strProviderIdsAdded.indexOf(activityModel.getStrProviderID());
+
+            ProviderModel providerModel = Config.providerModels.get(iPosition);
+
+            String strHead = providerModel.getStrName() + getActivity().getResources().getString(R.string.will_assist);
             txtViewHead1.setText(strHead);
             String strDate = getActivity().getResources().getString(R.string.at) + activityModel.getStrActivityDate();
             txtViewDate.setText(strDate);

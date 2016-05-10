@@ -92,6 +92,7 @@
     <string name="existing_request">A Transaction is already in process, Please Wait…</string>
     <string name="existing_recipient">Previous Care Recipient</string>
     <string name="milestones">Services Involved in &#160;</string>
+    <string name="selected_date">Selected &#160;</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

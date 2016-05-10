@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.hdfc.adapters.ActivityMonthListAdapter;
 import com.hdfc.adapters.CalendarAdapter;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
@@ -28,7 +29,7 @@ import java.util.Locale;
 
 public class ActivityMonthFragment extends Fragment {
 
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy", Locale.US);
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
     public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
@@ -137,11 +138,18 @@ public class ActivityMonthFragment extends Fragment {
                             for (ActivityModel activityModel :
                                     ActivityFragment.activitiesModelArrayList) {
 
-                                Date date = readFormat.parse(activityModel.getStrActivityDate());
+                                Date date = new Date();
 
-                                String strActivityMonth = writeFormatMonth.format(date);
-                                int iActivityYear = Integer.parseInt(writeFormatYear.format(date));
-                                int iActivityDate = Integer.parseInt(writeFormatDate.format(date));
+                                Utils utils = new Utils(getActivity());
+
+                                String strTimeStamp = utils.convertDateToString(date);
+
+                                if (activityModel.getStrActivityDate() != null && !activityModel.getStrActivityDate().equalsIgnoreCase(""))
+                                    strTimeStamp = activityModel.getStrActivityDate();
+
+                                String strActivityMonth = writeFormatMonth.format(strTimeStamp);
+                                int iActivityYear = Integer.parseInt(writeFormatYear.format(strTimeStamp));
+                                int iActivityDate = Integer.parseInt(writeFormatDate.format(strTimeStamp));
 
                                 //Utils.log(String.valueOf(iActivityYear + " == " + theyear + " && "
                                 // + strActivityMonth + " EQS " + themonth + " && " + iActivityDate

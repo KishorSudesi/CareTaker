@@ -80,7 +80,7 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 
             try {
 
-                File f = utils.getInternalFileImages(utils.replaceSpace(activityModel.getStrDependentID()));
+                File f = utils.getInternalFileImages(utils.replaceSpace(activityModel.getStrDependentID().trim()));
 
                 if(f.exists())
                     multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);

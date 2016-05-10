@@ -11,11 +11,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -52,7 +50,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private static ImageView imageViewCarla;
     private static Bitmap bitmap;
     private static Handler threadHandler;
-    private static String strSelectedCarla;
+    //private static String strSelectedCarla;
     private static int iUpdateFlag = 0;
     private static String strInsertedDocumentId;
     private EditText editTextDate, editTextMessage;
@@ -99,7 +97,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         textView7 = (TextView) findViewById(R.id.textView7);
         imageViewCarla = (ImageView) findViewById(R.id.carlaImage);
 
-        TextView textViewLabel = (TextView) findViewById(R.id.textViewLabel);
+       /* TextView textViewLabel = (TextView) findViewById(R.id.textViewLabel);
 
         try {
 
@@ -132,7 +130,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+*/
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
@@ -268,7 +266,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                             textView6.setText(jsonObjectCarla.getString("provider_name"));
                             textView7.setText(jsonObjectCarla.getString("provider_email"));
                             getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
-                            strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
+                            //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
                             strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
                             strProviderId = jsonDocument.getDocId();
@@ -750,9 +748,14 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             try {
 
                 if(strCarlaImagepath!=null&&!strCarlaImagepath.equalsIgnoreCase("")) {
-                    utils.loadImageFromWeb(strSelectedCarla, strCarlaImagepath);
-                    File f = utils.getInternalFileImages(strSelectedCarla);
-                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
+
+                    File f1 = utils.getInternalFileImages(strProviderId);
+
+                    if (f1.length() <= 0)
+                        utils.loadImageFromWeb(strProviderId, strCarlaImagepath);
+
+                    bitmap = utils.getBitmapFromFile(f1.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
+
                 }
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {

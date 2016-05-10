@@ -1,6 +1,7 @@
 package com.hdfc.libs;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,7 +27,6 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -50,6 +50,7 @@ import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
+import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
@@ -102,16 +103,18 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
+    //todo activities laod dashboard and notifications laod // check login refresh line no 2362
+
     //application specific
     public final static SimpleDateFormat readFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
 
     public final static SimpleDateFormat writeFormat =
             new SimpleDateFormat("kk:mm aa dd MMM yyyy", Config.locale);
-    public final static SimpleDateFormat writeFormatActivity =
-            new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);
-    public final static SimpleDateFormat writeFormatActivityMonthYear =
-            new SimpleDateFormat("MMM yyyy", Config.locale);
+    /*   public final static SimpleDateFormat writeFormatActivity =
+               new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
+    public final static SimpleDateFormat dateFormat =
+            new SimpleDateFormat("yyyy-MM-dd", Config.locale);
     public final static SimpleDateFormat writeFormatActivityYear =
             new SimpleDateFormat("dd/MM/yyyy", Config.locale);
 
@@ -717,7 +720,7 @@ public class Utils {
     }*/
 
     public static void refreshNotifications() {
-
+//todo notification model empty
         if (NotificationFragment.listViewActivities != null) {
 
             NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
@@ -815,11 +818,29 @@ public class Utils {
         return date; //
     }
 
+    public String getMonthDates(int iMonth, int iYear) {
+
+        String strLastDateMonth = "";
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, iMonth); // calendar.get(Calendar.DAY_OF_MONTH)
+        calendar.set(Calendar.YEAR, iYear); // calendar.get(Calendar.DAY_OF_MONTH)
+        calendar.add(Calendar.DATE, -1);
+
+        ///todo http://stackoverflow.com/questions/13624442/getting-last-day-of-the-month-in-given-string-date
+
+        Date lastDayOfMonth = calendar.getTime();
+        strLastDateMonth = dateFormat.format(lastDayOfMonth);
+        log(strLastDateMonth, "LAST DATE ");
+
+        return strLastDateMonth;
+    }
+
     public Date convertStringToDate(String strDate) {
 
         Date date = null;
         try {
-            date = readFormat.parse(strDate);
+            date = readFormat.parse(strDate);//todo
             //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         } catch (ParseException e) {
             e.printStackTrace();
@@ -1432,7 +1453,7 @@ public class Utils {
                         jsonObjectProvider.getString("user_id"),
                         jsonObjectProvider.getString("created_by"), strDocumentId);
 
-                //log(" 4 ", " IN ");
+                log(" 4 ", " IN ");
 
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
                     if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by")))
@@ -1965,6 +1986,8 @@ public class Utils {
                 activityModel.setStrActivityName(jsonObjectActivity.getString("activity_name"));
                 activityModel.setStrActivityID(strActivityId);
                 activityModel.setStrProviderID(jsonObjectActivity.getString("provider_id"));
+                activityModel.setStrDependentID(jsonObjectActivity.getString("dependent_id"));
+                activityModel.setStrustomerID(jsonObjectActivity.getString("customer_id"));
                 activityModel.setStrActivityStatus(jsonObjectActivity.getString("status"));
                 activityModel.setStrActivityDesc(jsonObjectActivity.getString("activity_desc"));
               /*  activityModel.setStrActivityMessage(jsonObjectActivity.
@@ -1977,8 +2000,13 @@ public class Utils {
                 activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
                /* activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));*/
 
-                activityModel.setStrActivityDate(jsonObjectActivity.getString("activity_date"));
-                activityModel.setStrActivityDoneDate(jsonObjectActivity.
+                if (jsonObjectActivity.has("activity_date"))
+                    activityModel.setStrActivityDate(jsonObjectActivity.getString("activity_date"));
+                else
+                    activityModel.setStrActivityDate("");
+
+                if (jsonObjectActivity.has("activity_done_date"))
+                    activityModel.setStrActivityDoneDate(jsonObjectActivity.
                         getString("activity_done_date"));
 
                 activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
@@ -2072,13 +2100,17 @@ public class Utils {
                 }
 
                 if (iFlag == 0) {
-                    Config.dependentModels.get(iActivityCount).
-                            setActivityModels(activityModel);
+                    if (!Config.strActivityIds.contains(strActivityId)) {
+                        Config.dependentModels.get(iActivityCount).
+                                setActivityModels(activityModel);
+
+                        Config.strActivityIds.add(strActivityId);
+                    }
                 }
 
                 if (iFlag == 1) {
                     if (!Config.strActivityIds.contains(strActivityId)) {
-                        Config.dependentModels.get(iActivityCount).
+                        Config.dependentModels.get(Config.intSelectedDependent).
                                 setMonthActivityModel(activityModel);
 
                         Config.strActivityIds.add(strActivityId);
@@ -2306,7 +2338,7 @@ public class Utils {
                                 try {
                                     if (o != null) {
 
-                                        //Utils.log(o.toString(), " Response Success");
+                                        Utils.log(o.toString(), " Response Success");
 
                                         Storage storage = (Storage) o;
 
@@ -2525,39 +2557,61 @@ public class Utils {
         }
     }
 
-    public void fetchLatestActivitiesByMonth(String strDependentId, final ProgressDialog progressDialog) {
+    public void fetchLatestActivitiesByMonth(String strDependentId, int iMonth, int iYear,
+                                             final ProgressDialog progressDialog) {
 
         if (isConnectingToInternet()) {
 
             StorageService storageService = new StorageService(_ctxt);
 
+            iMonth = iMonth - 1;
+
+            String strToDate = getMonthDates(iMonth, iYear);
+
+            String strMonth = String.valueOf(iMonth);
+
+            if (iMonth <= 9)
+                strMonth = String.valueOf("0" + iMonth);
+
+            String strFromDate = String.valueOf(iYear + "-" + strMonth + "-01T00:00:00.000Z");
+
+            log(strFromDate, " FDATE ");
+
+
             String key2 = "dependent_id";
             //String value2 = Config.strDependentIds.get(iActivityCount);
 
-            /*Query q1 = QueryBuilder.build("provider_status", "scheduled", QueryBuilder.
-                    Operator.EQUALS);*/
+            Query q1 = QueryBuilder.build(key2, strDependentId, QueryBuilder.Operator.EQUALS);
+
+            Query q2 = QueryBuilder.build("activity_date", strFromDate, QueryBuilder.
+                    Operator.GREATER_THAN_EQUALTO);
 
             // Build query q1 for key1 equal to name and value1 equal to Nick
-            Query q2 = QueryBuilder.build(key2, strDependentId, QueryBuilder.Operator.EQUALS);
+
             // Build query q2 for key2 equal to age and value2
 
-            /*Query q3 = QueryBuilder.build("status", "upcoming", QueryBuilder.Operator.EQUALS);
-            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+            Query q3 = QueryBuilder.build("activity_date", strToDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
 
-            Query q5 = QueryBuilder.compoundOperator(q4, QueryBuilder.Operator.AND, q3);*/
+            Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
 
-            int max = 1;
+            Query q5 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+
+           /* int max = 1;
             int offset = 0;
-
-            storageService.findDocsByQuery(Config.collectionActivity, q2, //1 for descending
+*/
+            storageService.findDocsByQuery(Config.collectionActivity, q5, //1 for descending
                     new App42CallBack() {
 
                         @Override
                         public void onSuccess(Object o) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
 
                             Storage response = (Storage) o;
 
                             if (response != null) {
+
+                                log(response.toString(), " S ");
 
                                 if (response.getJsonDocList().size() > 0) {
 
@@ -2573,10 +2627,10 @@ public class Utils {
                                 }
 
                             } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
+                            ActivityFragment.reload();
                         }
 
                         @Override
@@ -2585,6 +2639,7 @@ public class Utils {
                                 progressDialog.dismiss();
                             try {
                                 if (e != null) {
+                                    log(e.getMessage(), " f ");
                                     JSONObject jsonObject = new JSONObject(e.getMessage());
                                     JSONObject jsonObjectError =
                                             jsonObject.getJSONObject("app42Fault");
@@ -2599,12 +2654,14 @@ public class Utils {
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
+                            ActivityFragment.reload();
                         }
                     }
             );
         } else {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
+            ActivityFragment.reload();
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
     }

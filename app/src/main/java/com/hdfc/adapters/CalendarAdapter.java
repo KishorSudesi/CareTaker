@@ -2,6 +2,7 @@ package com.hdfc.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,8 @@ public class CalendarAdapter extends BaseAdapter {
     public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy",
-            Locale.US);
+    //public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy",
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
     private static final int DAY_OFFSET = 1;
     private final Context _context;
     private final List<String> list;
@@ -186,8 +187,10 @@ public class CalendarAdapter extends BaseAdapter {
 
             try {
                 for (ActivityModel activityModel : activityModels) {
+                    Date date = new Date();
 
-                    Date date = readFormat.parse(activityModel.getStrActivityDate());
+                    if (activityModel.getStrActivityDate() != null && !activityModel.getStrActivityDate().equalsIgnoreCase(""))
+                        date = readFormat.parse(activityModel.getStrActivityDate());
 
                     String strActivityMonth = writeFormatMonth.format(date);
                     int iActivityYear = Integer.parseInt(writeFormatYear.format(date));
@@ -197,8 +200,10 @@ public class CalendarAdapter extends BaseAdapter {
                             strActivityMonth.trim().equalsIgnoreCase(themonth) &&
                             iActivityDate == iDay) {
 
-                        gridcell.setBackground(_context.getResources().
-                                getDrawable(R.drawable.bottom_border_green));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            gridcell.setBackground(_context.getResources().
+                                    getDrawable(R.drawable.bottom_border_green));
+                        }
 
                         //gridcell.setBackground(_context.getResources().getDrawable(R.drawable.bottom_border_green));
                         gridcell.setTextColor(Color.BLACK);

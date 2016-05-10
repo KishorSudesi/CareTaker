@@ -695,8 +695,11 @@ public class MyAccountEditFragment extends Fragment {
             if (!isImageChanged) {
                 if (bitmap != null)
                     roundedImageView.setImageBitmap(bitmap);
-                else
+                else {
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera_icon));
                     utils.toast(2, 2, getString(R.string.error));
+                }
             }
 
             if (isImageChanged && bitmap != null) {

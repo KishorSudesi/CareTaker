@@ -1,10 +1,12 @@
 package com.hdfc.caretaker.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hdfc.adapters.CalendarAdapter;
 import com.hdfc.caretaker.AddNewActivityActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
@@ -41,8 +42,10 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     private static TextView currentMonth;
     private static Context _context;
     private static Calendar calendar;
-    private Button buttonActivity;
-    private Utils utils;
+    private static Button buttonActivity;
+    private static Utils utils;
+    private static ProgressDialog progressDialog;
+    private static AppCompatActivity appCompatActivity;
     private LinearLayout dynamicUserTab;
     //public static int iSelectedDependent=0;
     private ImageView prevMonth;
@@ -74,7 +77,23 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         currentMonth.setText(DateFormat.format(dateTemplate, calendar.getTime()));
 
-        if (ActivityMonthFragment.adapter != null) {
+        refreshData(month, year);
+    }
+
+    public static void refreshData(int iMonth, int iYear) {
+        progressDialog.setMessage(_context.getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        utils.fetchLatestActivitiesByMonth(Config.dependentModels.get(Config.intSelectedDependent).
+                getStrDependentID(), iMonth, iYear, progressDialog);
+    }
+
+    public static void reload() {
+        activitiesModelArrayList = Config.dependentModels.get(Config.intSelectedDependent).
+                getMonthActivityModel();
+
+        /*if (ActivityMonthFragment.adapter != null) {
 
             ActivityMonthFragment.adapter = new CalendarAdapter(_context, month, year,
                     ActivityFragment.activitiesModelArrayList);
@@ -83,6 +102,29 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
             //ActivityMonthFragment.activitiesModelSelected.clear();
             ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
+        }*/
+
+        try {
+
+            if (Config.intSelectedMenu == Config.intListActivityScreen) {
+                buttonActivity.setText(_context.getResources().getString(R.string.activity_month));
+                ActivityListFragment fragment1 = ActivityListFragment.newInstance();
+                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
+                        beginTransaction();
+                transaction.replace(R.id.frameLayoutActivity, fragment1);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            } else {
+                buttonActivity.setText(_context.getResources().getString(R.string.activity_list));
+                ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
+                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
+                        beginTransaction();
+                transaction.replace(R.id.frameLayoutActivity, fragment1);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -101,12 +143,20 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         _context = getActivity();
 
+        try {
+            appCompatActivity = (AppCompatActivity) getActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         calendar = Calendar.getInstance(Locale.getDefault());
         month = calendar.get(Calendar.MONTH) + 1;
         year = calendar.get(Calendar.YEAR);
 
-        TextView selectedDayMonthYearButton = (TextView) view.findViewById(R.id.currentMonth);
-        selectedDayMonthYearButton.setText("Selected: ");
+        progressDialog = new ProgressDialog(getActivity());
+
+        /*TextView selectedDayMonthYearButton = (TextView) view.findViewById(R.id.currentMonth);
+        selectedDayMonthYearButton.setText(getActivity().getString(R.string.selected_date));*/
 
         prevMonth = (ImageView) view.findViewById(R.id.prevMonth);
         prevMonth.setOnClickListener(this);
@@ -141,24 +191,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
                 startActivity(newIntent);
             }
         });
-
-        if(Config.intSelectedMenu==Config.intListActivityScreen){
-            buttonActivity.setText(getActivity().getResources().getString(R.string.activity_month));
-            ActivityListFragment fragment1 = ActivityListFragment.newInstance();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().
-                    beginTransaction();
-            transaction.replace(R.id.frameLayoutActivity, fragment1);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }else {
-            buttonActivity.setText(getActivity().getResources().getString(R.string.activity_list));
-            ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().
-                    beginTransaction();
-            transaction.replace(R.id.frameLayoutActivity, fragment1);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
 
         return view;
     }
@@ -220,6 +252,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
-
+        refreshData(month, year);
     }
 }

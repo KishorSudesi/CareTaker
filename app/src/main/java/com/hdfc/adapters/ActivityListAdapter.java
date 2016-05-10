@@ -9,8 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,12 +21,14 @@ import java.util.List;
 public class ActivityListAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
+    private static Utils utils;
     private Context _context;
     private List<ActivityModel> data;
 
     public ActivityListAdapter(Context ctxt, List<ActivityModel> y) {
         _context = ctxt;
         data = y;
+        utils = new Utils(ctxt);
     }
 
     @Override
@@ -74,7 +78,7 @@ public class ActivityListAdapter extends BaseAdapter {
 
             ActivityModel activityListModel = data.get(position);
 
-            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+            if (!activityListModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().
                         getColor(R.color.colorWhite));
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
@@ -85,10 +89,18 @@ public class ActivityListAdapter extends BaseAdapter {
                 viewHolder.linearLayoutDone.setVisibility(View.VISIBLE);
             }
 
-            viewHolder.dateNumber.setText(activityListModel.getStrActivityDate());
-            viewHolder.date.setText(activityListModel.getStrActivityDate());
+            Date date = new Date();
 
-            String strTimeStamp = activityListModel.getStrActivityDate();
+            String strTimeStamp = utils.convertDateToString(date);
+
+            if (activityListModel.getStrActivityDate() != null && !activityListModel.getStrActivityDate().equalsIgnoreCase(""))
+                strTimeStamp = activityListModel.getStrActivityDate();
+
+
+            viewHolder.dateNumber.setText(strTimeStamp.substring(8, 10));
+            viewHolder.date.setText(strTimeStamp.substring(0, 10));
+
+
 
             viewHolder.dateTime.setText(strTimeStamp);
 
