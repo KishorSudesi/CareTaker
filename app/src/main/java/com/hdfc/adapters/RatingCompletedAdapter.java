@@ -92,6 +92,8 @@ public class RatingCompletedAdapter extends BaseAdapter {
 
             viewHolder.dateTime.setText(strTimeStamp);
 
+            //todo fetch name
+
             String strAuthor = _ctx.getString(R.string.by) + "" + data.get(position).getStrFeedBackBy();
 
             viewHolder.personName.setText(strAuthor);

@@ -96,12 +96,12 @@ public class ViewRatingCompletedActivityFragment extends Fragment {
         @Override
         public void run() {
             try {
-                if (_activityModel != null) {
+               /* if (_activityModel != null) {
                     for (int i = 0; i < _activityModel.size(); i++) {
                         //Utils.log(_activityModel.get(i).getStrFeedBackByUrl(), " URL ");
                         utils.loadImageFromWeb(_activityModel.get(i).getStrFeedBackBy().trim(), _activityModel.get(i).getStrFeedBackBy().trim());
                     }
-                }
+                }*/
             } catch (Exception e) {
                 e.printStackTrace();
             }
