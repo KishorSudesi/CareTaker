@@ -34,6 +34,7 @@ public class CarlaCompletedActivityFragment extends Fragment {
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName;
     private Utils utils;
+    private int iPosition;
 
     public static CarlaCompletedActivityFragment newInstance(ActivityModel _activityModel) {
 
@@ -75,18 +76,18 @@ public class CarlaCompletedActivityFragment extends Fragment {
 
         if (activityModel != null) {
 
-            txtViewHead2.setText(activityModel.getStrActivityDesc());
-            String strHead = activityModel.getStrProviderID() + getActivity().getResources().getString(R.string.assisted_in);
+            iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+
+            txtViewHead2.setText(activityModel.getStrActivityName());
+            String strHead = Config.providerModels.get(iPosition).getStrName() + getActivity().getResources().getString(R.string.assisted_in);
             txtViewHead1.setText(strHead);
-            String strDate = getActivity().getResources().getString(R.string.at) + activityModel.getStrActivityDate();
+            String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
             txtViewDate.setText(strDate);
             txtViewMSG.setText(activityModel.getStrActivityDesc());
 
             strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
 
             strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
-
-            Utils.log(strCarlaImageUrl + " 1 ", " 0 ");
         }
         //
         return view;

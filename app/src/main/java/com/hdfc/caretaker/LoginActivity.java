@@ -74,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //todo date format
         Utils.log(utils.convertDateToString(new Date()), "DATE");
 
 

@@ -3,6 +3,7 @@ package com.hdfc.caretaker.fragments;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,8 +34,9 @@ public class UpcomingFragment extends Fragment {
     private static ProgressDialog progressDialog;
     private static String strCarlaImageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
-    private String strCarlaImageName;
+    private String strCarlaImageName, strNo = "";
     private Utils utils;
+    private int iPosition;
 
     private ImageButton buttonCancel;
 
@@ -83,14 +85,12 @@ public class UpcomingFragment extends Fragment {
 
             String strHead = providerModel.getStrName() + getActivity().getResources().getString(R.string.will_assist);
             txtViewHead1.setText(strHead);
-            String strDate = getActivity().getResources().getString(R.string.at) + activityModel.getStrActivityDate();
+            String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
             txtViewDate.setText(strDate);
             txtViewMSG.setText(activityModel.getStrActivityDesc());
 
             strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
             strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
-
-            Utils.log(strCarlaImageUrl + " 1 ", " 0 ");
         }
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
@@ -111,6 +111,11 @@ public class UpcomingFragment extends Fragment {
             }
         });
 
+        if (activityModel != null && activityModel.getStrProviderID() != null) {
+            iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+            strNo = Config.providerModels.get(iPosition).getStrContacts();
+        }
+
         msg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,10 +124,10 @@ public class UpcomingFragment extends Fragment {
                     Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                     sendIntent.putExtra("sms_body",
                             activityModel != null ? activityModel.getStrActivityName() : "Activity Name");
-                    //sendIntent.putExtra("address",
-                    // activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
+
+                    sendIntent.putExtra("address", activityModel != null ? strNo : "0000000000");
                     sendIntent.setType("vnd.android-dir/mms-sms");
-                    //startActivity(sendIntent);
+                    startActivity(sendIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -132,12 +137,11 @@ public class UpcomingFragment extends Fragment {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    //String strNo = "tel:" + String.valueOf(activityModel != null ? activityModel.getStrActivityProviderContactNo() : "0000000000");
-                    //Utils.log(strNo," call intent ");
-                    //callIntent.setData(Uri.parse(strNo));
+                    String _strNo = "tel:" + String.valueOf(!strNo.equalsIgnoreCase("") ? strNo :
+                            "0000000000");
+                    callIntent.setData(Uri.parse(_strNo));
                     startActivity(callIntent);
                 }catch (Exception e){
                     e.printStackTrace();

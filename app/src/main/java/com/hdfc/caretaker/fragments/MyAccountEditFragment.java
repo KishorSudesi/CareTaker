@@ -521,6 +521,8 @@ public class MyAccountEditFragment extends Fragment {
                                 if (appErrorCode != 1401 ) {
                                     uploadImage();
                                 } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
                                     utils.toast(2, 2, getString(R.string.error));
                                 }
 
@@ -622,6 +624,8 @@ public class MyAccountEditFragment extends Fragment {
                                                     isImageChanged = false;
 
                                                 } else {
+                                                    if (progressDialog.isShowing())
+                                                        progressDialog.dismiss();
                                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
@@ -643,9 +647,8 @@ public class MyAccountEditFragment extends Fragment {
 
                                     } catch (JSONException e) {
                                             e.printStackTrace();
-                                        }
+                                    }
 
-                                    //TODO Check Logic
                                 } else {
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
@@ -693,6 +696,7 @@ public class MyAccountEditFragment extends Fragment {
                 progressDialog.dismiss();
 
             if (!isImageChanged) {
+
                 if (bitmap != null)
                     roundedImageView.setImageBitmap(bitmap);
                 else {
@@ -702,11 +706,13 @@ public class MyAccountEditFragment extends Fragment {
                 }
             }
 
-            if (isImageChanged && bitmap != null) {
-                try {
+            if (isImageChanged) {
+                if (bitmap != null)
                     checkImage();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                else {
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera_icon));
+                    utils.toast(2, 2, getString(R.string.error));
                 }
             }
 

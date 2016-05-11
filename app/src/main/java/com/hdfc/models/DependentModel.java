@@ -87,12 +87,16 @@ public class DependentModel {
         return monthActivityModel;
     }
 
+    public void setMonthActivityModel(ArrayList<ActivityModel> monthActivityModel) {
+        this.monthActivityModel = monthActivityModel;
+    }
+
     public void setMonthActivityModel(ActivityModel monthActivityModel) {
         this.monthActivityModel.add(monthActivityModel);
     }
 
-    public void setMonthActivityModel(ArrayList<ActivityModel> monthActivityModel) {
-        this.monthActivityModel = monthActivityModel;
+    public void clearMonthActivityModel() {
+        this.monthActivityModel.clear();
     }
 
     public String getStrName() {

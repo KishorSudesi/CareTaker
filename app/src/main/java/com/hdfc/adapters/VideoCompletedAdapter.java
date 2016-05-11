@@ -55,6 +55,22 @@ public class VideoCompletedAdapter extends BaseAdapter {
             viewHolder.information = (TextView) convertView.findViewById(R.id.information);
             viewHolder.vid = (ImageView) convertView.findViewById(R.id.video);
             //viewHolder.vid.setImageResource(R.drawable.vidlink); todo add video thumbnail
+/*
+            VideoView videoView =(VideoView)findViewById(R.id.videoView1);
+
+            //Creating MediaController
+            MediaController mediaController= new MediaController(this);
+            mediaController.setAnchorView(videoView);
+
+            //specify the location of media file
+            Uri uri=Uri.parse(Environment.getExternalStorageDirectory().getPath()+"/media/1.mp4");
+
+            //Setting MediaController and URI, then starting the videoView
+            videoView.setMediaController(mediaController);
+            videoView.setVideoURI(uri);
+            videoView.requestFocus();
+            videoView.start();*/
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

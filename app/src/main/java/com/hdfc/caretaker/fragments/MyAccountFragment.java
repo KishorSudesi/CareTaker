@@ -1,6 +1,7 @@
 package com.hdfc.caretaker.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +34,7 @@ public class MyAccountFragment extends Fragment {
     private static Handler threadHandler;
     private static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
+    private static Context context;
     TextView txtviewBuyServices;
     TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
     private Utils utils;
@@ -60,6 +62,8 @@ public class MyAccountFragment extends Fragment {
         utils = new Utils(getActivity());
 
         loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
+
+        context = getActivity();
 
         progressDialog = new ProgressDialog(getActivity());
 
@@ -155,6 +159,10 @@ public class MyAccountFragment extends Fragment {
 
             if (bitmap != null)
                 roundedImageView.setImageBitmap(bitmap);
+            else {
+                roundedImageView.setBackgroundDrawable(context.getResources().
+                        getDrawable(R.mipmap.camera_icon));
+            }
 
             loadingPanel.setVisibility(View.GONE);
         }

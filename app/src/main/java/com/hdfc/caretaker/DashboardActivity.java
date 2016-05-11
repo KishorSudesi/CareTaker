@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -33,15 +32,38 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     private static ProgressDialog progressDialog;
     private static AppCompatActivity appCompatActivity;
+
     final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent
                     .getStringExtra(App42GCMService.ExtraMessage);
-            Log.i("mBroadcastReceiver", "" + " : "
-                    + message);
+            /*Log.i("mBroadcastReceiver", "" + " : "
+                    + message);*/
+
+            if (message != null && !message.equalsIgnoreCase("")) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+                builder.setTitle(getString(R.string.app_name));
+                builder.setMessage(message);
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+
         }
     };
+
     private Utils utils;
 
     public static void goToDashboard() {
@@ -298,56 +320,27 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         } else {
 
             try {
+                if (!AccountSuccessActivity.isCreatedNow &&
+                        Config.intSelectedMenu == Config.intDashboardScreen) {
 
-                boolean isPushReceived = getIntent().getBooleanExtra("message_delivered", false);
-                String strPushMess = getIntent().getStringExtra("message");
+                   /* threadHandler = new ThreadHandler();
+                    Thread backgroundThread = new BackgroundThread();
+                    backgroundThread.start();*/
 
-                if (isPushReceived && strPushMess != null && !strPushMess.equalsIgnoreCase("")) {
+                    progressDialog.setMessage(getResources().getString(R.string.loading));
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
-                    builder.setTitle(getString(R.string.app_name));
-                    builder.setMessage(strPushMess);
-                    builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.show();
+
+                    Utils.iActivityCount = 0;
+                    Utils.iProviderCount = 0;
+
+                    utils.fetchDependents(Config.customerModel.getStrCustomerID(),
+                            progressDialog, 0);
+
                 } else {
-
-                    try {
-                        if (!AccountSuccessActivity.isCreatedNow) {
-
-                           /* threadHandler = new ThreadHandler();
-                            Thread backgroundThread = new BackgroundThread();
-                            backgroundThread.start();*/
-
-                            progressDialog.setMessage(getResources().getString(R.string.loading));
-                            progressDialog.setCancelable(false);
-                            progressDialog.show();
-
-
-                            Utils.iActivityCount = 0;
-                            Utils.iProviderCount = 0;
-
-                            utils.fetchDependents(Config.customerModel.getStrCustomerID(),
-                                    progressDialog, 0);
-
-                        } else {
-                            //Config.intSelectedMenu = 0;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    //Config.intSelectedMenu = 0;
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

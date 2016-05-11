@@ -9,9 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -89,6 +91,9 @@ public class ActivityListAdapter extends BaseAdapter {
                 viewHolder.linearLayoutDone.setVisibility(View.VISIBLE);
             }
 
+            int iPosition = Config.strProviderIds.indexOf(activityListModel.getStrProviderID());
+            String strCarlaName = Config.providerModels.get(iPosition).getStrName();
+
             Date date = new Date();
 
             String strTimeStamp = utils.convertDateToString(date);
@@ -96,17 +101,27 @@ public class ActivityListAdapter extends BaseAdapter {
             if (activityListModel.getStrActivityDate() != null && !activityListModel.getStrActivityDate().equalsIgnoreCase(""))
                 strTimeStamp = activityListModel.getStrActivityDate();
 
-
             viewHolder.dateNumber.setText(strTimeStamp.substring(8, 10));
-            viewHolder.date.setText(strTimeStamp.substring(0, 10));
 
+            String strMonthYear = "";
 
+            Date fullDate = utils.convertStringToDate(strTimeStamp);
+            String strFullTimeStamp = utils.convertDateToStringFormat(fullDate, Utils.writeFormat);
 
-            viewHolder.dateTime.setText(strTimeStamp);
+            try {
+                date = Utils.readFormatDate.parse(strTimeStamp.substring(0, 10));
+                strMonthYear = Utils.writeFormatMonth.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            viewHolder.date.setText(strMonthYear);
+
+            viewHolder.dateTime.setText(strFullTimeStamp);
 
             viewHolder.Message.setText(activityListModel.getStrActivityDesc());
 
-            String strAuthor = activityListModel.getStrActivityName() + _context.getResources().getString(R.string.space) + _context.getResources().getString(R.string.at) + _context.getResources().getString(R.string.space);
+            String strAuthor = strCarlaName + _context.getResources().getString(R.string.at);
 
             viewHolder.person.setText(strAuthor);
             // viewHolder.Message.setText(data.get(i).getStrMessage());

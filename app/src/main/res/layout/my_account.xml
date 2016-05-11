@@ -41,8 +41,7 @@
                     android:layout_height="120dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:padding="5dp"
-                    android:src="@mipmap/camera_icon" />
+                    android:padding="5dp" />
 
                 <com.hdfc.views.RoundedImageView
                     android:id="@+id/imageView51"

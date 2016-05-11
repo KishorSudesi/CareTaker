@@ -1,5 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,12 +20,18 @@ public class ActivityListFragment extends Fragment {
 
     public static ListView listView;
     public static ActivityListAdapter activityListAdapter;
+    private static Context context;
 
     public static ActivityListFragment newInstance() {
         ActivityListFragment fragment = new ActivityListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void reload() {
+        activityListAdapter = new ActivityListAdapter(context, ActivityFragment.activitiesModelArrayList);
+        listView.setAdapter(activityListAdapter);
     }
 
     @Override
@@ -39,11 +46,11 @@ public class ActivityListFragment extends Fragment {
         listView = (ListView) view.findViewById(R.id.listView);
 
         TextView emptyTextView = (TextView) view.findViewById(android.R.id.empty);
-
-        activityListAdapter = new ActivityListAdapter(getActivity(),
-                ActivityFragment.activitiesModelArrayList);
-        listView.setAdapter(activityListAdapter);
         listView.setEmptyView(emptyTextView);
+
+        context = getActivity();
+
+        reload();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -52,7 +59,7 @@ public class ActivityListFragment extends Fragment {
                 ActivityModel activityModel = ActivityFragment.activitiesModelArrayList.
                         get(position);
 
-                if (activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+                if (!activityModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
 
                     UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().

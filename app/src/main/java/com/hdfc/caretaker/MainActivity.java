@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hdfc.config.Config;
-import com.hdfc.libs.CrashLogger;
 import com.hdfc.libs.Utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
                         R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
 
-                CrashLogger.getInstance().init(MainActivity.this);
+                //CrashLogger.getInstance().init(MainActivity.this);
             }
 
         } catch (Exception | OutOfMemoryError e) {
@@ -35,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToWho(View v) {
-        Intent selection = new Intent(MainActivity.this, CareSelectionActivity.class);
+      /*  Intent selection = new Intent(MainActivity.this, CareSelectionActivity.class);
+        startActivity(selection);*/
+
+        Intent selection = new Intent(MainActivity.this, SignupActivity.class);
         startActivity(selection);
     }
 

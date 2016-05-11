@@ -103,18 +103,25 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
-    //todo activities laod dashboard and notifications laod // check login refresh line no 2362
-
     //application specific
     public final static SimpleDateFormat readFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
 
+    public final static SimpleDateFormat readFormatDate =
+            new SimpleDateFormat("yyyy-MM-dd", Config.locale);
+
+    public final static SimpleDateFormat writeFormatMonth =
+            new SimpleDateFormat("MMM yyyy", Config.locale);
+
     public final static SimpleDateFormat writeFormat =
             new SimpleDateFormat("kk:mm aa dd MMM yyyy", Config.locale);
+
     /*   public final static SimpleDateFormat writeFormatActivity =
                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
+
     public final static SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd", Config.locale);
+
     public final static SimpleDateFormat writeFormatActivityYear =
             new SimpleDateFormat("dd/MM/yyyy", Config.locale);
 
@@ -720,7 +727,7 @@ public class Utils {
     }*/
 
     public static void refreshNotifications() {
-//todo notification model empty
+
         if (NotificationFragment.listViewActivities != null) {
 
             NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
@@ -818,19 +825,41 @@ public class Utils {
         return date; //
     }
 
-    public String getMonthDates(int iMonth, int iYear) {
+    public String convertDateToStringFormat(Date dtDate, SimpleDateFormat simpleDateFormat) {
+
+        String date = null;
+
+        try {
+            date = simpleDateFormat.format(dtDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
+    public String getMonthLastDate(String strFromDate) {
 
         String strLastDateMonth = "";
 
+        Date today = null;
+        try {
+            today = readFormatDate.parse(strFromDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.MONTH, iMonth); // calendar.get(Calendar.DAY_OF_MONTH)
-        calendar.set(Calendar.YEAR, iYear); // calendar.get(Calendar.DAY_OF_MONTH)
+        calendar.setTime(today);
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.DATE, -1);
 
-        ///todo http://stackoverflow.com/questions/13624442/getting-last-day-of-the-month-in-given-string-date
-
         Date lastDayOfMonth = calendar.getTime();
-        strLastDateMonth = dateFormat.format(lastDayOfMonth);
+
+        strLastDateMonth = dateFormat.format(lastDayOfMonth) + "T23:59:59.999+0000";
         log(strLastDateMonth, "LAST DATE ");
 
         return strLastDateMonth;
@@ -840,7 +869,7 @@ public class Utils {
 
         Date date = null;
         try {
-            date = readFormat.parse(strDate);//todo
+            date = readFormat.parse(strDate);
             //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         } catch (ParseException e) {
             e.printStackTrace();
@@ -1328,17 +1357,9 @@ public class Utils {
             loadNotifications();
         }
 
-        if (intWhichScreen == Config.intServiceScreen) {
-            //loadNotifications();
-        }
-
         if (intWhichScreen == Config.intListActivityScreen ||
                 intWhichScreen == Config.intActivityScreen) {
-            try {
-                populateActivity();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ActivityFragment.reload();
         }
     }
 
@@ -1433,7 +1454,6 @@ public class Utils {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
-
             refreshNotifications();
         }
     }
@@ -1453,8 +1473,6 @@ public class Utils {
                         jsonObjectProvider.getString("user_id"),
                         jsonObjectProvider.getString("created_by"), strDocumentId);
 
-                log(" 4 ", " IN ");
-
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
                     if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by")))
                         Config.strProviderIds.add(jsonObjectProvider.getString("created_by"));
@@ -1468,16 +1486,6 @@ public class Utils {
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void populateActivity() {
-
-        try {
-
-
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -2014,6 +2022,9 @@ public class Utils {
                 activityModel.setStrActivityProviderStatus(jsonObjectActivity.
                         getString("provider_status"));
 
+                activityModel.setStrActivityProviderMessage(jsonObjectActivity.
+                        getString("provider_message"));
+
                 ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
                 ArrayList<VideoModel> videoModels = new ArrayList<>();
                 ArrayList<ImageModel> imageModels = new ArrayList<>();
@@ -2099,6 +2110,81 @@ public class Utils {
                     activityModel.setImageModels(imageModels);
                 }
 
+                //milestones start
+                if (jsonObjectActivity.has("milestones")) {
+
+                    JSONArray jsonArrayMilestones = jsonObjectActivity.
+                            getJSONArray("milestones");
+
+                    for (int k = 0; k < jsonArrayMilestones.length(); k++) {
+
+                        JSONObject jsonObjectMilestone =
+                                jsonArrayMilestones.getJSONObject(k);
+
+                        MilestoneModel milestoneModel = new MilestoneModel();
+
+                        milestoneModel.setiMilestoneId(jsonObjectMilestone.getInt("id"));
+                        milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
+                        milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
+                        milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
+
+                        if (jsonObjectMilestone.has("fields")) {
+
+                            JSONArray jsonArrayFields = jsonObjectMilestone.
+                                    getJSONArray("fields");
+
+                            for (int l = 0; l < jsonArrayFields.length(); l++) {
+
+                                JSONObject jsonObjectField =
+                                        jsonArrayFields.getJSONObject(l);
+
+                                FieldModel fieldModel = new FieldModel();
+
+                                fieldModel.setiFieldID(jsonObjectField.getInt("id"));
+
+                                if (jsonObjectField.has("hide"))
+                                    fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+
+                                fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
+                                fieldModel.setStrFieldData(jsonObjectField.getString("data"));
+                                fieldModel.setStrFieldLabel(jsonObjectField.getString("label"));
+                                fieldModel.setStrFieldType(jsonObjectField.getString("type"));
+
+                                if (jsonObjectField.has("values")) {
+
+                                    fieldModel.setStrFieldValues(jsonToStringArray(jsonObjectField.
+                                            getJSONArray("values")));
+                                }
+
+                                if (jsonObjectField.has("child")) {
+
+                                    fieldModel.setChild(jsonObjectField.getBoolean("child"));
+
+                                    if (jsonObjectField.has("child_type"))
+                                        fieldModel.setStrChildType(jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_type")));
+
+                                    if (jsonObjectField.has("child_value"))
+                                        fieldModel.setStrChildValue(jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_value")));
+
+                                    if (jsonObjectField.has("child_condition"))
+                                        fieldModel.setStrChildCondition(jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_condition")));
+
+                                    if (jsonObjectField.has("child_field"))
+                                        fieldModel.setiChildfieldID(jsonToIntArray(jsonObjectField.
+                                                getJSONArray("child_field")));
+                                }
+
+                                milestoneModel.setFieldModel(fieldModel);
+                            }
+                        }
+                        activityModel.setMilestoneModel(milestoneModel);
+                    }
+                }
+                //milestones end
+
                 if (iFlag == 0) {
                     if (!Config.strActivityIds.contains(strActivityId)) {
                         Config.dependentModels.get(iActivityCount).
@@ -2109,12 +2195,14 @@ public class Utils {
                 }
 
                 if (iFlag == 1) {
-                    if (!Config.strActivityIds.contains(strActivityId)) {
-                        Config.dependentModels.get(Config.intSelectedDependent).
-                                setMonthActivityModel(activityModel);
+                    //if (!Config.strActivityIds.contains(strActivityId)) {
+
+                    int iPosition = Config.strDependentIds.indexOf(jsonObjectActivity.getString("dependent_id"));
+
+                    Config.dependentModels.get(iPosition).setMonthActivityModel(activityModel);
 
                         Config.strActivityIds.add(strActivityId);
-                    }
+                    //}
                 }
             }
         } catch (JSONException e) {
@@ -2147,8 +2235,8 @@ public class Utils {
 
                                 if (response.getJsonDocList().size() > 0) {
 
-                                    Config.strDependentIds.clear();
-                                    Config.dependentModels.clear();
+                                    /*Config.strDependentIds.clear();
+                                    Config.dependentModels.clear();*/
 
                                     for (int i = 0; i < response.getJsonDocList().size(); i++) {
 
@@ -2557,31 +2645,41 @@ public class Utils {
         }
     }
 
-    public void fetchLatestActivitiesByMonth(String strDependentId, int iMonth, int iYear,
+    public void clearActivityMonthModel() {
+        try {
+            for (DependentModel dependentModel : Config.dependentModels)
+                dependentModel.clearMonthActivityModel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void fetchLatestActivitiesByMonth(int iMonth, int iYear,
                                              final ProgressDialog progressDialog) {
 
         if (isConnectingToInternet()) {
 
             StorageService storageService = new StorageService(_ctxt);
 
-            iMonth = iMonth - 1;
-
-            String strToDate = getMonthDates(iMonth, iYear);
+            iMonth = iMonth; // - 1
 
             String strMonth = String.valueOf(iMonth);
 
             if (iMonth <= 9)
                 strMonth = String.valueOf("0" + iMonth);
 
-            String strFromDate = String.valueOf(iYear + "-" + strMonth + "-01T00:00:00.000Z");
+            String strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
+
+            String strFromDate = strMonthDate + "T00:00:00.000+0000";
 
             log(strFromDate, " FDATE ");
 
+            String strToDate = getMonthLastDate(strMonthDate);
 
             String key2 = "dependent_id";
             //String value2 = Config.strDependentIds.get(iActivityCount);
 
-            Query q1 = QueryBuilder.build(key2, strDependentId, QueryBuilder.Operator.EQUALS);
+            Query q1 = QueryBuilder.build(key2, Config.strDependentIds, QueryBuilder.Operator.INLIST);
 
             Query q2 = QueryBuilder.build("activity_date", strFromDate, QueryBuilder.
                     Operator.GREATER_THAN_EQUALTO);
@@ -2627,7 +2725,7 @@ public class Utils {
                                 }
 
                             } else {
-
+                                ActivityFragment.activitiesModelArrayList.clear();
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
                             ActivityFragment.reload();
@@ -2640,18 +2738,18 @@ public class Utils {
                             try {
                                 if (e != null) {
                                     log(e.getMessage(), " f ");
-                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                   /* JSONObject jsonObject = new JSONObject(e.getMessage());
                                     JSONObject jsonObjectError =
                                             jsonObject.getJSONObject("app42Fault");
 
                                     String strMess = jsonObjectError.getString("details");
 
                                     toast(2, 2, strMess);
-
+*/
                                 } else {
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
-                            } catch (JSONException e1) {
+                            } catch (Exception e1) {
                                 e1.printStackTrace();
                             }
                             ActivityFragment.reload();

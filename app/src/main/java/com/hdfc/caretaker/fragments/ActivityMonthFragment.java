@@ -1,5 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -40,6 +41,7 @@ public class ActivityMonthFragment extends Fragment {
     public static ListView listView;
     public static ActivityMonthListAdapter activityListAdapter;
     private static int iSelectedPosition = -1, iSelectedColor = 0;
+    private static Context context;
     private TextView txtViewDate;
 
     public static ActivityMonthFragment newInstance() {
@@ -47,6 +49,16 @@ public class ActivityMonthFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void reload() {
+
+       /* adapter = new CalendarAdapter(context, month, year, ActivityFragment.activitiesModelArrayList);
+        calendarView.setAdapter(adapter);*/
+        //adapter.notifyDataSetChanged();
+
+        /*activityListAdapter = new ActivityMonthListAdapter(context, ActivityFragment.activitiesModelArrayList);
+        listView.setAdapter(activityListAdapter);*/
     }
 
     @Override
@@ -65,7 +77,7 @@ public class ActivityMonthFragment extends Fragment {
         int month = _calendar.get(Calendar.MONTH) + 1;
         int year = _calendar.get(Calendar.YEAR);
 
-        Utils utils = new Utils(getActivity());
+        context = getActivity();
 
         calendarView = (GridView) view.findViewById(R.id.calendar);
 
@@ -147,6 +159,7 @@ public class ActivityMonthFragment extends Fragment {
                                 if (activityModel.getStrActivityDate() != null && !activityModel.getStrActivityDate().equalsIgnoreCase(""))
                                     strTimeStamp = activityModel.getStrActivityDate();
 
+                                //todo check string
                                 String strActivityMonth = writeFormatMonth.format(strTimeStamp);
                                 int iActivityYear = Integer.parseInt(writeFormatYear.format(strTimeStamp));
                                 int iActivityDate = Integer.parseInt(writeFormatDate.format(strTimeStamp));

@@ -77,6 +77,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         currentMonth.setText(DateFormat.format(dateTemplate, calendar.getTime()));
 
+        Utils.log(" Called ", " setGridCellAdapterToDate ");
+
         refreshData(month, year);
     }
 
@@ -85,46 +87,20 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        utils.fetchLatestActivitiesByMonth(Config.dependentModels.get(Config.intSelectedDependent).
-                getStrDependentID(), iMonth, iYear, progressDialog);
+        utils.clearActivityMonthModel();
+
+        utils.fetchLatestActivitiesByMonth(iMonth, iYear, progressDialog);
     }
 
     public static void reload() {
+
         activitiesModelArrayList = Config.dependentModels.get(Config.intSelectedDependent).
                 getMonthActivityModel();
 
-        /*if (ActivityMonthFragment.adapter != null) {
-
-            ActivityMonthFragment.adapter = new CalendarAdapter(_context, month, year,
-                    ActivityFragment.activitiesModelArrayList);
-            ActivityMonthFragment.calendarView.setAdapter(ActivityMonthFragment.adapter);
-            ActivityMonthFragment.adapter.notifyDataSetChanged();
-
-            //ActivityMonthFragment.activitiesModelSelected.clear();
-            ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
-        }*/
-
-        try {
-
-            if (Config.intSelectedMenu == Config.intListActivityScreen) {
-                buttonActivity.setText(_context.getResources().getString(R.string.activity_month));
-                ActivityListFragment fragment1 = ActivityListFragment.newInstance();
-                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
-                        beginTransaction();
-                transaction.replace(R.id.frameLayoutActivity, fragment1);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            } else {
-                buttonActivity.setText(_context.getResources().getString(R.string.activity_list));
-                ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
-                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
-                        beginTransaction();
-                transaction.replace(R.id.frameLayoutActivity, fragment1);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (Config.intSelectedMenu == Config.intListActivityScreen) {
+            ActivityListFragment.reload();
+        } else {
+            ActivityMonthFragment.reload();
         }
     }
 
@@ -182,8 +158,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         ImageView addActivity = (ImageView) view.findViewById(R.id.addActivity);
 
-        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
-
         addActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,6 +165,42 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
                 startActivity(newIntent);
             }
         });
+
+        try {
+
+            if (Config.intSelectedMenu == Config.intListActivityScreen) {
+                buttonActivity.setText(_context.getResources().getString(R.string.activity_month));
+                ActivityListFragment fragment1 = ActivityListFragment.newInstance();
+                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
+                        beginTransaction();
+                transaction.replace(R.id.frameLayoutActivity, fragment1);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            } else {
+                buttonActivity.setText(_context.getResources().getString(R.string.activity_list));
+                ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
+                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
+                        beginTransaction();
+                transaction.replace(R.id.frameLayoutActivity, fragment1);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+               /* if (ActivityMonthFragment.adapter != null) {
+
+                    ActivityMonthFragment.adapter = new CalendarAdapter(_context, month, year,
+                            ActivityFragment.activitiesModelArrayList);
+                    ActivityMonthFragment.calendarView.setAdapter(ActivityMonthFragment.adapter);
+                    ActivityMonthFragment.adapter.notifyDataSetChanged();
+
+                    //ActivityMonthFragment.activitiesModelSelected.clear();
+                    ActivityMonthFragment.activityListAdapter.notifyDataSetChanged();
+                }*/
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
         return view;
     }
@@ -222,8 +232,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             transaction.commit();
 
         }
-
-        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
     }
 
     @Override
@@ -252,6 +260,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
+        Utils.log(" Called ", " OnResume ");
         refreshData(month, year);
     }
 }

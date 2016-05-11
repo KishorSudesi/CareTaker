@@ -150,7 +150,7 @@ public class SignupActivity extends FragmentActivity {
         alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 try {
-                    Intent selection = new Intent(SignupActivity.this, CareSelectionActivity.class);
+                    Intent selection = new Intent(SignupActivity.this, MainActivity.class);
                     arg0.dismiss();
 
                     /*SignupActivity.strCustomerName = "";

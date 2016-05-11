@@ -19,10 +19,10 @@ public class ActivityCompletedFragment extends Fragment {
     public static ImageButton imageButtonDesc, imageButtonVideo, imageButtonImage, imageButtonRating, imageButtonAdd;
     private static ActivityModel _activityModel;
 
-    public static ActivityCompletedFragment newInstance(ActivityModel activityModels) {
+    public static ActivityCompletedFragment newInstance(ActivityModel activityModel) {
         ActivityCompletedFragment fragment = new ActivityCompletedFragment();
         Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY", activityModels);
+        args.putSerializable("ACTIVITY", activityModel);
         fragment.setArguments(args);
         return fragment;
     }
