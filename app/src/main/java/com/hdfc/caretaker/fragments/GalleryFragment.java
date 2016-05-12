@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,13 +127,13 @@ public class GalleryFragment extends Fragment {
                 } else {
                     TextView textView = new TextView(context);
 
-                    textView.setTextAppearance(context, R.style.MilestoneStyle);
+                  /*  textView.setTextAppearance(context, R.style.MilestoneStyle);
                     textView.setTextColor(context.getResources().getColor(R.color.colorWhite));
                     textView.setPadding(10, 10, 10, 10);
                     textView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.button_success));
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
                     params.setMargins(10, 10, 10, 10);
-                    textView.setLayoutParams(params);
+                    textView.setLayoutParams(params);*/
                     //
                     textView.setText(context.getString(R.string.no_images));
                     _thumbnails.addView(textView);
