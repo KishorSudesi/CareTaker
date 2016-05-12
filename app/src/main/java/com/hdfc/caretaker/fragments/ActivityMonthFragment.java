@@ -90,7 +90,7 @@ public class ActivityMonthFragment extends Fragment {
         calendarView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        activityListAdapter = new ActivityMonthListAdapter(getActivity(), ActivityFragment.activitiesModelArrayList);
+        activityListAdapter = new ActivityMonthListAdapter(getActivity(), activitiesModelSelected);
         listView.setAdapter(activityListAdapter);
         listView.setEmptyView(emptyTextView);
 
@@ -160,13 +160,17 @@ public class ActivityMonthFragment extends Fragment {
                                     strTimeStamp = activityModel.getStrActivityDate();
 
                                 //todo check string
-                                String strActivityMonth = writeFormatMonth.format(strTimeStamp);
-                                int iActivityYear = Integer.parseInt(writeFormatYear.format(strTimeStamp));
-                                int iActivityDate = Integer.parseInt(writeFormatDate.format(strTimeStamp));
+                                Date fullDate = utils.convertStringToDate(strTimeStamp);
+                                //String strFullTimeStamp = utils.convertDateToStringFormat(fullDate, Utils.readFormat);
 
-                                //Utils.log(String.valueOf(iActivityYear + " == " + theyear + " && "
-                                // + strActivityMonth + " EQS " + themonth + " && " + iActivityDate
-                                // + " == " + theday), " Compare ");
+                                String strActivityMonth = writeFormatMonth.format(fullDate);
+
+                                int iActivityYear = Integer.parseInt(writeFormatYear.format(fullDate));
+                                int iActivityDate = Integer.parseInt(writeFormatDate.format(fullDate));
+
+                                Utils.log(String.valueOf(iActivityYear + " == " + theyear + " && "
+                                        + strActivityMonth + " EQS " + themonth + " && " + iActivityDate
+                                        + " == " + theday), " Compare ");
 
                                 if (iActivityYear == theyear &&
                                         strActivityMonth.trim().equalsIgnoreCase(themonth) &&
@@ -197,7 +201,8 @@ public class ActivityMonthFragment extends Fragment {
                 } else activityModel = null;
 
                 if (activityModel != null
-                        && activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+                        && activityModel.getStrActivityStatus().equalsIgnoreCase("new") ||
+                        activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
 
                     UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().

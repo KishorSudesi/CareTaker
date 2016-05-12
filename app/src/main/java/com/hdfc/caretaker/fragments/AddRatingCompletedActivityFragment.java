@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
@@ -25,7 +26,6 @@ import com.shephertz.app42.paas.sdk.android.storage.Storage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -36,7 +36,6 @@ public class AddRatingCompletedActivityFragment extends Fragment {
     private static int iRating = 0;
     private static View previousViewButton;
     private static Context context;
-    private static ArrayList<FeedBackModel> _feedBackModels;
     private EditText editFeedBack;
     private CheckBox checkReport;
     private boolean checked = false;
@@ -113,6 +112,10 @@ public class AddRatingCompletedActivityFragment extends Fragment {
             progressDialog.setCancelable(false);
             progressDialog.show();
 
+            Date doneDate = new Date();
+
+            final String strDoneDate = utils.convertDateToString(doneDate);
+
             final StorageService storageService = new StorageService(getActivity());
 
             JSONObject jsonObjectFeedback = new JSONObject();
@@ -120,10 +123,6 @@ public class AddRatingCompletedActivityFragment extends Fragment {
             try {
 
                 JSONObject jsonObjectFeedbacks;
-
-                Date doneDate = new Date();
-
-                final String strDoneDate = utils.convertDateToString(doneDate);
 
                 JSONArray jsonArrayFeedback = new JSONArray();
 
@@ -145,10 +144,10 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                 sJsonObjectFeedback.put("feedback_message", editFeedBack.getText().toString().trim());
                 sJsonObjectFeedback.put("feedback_rating", iRating);
-                sJsonObjectFeedback.put("feedback_by", Config.customerModel.getStrName());
+                sJsonObjectFeedback.put("feedback_by", Config.customerModel.getStrCustomerID());
                 sJsonObjectFeedback.put("feedback_report", String.valueOf(checked));
                 sJsonObjectFeedback.put("feedback_time", strDoneDate);
-                sJsonObjectFeedback.put("feedback_by_type", Config.customerModel.getStrImgUrl());
+                sJsonObjectFeedback.put("feedback_by_type", "customer");
 
                 jsonArrayFeedback.put(sJsonObjectFeedback);
 
@@ -162,8 +161,6 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                     Config.collectionActivity, new App42CallBack() {
                         @Override
                         public void onSuccess(Object o) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
 
                             if (o != null) {
 
@@ -202,17 +199,33 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                                     ActivityCompletedFragment.feedBackModels.add(feedBackModel);
                                                 }
                                             }
-                                            populateFeedbacks();
+
+                                            int iPosition = Config.strProviderIds.indexOf(ActivityCompletedFragment._activityModel.getStrProviderID());
+                                            String strUserName = Config.providerModels.get(iPosition).getStrEmail();
+
+
+                                            String strPushMessage = Config.customerModel.getStrName() + getString(R.string.has_given_feedback) +
+                                                    ActivityCompletedFragment._activityModel.getStrActivityName() + getString(R.string.dated) +
+                                                    ActivityCompletedFragment._activityModel.getStrActivityDate() +
+                                                    getString(R.string.on) + strDoneDate;
+
+                                            sendPushToProvider(strUserName, strPushMessage);
                                         }
                                     } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
                                         utils.toast(2, 2, getActivity().getString(R.string.error));
                                     }
 
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
                                     utils.toast(2, 2, getActivity().getString(R.string.error));
                                 }
                             } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
                                 utils.toast(2, 2, getActivity().getString(R.string.warning_internet));
                             }
                         }
@@ -221,6 +234,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                         public void onException(Exception e) {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
+                            Utils.log(e.getMessage(), " RESP ");
                             if (e != null) {
                                 utils.toast(2, 2, getActivity().getString(R.string.error));
                             } else {
@@ -240,6 +254,9 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
         try {
 
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+
             ActivityCompletedFragment.setMenuInitView();
             ActivityCompletedFragment.imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance();
@@ -254,6 +271,30 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void sendPushToProvider(String strUserName, String strMessage) {
+
+        if (utils.isConnectingToInternet()) {
+
+            PushNotificationService pushNotificationService = new PushNotificationService(getActivity());
+
+            pushNotificationService.sendPushToUser(strUserName, strMessage,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                            populateFeedbacks();
+                        }
+
+                        @Override
+                        public void onException(Exception ex) {
+                            populateFeedbacks();
+                        }
+                    });
+        } else {
+            populateFeedbacks();
         }
     }
 }

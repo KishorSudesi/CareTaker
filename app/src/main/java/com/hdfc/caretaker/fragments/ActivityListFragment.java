@@ -59,7 +59,8 @@ public class ActivityListFragment extends Fragment {
                 ActivityModel activityModel = ActivityFragment.activitiesModelArrayList.
                         get(position);
 
-                if (!activityModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
+                if (activityModel.getStrActivityStatus().equalsIgnoreCase("new") ||
+                        activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
 
                     UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().

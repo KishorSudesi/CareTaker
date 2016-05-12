@@ -2017,7 +2017,7 @@ public class Utils {
                     activityModel.setStrActivityDoneDate(jsonObjectActivity.
                         getString("activity_done_date"));
 
-                activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
+                //activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
 
                 activityModel.setStrActivityProviderStatus(jsonObjectActivity.
                         getString("provider_status"));

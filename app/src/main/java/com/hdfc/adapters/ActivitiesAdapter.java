@@ -100,7 +100,8 @@ public class ActivitiesAdapter extends BaseAdapter {
             }
 
             try {
-                if (activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+                if (activityModel.getStrActivityStatus().equalsIgnoreCase("new") ||
+                        activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
 
                     String strDisplayDate = _context.getResources().getString(R.string.space) +
                             _context.getResources().getString(R.string.at) +
@@ -135,7 +136,7 @@ public class ActivitiesAdapter extends BaseAdapter {
                     String strTemp = providerModel.getStrName() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
 
-                    viewHolder.textViewText.setText(activityModel.getStrActivityDesc());
+                    viewHolder.textViewText.setText(activityModel.getStrActivityProviderMessage());
                 }
             }catch (Exception e){
                 e.printStackTrace();

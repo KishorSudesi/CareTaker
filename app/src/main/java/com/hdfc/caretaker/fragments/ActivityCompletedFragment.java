@@ -57,6 +57,8 @@ public class ActivityCompletedFragment extends Fragment {
 
         _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
+        strActivityId = _activityModel.getStrActivityID();
+
         txtViewHeader.setText(getActivity().getResources().getString(R.string.completed_activity));
 
         feedBackModels = _activityModel.getFeedBackModels();

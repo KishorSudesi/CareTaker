@@ -36,8 +36,10 @@
     <string name="landline">Landline</string>
     <string name="left">Left</string>
     <string name="to">&#160;for&#160;</string>
+    <string name="dated">&#160;Dated&#160;</string>
     <string name="on">\nOn: &#160;</string>
     <string name="has_created">&#160;has created&#160;</string>
+    <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>

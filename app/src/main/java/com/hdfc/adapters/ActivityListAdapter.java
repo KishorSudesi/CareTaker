@@ -121,10 +121,11 @@ public class ActivityListAdapter extends BaseAdapter {
 
             String strMess = "";
 
-            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("completed"))
-                strMess = activityListModel.getStrActivityProviderMessage();
-            else
+            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("new")
+                    || activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming"))
                 strMess = activityListModel.getStrActivityDesc();
+            else
+                strMess = activityListModel.getStrActivityProviderMessage();
 
             viewHolder.Message.setText(strMess);
 
