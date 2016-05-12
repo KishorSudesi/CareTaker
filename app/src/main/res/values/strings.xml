@@ -109,7 +109,7 @@
 
     <!--Process Strings-->
     <string name="uploading">Uploading…</string>
-    <string name="uploading_image">Setting Images…</string>
+    <string name="uploading_image">Preparing Images…</string>
     <string name="loading">Getting Information…</string>
     <string name="process_login">Taking you In…</string>
     <string name="verify_identity">Taking you In…</string>

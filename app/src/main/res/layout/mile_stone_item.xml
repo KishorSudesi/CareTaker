@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_general"
     android:orientation="horizontal"
+    android:weightSum="2"
     android:padding="@dimen/padding_general">
 
     <TextView
         android:id="@+id/textViewLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="@dimen/padding_general"
@@ -16,7 +17,7 @@
 
     <TextView
         android:id="@+id/textViewValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="@dimen/padding_general"

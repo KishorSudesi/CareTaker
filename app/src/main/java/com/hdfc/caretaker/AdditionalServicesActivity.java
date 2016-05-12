@@ -534,8 +534,10 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
                 jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                 jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
+                jsonObjectMilestone.put("show",milestoneModel.isVisible());
 
                 JSONArray jsonArrayFields = new JSONArray();
+
 
                 for (FieldModel fieldModel : milestoneModel.getFieldModels()) {
 
@@ -621,6 +623,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
                     jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                     jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
+                    jsonObjectMilestone.put("show", milestoneModel.isVisible());
 
                     JSONArray jsonArrayFields = new JSONArray();
 

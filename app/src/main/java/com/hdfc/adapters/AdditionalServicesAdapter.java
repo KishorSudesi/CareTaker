@@ -113,9 +113,7 @@ public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        String strTemp = serviceModel.getStrServiceName() + "-" +
-                String.valueOf(serviceModel.getDoubleCost()) + "(" +
-                String.valueOf(serviceModel.getiUnit() + ")");
+        String strTemp = serviceModel.getStrServiceName();
 
         viewHolder.activityTitle.setText(strTemp);
         viewHolder.activityDetails.setText(serviceModel.getStrServiceName());

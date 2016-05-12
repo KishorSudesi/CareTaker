@@ -12,6 +12,15 @@ public class MilestoneModel implements Serializable {
     private String strMilestoneStatus;
     private String strMilestoneName;
     private String strMilestoneDate;
+    private boolean isVisible;
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
+    }
 
     private ArrayList<FieldModel> fieldModels = new ArrayList<>();
 
@@ -47,7 +56,7 @@ public class MilestoneModel implements Serializable {
         this.strMilestoneName = strMilestoneName;
     }
 
-    public String getStrMilestoneDate() {
+    public String getStrMilestoneDate(){
         return strMilestoneDate;
     }
 

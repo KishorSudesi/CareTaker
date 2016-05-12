@@ -11,9 +11,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -97,40 +99,39 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         textView7 = (TextView) findViewById(R.id.textView7);
         imageViewCarla = (ImageView) findViewById(R.id.carlaImage);
 
-       /* TextView textViewLabel = (TextView) findViewById(R.id.textViewLabel);
+        TextView textViewLabel = (TextView) findViewById(R.id.textViewLabel);
 
         try {
 
             if (textViewLabel != null)
                 textViewLabel.append(AddNewActivityActivity.selectedServiceModel.getStrServiceName());
 
-            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.milestoneLayout);
+        //    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.milestoneLayout);
 
             for (MilestoneModel milestoneModel : AddNewActivityActivity.selectedServiceModel.
                     getMilestoneModels()) {
 
                 TextView textViewName = new TextView(AddNewActivityStep2Activity.this);
-                textViewName.setTextAppearance(this, R.style.MilestoneStyle);
+            //    textViewName.setTextAppearance(this, R.style.MilestoneStyle);
                 textViewName.setText(milestoneModel.getStrMilestoneName());
-                textViewName.setTextColor(getResources().getColor(R.color.colorWhite));
-                textViewName.setPadding(10, 10, 10, 10);
+          //      textViewName.setTextColor(getResources().getColor(R.color.colorWhite));
+           /*     textViewName.setPadding(10, 10, 10, 10);
                 textViewName.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_success));
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
                 params.setMargins(10, 10, 10, 10);
 
                 textViewName.setLayoutParams(params);
-
+*/
 
                 Utils.log(milestoneModel.getStrMilestoneName(), " MS ");
-
+/*
                 if (linearLayout != null) {
                     linearLayout.addView(textViewName);
-                }
+                }*/
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-*/
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
@@ -377,6 +378,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
                 jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                 jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
+                jsonObjectMilestone.put("show",milestoneModel.isVisible());
 
                 JSONArray jsonArrayFields = new JSONArray();
 

@@ -351,6 +351,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
                     milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
                     milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
+//                    milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
 
                     if (jsonObjectMilestone.has("fields")) {
 
@@ -369,7 +370,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                             if (jsonObjectField.has("hide"))
                                 fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
 
-                            fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
+//                            fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
                             fieldModel.setStrFieldData(jsonObjectField.getString("data"));
                             fieldModel.setStrFieldLabel(jsonObjectField.getString("label"));
                             fieldModel.setStrFieldType(jsonObjectField.getString("type"));
