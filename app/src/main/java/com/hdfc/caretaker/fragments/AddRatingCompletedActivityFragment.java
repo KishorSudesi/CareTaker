@@ -17,16 +17,12 @@ import android.widget.EditText;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.ActivityModel;
 import com.hdfc.models.FeedBackModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,14 +36,10 @@ public class AddRatingCompletedActivityFragment extends Fragment {
     private static int iRating = 0;
     private static View previousViewButton;
     private static Context context;
-    private static ActivityModel _activityModel;
-    private static JSONObject jsonObject;
-    private static JSONArray jsonArrayFeatures;
+    private static ArrayList<FeedBackModel> _feedBackModels;
     private EditText editFeedBack;
     private CheckBox checkReport;
     private boolean checked = false;
-    private JSONObject responseJSONDoc;
-    private JSONObject responseJSONDocCarla;
     private Utils utils;
     private ProgressDialog progressDialog;
 
@@ -55,13 +47,9 @@ public class AddRatingCompletedActivityFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static AddRatingCompletedActivityFragment newInstance(Context context, ActivityModel activityModels) {
+    public static AddRatingCompletedActivityFragment newInstance() {
 
-        AddRatingCompletedActivityFragment fragment = new AddRatingCompletedActivityFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY", activityModels);
-        fragment.setArguments(args);
-        return fragment;
+        return new AddRatingCompletedActivityFragment();
     }
 
     public static void setRating(View v) {
@@ -85,10 +73,6 @@ public class AddRatingCompletedActivityFragment extends Fragment {
         editFeedBack = (EditText) view.findViewById(R.id.editFeedBack);
         Button btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
         checkReport = (CheckBox) view.findViewById(R.id.checkReport);
-
-        _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
-
-        //Utils.log(_activityModel.toString(), " OBJ ");
 
         context = getActivity();
 
@@ -131,264 +115,122 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
             final StorageService storageService = new StorageService(getActivity());
 
+            JSONObject jsonObjectFeedback = new JSONObject();
+
             try {
+
+                JSONObject jsonObjectFeedbacks;
 
                 Date doneDate = new Date();
 
                 final String strDoneDate = utils.convertDateToString(doneDate);
 
-                jsonObject = new JSONObject();
+                JSONArray jsonArrayFeedback = new JSONArray();
 
-                jsonObject.put("feedback_message", editFeedBack.getText().toString().trim());
-                jsonObject.put("feedback_rating", iRating);
-                jsonObject.put("feedback_by", Config.customerModel.getStrName());
-                jsonObject.put("feedback_report", String.valueOf(checked));
-                jsonObject.put("feedback_time", strDoneDate);
-                jsonObject.put("feedback_by_url", Config.customerModel.getStrImgUrl());
+                for (FeedBackModel feedBackModel : ActivityCompletedFragment.feedBackModels) {
 
+                    jsonObjectFeedbacks = new JSONObject();
+
+                    jsonObjectFeedbacks.put("feedback_message", feedBackModel.getStrFeedBackMessage());
+                    jsonObjectFeedbacks.put("feedback_rating", feedBackModel.getIntFeedBackRating());
+                    jsonObjectFeedbacks.put("feedback_by", feedBackModel.getStrFeedBackBy());
+                    jsonObjectFeedbacks.put("feedback_report", feedBackModel.getBoolFeedBackReport());
+                    jsonObjectFeedbacks.put("feedback_time", feedBackModel.getStrFeedBackTime());
+                    jsonObjectFeedbacks.put("feedback_by_type", feedBackModel.getStrFeedBackByType());
+
+                    jsonArrayFeedback.put(jsonObjectFeedbacks);
+                }
+
+                JSONObject sJsonObjectFeedback = new JSONObject();
+
+                sJsonObjectFeedback.put("feedback_message", editFeedBack.getText().toString().trim());
+                sJsonObjectFeedback.put("feedback_rating", iRating);
+                sJsonObjectFeedback.put("feedback_by", Config.customerModel.getStrName());
+                sJsonObjectFeedback.put("feedback_report", String.valueOf(checked));
+                sJsonObjectFeedback.put("feedback_time", strDoneDate);
+                sJsonObjectFeedback.put("feedback_by_type", Config.customerModel.getStrImgUrl());
+
+                jsonArrayFeedback.put(sJsonObjectFeedback);
+
+                jsonObjectFeedback.put("feedbacks", jsonArrayFeedback);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            storageService.findDocsByIdApp42CallBack(Config.customerModel.getStrCustomerID(),
-                    Config.collectionCustomer, new App42CallBack() {
-                @Override
-                public void onSuccess(Object o) {
+            storageService.updateDocs(jsonObjectFeedback, ActivityCompletedFragment.strActivityId,
+                    Config.collectionActivity, new App42CallBack() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
 
-                    if (o != null) {
+                            if (o != null) {
 
-                        final Storage findObj = (Storage) o;
+                                try {
 
-                        if (findObj.getJsonDocList().size() > 0) {
+                                    Storage storage = (Storage) o;
 
-                            Storage.JSONDocument jsonDocument = findObj.getJsonDocList().get(0);
+                                    if (storage.getJsonDocList().size() > 0) {
 
-                            String strDocument = jsonDocument.getJsonDoc();
+                                        Storage.JSONDocument jsonDocList = storage.getJsonDocList().get(0);
 
-                            try {
-                                responseJSONDocCarla = new JSONObject(strDocument);
+                                        JSONObject jsonObject = new JSONObject(jsonDocList.getJsonDoc());
 
-                                if (responseJSONDocCarla.has("dependents")) {
+                                        if (jsonObject.has("feedbacks")) {
 
-                                    JSONArray dependantsA = responseJSONDocCarla.
-                                            getJSONArray("dependents");
+                                            JSONArray jsonArrayFeedback = jsonObject.
+                                                    getJSONArray("feedbacks");
 
-                                    for (int i = 0; i < dependantsA.length(); i++) {
+                                            ActivityCompletedFragment.feedBackModels.clear();
 
-                                        JSONObject jsonObjectActivities = dependantsA.
-                                                getJSONObject(i);
+                                            for (int k = 0; k < jsonArrayFeedback.length(); k++) {
 
-                                        //Utils.log(_activityListModel.getStrDependentName().toString() + " S " + jsonObjectActivities.getString("dependent_name"), " NAME ");
+                                                JSONObject jsonObjectFeedback =
+                                                        jsonArrayFeedback.getJSONObject(k);
 
-                                        if (jsonObjectActivities.getString("dependent_name").equalsIgnoreCase(_activityModel.getStrActivityName())) {
+                                                if (jsonObjectFeedback.has("feedback_message")) {
 
-                                            // Utils.log(" 1 ", " IN ");
+                                                    FeedBackModel feedBackModel = new FeedBackModel(
+                                                            jsonObjectFeedback.getString("feedback_message"),
+                                                            jsonObjectFeedback.getString("feedback_by"),
+                                                            jsonObjectFeedback.getInt("feedback_rating"),
+                                                            jsonObjectFeedback.getBoolean("feedback_report"),
+                                                            jsonObjectFeedback.getString("feedback_time"),
+                                                            jsonObjectFeedback.getString("feedback_by_type"));
 
-                                            if (jsonObjectActivities.has("activities")) {
-
-                                                JSONArray dependantsActivities = jsonObjectActivities.
-                                                        getJSONArray("activities");
-
-                                                for (int j = 0; j < dependantsActivities.length(); j++) {
-
-                                                    JSONObject jsonObjectActivity = dependantsActivities.getJSONObject(j);
-
-                                                    /*Utils.log(jsonObjectActivity.getString("activity_date") + " ~ " +
-                                                            jsonObjectActivity.getString("activity_name") +
-                                                            " L " +
-                                                            jsonObjectActivity.getString("activity_message"), " NAME1 ");
-
-                                                    Utils.log(_activityListModel.getStrActualDate() + " ~ " +
-                                                            _activityModel.getStrActivityName() +
-                                                            " L " +
-                                                            _activityModel.getStrActivityMessage(), " NAME2 ");*/
-
-                                                    if (jsonObjectActivity.getString("activity_date").equalsIgnoreCase(_activityModel.getStrActivityDate()) &&
-                                                            jsonObjectActivity.getString("activity_name").equalsIgnoreCase(_activityModel.getStrActivityName()) &&
-                                                            jsonObjectActivity.getString("activity_message").equalsIgnoreCase(_activityModel.getStrActivityDesc())) {
-
-                                                        jsonArrayFeatures = jsonObjectActivity.getJSONArray("feedbacks");
-
-                                                        // Utils.log(" 2 ", " IN ");
-
-                                                        jsonArrayFeatures.put(jsonObject);
-                                                    }
+                                                    ActivityCompletedFragment.feedBackModels.add(feedBackModel);
                                                 }
                                             }
+                                            populateFeedbacks();
                                         }
+                                    } else {
+                                        utils.toast(2, 2, getActivity().getString(R.string.error));
                                     }
-                                }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                    utils.toast(2, 2, getActivity().getString(R.string.error));
+                                }
+                            } else {
+                                utils.toast(2, 2, getActivity().getString(R.string.warning_internet));
                             }
+                        }
 
-                            //Utils.log(responseJSONDocCarla.toString()," responseJSONDocCarla ");
-
-                            storageService.updateDocs(responseJSONDocCarla,
-                                    Config.customerModel.getStrCustomerID(),
-                                    Config.collectionCustomer, new App42CallBack() {
-                                @Override
-                                public void onSuccess(Object o) {
-
-                                    if (o != null) {
-
-                                        //Config.jsonObject = responseJSONDocCarla;
-
-                                        storageService.findDocsByKeyValue(Config.collectionProvider,
-                                                "provider_email",
-                                                _activityModel.getStrProviderID(),
-                                                new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                                            @Override
-                                            public void onDocumentInserted(Storage response) {
-                                            }
-
-                                            @Override
-                                            public void onUpdateDocSuccess(Storage response) {
-                                            }
-
-                                            @Override
-                                            public void onFindDocSuccess(Storage response) {
-
-                                                if (response != null) {
-
-                                                    if (response.getJsonDocList().size() > 0) {
-                                                        final String strCarlaJsonId = response.getJsonDocList().get(0).getDocId();
-
-                                                        try {
-                                                            responseJSONDoc = new JSONObject(response.getJsonDocList().get(0).getJsonDoc());
-
-                                                            if (responseJSONDoc.has("feedbacks")) {
-                                                                JSONArray dependantsA = responseJSONDoc.
-                                                                        getJSONArray("feedbacks");
-
-                                                                dependantsA.put(jsonObject);
-
-                                                               /* for (int i = 0; i < dependantsA.length(); i++) {
-
-                                                                    JSONObject jsonObjectActivity = dependantsA.getJSONObject(i);
-
-                                                                    if (jsonObjectActivity.getString("activity_date").equalsIgnoreCase(_activityListModel.getStrActualDate()) &&
-                                                                            jsonObjectActivity.getString("activity_name").equalsIgnoreCase(_activityModel.getStrActivityName()) &&
-                                                                            jsonObjectActivity.getString("activity_message").equalsIgnoreCase(_activityModel.getStrActivityMessage())) {
-
-                                                                        JSONArray jsonArrayImages = jsonObjectActivity.getJSONArray("feedbacks");
-
-                                                                        jsonArrayImages.put(jsonObject);
-                                                                    }
-                                                                }*/
-                                                            }
-
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-
-                                                        storageService.updateDocs(responseJSONDoc, strCarlaJsonId, Config.collectionProvider, new App42CallBack() {
-                                                            @Override
-                                                            public void onSuccess(Object o) {
-
-                                                                if (o != null) {
-
-                                                                    /*jsonObject = new JSONObject();
-                                                                    iRating = 0;
-                                                                    editFeedBack.setText("");
-                                                                    checkReport.setChecked(false);*/
-
-                                                                    if (previousViewButton != null) {
-                                                                        previousViewButton.setBackgroundDrawable(null);
-                                                                        previousViewButton = null;
-                                                                    }
-
-                                                                    populateFeedbacks();
-
-                                                                    if (progressDialog.isShowing())
-                                                                        progressDialog.dismiss();
-
-                                                                    utils.toast(2, 2, getString(R.string.rating_added));
-
-                                                                } else {
-                                                                    if (progressDialog.isShowing())
-                                                                        progressDialog.dismiss();
-                                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onException(Exception e) {
-                                                                if (progressDialog.isShowing())
-                                                                    progressDialog.dismiss();
-                                                                if (e != null) {
-                                                                    utils.toast(2, 2, e.getMessage());
-                                                                } else {
-                                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                } else {
-                                                    if (progressDialog.isShowing())
-                                                        progressDialog.dismiss();
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onInsertionFailed(App42Exception ex) {
-
-                                            }
-
-                                            @Override
-                                            public void onFindDocFailed(App42Exception ex) {
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-
-                                                if (ex != null) {
-                                                    utils.toast(2, 2, ex.getMessage());
-                                                } else {
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onUpdateDocFailed(App42Exception ex) {
-
-                                            }
-                                        });
-
-                                    } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                }
-
-                                @Override
-                                public void onException(Exception e) {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    if (e != null) {
-                                        utils.toast(2, 2, e.getMessage());
-                                    } else {
-                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                }
-                            });
+                        @Override
+                        public void onException(Exception e) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                            if (e != null) {
+                                utils.toast(2, 2, getActivity().getString(R.string.error));
+                            } else {
+                                utils.toast(2, 2, getActivity().getString(R.string.warning_internet));
+                            }
                         }
                     }
-                }
+            );
 
-                @Override
-                public void onException(Exception e) {
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    if (e != null) {
-                        utils.toast(2, 2, e.getMessage());
-                    } else {
-                        utils.toast(2, 2, getString(R.string.warning_internet));
-                    }
-                }
-            });
+
         } else {
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
@@ -398,25 +240,9 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
         try {
 
-            ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
-
-            for (int k = 0; k < jsonArrayFeatures.length(); k++) {
-
-                JSONObject jsonObjectFeedback = jsonArrayFeatures.getJSONObject(k);
-
-               /* FeedBackModel feedBackModel = new FeedBackModel(
-                        jsonObjectFeedback.getString("feedback_message"), jsonObjectFeedback.getString("feedback_by"),
-                        jsonObjectFeedback.getInt("feedback_rating"), jsonObjectFeedback.getBoolean("feedback_report"),
-                        jsonObjectFeedback.getString("feedback_time"),
-                        jsonObjectFeedback.getString("feedback_by_url")
-                );
-
-                feedBackModels.add(feedBackModel);*/
-            }
-
             ActivityCompletedFragment.setMenuInitView();
             ActivityCompletedFragment.imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance(feedBackModels);
+            ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance();
 
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_completed_activity, newFragment);
@@ -424,9 +250,10 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
             transaction.commit();
 
-        } catch (JSONException e) {
+            utils.toast(2, 2, getActivity().getString(R.string.rating_added));
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -119,7 +119,14 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.dateTime.setText(strFullTimeStamp);
 
-            viewHolder.Message.setText(activityListModel.getStrActivityDesc());
+            String strMess = "";
+
+            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("completed"))
+                strMess = activityListModel.getStrActivityProviderMessage();
+            else
+                strMess = activityListModel.getStrActivityDesc();
+
+            viewHolder.Message.setText(strMess);
 
             String strAuthor = strCarlaName + _context.getResources().getString(R.string.at);
 

@@ -2195,14 +2195,14 @@ public class Utils {
                 }
 
                 if (iFlag == 1) {
-                    //if (!Config.strActivityIds.contains(strActivityId)) {
 
                     int iPosition = Config.strDependentIds.indexOf(jsonObjectActivity.getString("dependent_id"));
 
                     Config.dependentModels.get(iPosition).setMonthActivityModel(activityModel);
 
+                    if (!Config.strActivityIds.contains(strActivityId))
                         Config.strActivityIds.add(strActivityId);
-                    //}
+
                 }
             }
         } catch (JSONException e) {

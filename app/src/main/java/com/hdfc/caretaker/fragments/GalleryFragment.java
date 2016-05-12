@@ -1,6 +1,7 @@
 package com.hdfc.caretaker.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
@@ -24,23 +26,18 @@ import java.util.List;
 
 public class GalleryFragment extends Fragment {
 
-    public static final String TAG = "GalleryActivity";
-    public static final String EXTRA_NAME = "images";
-    static Bitmap bitmap = null;
+    public static List<Bitmap> bitmapimages = new ArrayList<>();
+    public static ImageView _gallery, imageGallery;
+    public static LinearLayout _thumbnails;
     private static ArrayList<ImageModel> imageModels;
-    public List<Bitmap> bitmapimages = new ArrayList<>();
-    public ImageView _gallery,imageGallery;
-    ImageView thumbView;
-    LinearLayout _thumbnails;
+    private static ProgressDialog progressDialog;
+    private static Context context;
     private Handler backgroundThreadHandler;
     private Utils utils;
-    private ProgressDialog progressDialog;
-
 
     public GalleryFragment() {
         // Required empty public constructor
     }
-
 
     public static GalleryFragment newInstance(ArrayList<ImageModel> _imageModels) {
         GalleryFragment fragment = new GalleryFragment();
@@ -51,10 +48,14 @@ public class GalleryFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bitmapimages.clear();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -64,30 +65,21 @@ public class GalleryFragment extends Fragment {
 
         imageModels = (ArrayList<ImageModel>) this.getArguments().getSerializable("IMAGE_MODEL");
 
-
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
-
-        //_gallery = (ImageView) view.findViewById(R.id.imageviewThumbnails);
         _thumbnails = (LinearLayout) view.findViewById(R.id.thumbnails);
         imageGallery = (ImageView)view.findViewById(R.id.imageViewGallery);
         utils = new Utils(getActivity());
+        context = getActivity();
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         backgroundThreadHandler = new BackgroundThreadHandler();
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
-        progressDialog = new ProgressDialog(getActivity());
-
-
-
-
-        progressDialog.setMessage(getString(R.string.loading));
-          progressDialog.setCancelable(false);
-          progressDialog.show();
-        // _images = (ArrayList<String>;
-
-
-
 
         return view;
     }
@@ -95,20 +87,15 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-
-        // new setAdapterTask().execute();
     }
 
-    public class BackgroundThreadHandler extends Handler {
+
+    public static class BackgroundThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             progressDialog.dismiss();
@@ -117,34 +104,40 @@ public class GalleryFragment extends Fragment {
 
                 _thumbnails.removeAllViews();
 
-                for ( int m = 0; m < bitmapimages.size(); m++) {
-                    //  Utils.log(" 2 " + String.valueOf(bitmap.getHeight()), " IN ");
+                if (bitmapimages.size() > 0) {
 
-                    _gallery = new ImageView(getActivity());
+                    for (int m = 0; m < bitmapimages.size(); m++) {
 
-                     _gallery.setPadding(0, 0, 7, 0);
+                        _gallery = new ImageView(context);
+                        _gallery.setPadding(0, 0, 7, 0);
+                        _gallery.setImageBitmap(bitmapimages.get(m));
+                        _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        final int finalM = m;
 
-                    _gallery.setImageBitmap(bitmapimages.get(m));
+                        _gallery.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                imageGallery.setImageBitmap(bitmapimages.get(finalM));
+                            }
+                        });
 
+                        _thumbnails.addView(_gallery);
+                    }
+                } else {
+                    TextView textView = new TextView(context);
 
-                  //  _gallery.setMaxWidth(200);
-                   // _gallery.setMaxHeight(200);
-                     _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-                    final int finalM = m;
-
-                    _gallery.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            imageGallery.setImageBitmap(bitmapimages.get(finalM));
-                        }
-                    });
-
-                    _thumbnails.addView(_gallery);
-
-
-                //
+                    textView.setTextAppearance(context, R.style.MilestoneStyle);
+                    textView.setTextColor(context.getResources().getColor(R.color.colorWhite));
+                    textView.setPadding(10, 10, 10, 10);
+                    textView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.button_success));
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+                    params.setMargins(10, 10, 10, 10);
+                    textView.setLayoutParams(params);
+                    //
+                    textView.setText(context.getString(R.string.no_images));
+                    _thumbnails.addView(textView);
                 }
+
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
@@ -175,12 +168,14 @@ public class GalleryFragment extends Fragment {
                                 File file = utils.getInternalFileImages(utils.replaceSpace(imageModel.getStrImageName()));
 
                                 Bitmap bitmap = utils.getBitmapFromFile(file.getAbsolutePath(), Config.intWidth, Config.intHeight);
-                                    bitmapimages.add(bitmap);
+                                bitmapimages.add(bitmap);
+                                bitmap.recycle();
                             }
 
                         }
                     } catch (OutOfMemoryError e) {
                         e.printStackTrace();
+                        bitmapimages.clear();
                     }
 
 

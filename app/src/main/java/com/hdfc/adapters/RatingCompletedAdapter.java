@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.FeedBackModel;
@@ -25,7 +26,8 @@ import java.util.List;
  */
 public class RatingCompletedAdapter extends BaseAdapter {
 
-    private static final int[] intImageIds = new int[]{R.mipmap.rate_icon_1, R.mipmap.rate_icon_2, R.mipmap.rate_icon_3, R.mipmap.smiley_icon, R.mipmap.rate_icon_4};
+    private static final int[] intImageIds = new int[]{R.mipmap.rate_icon_1, R.mipmap.rate_icon_2,
+            R.mipmap.rate_icon_3, R.mipmap.smiley_icon, R.mipmap.rate_icon_4};
     private static LayoutInflater inflater = null;
     private static Context _ctx;
     private static Utils utils;
@@ -92,18 +94,26 @@ public class RatingCompletedAdapter extends BaseAdapter {
 
             viewHolder.dateTime.setText(strTimeStamp);
 
-            //todo fetch name
+            String strType = data.get(position).getStrFeedBackByType();
+            String strName = "";
 
-            String strAuthor = _ctx.getString(R.string.by) + "" + data.get(position).getStrFeedBackBy();
+            if (strType.equalsIgnoreCase("customer"))
+                strName = Config.customerModel.getStrName();
+
+            if (strType.equalsIgnoreCase("provider")) {
+                int iPosition = Config.strDependentIds.indexOf(data.get(position).getStrFeedBackBy());
+                strName = Config.dependentModels.get(iPosition).getStrName();
+            }
+
+            String strAuthor = _ctx.getString(R.string.by) + strName;
 
             viewHolder.personName.setText(strAuthor);
 
-            //
             try {
 
                 File file = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrFeedBackBy()));
 
-                //Utils.log(file.getAbsolutePath(), " PATH ");
+                Utils.log(file.getAbsolutePath(), " PATH ");
 
                 if (file.exists()) {
 

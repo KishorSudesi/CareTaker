@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.ActivityModel;
 
 import java.io.File;
 
@@ -30,24 +29,19 @@ public class CarlaCompletedActivityFragment extends Fragment {
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
-    private static String strCarlaImageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName;
     private Utils utils;
     private int iPosition;
 
-    public static CarlaCompletedActivityFragment newInstance(ActivityModel _activityModel) {
-
-        CarlaCompletedActivityFragment fragment = new CarlaCompletedActivityFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY", _activityModel);
-        fragment.setArguments(args);
-        return fragment;
+    public CarlaCompletedActivityFragment() {
+        // Required empty public constructor
     }
 
-    /*public CarlaCompletedActivityFragment() {
-        // Required empty public constructor
-    }*/
+    public static CarlaCompletedActivityFragment newInstance() {
+
+        return new CarlaCompletedActivityFragment();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,22 +66,19 @@ public class CarlaCompletedActivityFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
 
         //
-        ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
-        if (activityModel != null) {
+        if (ActivityCompletedFragment._activityModel != null) {
 
-            iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+            iPosition = Config.strProviderIds.indexOf(ActivityCompletedFragment._activityModel.getStrProviderID());
 
-            txtViewHead2.setText(activityModel.getStrActivityName());
+            txtViewHead2.setText(ActivityCompletedFragment._activityModel.getStrActivityName());
             String strHead = Config.providerModels.get(iPosition).getStrName() + getActivity().getResources().getString(R.string.assisted_in);
             txtViewHead1.setText(strHead);
-            String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
+            String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(ActivityCompletedFragment._activityModel.getStrActivityDate());
             txtViewDate.setText(strDate);
-            txtViewMSG.setText(activityModel.getStrActivityDesc());
+            txtViewMSG.setText(ActivityCompletedFragment._activityModel.getStrActivityDesc());
 
-            strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
-
-            strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
+            strCarlaImageName = utils.replaceSpace(ActivityCompletedFragment._activityModel.getStrProviderID());
         }
         //
         return view;
@@ -125,12 +116,6 @@ public class CarlaCompletedActivityFragment extends Fragment {
                 if (strCarlaImageName != null && !strCarlaImageName.equalsIgnoreCase("")) {
 
                     File f = utils.getInternalFileImages(strCarlaImageName);
-
-                    if (!f.exists()) {
-                        if (strCarlaImageUrl != null && !strCarlaImageUrl.equalsIgnoreCase(""))
-                            utils.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
-                    }
-
                     bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
                             Config.intHeight);
                 }

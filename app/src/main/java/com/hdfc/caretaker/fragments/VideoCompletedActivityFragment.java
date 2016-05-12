@@ -11,32 +11,21 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.VideoCompletedAdapter;
 import com.hdfc.caretaker.R;
-import com.hdfc.models.ActivityModel;
-import com.hdfc.models.VideoModel;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class VideoCompletedActivityFragment extends Fragment {
 
-    public static ArrayList<VideoModel> activityCompletedArrayList;
     ListView listView;
     TextView emptyTextView;
-    private ActivityModel activityListModel;
-    private VideoCompletedAdapter activityCompletedAdapter;
 
     public VideoCompletedActivityFragment() {
         // Required empty public constructor
     }
 
-    public static VideoCompletedActivityFragment newInstance(ActivityModel _activityModel) {
-        VideoCompletedActivityFragment fragment = new VideoCompletedActivityFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("ACTIVITY_COMPLETE", _activityModel);
-        fragment.setArguments(args);
-        return fragment;
+    public static VideoCompletedActivityFragment newInstance() {
+        return new VideoCompletedActivityFragment();
     }
 
     @Override
@@ -49,39 +38,10 @@ public class VideoCompletedActivityFragment extends Fragment {
 
         emptyTextView = (TextView) view.findViewById(android.R.id.empty);
 
-        activityListModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY_COMPLETE");
-
-        activityCompletedArrayList = new ArrayList<VideoModel>();
-
-        activityCompletedArrayList.clear();
-
-
-        activityCompletedAdapter = new VideoCompletedAdapter(getActivity(), activityCompletedArrayList);
+        VideoCompletedAdapter activityCompletedAdapter = new VideoCompletedAdapter(getActivity(), ActivityCompletedFragment._activityModel.getVideoModels());
         listView.setAdapter(activityCompletedAdapter);
         listView.setEmptyView(emptyTextView);
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (activityListModel != null) {
-
-            for (int i = 0; i < activityListModel.getVideoModels().size(); i++) {
-                VideoModel activityFeedBackModel = activityListModel.getVideoModels().get(i);
-
-                //VideoModel activityCompletedModel = new VideoModel();
-                //activityCompletedModel.setStrDateTime(activityFeedBackModel.getStrVideoTime());
-                //activityCompletedModel.setStrDescription(activityFeedBackModel.getStrVideoName());
-                // activityCompletedModel.setiVideoId(R.drawable.vidlink); //todo add video thumbnail
-
-                // activityCompletedArrayList.add(activityCompletedModel);
-            }
-
-            activityCompletedAdapter.notifyDataSetChanged();
-        }
-
     }
 }

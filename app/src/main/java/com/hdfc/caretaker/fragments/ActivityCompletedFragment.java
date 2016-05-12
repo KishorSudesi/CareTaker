@@ -13,11 +13,17 @@ import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.models.ActivityModel;
+import com.hdfc.models.FeedBackModel;
+
+import java.util.ArrayList;
 
 public class ActivityCompletedFragment extends Fragment {
 
-    public static ImageButton imageButtonDesc, imageButtonVideo, imageButtonImage, imageButtonRating, imageButtonAdd;
-    private static ActivityModel _activityModel;
+    public static ImageButton imageButtonDesc, imageButtonVideo, imageButtonImage, imageButtonRating,
+            imageButtonAdd, imageButtonMS;
+    public static ActivityModel _activityModel;
+    public static ArrayList<FeedBackModel> feedBackModels;
+    public static String strActivityId;
 
     public static ActivityCompletedFragment newInstance(ActivityModel activityModel) {
         ActivityCompletedFragment fragment = new ActivityCompletedFragment();
@@ -34,6 +40,7 @@ public class ActivityCompletedFragment extends Fragment {
         imageButtonImage.setBackgroundColor(Color.TRANSPARENT);
         imageButtonRating.setBackgroundColor(Color.TRANSPARENT);
         imageButtonAdd.setBackgroundColor(Color.TRANSPARENT);
+        imageButtonMS.setBackgroundColor(Color.TRANSPARENT);
     }
 
     @Override
@@ -51,6 +58,8 @@ public class ActivityCompletedFragment extends Fragment {
         _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.completed_activity));
+
+        feedBackModels = _activityModel.getFeedBackModels();
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +79,7 @@ public class ActivityCompletedFragment extends Fragment {
         imageButtonImage = (ImageButton) view.findViewById(R.id.imageButtonImage);
         imageButtonRating = (ImageButton) view.findViewById(R.id.imageButtonRating);
         imageButtonAdd = (ImageButton) view.findViewById(R.id.imageButtonAdd);
+        imageButtonMS = (ImageButton) view.findViewById(R.id.imageButtonMS);
 
         setMenuInitView();
 
@@ -108,6 +118,13 @@ public class ActivityCompletedFragment extends Fragment {
             }
         });
 
+        imageButtonMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMileStones();
+            }
+        });
+
         goToCarlaDescription();
 
         return view;
@@ -116,42 +133,39 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToCarlaDescription() {
         setMenuInitView();
         imageButtonDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        CarlaCompletedActivityFragment newFragment = CarlaCompletedActivityFragment.newInstance(_activityModel);
-
+        CarlaCompletedActivityFragment newFragment = CarlaCompletedActivityFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
+    public void goToMileStones() {
+        setMenuInitView();
+        imageButtonMS.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        MileStoneFragment newFragment = MileStoneFragment.newInstance();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_completed_activity, newFragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 
     public void goToVideo() {
 
-        // if(_activityModel!=null) {
         setMenuInitView();
         imageButtonVideo.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-        VideoCompletedActivityFragment newFragment = VideoCompletedActivityFragment.newInstance(_activityModel);
-        //Bundle args = new Bundle();
-        //args.putInt(ArticleFragment.ARG_POSITION, position);
-        // newFragment.setArguments(args);
-
+        VideoCompletedActivityFragment newFragment = VideoCompletedActivityFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
-
         transaction.commit();
-        //}
+
     }
 
     public void goToImage() {
         setMenuInitView();
         imageButtonImage.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         GalleryFragment newFragment = GalleryFragment.newInstance(_activityModel.getImageModels());
-        //Bundle args = new Bundle();
-        //args.putInt(ArticleFragment.ARG_POSITION, position);
-        // newFragment.setArguments(args);
-
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
@@ -162,11 +176,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToAddRating() {
         setMenuInitView();
         imageButtonAdd.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        AddRatingCompletedActivityFragment newFragment = AddRatingCompletedActivityFragment.newInstance(getActivity(), _activityModel);
-        //Bundle args = new Bundle();
-        //args.putInt(ArticleFragment.ARG_POSITION, position);
-        // newFragment.setArguments(args);
-
+        AddRatingCompletedActivityFragment newFragment = AddRatingCompletedActivityFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
@@ -175,19 +185,12 @@ public class ActivityCompletedFragment extends Fragment {
     }
 
     public void goToViewRating() {
-        // if(_activityModel!=null) {
         setMenuInitView();
         imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance(_activityModel.getFeedBackModels());
-        //Bundle args = new Bundle();
-        //args.putInt(ArticleFragment.ARG_POSITION, position);
-        // newFragment.setArguments(args);
-
+        ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
-
         transaction.commit();
-        // }
     }
 }
