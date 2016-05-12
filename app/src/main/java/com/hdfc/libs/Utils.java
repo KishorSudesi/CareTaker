@@ -1787,7 +1787,6 @@ public class Utils {
                     milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
                     milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
 
-                    jsonObjectMilestone.put("show", milestoneModel.isVisible());
                     //
                     if (jsonObjectMilestone.has("fields")) {
 
@@ -2019,7 +2018,7 @@ public class Utils {
                     activityModel.setStrActivityDoneDate(jsonObjectActivity.
                         getString("activity_done_date"));
 
-                //activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
+                activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
 
                 activityModel.setStrActivityProviderStatus(jsonObjectActivity.
                         getString("provider_status"));

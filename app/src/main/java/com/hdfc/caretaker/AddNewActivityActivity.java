@@ -351,7 +351,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
                     milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
                     milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
-//                    milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                   milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
 
                     if (jsonObjectMilestone.has("fields")) {
 
