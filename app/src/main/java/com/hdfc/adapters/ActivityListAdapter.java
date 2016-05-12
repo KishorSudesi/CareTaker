@@ -80,7 +80,8 @@ public class ActivityListAdapter extends BaseAdapter {
 
             ActivityModel activityListModel = data.get(position);
 
-            if (!activityListModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
+            if ((!activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess"))
+                    &&(!activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess"))) {
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().
                         getColor(R.color.colorWhite));
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
@@ -121,11 +122,13 @@ public class ActivityListAdapter extends BaseAdapter {
 
             String strMess = "";
 
+            System.out.println("Danger zone ; "+activityListModel.getStrActivityDesc());
+            System.out.println("Status is : "+activityListModel.getStrActivityStatus());
             if (activityListModel.getStrActivityStatus().equalsIgnoreCase("new")
                     || activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming"))
                 strMess = activityListModel.getStrActivityDesc();
             else
-                strMess = activityListModel.getStrActivityProviderMessage();
+                strMess = activityListModel.getStrActivityDesc();//getStrActivityProviderMessage
 
             viewHolder.Message.setText(strMess);
 
