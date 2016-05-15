@@ -344,7 +344,7 @@ public class LoginActivity extends AppCompatActivity {
                                     JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
-                                    utils.toast(2, 2, strMess);
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
                                 }

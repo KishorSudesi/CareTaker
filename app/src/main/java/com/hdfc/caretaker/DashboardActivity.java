@@ -320,6 +320,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         } else {
 
             try {
+                IntentFilter filter = new IntentFilter(
+                        App42GCMService.DisplayMessageAction);
+                filter.setPriority(2);
+                registerReceiver(mBroadcastReceiver, filter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
                 if (!AccountSuccessActivity.isCreatedNow &&
                         Config.intSelectedMenu == Config.intDashboardScreen) {
 
@@ -345,14 +354,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 e.printStackTrace();
             }
 
-            try {
-                IntentFilter filter = new IntentFilter(
-                        App42GCMService.DisplayMessageAction);
-                filter.setPriority(2);
-                registerReceiver(mBroadcastReceiver, filter);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
         }
     }
 

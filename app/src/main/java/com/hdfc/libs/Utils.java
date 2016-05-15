@@ -2237,6 +2237,8 @@ public class Utils {
 
                                 if (response.getJsonDocList().size() > 0) {
 
+                                    Utils.log(response.toString(), " 1 ");
+
                                     /*Config.strDependentIds.clear();
                                     Config.dependentModels.clear();*/
 
@@ -2271,16 +2273,18 @@ public class Utils {
 
                         @Override
                         public void onFindDocFailed(App42Exception ex) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
+
 
                             try {
+                                Utils.log(ex.getMessage(), " 9 ");
                                 JSONObject jsonObject = new JSONObject(ex.getMessage());
                                 JSONObject jsonObjectError =
                                         jsonObject.getJSONObject("app42Fault");
                                 String strMess = jsonObjectError.getString("details");
 
-                                toast(2, 2, strMess);
+                                //toast(2, 2, strMess);
+
+                                fetchLatestActivities(progressDialog, iFlag);
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
@@ -2351,6 +2355,8 @@ public class Utils {
 
                                 if (response != null) {
 
+                                    Utils.log(response.toString(), " 3 ");
+
                                     if (response.getJsonDocList().size() > 0) {
 
                                         for (int i = 0; i < response.getJsonDocList().size(); i++) {
@@ -2382,9 +2388,11 @@ public class Utils {
                                                 jsonObject.getJSONObject("app42Fault");
                                         int appErrorCode = jsonObjectError.getInt("appErrorCode");
 
-                                        if (appErrorCode == 2608) {
+                                        Utils.log(e.getMessage(), " 4 ");
+
+                                        //if (appErrorCode == 2608) {
                                             fetchLatestActivitiesUpcoming(progressDialog, iFlag);
-                                        }
+                                        //}
 
                                     } else {
                                         if (progressDialog.isShowing())
@@ -2466,7 +2474,7 @@ public class Utils {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
                                 try {
-                                    //Utils.log(e.getMessage(), " Response Failure");
+                                    Utils.log(e.getMessage(), " Response Failure");
 
                                     if (e != null) {
                                         if (iFlag == 0)
@@ -2489,6 +2497,8 @@ public class Utils {
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
         } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
             if (iFlag == 0)
                 loadImages();
             if (iFlag == 1)
@@ -2577,6 +2587,8 @@ public class Utils {
 
                             if (response != null) {
 
+                                Utils.log(response.toString(), " 5 ");
+
                                 if (response.getJsonDocList().size() > 0) {
 
                                     for (int i = 0; i < response.getJsonDocList().size(); i++) {
@@ -2609,6 +2621,9 @@ public class Utils {
 
                             try {
                                 if (e != null) {
+
+                                    Utils.log(e.getMessage(), " 1 ");
+
                                     JSONObject jsonObject = new JSONObject(e.getMessage());
                                     JSONObject jsonObjectError =
                                             jsonObject.getJSONObject("app42Fault");
@@ -2788,10 +2803,11 @@ public class Utils {
         public void run() {
             try {
                 loadAllFiles();
-                threadHandler.sendEmptyMessage(0);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            threadHandler.sendEmptyMessage(0);
         }
     }
     //Application Specig=fic End

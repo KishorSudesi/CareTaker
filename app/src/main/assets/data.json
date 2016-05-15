@@ -1,84 +1,63 @@
 {
-  "service_id": "57221947e4b0fa5b108f35dc",
-  "dependent_id": "572b4f17e4b049ca81c3e9e9",
-  "provider_status": "scheduled",
-  "provider_id": "5715c39ee4b0d2aca6fe5d17",
-  "status": "completed",
-  "provider_message": "message",
-  "videos": [
-    {
-      "0": "empty"
-    }
-  ],
-  "feedbacks": [
-    {
-      "feedback_message": "Testing",
-      "feedback_by": "572b4f17e4b049ca81c3e9e9",
-      "feedback_report": "false",
-      "feedback_time": "2016-05-07T11:52:08.706+0000",
-      "feedback_by_type": "customer",
-      "feedback_rating": 4
-    }
-  ],
-  "activity_name": "activity name",
-  "service_name": "Medical Test",
   "milestones": [
     {
       "id": 1,
-      "status": "closed",
+      "status": "inactive",
       "name": "Appointment Confirmation",
-      "date": "2016-05-07T11:52:08.706+0000",
+      "show": true,
+      "date": "",
       "fields": [
         {
           "id": 11,
-          "data": "Medical Lab Test",
+          "data": "",
           "label": "Lab Name",
-          "type": "text",
-          "required": true
+          "required": true,
+          "type": "text"
         },
         {
           "id": 12,
-          "data": "BP",
+          "data": "",
           "label": "Test Performed",
-          "type": "text",
-          "required": true
+          "required": true,
+          "type": "text"
         },
         {
           "id": 13,
-          "data": "2016-05-07T11:52:08.706+0000",
+          "data": "",
           "label": "Date and Time",
-          "type": "datetime",
-          "required": true
+          "required": true,
+          "type": "datetime"
         }
       ]
     },
     {
       "id": 2,
-      "status": "closed",
+      "status": "inactive",
       "name": "Travel Update",
-      "date": "2016-05-07T11:52:08.706+0000",
+      "show": true,
+      "date": "",
       "fields": [
         {
-          "id": 21,
           "child": true,
+          "id": 21,
           "values": [
             "Self",
             "Accompany",
             "Car Booking"
           ],
-          "data": "Accompany",
           "child_type": [
             "text"
           ],
-          "label": "Mode of Travel",
+          "data": "",
           "child_value": [
             "Car Booking"
           ],
-          "type": "radio",
-          "required": true,
+          "label": "Mode of Travel",
           "child_condition": [
             "equals"
           ],
+          "required": true,
+          "type": "radio",
           "child_field": [
             22
           ]
@@ -86,54 +65,35 @@
         {
           "id": 22,
           "hide": true,
-          "data": "Ola service",
+          "data": "",
           "label": "Service Name",
-          "type": "text",
-          "required": true
+          "required": true,
+          "type": "text"
         }
       ]
     },
     {
       "id": 3,
-      "status": "closed",
+      "status": "inactive",
       "name": "Activity closure",
-      "date": "2016-05-07T11:52:08.706+0000",
+      "show": true,
+      "date": "",
       "fields": [
         {
           "id": 31,
-          "data": "Complete reports",
+          "data": "",
           "label": "Delivery of Reports",
-          "type": "text",
-          "required": true
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "status": "active",
-      "name": "Feedback Rating",
-      "date": "2016-05-07T11:52:08.706+0000",
-      "fields": [
-        {
-          "id": 41,
-          "data": "Good service",
-          "label": "Feedback",
-          "type": "text",
-          "required": true
+          "required": true,
+          "type": "text"
         }
       ]
     }
   ],
-  "activity_date": "2016-07-07T11:52:08.706+0000",
+  "unit": 50,
   "category_name": "Health Care",
-  "overdue": false,
-  "images": [
-    {
-      "0": "empty"
-    }
-  ],
-  "activity_desc": "desc",
+  "unit_value": 1,
+  "service_type": "adhoc",
   "service_no": 101,
-  "activity_done_date": "2016-03-07T11:52:08.706+0000",
-  "customer_id": "572b4f14e4b0492b68fbc9b1"
+  "service_name": "Medical Test",
+  "cost": 0
 }
