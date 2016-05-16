@@ -2459,6 +2459,8 @@ public class Utils {
                                             loadImages();
                                         if (iFlag == 1)
                                             refreshNotificationsImages();
+                                        if (iFlag == 2)
+                                            loadImagesActivityMonth();
 
                                     } else {
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
@@ -2481,6 +2483,8 @@ public class Utils {
                                             loadImages();
                                         if (iFlag == 1)
                                             refreshNotificationsImages();
+                                        if (iFlag == 2)
+                                            loadImagesActivityMonth();
                                     } else {
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
@@ -2503,6 +2507,8 @@ public class Utils {
                 loadImages();
             if (iFlag == 1)
                 refreshNotificationsImages();
+            if (iFlag == 2)
+                loadImagesActivityMonth();
         }
     }
 
@@ -2541,6 +2547,18 @@ public class Utils {
     }
 
     public void loadImages() {
+
+        progressDialog = new ProgressDialog(_ctxt);
+        progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        threadHandler = new ThreadHandler();
+        Thread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
+    }
+
+    public void loadImagesActivityMonth() {
 
         progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -2719,9 +2737,9 @@ public class Utils {
 
                         @Override
                         public void onSuccess(Object o) {
-                            if (progressDialog.isShowing())
+                            /*if (progressDialog.isShowing())
                                 progressDialog.dismiss();
-
+*/
                             Storage response = (Storage) o;
 
                             if (response != null) {
@@ -2742,16 +2760,19 @@ public class Utils {
                                 }
 
                             } else {
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
                                 ActivityFragment.activitiesModelArrayList.clear();
-                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                //toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
-                            ActivityFragment.reload();
+                            //ActivityFragment.reload();
+                            fetchProviders(progressDialog, 2);
                         }
 
                         @Override
                         public void onException(Exception e) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
                             try {
                                 if (e != null) {
                                     log(e.getMessage(), " f ");
@@ -2764,19 +2785,23 @@ public class Utils {
                                     toast(2, 2, strMess);
 */
                                 } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
                                 e1.printStackTrace();
                             }
-                            ActivityFragment.reload();
+                            //ActivityFragment.reload();
+                            fetchProviders(progressDialog, 2);
                         }
                     }
             );
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
-            ActivityFragment.reload();
+          /*  if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            //ActivityFragment.reload();
+            fetchProviders(progressDialog, 2);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
     }
@@ -2795,6 +2820,10 @@ public class Utils {
                 DashboardActivity.goToDashboard();
             }
 
+            if (Config.intSelectedMenu == Config.intActivityScreen
+                    || Config.intSelectedMenu == Config.intListActivityScreen) {
+                ActivityFragment.reload();
+            }
         }
     }
 

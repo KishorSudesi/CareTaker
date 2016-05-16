@@ -53,12 +53,26 @@ public class ActivityMonthFragment extends Fragment {
 
     public static void reload() {
 
-       /* adapter = new CalendarAdapter(context, month, year, ActivityFragment.activitiesModelArrayList);
-        calendarView.setAdapter(adapter);*/
-        //adapter.notifyDataSetChanged();
+        try {
 
-        /*activityListAdapter = new ActivityMonthListAdapter(context, ActivityFragment.activitiesModelArrayList);
-        listView.setAdapter(activityListAdapter);*/
+            adapter = new CalendarAdapter(context, ActivityFragment.month, ActivityFragment.year, ActivityFragment.activitiesModelArrayList);
+            calendarView.setAdapter(adapter);
+            //adapter.notifyDataSetChanged();
+
+            activityListAdapter = new ActivityMonthListAdapter(context, ActivityFragment.activitiesModelArrayList);
+            listView.setAdapter(activityListAdapter);
+
+           /* if(activitiesModelSelected!=null)
+                activitiesModelSelected.clear();
+
+            if(activityListAdapter!=null)
+                activityListAdapter.notifyDataSetChanged();*/
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -89,6 +103,8 @@ public class ActivityMonthFragment extends Fragment {
         adapter = new CalendarAdapter(getContext(), month, year, ActivityFragment.activitiesModelArrayList);
         calendarView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        activitiesModelSelected.clear();
 
         activityListAdapter = new ActivityMonthListAdapter(getActivity(), activitiesModelSelected);
         listView.setAdapter(activityListAdapter);
@@ -194,11 +210,13 @@ public class ActivityMonthFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                ActivityModel activityModel;
+                TextView textView = (TextView) view.findViewById(R.id.textViewActivity);
 
-                if (position <= activityModels.size()) {
+                ActivityModel activityModel = (ActivityModel) textView.getTag();
+
+              /*  if (position <= activityModels.size()) {
                     activityModel = activityModels.get(position);
-                } else activityModel = null;
+                } else activityModel = null;*/
 
                 if (activityModel != null
                         && activityModel.getStrActivityStatus().equalsIgnoreCase("new") ||

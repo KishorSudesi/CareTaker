@@ -71,16 +71,18 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            ActivityModel activityModel = data.get(position);
+            // ActivityModel activityModel = data.get(position);
 
-            viewHolder.textViewActivity.setText(activityModel.getStrActivityName());
-            viewHolder.textViewDescription.setText(activityModel.getStrActivityDesc());
+            viewHolder.textViewActivity.setText(data.get(position).getStrActivityName());
+            viewHolder.textViewDescription.setText(data.get(position).getStrActivityDesc());
+
+            viewHolder.textViewActivity.setTag(data.get(position));
 
             //multiBitmapLoader.loadBitmap(activityModel.getStrDependentName(), viewHolder.imageViewPerson);
 
             try {
 
-                File f = utils.getInternalFileImages(utils.replaceSpace(activityModel.getStrDependentID().trim()));
+                File f = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrDependentID().trim()));
 
                 if(f.exists())
                     multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);
