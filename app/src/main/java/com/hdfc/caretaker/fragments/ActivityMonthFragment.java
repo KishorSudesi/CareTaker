@@ -59,14 +59,14 @@ public class ActivityMonthFragment extends Fragment {
             calendarView.setAdapter(adapter);
             //adapter.notifyDataSetChanged();
 
-            activityListAdapter = new ActivityMonthListAdapter(context, ActivityFragment.activitiesModelArrayList);
-            listView.setAdapter(activityListAdapter);
+            /*activityListAdapter = new ActivityMonthListAdapter(context, ActivityFragment.activitiesModelArrayList);
+            listView.setAdapter(activityListAdapter);*/
 
-           /* if(activitiesModelSelected!=null)
+            if (activitiesModelSelected != null)
                 activitiesModelSelected.clear();
 
             if(activityListAdapter!=null)
-                activityListAdapter.notifyDataSetChanged();*/
+                activityListAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
             e.printStackTrace();
