@@ -1877,6 +1877,7 @@ public class Utils {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);
 
+            System.out.println("You are at highest point : "+(jsonObjectProvider.has("provider_name")));
             if (jsonObjectProvider.has("provider_name")) {
 
                 ProviderModel providerModel = new ProviderModel(
@@ -1886,6 +1887,7 @@ public class Utils {
                         jsonObjectProvider.getString("provider_contact_no"),
                         jsonObjectProvider.getString("provider_email"), strDocumentId);
 
+                System.out.println("Rushikesh Belavalekar Software Engineer at Infosys Ltd"+(!Config.strProviderIdsAdded.contains(strDocumentId)));
                 if (!Config.strProviderIdsAdded.contains(strDocumentId)) {
 
                     Config.strProviderIdsAdded.add(strDocumentId);
