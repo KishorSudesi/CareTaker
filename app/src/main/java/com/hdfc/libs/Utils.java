@@ -56,6 +56,7 @@ import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.ClientModel;
 import com.hdfc.models.ConfirmViewModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
@@ -132,7 +133,6 @@ public class Utils {
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
-    //
 
     static {
         System.loadLibrary("stringGen");
@@ -1748,6 +1748,11 @@ public class Utils {
                 Config.customerModel.setStrCity(jsonObject.getString("customer_city"));
                 Config.customerModel.setStrState(jsonObject.getString("customer_state"));
 
+                ClientModel clientModel = new ClientModel();
+                clientModel.setCustomerModel(Config.customerModel);
+
+                Config.customerModels.add(Config.customerModel);
+
                 Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(),
                         jsonObject.getString("customer_profile_url"), "IMAGE"));
             }
@@ -1974,6 +1979,9 @@ public class Utils {
                     }*/
 
                     Config.dependentModels.add(dependentModel);
+
+                    ClientModel clientModel = new ClientModel();
+                    clientModel.setDependentModels(Config.dependentModels);
 
                     Config.fileModels.add(new FileModel(strDependentDocId,
                             dependentModel.getStrImageUrl(), "IMAGE"));

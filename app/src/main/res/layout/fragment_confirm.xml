@@ -5,10 +5,10 @@
     android:background="#cccccc"
     tools:context=".fragments.AddDependentFragment">
 
-    <ListView
-        android:id="@+id/listViewConfirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ExpandableListView
+        android:id="@+id/expList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/buttonContinue"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

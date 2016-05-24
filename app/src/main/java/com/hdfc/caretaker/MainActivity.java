@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             if (imgBg != null) {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-                        R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
+                        R.drawable.button_white, Config.intScreenWidth, Config.intScreenHeight));
 
                 //CrashLogger.getInstance().init(MainActivity.this);
             }

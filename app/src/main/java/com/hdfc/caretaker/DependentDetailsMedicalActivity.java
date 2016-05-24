@@ -2,9 +2,12 @@ package com.hdfc.caretaker;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.RemoteController;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -188,6 +191,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
+
+
             DependentDetailPersonalActivity.dependentModel.setStrImageUrl("");
 
             gotoDependnetList();
@@ -200,29 +205,31 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     }
 
     public void gotoDependnetList() {
-        Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
-        selection.putExtra("LIST_DEPENDANT", true);
-        DependentDetailPersonalActivity.strDependantName = "";
-        DependentDetailPersonalActivity.strImageName = "";
-        DependentDetailPersonalActivity.dependentModel = null;
 
-        //chk this
-        utils.retrieveDependants();
+                Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
+                selection.putExtra("LIST_DEPENDANT", true);
+                DependentDetailPersonalActivity.strDependantName = "";
+                DependentDetailPersonalActivity.strImageName = "";
+                DependentDetailPersonalActivity.dependentModel = null;
 
-        if (AddDependentFragment.adapter != null)
-            AddDependentFragment.adapter.notifyDataSetChanged();
+                //chk this
+                utils.retrieveDependants();
 
-        utils.retrieveConfirmDependants();
+                if (AddDependentFragment.adapter != null)
+                    AddDependentFragment.adapter.notifyDataSetChanged();
 
-        if (ConfirmFragment.adapter != null)
-            ConfirmFragment.adapter.notifyDataSetChanged();
-        //
+                utils.retrieveConfirmDependants();
 
-        progressDialog.dismiss();
-        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                if (ConfirmFragment.adapter != null)
+                    ConfirmFragment.adapter.notifyDataSetChanged();
+                //
 
-        startActivity(selection);
-        finish();
+                progressDialog.dismiss();
+                utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+
+                startActivity(selection);
+                finish();
+
     }
 
     public void storeData() {

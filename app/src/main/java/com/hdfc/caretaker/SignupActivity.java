@@ -153,20 +153,13 @@ public class SignupActivity extends FragmentActivity {
                     Intent selection = new Intent(SignupActivity.this, MainActivity.class);
                     arg0.dismiss();
 
-                    /*SignupActivity.strCustomerName = "";
-                    SignupActivity.strCustomerEmail = "";
-                    SignupActivity.strCustomerContactNo = "";
-                    SignupActivity.strCustomerAddress = "";
-                    SignupActivity.strCustomerImg = "";
-                    SignupActivity.strUserId = "";*/
-
                     dependentModels = new ArrayList<>();
                     dependentNames = new ArrayList<>();
                     DependentDetailPersonalActivity.dependentModel = null;
 
                     startActivity(selection);
                     finish();
-                } catch (Exception e) {
+            } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

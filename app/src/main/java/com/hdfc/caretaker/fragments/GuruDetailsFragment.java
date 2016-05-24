@@ -451,6 +451,8 @@ public class GuruDetailsFragment extends Fragment {
 
                                     utils.toast(1, 1, getString(R.string.your_details_saved));
 
+                                    Config.clientModels.setCustomerModel(Config.customerModel);
+
                                     SignupActivity._mViewPager.setCurrentItem(1);
 
                                 }else {

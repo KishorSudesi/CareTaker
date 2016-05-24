@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
+import com.hdfc.adapters.ConfirmListAdapter;
 import com.hdfc.adapters.ConfirmListViewAdapter;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
@@ -20,7 +22,11 @@ import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.ClientModel;
+import com.hdfc.models.ConfirmCustomerModel;
+import com.hdfc.models.ConfirmDependentModel;
 import com.hdfc.models.ConfirmViewModel;
+import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -32,12 +38,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ConfirmFragment extends Fragment {
 
+    public static ExpandableListView expListView;
+    //private static List<ConfirmCustomerModel> listDataHeader = new ArrayList<>();
+    private static List<CustomerModel> listDataHeader = new ArrayList<>();
+    //private static HashMap<ConfirmCustomerModel, List<ConfirmDependentModel>> listDataChild = new HashMap<>();
+    private static HashMap<CustomerModel, List<DependentModel>> listDataChild = new HashMap<>();
+
     public static ArrayList<ConfirmViewModel> CustomListViewValuesArr = new ArrayList<>();
-    public static ListView list;
-    public static ConfirmListViewAdapter adapter;
+    //public static ConfirmListViewAdapter adapter;
+    public static ConfirmListAdapter adapter;
     public static int uploadSize, uploadingCount=0;
     private static ProgressDialog progressDialog, pDialog;
     private static String jsonDocId;
@@ -74,10 +88,11 @@ public class ConfirmFragment extends Fragment {
 
         View addFragment = inflater.inflate(R.layout.fragment_confirm, container, false);
 
-        list = (ListView) addFragment.findViewById(R.id.listViewConfirm);
         buttonContinue = (Button) addFragment.findViewById(R.id.buttonContinue);
 
         utils = new Utils(getActivity());
+
+        expListView = (ExpandableListView)addFragment.findViewById(R.id.expList);
 
         progressDialog = new ProgressDialog(getActivity());
 
@@ -106,6 +121,10 @@ public class ConfirmFragment extends Fragment {
             }
         });
 
+        //adapter = new ConfirmListAdapter();
+
+        prepareListData();
+
         setListView();
 
         return addFragment;
@@ -132,6 +151,35 @@ public class ConfirmFragment extends Fragment {
         Intent intent = new Intent(getActivity(), AccountSuccessActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
+
+//        if (expListView != null) {
+
+         /*   listDataHeader.clear();
+            listDataChild.clear();
+
+        System.out.println("ClientModels contain : "+Config.clientModels);
+
+            for (ClientModel clientModel : Config.clientModels) {*/
+                System.out.println("Inside for loop");
+           //     listDataHeader.add(clientModel.getConfirmCustomerModel());
+                listDataHeader.add(Config.customerModel);
+               // Utils.log(String.valueOf(clientModel.getConfirmCustomerModel().getTextAddress()), " 1 ");
+//                listDataChild.put(clientModel.getConfirmCustomerModel(),clientModel.getConfirmDependentModels());
+                listDataChild.put(Config.customerModel,SignupActivity.dependentModels);
+                //System.out.println(listDataHeader);
+           // }
+
+        System.out.println("checking header : "+listDataHeader);
+            //listAdapter.notifyDataSetChanged();
+  //      }
+
+      /*  if (progressDialog.isShowing())
+            progressDialog.dismiss();*/
     }
 
     public void uploadDependentImages() {
@@ -890,7 +938,6 @@ public class ConfirmFragment extends Fragment {
 
         if (intCount > 1)
             buttonContinue.setVisibility(View.VISIBLE);
-
     }
 
     @Override
@@ -900,12 +947,14 @@ public class ConfirmFragment extends Fragment {
 
     public void setListView() {
         try {
+            /*adapter = new ConfirmListAdapter(getContext(),
+                    ConfirmFragment.CustomListViewValuesArr);*/
             setListData();
-            adapter = new ConfirmListViewAdapter(getContext(),
-                    ConfirmFragment.CustomListViewValuesArr);
-            list.setAdapter(adapter);
+
+            adapter = new ConfirmListAdapter(getContext(),ConfirmFragment.listDataHeader,ConfirmFragment.listDataChild);
+            expListView.setAdapter(adapter);
+
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
+        }}
 }

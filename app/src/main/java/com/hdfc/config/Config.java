@@ -5,6 +5,9 @@ import android.os.Build;
 import com.hdfc.caretaker.BuildConfig;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.ClientModel;
+import com.hdfc.models.ConfirmCustomerModel;
+import com.hdfc.models.ConfirmDependentModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
@@ -180,8 +183,16 @@ public class Config {
     public static boolean boolIsLoggedIn = false;
 
     public static CustomerModel customerModel = null;
+    public static DependentModel dependentModel = null;
+
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
     public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
+
+   /* public static ConfirmDependentModel confirmDependentModel = null;
+    public static ConfirmCustomerModel confirmCustomerModel = null;*/
+
+    public static ClientModel clientModels = new ClientModel();
+    public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
 
     //public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
     public static String strUserName = "";

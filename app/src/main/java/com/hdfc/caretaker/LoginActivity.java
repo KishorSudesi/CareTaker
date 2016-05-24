@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.ClientModel;
+import com.hdfc.models.DependentModel;
 import com.hdfc.views.CheckView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.user.User;
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editEmail, editPassword;
     private RelativeLayout layoutLogin;
     private TextView txtForgotPassword;
+    ArrayList<DependentModel> dependentModels = Config.dependentModels;
 
     private CheckView checkView;
     private TextView editTextCaptcha;
@@ -67,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             if (imgBg != null) {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-                        R.drawable.bg_blue, Config.intScreenWidth, Config.intScreenHeight));
+                        R.drawable.button_white, Config.intScreenWidth, Config.intScreenHeight));
             }
 
         } catch (Exception | OutOfMemoryError e) {
@@ -312,6 +315,9 @@ public class LoginActivity extends AppCompatActivity {
                     userService.authenticate(userName, password, new App42CallBack() {
                         @Override
                         public void onSuccess(Object o) {
+
+                            dependentModels.clear();
+
 
                             if (o != null) {
                                 Config.strUserName = userName;

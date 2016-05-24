@@ -10,7 +10,7 @@
     <string name="cancel">Cancel</string>
     <string name="email">Email</string>
     <string name="name">Name</string>
-    <string name="DOB">Dob</string>
+    <string name="DOB">Date of Birth</string>
     <string name="password">Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
@@ -50,7 +50,7 @@
     <string name="loved_one">A Loved One</string>
     <string name="existing_user">Existing User</string>
     <string name="who_needs_care">Who Needs Care?</string>
-    <string name="your_details">Personal Information</string>
+    <string name="your_details">Who needs care?</string>
     <string name="your_details_saved">Your Details Saved</string>
     <string name="dependents">Care Recipients</string>
     <string name="number">9874560123</string>
