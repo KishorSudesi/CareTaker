@@ -162,24 +162,21 @@ public class ConfirmFragment extends Fragment {
          /*   listDataHeader.clear();
             listDataChild.clear();
 
-        System.out.println("ClientModels contain : "+Config.clientModels);
-
             for (ClientModel clientModel : Config.clientModels) {*/
-                System.out.println("Inside for loop");
-           //     listDataHeader.add(clientModel.getConfirmCustomerModel());
-                listDataHeader.add(Config.customerModel);
-               // Utils.log(String.valueOf(clientModel.getConfirmCustomerModel().getTextAddress()), " 1 ");
-//                listDataChild.put(clientModel.getConfirmCustomerModel(),clientModel.getConfirmDependentModels());
-                listDataChild.put(Config.customerModel,SignupActivity.dependentModels);
-                //System.out.println(listDataHeader);
-           // }
+        listDataHeader.add(Config.customerModel);
+
+        ArrayList<DependentModel> dependentModels = new ArrayList<>();
+
+        for(DependentModel dependentModel : SignupActivity.dependentModels){
+
+            if(!dependentModel.getStrName().equalsIgnoreCase(getString(R.string.add_dependent))){
+                dependentModels.add(dependentModel);
+            }
+        }
+
+        listDataChild.put(Config.customerModel, dependentModels);
 
         System.out.println("checking header : "+listDataHeader);
-            //listAdapter.notifyDataSetChanged();
-  //      }
-
-      /*  if (progressDialog.isShowing())
-            progressDialog.dismiss();*/
     }
 
     public void uploadDependentImages() {

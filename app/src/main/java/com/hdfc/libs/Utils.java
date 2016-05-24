@@ -668,7 +668,7 @@ public class Utils {
 
             Config.boolIsLoggedIn = false;
 
-            Config.customerModel = null;
+           // Config.customerModel = null;
             Config.strUserName = "";
 
             Config.fileModels.clear();
@@ -1730,8 +1730,9 @@ public class Utils {
     public void createCustomerModel(String strDocumentId, String strDocument) {
         try {
             JSONObject jsonObject = new JSONObject(strDocument);
-            if (jsonObject.has("customer_name")) {
+         //   if (jsonObject.has("customer_name")) {
 
+                System.out.println("Police : "+jsonObject.getString("customer_name"));
                 Config.customerModel = new CustomerModel(
                         jsonObject.getString("customer_name"),
                         jsonObject.getString("paytm_account"),
@@ -1748,14 +1749,14 @@ public class Utils {
                 Config.customerModel.setStrCity(jsonObject.getString("customer_city"));
                 Config.customerModel.setStrState(jsonObject.getString("customer_state"));
 
+                Config.customerModels.add(Config.customerModel);
+
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);
 
-                Config.customerModels.add(Config.customerModel);
-
                 Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(),
                         jsonObject.getString("customer_profile_url"), "IMAGE"));
-            }
+       //     }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1882,7 +1883,6 @@ public class Utils {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);
 
-            System.out.println("You are at highest point : "+(jsonObjectProvider.has("provider_name")));
             if (jsonObjectProvider.has("provider_name")) {
 
                 ProviderModel providerModel = new ProviderModel(
@@ -1892,7 +1892,6 @@ public class Utils {
                         jsonObjectProvider.getString("provider_contact_no"),
                         jsonObjectProvider.getString("provider_email"), strDocumentId);
 
-                System.out.println("Rushikesh Belavalekar Software Engineer at Infosys Ltd"+(!Config.strProviderIdsAdded.contains(strDocumentId)));
                 if (!Config.strProviderIdsAdded.contains(strDocumentId)) {
 
                     Config.strProviderIdsAdded.add(strDocumentId);

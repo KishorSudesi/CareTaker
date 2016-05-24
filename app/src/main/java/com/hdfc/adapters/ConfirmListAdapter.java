@@ -71,6 +71,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.address = (TextView) convertView.findViewById(R.id.textViewAddress);
             viewHolder.customer = (ImageView) convertView.findViewById(R.id.imageClients);
+            viewHolder.age = (TextView)convertView.findViewById(R.id.textViewClient_age);
 
             convertView.setTag(viewHolder);
         } else {
@@ -80,24 +81,25 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         viewHolder.customer.setTag(confirmDependentModel);
 
         viewHolder.name.setText(confirmDependentModel.getStrName());
+        viewHolder.address.setText(confirmDependentModel.getStrAddress());
+        viewHolder.age.setText("65");
 
+        System.out.println("IPS : "+confirmDependentModel.getStrImagePath());
         File fileImage = new File(confirmDependentModel.getStrImagePath());
-      //  File fileImage = Utils.createFileInternal("images/" + "rushikesh_img");
-        if(fileImage.exists()) {
+        //  File fileImage = Utils.createFileInternal("images/" + "rushikesh_img");
+        if (fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.customer);
-        }else{
+        } else {
             viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.person_icon));
         }
-
-        viewHolder.address.setText(confirmDependentModel.getStrAddress());
 
         viewHolder.customer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //
                 Config.dependentModel = (DependentModel) v.getTag();
-                Config.customerModel = null;
+                //Config.customerModel = null;
 
                /* Intent intent = new Intent(_context, ClientProfileActivity.class);
                 _context.startActivity(intent);*/
@@ -136,7 +138,9 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
 //        final CustomerModel confirmCustomerModel = (CustomerModel) getGroup(groupPosition);
-        final CustomerModel confirmCustomerModel = (CustomerModel)getGroup(groupPosition);
+        final CustomerModel customerModel = (CustomerModel)getGroup(groupPosition);
+
+        System.out.println("Welcome : "+customerModel);
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -152,25 +156,24 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        viewHolder.client.setTag(customerModel);
         /*viewHolder.name.setText(confirmCustomerModel.getStrName());
         viewHolder.contact.setText(confirmCustomerModel.getStrContacts());
         viewHolder.address.setText(confirmCustomerModel.getStrAddress());*/
 
         viewHolder.name.setText("Rushikesh");
-        viewHolder.contact.setText("8558488484");
-        viewHolder.address.setText("Bl no. 92, Pune.");
-
-        viewHolder.client.setTag(confirmCustomerModel);
+        viewHolder.contact.setText("8605547669");
+        viewHolder.address.setText("Yengappa Colony, DP Road, Chennai.");
 
        // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
-        File fileImage = new File(confirmCustomerModel.getStrImgPath());
+        //File fileImage = new File(customerModel.getStrImgPath());
+       File fileImage = new File("images/carla_img");
 
         if(fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.client);
         }else{
-            viewHolder.client.setImageDrawable(_context.getResources().getDrawable(R.drawable.person_icon));
+            viewHolder.client.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
         }
 
         viewHolder.client.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +201,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     }
 
     public  class ViewHolder{
-        TextView name, address, contact;
+        TextView name, address, contact, age;
         ImageView client, customer;
     }
 }

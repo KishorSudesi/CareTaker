@@ -78,7 +78,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
     public void logout() {
         Config.strUserName = "";
-        Config.customerModel = null;
+     //   Config.customerModel = null;
         Config.dependentModels.clear();
         Utils.logout();
     }

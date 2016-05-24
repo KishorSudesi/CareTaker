@@ -49,7 +49,7 @@ public class GuruDetailsFragment extends Fragment {
     public static String strCustomerImgName = "";
     public static Bitmap bitmap = null;
     public static Uri uri;
-    private static Thread backgroundThreadCamera;
+    private static Thread backgroundThreadCamera,backgroundThread;
     private static Handler backgroundThreadHandler;
     private static String strName, strEmail, strConfirmPass, strContactNo;//strAddress
     private static ProgressDialog mProgress = null;
@@ -486,11 +486,12 @@ public class GuruDetailsFragment extends Fragment {
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
-                backgroundThreadHandler = new BackgroundThreadHandler();
+
                 mProgress.setMessage(getString(R.string.loading));
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
+                        backgroundThreadHandler = new BackgroundThreadHandler();
                         strCustomerImgName = Utils.customerImageUri.getPath();
                         backgroundThreadCamera = new BackgroundThreadCamera();
                         backgroundThreadCamera.start();
@@ -498,8 +499,10 @@ public class GuruDetailsFragment extends Fragment {
 
                     case Config.START_GALLERY_REQUEST_CODE:
                         if (intent.getData() != null) {
+                            backgroundThreadHandler = new BackgroundThreadHandler();
                             uri = intent.getData();
-                            Thread backgroundThread = new BackgroundThread();
+                            strCustomerImgName = Utils.customerImageUri.getPath();
+                            backgroundThread = new BackgroundThread();
                             backgroundThread.start();
                         }
                         break;
@@ -533,6 +536,7 @@ public class GuruDetailsFragment extends Fragment {
 
                     File galleryFile = utils.createFileInternalImage(strFileName);
                     strCustomerImgName = galleryFile.getAbsolutePath();
+                    System.out.println("2nd generation of smartphones : "+strCustomerImgName);
                     InputStream is = getActivity().getContentResolver().openInputStream(uri);
                     utils.copyInputStreamToFile(is, galleryFile);
                     bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth,
