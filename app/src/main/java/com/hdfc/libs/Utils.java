@@ -1680,6 +1680,7 @@ public class Utils {
                                 if (iFlag == 1)
                                     goToDashboard();
 
+
                             } else {
                                 toast(2, 2, _ctxt.getString(R.string.error));
                             }
@@ -1730,7 +1731,8 @@ public class Utils {
     public void createCustomerModel(String strDocumentId, String strDocument) {
         try {
             JSONObject jsonObject = new JSONObject(strDocument);
-         //   if (jsonObject.has("customer_name")) {
+            System.out.println("1st Part of obj : "+jsonObject.toString());
+            //   if (jsonObject.has("customer_name")) {
 
                 System.out.println("Police : "+jsonObject.getString("customer_name"));
                 Config.customerModel = new CustomerModel(
@@ -1742,6 +1744,7 @@ public class Utils {
                         jsonObject.getString("customer_email"),
                         strDocumentId, "");
 
+            System.out.println("2nd Part of obj : "+jsonObject.toString());
                 Config.customerModel.setStrDob(jsonObject.getString("customer_dob"));
                 Config.customerModel.setStrCountryCode(jsonObject.getString("customer_country"));
                 Config.customerModel.setStrCountryIsdCode(jsonObject.getString("customer_country_code"));
@@ -1754,8 +1757,7 @@ public class Utils {
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);
 
-                Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(),
-                        jsonObject.getString("customer_profile_url"), "IMAGE"));
+                Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
        //     }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -194,6 +194,12 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
+        CustomerModel customerModel = new CustomerModel();
+        customerModel.setStrName(strName);
+        customerModel.setStrAddress(citizenship.toString());
+        customerModel.setStrContacts(strContactNo);
+        customerModel.setStrImgUrl(strCustomerImgName);
+        Config.customerModel=customerModel;
         return rootView;
     }
 
@@ -247,7 +253,6 @@ public class GuruDetailsFragment extends Fragment {
         String strPass = editPass.getText().toString().trim();
         strConfirmPass = editConfirmPass.getText().toString().trim();
         strContactNo = editContactNo.getText().toString().trim();
-
 
         if (editAreaCode.getVisibility() == View.VISIBLE) {
             strAreaCode = editAreaCode.getText().toString().trim();
@@ -391,8 +396,7 @@ public class GuruDetailsFragment extends Fragment {
 
                                 try {
                                     JSONObject jsonObject = new JSONObject(e.getMessage());
-                                    JSONObject jsonObjectError =
-                                            jsonObject.getJSONObject("app42Fault");
+                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                     strMess = jsonObjectError.getString("message");
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
@@ -403,9 +407,9 @@ public class GuruDetailsFragment extends Fragment {
 
                                     CustomViewPager.setPagingEnabled(true);
 
-                                    if (Config.customerModel != null
+                                  /*  if (Config.customerModel != null
                                             && Config.customerModel.getStrName() != null
-                                            && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
+                                            && !Config.customerModel.getStrName().equalsIgnoreCase("")) {*/
 
                                         Config.customerModel.setStrName(strName);
 
@@ -419,14 +423,14 @@ public class GuruDetailsFragment extends Fragment {
                                         if (!strCustomerImgName.equalsIgnoreCase(""))
                                             Config.customerModel.setStrImgPath(strCustomerImgName);
 
-                                    } else {
+                                   /* } else {
 
                                         Config.customerModel = new CustomerModel(strName, "", "",
                                                 "", strContactNo, strEmail, "",
                                                 strCustomerImgName);
 
                                         //strAddress
-                                    }
+                                    }*/
 
                                     Config.customerModel.setStrDob(strDob);
                                     Config.customerModel.setStrCountryCode(strCountry);
@@ -536,7 +540,6 @@ public class GuruDetailsFragment extends Fragment {
 
                     File galleryFile = utils.createFileInternalImage(strFileName);
                     strCustomerImgName = galleryFile.getAbsolutePath();
-                    System.out.println("2nd generation of smartphones : "+strCustomerImgName);
                     InputStream is = getActivity().getContentResolver().openInputStream(uri);
                     utils.copyInputStreamToFile(is, galleryFile);
                     bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth,

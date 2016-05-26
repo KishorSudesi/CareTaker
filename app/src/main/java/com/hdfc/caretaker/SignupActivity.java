@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.ViewPagerAdapter;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.CustomViewPager;
 
@@ -27,6 +28,7 @@ public class SignupActivity extends FragmentActivity {
     // strCustomerAddress = "", strCustomerImg = "", strCustomerPass = "";
     public static String strCustomerPass = "";
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
+    public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
     public static ArrayList<String> dependentNames = new ArrayList<>();
     //private static Utils utils;
     private Button _btn1, _btn2, _btn3;
@@ -42,8 +44,7 @@ public class SignupActivity extends FragmentActivity {
 
     private void setUpView() {
         _mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        ViewPagerAdapter _adapter = new ViewPagerAdapter(getApplicationContext(),
-                getSupportFragmentManager());
+        ViewPagerAdapter _adapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
         _mViewPager.setAdapter(_adapter);
         _mViewPager.setCurrentItem(0);
         _mViewPager.setOffscreenPageLimit(3);
@@ -153,6 +154,7 @@ public class SignupActivity extends FragmentActivity {
                     Intent selection = new Intent(SignupActivity.this, MainActivity.class);
                     arg0.dismiss();
 
+                    customerModels = new ArrayList<>();
                     dependentModels = new ArrayList<>();
                     dependentNames = new ArrayList<>();
                     DependentDetailPersonalActivity.dependentModel = null;

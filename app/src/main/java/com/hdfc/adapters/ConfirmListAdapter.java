@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -140,6 +142,9 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 //        final CustomerModel confirmCustomerModel = (CustomerModel) getGroup(groupPosition);
         final CustomerModel customerModel = (CustomerModel)getGroup(groupPosition);
 
+        ExpandableListView expandableListView = (ExpandableListView)parent;
+        expandableListView.expandGroup(groupPosition);
+
         System.out.println("Welcome : "+customerModel);
         ViewHolder viewHolder;
 
@@ -153,21 +158,21 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder.client = (ImageView) convertView.findViewById(R.id.imageClients);
 
             convertView.setTag(viewHolder);
-        }else {
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.client.setTag(customerModel);
+
         /*viewHolder.name.setText(confirmCustomerModel.getStrName());
         viewHolder.contact.setText(confirmCustomerModel.getStrContacts());
         viewHolder.address.setText(confirmCustomerModel.getStrAddress());*/
 
-        viewHolder.name.setText("Rushikesh");
-        viewHolder.contact.setText("8605547669");
-        viewHolder.address.setText("Yengappa Colony, DP Road, Chennai.");
+        viewHolder.name.setText(customerModel.getStrName());
+        viewHolder.contact.setText(customerModel.getStrContacts());
+        viewHolder.address.setText(customerModel.getStrAddress());
 
        // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
         //File fileImage = new File(customerModel.getStrImgPath());
-       File fileImage = new File("images/carla_img");
+       File fileImage = new File(customerModel.getStrImgPath());
 
         if(fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();

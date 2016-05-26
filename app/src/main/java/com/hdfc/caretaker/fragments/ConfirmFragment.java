@@ -164,6 +164,7 @@ public class ConfirmFragment extends Fragment {
 
             for (ClientModel clientModel : Config.clientModels) {*/
         listDataHeader.add(Config.customerModel);
+        System.out.println("Here we are : "+Config.customerModel);
 
         ArrayList<DependentModel> dependentModels = new ArrayList<>();
 
@@ -948,7 +949,7 @@ public class ConfirmFragment extends Fragment {
                     ConfirmFragment.CustomListViewValuesArr);*/
             setListData();
 
-            adapter = new ConfirmListAdapter(getContext(),ConfirmFragment.listDataHeader,ConfirmFragment.listDataChild);
+            adapter = new ConfirmListAdapter(getContext(),listDataHeader,listDataChild);
             expListView.setAdapter(adapter);
 
         } catch (Exception e) {
