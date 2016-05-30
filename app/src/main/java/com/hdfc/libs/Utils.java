@@ -731,9 +731,7 @@ public class Utils {
         if (NotificationFragment.listViewActivities != null) {
 
             NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
-                    Config.dependentModels.
-                            get(Config.intSelectedDependent).
-                            getNotificationModels());
+                    Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels());
 
             NotificationFragment.listViewActivities.
                     setAdapter(NotificationFragment.notificationAdapter);

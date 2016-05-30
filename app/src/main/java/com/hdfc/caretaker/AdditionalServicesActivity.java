@@ -125,6 +125,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             additionalServicesAdapter = new AdditionalServicesAdapter(this, listDataChild,
                     listDataHeader);
             listView.setAdapter(additionalServicesAdapter);
+
+
         }
 
         if (listView != null) {
@@ -871,4 +873,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         utils.toast(1, 1, getString(R.string.service_added));
         goBack();
     }
+
+
+
 }
