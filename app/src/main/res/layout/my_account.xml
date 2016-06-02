@@ -35,13 +35,22 @@
                     <ProgressBar style="@style/GenericProgressIndicator" />
                 </RelativeLayout>
 
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/dependCarousel"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center" />
+
                 <com.hdfc.views.RoundedImageView
                     android:id="@+id/imageView5"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:padding="5dp" />
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="-50dp"
+                    android:background="@null"
+                    android:src="@drawable/person_icon" />
 
                 <ImageView
                     android:id="@+id/imgPen"
