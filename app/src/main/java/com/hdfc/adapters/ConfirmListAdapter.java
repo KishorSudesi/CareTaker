@@ -2,6 +2,7 @@ package com.hdfc.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,12 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.ClientModel;
 import com.hdfc.models.ConfirmCustomerModel;
 import com.hdfc.models.ConfirmDependentModel;
 import com.hdfc.models.CustomerModel;
@@ -72,7 +75,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.address = (TextView) convertView.findViewById(R.id.textViewAddress);
-            viewHolder.customer = (ImageView) convertView.findViewById(R.id.imageClients);
+            viewHolder.client = (ImageView) convertView.findViewById(R.id.imageClients);
             viewHolder.age = (TextView)convertView.findViewById(R.id.textViewClient_age);
 
             convertView.setTag(viewHolder);
@@ -80,31 +83,32 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.customer.setTag(confirmDependentModel);
+        viewHolder.client.setTag(confirmDependentModel);
 
         viewHolder.name.setText(confirmDependentModel.getStrName());
         viewHolder.address.setText(confirmDependentModel.getStrAddress());
-        viewHolder.age.setText("65");
+        viewHolder.age.setText("60");
 
-        System.out.println("IPS : "+confirmDependentModel.getStrImagePath());
+        System.out.println("Enhance your app : "+confirmDependentModel.getStrImagePath());
         File fileImage = new File(confirmDependentModel.getStrImagePath());
         //  File fileImage = Utils.createFileInternal("images/" + "rushikesh_img");
+
         if (fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
-            multiBitmapLoader.loadBitmap(filename, viewHolder.customer);
+            multiBitmapLoader.loadBitmap(filename, viewHolder.client);
         } else {
-            viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.person_icon));
+            viewHolder.client.setImageDrawable(_context.getResources().getDrawable(R.drawable.person_icon));
         }
 
-        viewHolder.customer.setOnClickListener(new View.OnClickListener() {
+        viewHolder.client.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //
                 Config.dependentModel = (DependentModel) v.getTag();
-                //Config.customerModel = null;
+                Config.customerModel = null;
 
-               /* Intent intent = new Intent(_context, ClientProfileActivity.class);
-                _context.startActivity(intent);*/
+                Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
+                _context.startActivity(intent);
             }
         });
 
@@ -155,7 +159,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.address = (TextView) convertView.findViewById(R.id.textViewAddress);
             viewHolder.contact = (TextView)convertView.findViewById(R.id.textViewContact);
-            viewHolder.client = (ImageView) convertView.findViewById(R.id.imageClients);
+            viewHolder.customer = (ImageView) convertView.findViewById(R.id.imageClients);
 
             convertView.setTag(viewHolder);
         } else {
@@ -172,19 +176,21 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 
        // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
         //File fileImage = new File(customerModel.getStrImgPath());
-       File fileImage = new File(customerModel.getStrImgPath());
+        System.out.println("Yogiraj");
+
+       File fileImage = new File("/storage/sdcard0/Android/data/com.hdfc.caretaker/files/Pictures/1464327754189.jpeg");
 
         if(fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
-            multiBitmapLoader.loadBitmap(filename, viewHolder.client);
+            multiBitmapLoader.loadBitmap(filename, viewHolder.customer);
         }else{
-            viewHolder.client.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
+            viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
         }
 
-        viewHolder.client.setOnClickListener(new View.OnClickListener() {
+        viewHolder.customer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
+
                 Config.customerModel = (CustomerModel) v.getTag();
                 Config.dependentModel = null;
               /*  Intent intent = new Intent(_context, ClientProfileActivity.class);

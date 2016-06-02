@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.hdfc.adapters.ConfirmListAdapter;
@@ -17,6 +18,7 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.AccountSuccessActivity;
+import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
@@ -164,7 +166,6 @@ public class ConfirmFragment extends Fragment {
 
             for (ClientModel clientModel : Config.clientModels) {*/
         listDataHeader.add(Config.customerModel);
-        System.out.println("Here we are : "+Config.customerModel);
 
         ArrayList<DependentModel> dependentModels = new ArrayList<>();
 
@@ -176,8 +177,6 @@ public class ConfirmFragment extends Fragment {
         }
 
         listDataChild.put(Config.customerModel, dependentModels);
-
-        System.out.println("checking header : "+listDataHeader);
     }
 
     public void uploadDependentImages() {

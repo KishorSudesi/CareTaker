@@ -264,10 +264,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
        // strAge = utils.getAge(DependentDetailPersonalActivity.iDate, DependentDetailPersonalActivity.iMonth,DependentDetailPersonalActivity.iYear);
-
-
         strAge = utils.getAge(date);
         editAge.setText(strAge);
 

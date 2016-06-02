@@ -420,7 +420,7 @@ public class GuruDetailsFragment extends Fragment {
                                         Config.customerModel.setStrContacts(strContactNo);
                                         Config.customerModel.setStrEmail(strEmail);
 
-                                        if (!strCustomerImgName.equalsIgnoreCase(""))
+                                    //    if (!strCustomerImgName.equalsIgnoreCase(""))
                                             Config.customerModel.setStrImgPath(strCustomerImgName);
 
                                    /* } else {
