@@ -143,7 +143,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-//        final CustomerModel confirmCustomerModel = (CustomerModel) getGroup(groupPosition);
+       // final CustomerModel confirmCustomerModel = (CustomerModel) getGroup(groupPosition);
         final CustomerModel customerModel = (CustomerModel)getGroup(groupPosition);
 
         ExpandableListView expandableListView = (ExpandableListView)parent;
@@ -170,9 +170,9 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         viewHolder.contact.setText(confirmCustomerModel.getStrContacts());
         viewHolder.address.setText(confirmCustomerModel.getStrAddress());*/
 
-        viewHolder.name.setText(customerModel.getStrName());
-        viewHolder.contact.setText(customerModel.getStrContacts());
-        viewHolder.address.setText(customerModel.getStrAddress());
+        viewHolder.name.setText(Config.customerModel.getStrName());
+        viewHolder.contact.setText(Config.customerModel.getStrContacts());
+        viewHolder.address.setText(Config.customerModel.getStrAddress());
 
        // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
         //File fileImage = new File(customerModel.getStrImgPath());

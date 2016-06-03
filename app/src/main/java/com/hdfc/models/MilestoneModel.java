@@ -12,7 +12,10 @@ public class MilestoneModel implements Serializable {
     private String strMilestoneStatus;
     private String strMilestoneName;
     private String strMilestoneDate;
+    private String strMilestoneScheduledDate;
+
     private boolean isVisible;
+    private boolean isReschedule;
 
     public boolean isVisible() {
         return isVisible;
@@ -62,5 +65,20 @@ public class MilestoneModel implements Serializable {
 
     public void setStrMilestoneDate(String strMilestoneDate) {
         this.strMilestoneDate = strMilestoneDate;
+    }
+    public String getStrMilestoneScheduledDate() {
+        return strMilestoneScheduledDate;
+    }
+
+    public void setStrMilestoneScheduledDate(String strMilestoneScheduledDate) {
+        this.strMilestoneScheduledDate = strMilestoneScheduledDate;
+    }
+
+    public boolean isReschedule() {
+        return isReschedule;
+    }
+
+    public void setReschedule(boolean reschedule) {
+        isReschedule = reschedule;
     }
 }

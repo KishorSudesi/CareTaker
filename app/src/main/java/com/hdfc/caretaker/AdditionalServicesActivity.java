@@ -537,6 +537,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                 jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
                 jsonObjectMilestone.put("show",milestoneModel.isVisible());
+                jsonObjectMilestone.put("scheduled_date",milestoneModel.getStrMilestoneScheduledDate());
+                jsonObjectMilestone.put("reschedule",milestoneModel.isReschedule());
 
                 JSONArray jsonArrayFields = new JSONArray();
 
@@ -626,6 +628,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                     jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
                     jsonObjectMilestone.put("show", milestoneModel.isVisible());
+                    jsonObjectMilestone.put("scheduled_date",milestoneModel.getStrMilestoneScheduledDate());
+                    jsonObjectMilestone.put("reschedule",milestoneModel.isReschedule());
 
                     JSONArray jsonArrayFields = new JSONArray();
 

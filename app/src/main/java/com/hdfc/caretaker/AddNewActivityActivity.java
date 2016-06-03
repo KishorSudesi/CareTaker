@@ -332,7 +332,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
             serviceModel.setStrCategoryName(jsonObject.getString("category_name"));
             serviceModel.setiUnit(jsonObject.getInt("unit"));
             serviceModel.setiUnitUsed(jsonObject.getInt("unit_consumed"));
-            serviceModel.setStrServiceType(jsonObject.getString("service_type"));
+          //  serviceModel.setStrServiceType(jsonObject.getString("service_type"));
             serviceModel.setiUnitValue(jsonObject.getInt("unit_value"));
 
             if (jsonObject.has("milestones")) {
@@ -423,6 +423,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     categoryServiceModel.setServiceModels(serviceModel);
 
                     categoryServiceModels.add(categoryServiceModel);
+
+                    System.out.println("aniketttttttttttttttttttt"+jsonObject.getString("category_name"));
                 } else {
                     int iPosition = strServiceCategoryNames.indexOf(jsonObject.getString("category_name"));
                     categoryServiceModels.get(iPosition).setServiceModels(serviceModel);

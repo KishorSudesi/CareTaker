@@ -1772,7 +1772,7 @@ public class Utils {
             serviceModel.setiServiceNo(jsonObject.getInt("service_no"));
             serviceModel.setStrCategoryName(jsonObject.getString("category_name"));
             serviceModel.setiUnit(jsonObject.getInt("unit"));
-            serviceModel.setStrServiceType(jsonObject.getString("service_type"));
+          //  serviceModel.setStrServiceType(jsonObject.getString("service_type"));
             serviceModel.setiUnitValue(jsonObject.getInt("unit_value"));
 
             if (jsonObject.has("milestones")) {
@@ -1791,9 +1791,19 @@ public class Utils {
                     milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
                     milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
                     milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
-                    milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                   // milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
 
                     //
+
+                    if (jsonObjectMilestone.has("show"))
+                        milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                    if (jsonObjectMilestone.has("reschedule"))
+                        milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+
+                    if (jsonObjectMilestone.has("scheduled_date"))
+                        milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
+                                getString("scheduled_date"));
+
                     if (jsonObjectMilestone.has("fields")) {
 
                         JSONArray jsonArrayFields = jsonObjectMilestone.
@@ -1842,6 +1852,30 @@ public class Utils {
                                     fieldModel.setiChildfieldID(jsonToIntArray(jsonObjectField.
                                             getJSONArray("child_field")));
                             }
+                            ////
+                            if (jsonObjectField.has("array_fields")) {
+
+                                try {
+                                    fieldModel.setiArrayCount(jsonObjectField.getInt("array_fields"));
+                                } catch (Exception e) {
+                                    int i = 0;
+                                    try {
+                                        i = Integer.parseInt(jsonObjectField.getString("array_fields"));
+                                        fieldModel.setiArrayCount(i);
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+
+                                if (jsonObjectField.has("array_type"))
+                                    fieldModel.setStrArrayType(jsonToStringArray(jsonObjectField.
+                                            getJSONArray("array_type")));
+
+                                if (jsonObjectField.has("array_data"))
+                                    fieldModel.setStrArrayData(new String[]{});
+
+                            }
+                            ////
 
                             milestoneModel.setFieldModel(fieldModel);
                         }

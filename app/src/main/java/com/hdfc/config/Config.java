@@ -182,7 +182,7 @@ public class Config {
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
 
-    public static CustomerModel customerModel = null;
+    public static CustomerModel customerModel ;
     public static DependentModel dependentModel = null;
 
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();

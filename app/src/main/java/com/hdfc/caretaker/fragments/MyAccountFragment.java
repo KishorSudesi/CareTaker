@@ -328,7 +328,7 @@ public class MyAccountFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-           /* try {
+            try {
 
                 bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                         utils.replaceSpace(Config.dependentModels.get(iPosition).getStrDependentID())).getAbsolutePath(),
@@ -337,7 +337,7 @@ public class MyAccountFragment extends Fragment {
                 threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
-            }*/
+            }
         }
     }
 }
