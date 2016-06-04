@@ -11,11 +11,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -378,7 +376,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
                 jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                 jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
-                jsonObjectMilestone.put("show",milestoneModel.isVisible());
+                // jsonObjectMilestone.put("show",milestoneModel.isVisible());
+                if (jsonObjectMilestone.has("show"))
+                    milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                if (jsonObjectMilestone.has("reschedule"))
+                    milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+
+                if (jsonObjectMilestone.has("scheduled_date"))
+                    milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
+                            getString("scheduled_date"));
+
 
                 JSONArray jsonArrayFields = new JSONArray();
 
@@ -415,6 +422,30 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         if (fieldModel.getiChildfieldID() != null && fieldModel.getiChildfieldID().length > 0)
                             jsonObjectField.put("values", utils.intToJsonArray(fieldModel.getiChildfieldID()));
                     }
+
+                    if (jsonObjectField.has("array_fields")) {
+
+                        try {
+                            fieldModel.setiArrayCount(jsonObjectField.getInt("array_fields"));
+                        } catch (Exception e) {
+                            int i = 0;
+                            try {
+                                i = Integer.parseInt(jsonObjectField.getString("array_fields"));
+                                fieldModel.setiArrayCount(i);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                        if (jsonObjectField.has("array_type"))
+                            fieldModel.setStrArrayType(utils.jsonToStringArray(jsonObjectField.
+                                    getJSONArray("array_type")));
+
+                        if (jsonObjectField.has("array_data"))
+                            fieldModel.setStrArrayData(new String[]{});
+
+                    }
+                    ////
 
                     jsonArrayFields.put(jsonObjectField);
 

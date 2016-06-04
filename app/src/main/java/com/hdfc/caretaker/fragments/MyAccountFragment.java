@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,13 +16,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.adapters.DependAdapter;
 import com.hdfc.caretaker.AdditionalServicesActivity;
 import com.hdfc.caretaker.R;
@@ -35,19 +31,6 @@ import java.io.File;
 
 
 public class MyAccountFragment extends Fragment {
-    private static Bitmap bitmap;
-    public static ViewPager dependpager;
-    private static RoundedImageView roundedImageView;
-    private static Handler threadHandler;
-    private static RelativeLayout loadingPanel;
-    private static ProgressDialog progressDialog;
-    private static Context context;
-    TextView txtviewBuyServices;
-    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
-    private Utils utils;
-    private static int iPosition;
-    public DependAdapter adapter;
-
     public final static int PAGES = Config.dependentModels.size();
     // You can choose a bigger number for LOOPS, but you know, nobody will fling
     // more than 1000 times just in order to test your "infinite" ViewPager :D
@@ -56,7 +39,18 @@ public class MyAccountFragment extends Fragment {
     public final static float BIG_SCALE = 1.0f; //1.0f
     public final static float SMALL_SCALE = 0.7f; //0.7f
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
-
+    public static ViewPager dependpager;
+    private static Bitmap bitmap;
+    private static RoundedImageView roundedImageView;
+    private static Handler threadHandler;
+    private static RelativeLayout loadingPanel;
+    private static ProgressDialog progressDialog;
+    private static Context context;
+    private static int iPosition;
+    public DependAdapter adapter;
+    TextView txtviewBuyServices;
+    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
+    private Utils utils;
 
     public static MyAccountFragment newInstance() {
         MyAccountFragment fragment = new MyAccountFragment();
@@ -86,7 +80,7 @@ public class MyAccountFragment extends Fragment {
 
         progressDialog = new ProgressDialog(getActivity());
 
-        dependpager = (ViewPager)view.findViewById(R.id.dependCarousel);
+        // dependpager = (ViewPager)view.findViewById(R.id.dependCarousel);
         roundedImageView = (RoundedImageView) view.findViewById(R.id.imageView5);
 
 
@@ -136,14 +130,14 @@ public class MyAccountFragment extends Fragment {
             }
         });
 
-      /*  roundedImageView.setOnClickListener(new View.OnClickListener() {
+        roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToAccountEdit();
             }
-        });*/
+        });
 
-        roundedImageView.setOnClickListener(new View.OnClickListener() {
+       /* roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -180,7 +174,7 @@ public class MyAccountFragment extends Fragment {
                 dependpager.setCurrentItem(intPosition, true);
             }
         });
-
+*/
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,9 +206,9 @@ public class MyAccountFragment extends Fragment {
 
         loadingPanel.setVisibility(View.VISIBLE);
 
-       // threadHandler = new ThreadHandler();
-       // Thread backgroundThread = new BackgroundThread();
-      //  backgroundThread.start();
+        threadHandler = new ThreadHandler();
+        Thread backgroundThread = new BackgroundThread();
+        backgroundThread.start();
 
         /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
@@ -232,7 +226,19 @@ public class MyAccountFragment extends Fragment {
         ft.commit();
     }
 
-   /* public static class ThreadHandler extends Handler {
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //listViewActivities.setEmptyView(emptyTextView);
+        // loadData(0);
+
+        // adapter = new DependAdapter(getActivity(), getChildFragmentManager());
+
+        // new setAdapterTask().execute();
+    }
+
+    public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             progressDialog.dismiss();
@@ -263,21 +269,9 @@ public class MyAccountFragment extends Fragment {
             }
             threadHandler.sendEmptyMessage(0);
         }
-    }*/
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-       // listViewActivities.setEmptyView(emptyTextView);
-        //loadData(0);
-
-        adapter = new DependAdapter(getActivity(), getChildFragmentManager());
-
-        new setAdapterTask().execute();
     }
 
-    public static class ThreadHandler extends Handler {
+   /* public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
 
@@ -339,5 +333,5 @@ public class MyAccountFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }
