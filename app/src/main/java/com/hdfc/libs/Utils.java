@@ -2221,6 +2221,29 @@ public class Utils {
                                         fieldModel.setiChildfieldID(jsonToIntArray(jsonObjectField.
                                                 getJSONArray("child_field")));
                                 }
+                                if (jsonObjectField.has("array_fields")) {
+
+                                    try {
+                                        fieldModel.setiArrayCount(jsonObjectField.getInt("array_fields"));
+                                    } catch (Exception e) {
+                                        int i = 0;
+                                        try {
+                                            i = Integer.parseInt(jsonObjectField.getString("array_fields"));
+                                            fieldModel.setiArrayCount(i);
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
+
+                                    if (jsonObjectField.has("array_type"))
+                                        fieldModel.setStrArrayType(jsonToStringArray(jsonObjectField.
+                                                getJSONArray("array_type")));
+
+                                    if (jsonObjectField.has("array_data"))
+                                        fieldModel.setStrArrayData(new String[]{});
+
+                                }
+                                ////
 
                                 milestoneModel.setFieldModel(fieldModel);
                             }

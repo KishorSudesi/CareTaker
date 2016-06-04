@@ -8,6 +8,7 @@
 
     <include layout="@layout/header_completed_activity"></include>
 
+
     <FrameLayout
         android:id="@+id/fragment_completed_activity"
         android:layout_width="match_parent"
