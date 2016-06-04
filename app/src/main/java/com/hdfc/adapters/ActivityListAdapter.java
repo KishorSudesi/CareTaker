@@ -83,7 +83,7 @@ public class ActivityListAdapter extends BaseAdapter {
             if ((!activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess"))
                     &&(!activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess"))) {
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                        getColor(R.color.colorWhite));
+                        getColor(R.color.orange));
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
 
             } else {
