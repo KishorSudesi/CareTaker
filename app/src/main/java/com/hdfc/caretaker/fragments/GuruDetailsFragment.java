@@ -51,7 +51,7 @@ public class GuruDetailsFragment extends Fragment {
     public static Uri uri;
     private static Thread backgroundThreadCamera,backgroundThread;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo;//strAddress
+    private static String strName, strEmail, strConfirmPass, strContactNo;//,strAddress;
     private static ProgressDialog mProgress = null;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
 
@@ -59,6 +59,7 @@ public class GuruDetailsFragment extends Fragment {
     private Utils utils;
     private RadioButton mobile;
     private Spinner citizenship;
+    public static String citizenshipVal;
     private String strAreaCode = "";
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
@@ -182,12 +183,12 @@ public class GuruDetailsFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, Config.countryNames);
         citizenship.setAdapter(adapter);
         citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 editCountryCode.setText(Config.countryAreaCodes[position]);
+                citizenshipVal = citizenship.getSelectedItem().toString();
+                System.out.println("Citizenship value is : "+citizenshipVal);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -196,10 +197,11 @@ public class GuruDetailsFragment extends Fragment {
 
         CustomerModel customerModel = new CustomerModel();
         customerModel.setStrName(strName);
-        customerModel.setStrAddress(citizenship.toString());
+        customerModel.setStrAddress(citizenshipVal);
         customerModel.setStrContacts(strContactNo);
         customerModel.setStrImgUrl(strCustomerImgName);
         Config.customerModel=customerModel;
+
         return rootView;
     }
 
@@ -218,7 +220,6 @@ public class GuruDetailsFragment extends Fragment {
             editTextDate.setText(Config.customerModel.getStrDob());
             editCountryCode.setText(Config.customerModel.getStrCountryIsdCode());
 
-
             if (Config.customerModel.getStrCountryAreaCode().equalsIgnoreCase("")) {
                 mobile.setChecked(true);
                 editAreaCode.setVisibility(View.GONE);
@@ -227,7 +228,8 @@ public class GuruDetailsFragment extends Fragment {
                 editAreaCode.setText(Config.customerModel.getStrCountryAreaCode());
             }
 
-            citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
+            //citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
+            citizenship.setSelection(Config.strCountries.indexOf(citizenshipVal));
 
             backgroundThreadHandler = new BackgroundThreadHandler();
             backgroundThreadCamera = new BackgroundThreadCamera();
@@ -253,6 +255,7 @@ public class GuruDetailsFragment extends Fragment {
         String strPass = editPass.getText().toString().trim();
         strConfirmPass = editConfirmPass.getText().toString().trim();
         strContactNo = editContactNo.getText().toString().trim();
+
 
         if (editAreaCode.getVisibility() == View.VISIBLE) {
             strAreaCode = editAreaCode.getText().toString().trim();
@@ -413,8 +416,8 @@ public class GuruDetailsFragment extends Fragment {
 
                                         Config.customerModel.setStrName(strName);
 
-                                        if (!Config.customerModel.getStrAddress().
-                                                equalsIgnoreCase(""))
+                                       /* if (!Config.customerModel.getStrAddress().
+                                                equalsIgnoreCase(""))*/
                                             //Config.customerModel.setStrAddress(strAddress);
 
                                         Config.customerModel.setStrContacts(strContactNo);

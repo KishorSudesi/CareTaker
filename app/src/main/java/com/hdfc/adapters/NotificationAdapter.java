@@ -68,8 +68,7 @@ public class NotificationAdapter extends BaseAdapter {
             viewHolder.textViewName = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.textViewText = (TextView) convertView.findViewById(R.id.textViewText);
             viewHolder.textViewTime = (TextView) convertView.findViewById(R.id.textViewTime);
-            viewHolder.roundedImageView = (ImageView) convertView.
-                    findViewById(R.id.roundedImageView);
+            viewHolder.roundedImageView = (ImageView) convertView.findViewById(R.id.roundedImageView);
             viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.activityList);
 
             convertView.setTag(viewHolder);

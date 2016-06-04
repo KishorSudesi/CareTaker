@@ -41,8 +41,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     public ConfirmListAdapter(){
     }
 
-    public ConfirmListAdapter(Context context, List<CustomerModel> listDataHeader,
-                              HashMap<CustomerModel, List<DependentModel>> listChildData) {
+    public ConfirmListAdapter(Context context, List<CustomerModel> listDataHeader, HashMap<CustomerModel, List<DependentModel>> listChildData) {
         this._context = context;
         utils = new Utils(_context);
         multiBitmapLoader = new MultiBitmapLoader(_context);
@@ -52,8 +51,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+        return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
     }
 
     @Override
@@ -69,8 +67,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_item_dependents, null);
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
@@ -87,9 +84,8 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 
         viewHolder.name.setText(confirmDependentModel.getStrName());
         viewHolder.address.setText(confirmDependentModel.getStrAddress());
-        viewHolder.age.setText("60");
+        viewHolder.age.setText(confirmDependentModel.getStrAge());
 
-        System.out.println("Enhance your app : "+confirmDependentModel.getStrImagePath());
         File fileImage = new File(confirmDependentModel.getStrImagePath());
         //  File fileImage = Utils.createFileInternal("images/" + "rushikesh_img");
 
@@ -149,7 +145,6 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         ExpandableListView expandableListView = (ExpandableListView)parent;
         expandableListView.expandGroup(groupPosition);
 
-        System.out.println("Welcome : "+customerModel);
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -176,10 +171,11 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 
        // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
         //File fileImage = new File(customerModel.getStrImgPath());
-        System.out.println("Yogiraj");
 
-       File fileImage = new File("/storage/sdcard0/Android/data/com.hdfc.caretaker/files/Pictures/1464327754189.jpeg");
+       //File fileImage = new File("/storage/sdcard0/Android/data/com.hdfc.caretaker/files/Pictures/1464327754189.jpeg");
+        File fileImage = new File(Config.customerModel.getStrImgPath());
 
+        System.out.println("REAL FACT IS : "+Config.customerModel.getStrImgPath());
         if(fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.customer);

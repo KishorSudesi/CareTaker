@@ -17,8 +17,9 @@ public class DependentModel {
     private String strImagePath;
     private String strImageUrl;
     private String strDob;
+    private String strAge;
 
-    private int intAge;
+    //private int intAge;
     private int intHealthBp;
     private int intHealthHeartRate;
 
@@ -35,7 +36,7 @@ public class DependentModel {
 
     public DependentModel(String strName, String strRelation, String strNotes, String strAddress,
                           String strContacts, String strEmail, String strIllness,
-                          String strImagePath, String strImageUrl, int intAge, int intHealthBp,
+                          String strImagePath, String strImageUrl, String strAge, int intHealthBp,
                           int intHealthHeartRate, String strDependentID, String strCustomerID,
                           ArrayList<ServiceModel> serviceModels) {
         this.strName = strName;
@@ -47,7 +48,7 @@ public class DependentModel {
         this.strIllness = strIllness;
         this.strImagePath = strImagePath;
         this.strImageUrl = strImageUrl;
-        this.intAge = intAge;
+        this.strAge = strAge;
         this.intHealthBp = intHealthBp;
         this.intHealthHeartRate = intHealthHeartRate;
         this.strDependentID = strDependentID;
@@ -171,12 +172,12 @@ public class DependentModel {
         this.strImageUrl = strImageUrl;
     }
 
-    public int getIntAge() {
-        return intAge;
+    public String getStrAge() {
+        return strAge;
     }
 
-    public void setIntAge(int intAge) {
-        this.intAge = intAge;
+    public void setStrAge(String strAge) {
+        this.strAge = strAge;
     }
 
     public int getIntHealthBp() {

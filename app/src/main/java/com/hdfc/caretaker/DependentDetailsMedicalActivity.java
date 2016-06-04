@@ -189,7 +189,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             strAge = editAge.getText().toString().trim();
 
-            DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
+            DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
 
@@ -240,7 +240,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
+            DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
             DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
             DependentDetailPersonalActivity.dependentModel.setStrNotes(strNotes);
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
@@ -268,6 +268,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         strAge = utils.getAge(date);
         editAge.setText(strAge);
 
-        DependentDetailPersonalActivity.dependentModel.setIntAge(Integer.parseInt(strAge));
+        DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
     }
 }

@@ -165,18 +165,20 @@ public class ConfirmFragment extends Fragment {
             listDataChild.clear();
 
             for (ClientModel clientModel : Config.clientModels) {*/
-        listDataHeader.add(Config.customerModel);
+        if(Config.customerModel!=null) {
+            listDataHeader.add(Config.customerModel);
 
-        ArrayList<DependentModel> dependentModels = new ArrayList<>();
+            ArrayList<DependentModel> dependentModels = new ArrayList<>();
 
-        for(DependentModel dependentModel : SignupActivity.dependentModels){
+            for (DependentModel dependentModel : SignupActivity.dependentModels) {
 
-            if(!dependentModel.getStrName().equalsIgnoreCase(getString(R.string.add_dependent))){
-                dependentModels.add(dependentModel);
+                if (!dependentModel.getStrName().equalsIgnoreCase(getString(R.string.add_dependent))) {
+                    dependentModels.add(dependentModel);
+                }
             }
-        }
 
-        listDataChild.put(Config.customerModel, dependentModels);
+            listDataChild.put(Config.customerModel, dependentModels);
+        }
     }
 
     public void uploadDependentImages() {
@@ -637,7 +639,7 @@ public class ConfirmFragment extends Fragment {
                     jsonDependant.put("dependent_email", dependentModel.getStrEmail());
 
                     jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
-                    jsonDependant.put("dependent_age", dependentModel.getIntAge());
+                    jsonDependant.put("dependent_age", dependentModel.getStrAge());
                     jsonDependant.put("dependent_dob", dependentModel.getStrDob());
                     jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
 

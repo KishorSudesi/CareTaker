@@ -1971,7 +1971,7 @@ public class Utils {
                     dependentModel.setStrImageUrl(jsonObjectDependent.
                             getString("dependent_profile_url"));
                     dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
-                    dependentModel.setIntAge(jsonObjectDependent.getInt("dependent_age"));
+                    dependentModel.setStrAge(jsonObjectDependent.getString("dependent_age"));
 
                     dependentModel.setStrCustomerID(jsonObjectDependent.getString("customer_id"));
 
