@@ -670,12 +670,11 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             mProgress.dismiss();
 
             //Utils.log(strImageName, " strImageName 0 ");
-
-            if (imgButtonCamera != null && bitmap != null)
+            if (bitmap != null)
                 imgButtonCamera.setImageBitmap(bitmap);
-            else
+            /*else
                 imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.camera_icon));
+                        R.mipmap.camera_icon));*/
         }
     }
 }

@@ -268,6 +268,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         strAge = utils.getAge(date);
         editAge.setText(strAge);
 
-        DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
+        //DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
     }
 }

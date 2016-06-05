@@ -82,8 +82,18 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 
         viewHolder.client.setTag(confirmDependentModel);
 
-        viewHolder.name.setText(confirmDependentModel.getStrName());
-        viewHolder.address.setText(confirmDependentModel.getStrAddress());
+        String strName = confirmDependentModel.getStrName();
+
+        if (strName != null && strName.length() > 20)
+            strName = confirmDependentModel.getStrName().substring(0, 18) + "..";
+
+        String strAddress = confirmDependentModel.getStrAddress();
+
+        if (strAddress != null && strAddress.length() > 20)
+            strAddress = confirmDependentModel.getStrAddress().substring(0, 18) + "..";
+
+        viewHolder.name.setText(strName);
+        viewHolder.address.setText(strAddress);
         viewHolder.age.setText(confirmDependentModel.getStrAge());
 
         File fileImage = new File(confirmDependentModel.getStrImagePath());
@@ -164,8 +174,12 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         /*viewHolder.name.setText(confirmCustomerModel.getStrName());
         viewHolder.contact.setText(confirmCustomerModel.getStrContacts());
         viewHolder.address.setText(confirmCustomerModel.getStrAddress());*/
+        String strName = Config.customerModel.getStrName();
 
-        viewHolder.name.setText(Config.customerModel.getStrName());
+        if (strName != null && strName.length() > 20)
+            strName = Config.customerModel.getStrName().substring(0, 18) + "..";
+
+        viewHolder.name.setText(strName);
         viewHolder.contact.setText(Config.customerModel.getStrContacts());
         viewHolder.address.setText(Config.customerModel.getStrAddress());
 
@@ -175,12 +189,12 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
        //File fileImage = new File("/storage/sdcard0/Android/data/com.hdfc.caretaker/files/Pictures/1464327754189.jpeg");
         File fileImage = new File(Config.customerModel.getStrImgPath());
 
-        System.out.println("REAL FACT IS : "+Config.customerModel.getStrImgPath());
         if(fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.customer);
         }else{
-            viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
+            System.out.println("Does not exists");
+            //viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
         }
 
         viewHolder.customer.setOnClickListener(new View.OnClickListener() {

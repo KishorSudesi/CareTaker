@@ -51,7 +51,7 @@ public class GuruDetailsFragment extends Fragment {
     public static Uri uri;
     private static Thread backgroundThreadCamera,backgroundThread;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo;//,strAddress;
+    private static String strName, strEmail, strConfirmPass, strContactNo,strDate;//,strAddress;
     private static ProgressDialog mProgress = null;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
 
@@ -71,7 +71,7 @@ public class GuruDetailsFragment extends Fragment {
             // Do something with the date. This Date object contains
             // the date and time that the user has selected.
 
-            String strDate = Utils.writeFormatActivityYear.format(date);
+            strDate = Utils.writeFormatActivityYear.format(date);
             // String _strDate = Utils.readFormat.format(date);
             editTextDate.setText(strDate);
         }
@@ -197,11 +197,14 @@ public class GuruDetailsFragment extends Fragment {
 
         CustomerModel customerModel = new CustomerModel();
         customerModel.setStrName(strName);
+        customerModel.setStrEmail(strEmail);
+        customerModel.setStrDob(strDate);
         customerModel.setStrAddress(citizenshipVal);
         customerModel.setStrContacts(strContactNo);
         customerModel.setStrImgUrl(strCustomerImgName);
         Config.customerModel=customerModel;
 
+        Config.customerModel.setStrImgPath(strCustomerImgName);
         return rootView;
     }
 
@@ -255,6 +258,7 @@ public class GuruDetailsFragment extends Fragment {
         String strPass = editPass.getText().toString().trim();
         strConfirmPass = editConfirmPass.getText().toString().trim();
         strContactNo = editContactNo.getText().toString().trim();
+        strDate = editTextDate.getText().toString().trim();
 
 
         if (editAreaCode.getVisibility() == View.VISIBLE) {
@@ -264,7 +268,7 @@ public class GuruDetailsFragment extends Fragment {
         final String strCountryCode = editCountryCode.getText().toString().trim();
 
         //strAddress = editAddress.getText().toString().trim();
-        final String strDob = editTextDate.getText().toString().trim();
+        //final String strDob = editTextDate.getText().toString().trim();
         final String strCountry = citizenship.getSelectedItem().toString().trim();
 
         boolean cancel = false;
@@ -343,7 +347,7 @@ public class GuruDetailsFragment extends Fragment {
                 cancel = true;
             }
 
-            if (TextUtils.isEmpty(strDob)) {
+            if (TextUtils.isEmpty(strDate)) {
                 editTextDate.setError(getString(R.string.error_field_required));
                 focusView = editTextDate;
                 cancel = true;
@@ -424,7 +428,7 @@ public class GuruDetailsFragment extends Fragment {
                                         Config.customerModel.setStrEmail(strEmail);
 
                                     //    if (!strCustomerImgName.equalsIgnoreCase(""))
-                                            Config.customerModel.setStrImgPath(strCustomerImgName);
+                                    //    Config.customerModel.setStrImgPath(strCustomerImgName);
 
                                    /* } else {
 
@@ -435,7 +439,7 @@ public class GuruDetailsFragment extends Fragment {
                                         //strAddress
                                     }*/
 
-                                    Config.customerModel.setStrDob(strDob);
+                                    Config.customerModel.setStrDob(strDate);
                                     Config.customerModel.setStrCountryCode(strCountry);
                                     Config.customerModel.setStrAddress(strCountry);
                                     Config.customerModel.setStrCountryIsdCode(strCountryCode);
