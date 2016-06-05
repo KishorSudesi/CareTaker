@@ -132,13 +132,13 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
-        editAreaCode.setOnClickListener(new View.OnClickListener() {
+       /* editAreaCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ChromeHelpPopup chromeHelpPopup = new ChromeHelpPopup(getContext(),"Country Code");
                 chromeHelpPopup.show(v);
             }
-        });
+        });*/
 
        ///
         /*TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
