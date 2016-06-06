@@ -9,24 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.hdfc.adapters.ConfirmListAdapter;
-import com.hdfc.adapters.ConfirmListViewAdapter;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.AccountSuccessActivity;
-import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.ClientModel;
-import com.hdfc.models.ConfirmCustomerModel;
-import com.hdfc.models.ConfirmDependentModel;
 import com.hdfc.models.ConfirmViewModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
@@ -46,15 +39,14 @@ import java.util.List;
 public class ConfirmFragment extends Fragment {
 
     public static ExpandableListView expListView;
-    //private static List<ConfirmCustomerModel> listDataHeader = new ArrayList<>();
-    private static List<CustomerModel> listDataHeader = new ArrayList<>();
-    //private static HashMap<ConfirmCustomerModel, List<ConfirmDependentModel>> listDataChild = new HashMap<>();
-    private static HashMap<CustomerModel, List<DependentModel>> listDataChild = new HashMap<>();
-
     public static ArrayList<ConfirmViewModel> CustomListViewValuesArr = new ArrayList<>();
     //public static ConfirmListViewAdapter adapter;
     public static ConfirmListAdapter adapter;
     public static int uploadSize, uploadingCount=0;
+    //private static List<ConfirmCustomerModel> listDataHeader = new ArrayList<>();
+    private static List<CustomerModel> listDataHeader = new ArrayList<>();
+    //private static HashMap<ConfirmCustomerModel, List<ConfirmDependentModel>> listDataChild = new HashMap<>();
+    private static HashMap<CustomerModel, List<DependentModel>> listDataChild = new HashMap<>();
     private static ProgressDialog progressDialog, pDialog;
     private static String jsonDocId;
     public Button buttonContinue;
@@ -124,10 +116,6 @@ public class ConfirmFragment extends Fragment {
         });
 
         //adapter = new ConfirmListAdapter();
-
-        prepareListData();
-
-        setListView();
 
         return addFragment;
     }
@@ -861,7 +849,7 @@ public class ConfirmFragment extends Fragment {
                 ArrayList<String> roleList = new ArrayList<>();
                 roleList.add("dependent");
 
-                Utils.log(" 2 ", " IN 0");
+                //Utils.log(" 2 ", " IN 0");
 
                 userService.onCreateUser(strDependentEmail,
                         //todo generate random password and send mail
@@ -942,6 +930,10 @@ public class ConfirmFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        prepareListData();
+
+        setListView();
     }
 
     public void setListView() {

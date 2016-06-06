@@ -24,7 +24,6 @@ import android.widget.Spinner;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.UserService;
-import com.hdfc.caretaker.ChromeHelpPopup;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
@@ -49,17 +48,16 @@ public class GuruDetailsFragment extends Fragment {
     public static String strCustomerImgName = "";
     public static Bitmap bitmap = null;
     public static Uri uri;
+    public static String citizenshipVal;
     private static Thread backgroundThreadCamera,backgroundThread;
     private static Handler backgroundThreadHandler;
     private static String strName, strEmail, strConfirmPass, strContactNo,strDate;//,strAddress;
     private static ProgressDialog mProgress = null;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
-
     //editAddress
     private Utils utils;
     private RadioButton mobile;
     private Spinner citizenship;
-    public static String citizenshipVal;
     private String strAreaCode = "";
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
@@ -187,7 +185,7 @@ public class GuruDetailsFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 editCountryCode.setText(Config.countryAreaCodes[position]);
                 citizenshipVal = citizenship.getSelectedItem().toString();
-                System.out.println("Citizenship value is : "+citizenshipVal);
+                //System.out.println("Citizenship value is : "+citizenshipVal);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -195,7 +193,7 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
-        CustomerModel customerModel = new CustomerModel();
+       /* CustomerModel customerModel = new CustomerModel();
         customerModel.setStrName(strName);
         customerModel.setStrEmail(strEmail);
         customerModel.setStrDob(strDate);
@@ -204,7 +202,7 @@ public class GuruDetailsFragment extends Fragment {
         customerModel.setStrImgUrl(strCustomerImgName);
         Config.customerModel=customerModel;
 
-        Config.customerModel.setStrImgPath(strCustomerImgName);
+        Config.customerModel.setStrImgPath(strCustomerImgName);*/
         return rootView;
     }
 
@@ -231,8 +229,8 @@ public class GuruDetailsFragment extends Fragment {
                 editAreaCode.setText(Config.customerModel.getStrCountryAreaCode());
             }
 
-            //citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
-            citizenship.setSelection(Config.strCountries.indexOf(citizenshipVal));
+            citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
+            //citizenship.setSelection(Config.strCountries.indexOf(citizenshipVal));
 
             backgroundThreadHandler = new BackgroundThreadHandler();
             backgroundThreadCamera = new BackgroundThreadCamera();
@@ -414,30 +412,30 @@ public class GuruDetailsFragment extends Fragment {
 
                                     CustomViewPager.setPagingEnabled(true);
 
-                                  /*  if (Config.customerModel != null
+                                    if (Config.customerModel != null
                                             && Config.customerModel.getStrName() != null
-                                            && !Config.customerModel.getStrName().equalsIgnoreCase("")) {*/
+                                            && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
 
                                         Config.customerModel.setStrName(strName);
 
                                        /* if (!Config.customerModel.getStrAddress().
-                                                equalsIgnoreCase(""))*/
-                                            //Config.customerModel.setStrAddress(strAddress);
+                                                equalsIgnoreCase(""))
+                                            Config.customerModel.setStrAddress(strAddress);*/
 
                                         Config.customerModel.setStrContacts(strContactNo);
                                         Config.customerModel.setStrEmail(strEmail);
 
-                                    //    if (!strCustomerImgName.equalsIgnoreCase(""))
-                                    //    Config.customerModel.setStrImgPath(strCustomerImgName);
+                                        if (!strCustomerImgName.equalsIgnoreCase(""))
+                                            Config.customerModel.setStrImgPath(strCustomerImgName);
 
-                                   /* } else {
+                                    } else {
 
                                         Config.customerModel = new CustomerModel(strName, "", "",
                                                 "", strContactNo, strEmail, "",
                                                 strCustomerImgName);
 
                                         //strAddress
-                                    }*/
+                                    }
 
                                     Config.customerModel.setStrDob(strDate);
                                     Config.customerModel.setStrCountryCode(strCountry);
@@ -455,14 +453,16 @@ public class GuruDetailsFragment extends Fragment {
                                         AddDependentFragment.adapter.notifyDataSetChanged();
 
                                     utils.retrieveConfirmDependants();
-                                    ConfirmFragment.adapter.notifyDataSetChanged();
+
+                                    if (ConfirmFragment.adapter != null)
+                                        ConfirmFragment.adapter.notifyDataSetChanged();
 
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
 
                                     utils.toast(1, 1, getString(R.string.your_details_saved));
 
-                                    Config.clientModels.setCustomerModel(Config.customerModel);
+                                    //Config.clientModels.setCustomerModel(Config.customerModel);
 
                                     SignupActivity._mViewPager.setCurrentItem(1);
 
@@ -499,6 +499,7 @@ public class GuruDetailsFragment extends Fragment {
             try {
 
                 mProgress.setMessage(getString(R.string.loading));
+                mProgress.setCancelable(false);
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
@@ -512,7 +513,7 @@ public class GuruDetailsFragment extends Fragment {
                         if (intent.getData() != null) {
                             backgroundThreadHandler = new BackgroundThreadHandler();
                             uri = intent.getData();
-                            strCustomerImgName = Utils.customerImageUri.getPath();
+                            //strCustomerImgName = Utils.customerImageUri.getPath();
                             backgroundThread = new BackgroundThread();
                             backgroundThread.start();
                         }

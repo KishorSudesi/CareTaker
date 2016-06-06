@@ -1,15 +1,23 @@
 package com.hdfc.adapters;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.models.FieldModel;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +31,7 @@ public class MileStoneAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private List<String> _listDataHeader;
     private HashMap<String, List<FieldModel>> _listDataChild;
+    private Dialog dialog;
 
     public MileStoneAdapter(Context context, HashMap<String, List<FieldModel>>
             listChildData, List<String> listDataHeader) {
@@ -114,7 +123,126 @@ public class MileStoneAdapter extends BaseExpandableListAdapter {
         viewHolder.textViewLabel.setText(fieldModel.getStrFieldLabel());
         viewHolder.textViewValue.setText(fieldModel.getStrFieldData());
 
+        String strArrayData = null;
+
+        JSONObject jsonObject = null;
+
+        if (fieldModel.getStrArrayData() != null && !fieldModel.getStrArrayData().equalsIgnoreCase("")) {
+            strArrayData = fieldModel.getStrArrayData();
+            viewHolder.textViewValue.setText(_context.getString(R.string.click_here));
+
+            try {
+                jsonObject = new JSONObject(strArrayData);
+            } catch (Exception e) {
+                jsonObject = null;
+                e.printStackTrace();
+            }
+        }
+
+        viewHolder.textViewValue.setTag(jsonObject);
+        viewHolder.textViewLabel.setTag(jsonObject);
+
+        viewHolder.textViewLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject s = (JSONObject) v.getTag();
+                showArrayData(s);
+            }
+        });
+
+        viewHolder.textViewValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject s = (JSONObject) v.getTag();
+                showArrayData(s);
+            }
+        });
+
         return convertView;
+    }
+
+    private void showArrayData(JSONObject jsonObject) {
+
+        try {
+            if (jsonObject != null) {
+
+                JSONArray jsonArray = jsonObject.getJSONArray("array_data");
+
+                View view = ((Activity) _context).getLayoutInflater().inflate(R.layout.dialog_view, null, false);
+
+                final LinearLayout layoutDialog = (LinearLayout) view.findViewById(R.id.linearLayoutDialog);
+                final TextView textView = (TextView) view.findViewById(R.id.milestoneName);
+
+                textView.setText(_context.getString(R.string.medicines));
+
+                Button buttonDone = (Button) view.findViewById(R.id.buttonDone);
+
+                LinearLayout linearLayoutArrayInner1 = new LinearLayout(_context);
+                linearLayoutArrayInner1.setOrientation(LinearLayout.HORIZONTAL);
+
+                LinearLayout.LayoutParams layoutArrayInnerParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutArrayInnerParams1.setMargins(10, 10, 10, 10);
+                linearLayoutArrayInner1.setLayoutParams(layoutArrayInnerParams1);
+
+                TextView textViewName1 = new TextView(_context);
+                textViewName1.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                textViewName1.setText(_context.getString(R.string.medicine_name));
+                textViewName1.setTextAppearance(_context, R.style.boldtext);
+                linearLayoutArrayInner1.addView(textViewName1);
+
+                TextView textViewQty1 = new TextView(_context);
+                textViewQty1.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                textViewQty1.setText(_context.getString(R.string.quantity));
+                textViewQty1.setTextAppearance(_context, R.style.boldtext);
+                linearLayoutArrayInner1.addView(textViewQty1);
+
+                layoutDialog.addView(linearLayoutArrayInner1);
+
+                for (int j = 0; j < jsonArray.length(); j++) {
+
+                    LinearLayout linearLayoutArrayInner = new LinearLayout(_context);
+                    linearLayoutArrayInner.setOrientation(LinearLayout.HORIZONTAL);
+
+                    LinearLayout.LayoutParams layoutArrayInnerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    layoutArrayInnerParams.setMargins(10, 10, 10, 10);
+                    linearLayoutArrayInner.setLayoutParams(layoutArrayInnerParams);
+
+                    JSONObject jsonObjectInner = jsonArray.getJSONObject(j);
+
+                    TextView textViewName = new TextView(_context);
+                    textViewName.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                    textViewName.setText(jsonObjectInner.getString("medicine_name"));
+                    linearLayoutArrayInner.addView(textViewName);
+
+                    TextView textViewQty = new TextView(_context);
+                    textViewQty.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                    textViewQty.setText(String.valueOf(jsonObjectInner.getInt("medicine_qty")));
+                    linearLayoutArrayInner.addView(textViewQty);
+
+                    layoutDialog.addView(linearLayoutArrayInner);
+                }
+
+
+                buttonDone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+                builder.setView(view);
+                dialog = builder.create();
+
+                dialog.show();
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public class ViewHolder {

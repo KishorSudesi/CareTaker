@@ -80,16 +80,25 @@ public class ActivityListAdapter extends BaseAdapter {
 
             ActivityModel activityListModel = data.get(position);
 
-            if ((!activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess"))
-                    &&(!activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess"))) {
+            if ((activityListModel.getStrActivityStatus().equalsIgnoreCase("open"))
+                    || activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess")) {
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().
                         getColor(R.color.orange));
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
 
-            } else {
+            }
+
+            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
                 viewHolder.linearLayout.setBackgroundColor(_context.getResources().
                         getColor(R.color.colorPrimary));
                 viewHolder.linearLayoutDone.setVisibility(View.VISIBLE);
+            }
+
+            if (activityListModel.getStrActivityStatus().equalsIgnoreCase("new")) {
+                viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.colorWhite));
+                viewHolder.linearLayoutDone.setVisibility(View.GONE);
+
             }
 
             int iPosition = Config.strProviderIds.indexOf(activityListModel.getStrProviderID());

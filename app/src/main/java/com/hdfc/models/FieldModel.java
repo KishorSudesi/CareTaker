@@ -15,7 +15,7 @@ public class FieldModel implements Serializable {
     private String strFieldData;
     private String strFieldValues[];
 
-    private String strArrayData[];
+    private String strArrayData;
     private String strArrayType[];
     private int iArrayCount;
 
@@ -120,11 +120,12 @@ public class FieldModel implements Serializable {
     public void setiChildfieldID(int[] iChildfieldID) {
         this.iChildfieldID = iChildfieldID;
     }
-    public String[] getStrArrayData() {
+
+    public String getStrArrayData() {
         return strArrayData;
     }
 
-    public void setStrArrayData(String[] strArrayData) {
+    public void setStrArrayData(String strArrayData) {
         this.strArrayData = strArrayData;
     }
 

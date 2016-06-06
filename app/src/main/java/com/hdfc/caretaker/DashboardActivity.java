@@ -52,12 +52,12 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                         dialog.dismiss();
                     }
                 });
-                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+               /* builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                });
+                });*/
                 builder.show();
             }
 
@@ -175,10 +175,10 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             goToDashboard();
         }*/
 
-        if (Config.intSelectedMenu == Config.intNotificationScreen) {
+       /* if (Config.intSelectedMenu == Config.intNotificationScreen) {
             // Config.intSelectedMenu = 0;
             goToNotifications();
-        }
+        }*/
 
         if (Config.intSelectedMenu == Config.intAccountScreen) {
             //Config.intSelectedMenu = 0;
@@ -197,6 +197,35 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         appCompatActivity = DashboardActivity.this;
 
         App42API.setLoggedInUser(Config.customerModel.getStrEmail());
+
+        try {
+            if (!AccountSuccessActivity.isCreatedNow &&
+                    Config.intSelectedMenu == Config.intDashboardScreen) {
+
+                   /* threadHandler = new ThreadHandler();
+                    Thread backgroundThread = new BackgroundThread();
+                    backgroundThread.start();*/
+
+                progressDialog.setMessage(getResources().getString(R.string.loading));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
+
+                Utils.iActivityCount = 0;
+                Utils.iProviderCount = 0;
+
+                utils.fetchDependents(Config.customerModel.getStrCustomerID(),
+                        progressDialog, 0);
+
+            } else {
+                //Config.intSelectedMenu = 0;
+                if (Config.intSelectedMenu == Config.intDashboardScreen)
+                    goToDashboard();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -327,33 +356,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            try {
-                if (!AccountSuccessActivity.isCreatedNow &&
-                        Config.intSelectedMenu == Config.intDashboardScreen) {
-
-                   /* threadHandler = new ThreadHandler();
-                    Thread backgroundThread = new BackgroundThread();
-                    backgroundThread.start();*/
-
-                    progressDialog.setMessage(getResources().getString(R.string.loading));
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-
-
-                    Utils.iActivityCount = 0;
-                    Utils.iProviderCount = 0;
-
-                    utils.fetchDependents(Config.customerModel.getStrCustomerID(),
-                            progressDialog, 0);
-
-                } else {
-                    //Config.intSelectedMenu = 0;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
 
         }
     }

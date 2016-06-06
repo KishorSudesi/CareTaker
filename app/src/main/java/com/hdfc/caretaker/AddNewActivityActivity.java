@@ -180,6 +180,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
     public void goBack() {
         Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
+        Config.intSelectedMenu = Config.intActivityScreen;
         startActivity(newIntent);
         finish();
     }
@@ -351,7 +352,43 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
                     milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
                     milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
-                   milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                    //milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+
+                    if (jsonObjectMilestone.has("show")) {
+
+                        try {
+                            milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                        } catch (Exception e) {
+                            boolean b = true;
+                            try {
+                                if (jsonObjectMilestone.getInt("show") == 0)
+                                    b = false;
+                                milestoneModel.setVisible(b);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+
+                    if (jsonObjectMilestone.has("reschedule")) {
+
+                        try {
+                            milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+                        } catch (Exception e) {
+                            boolean b = true;
+                            try {
+                                if (jsonObjectMilestone.getInt("reschedule") == 0)
+                                    b = false;
+                                milestoneModel.setReschedule(b);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+
+                    if (jsonObjectMilestone.has("scheduled_date"))
+                        milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
+                                getString("scheduled_date"));
 
                     if (jsonObjectMilestone.has("fields")) {
 
@@ -401,7 +438,30 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                     fieldModel.setiChildfieldID(utils.jsonToIntArray(jsonObjectField.
                                             getJSONArray("child_field")));
                             }
+//
+                            if (jsonObjectField.has("array_fields")) {
 
+                                try {
+                                    fieldModel.setiArrayCount(jsonObjectField.getInt("array_fields"));
+                                } catch (Exception e) {
+                                    int i = 0;
+                                    try {
+                                        i = Integer.parseInt(jsonObjectField.getString("array_fields"));
+                                        fieldModel.setiArrayCount(i);
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+
+                                if (jsonObjectField.has("array_type"))
+                                    fieldModel.setStrArrayType(utils.jsonToStringArray(jsonObjectField.
+                                            getJSONArray("array_type")));
+
+                                if (jsonObjectField.has("array_data"))
+                                    fieldModel.setStrArrayData(jsonObjectField.getString("array_data"));
+
+                            }
+//
                             milestoneModel.setFieldModel(fieldModel);
                         }
                     }

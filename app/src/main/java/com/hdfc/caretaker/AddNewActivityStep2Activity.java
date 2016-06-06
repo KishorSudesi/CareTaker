@@ -377,10 +377,13 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                 jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
                 // jsonObjectMilestone.put("show",milestoneModel.isVisible());
+
                 if (jsonObjectMilestone.has("show"))
-                    milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                    jsonObjectMilestone.put("show", milestoneModel.isVisible());
+
                 if (jsonObjectMilestone.has("reschedule"))
                     milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+                jsonObjectMilestone.put("show", milestoneModel.isVisible());
 
                 if (jsonObjectMilestone.has("scheduled_date"))
                     milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
@@ -442,7 +445,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                     getJSONArray("array_type")));
 
                         if (jsonObjectField.has("array_data"))
-                            fieldModel.setStrArrayData(new String[]{});
+                            fieldModel.setStrArrayData(jsonObjectField.getString("array_data"));
 
                     }
                     ////

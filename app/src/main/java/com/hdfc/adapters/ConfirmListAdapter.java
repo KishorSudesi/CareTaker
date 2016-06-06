@@ -2,12 +2,10 @@ package com.hdfc.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,9 +15,6 @@ import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.ClientModel;
-import com.hdfc.models.ConfirmCustomerModel;
-import com.hdfc.models.ConfirmDependentModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 
@@ -111,7 +106,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 //
                 Config.dependentModel = (DependentModel) v.getTag();
-                Config.customerModel = null;
+                //Config.customerModel = null;
 
                 Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
                 _context.startActivity(intent);
@@ -197,16 +192,16 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             //viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
         }
 
-        viewHolder.customer.setOnClickListener(new View.OnClickListener() {
+       /* viewHolder.customer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Config.customerModel = (CustomerModel) v.getTag();
-                Config.dependentModel = null;
-              /*  Intent intent = new Intent(_context, ClientProfileActivity.class);
-                _context.startActivity(intent);*/
+                //Config.customerModel = (CustomerModel) v.getTag();
+                //Config.dependentModel = null;
+              *//*  Intent intent = new Intent(_context, ClientProfileActivity.class);
+                _context.startActivity(intent);*//*
             }
-        });
+        });*/
 
         return convertView;
     }

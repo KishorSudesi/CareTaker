@@ -259,10 +259,10 @@ public class MyAccountFragment extends Fragment {
         public void run() {
             try {
 
-                if(Config.customerModel!=null) {
+                //if(Config.customerModel!=null) {
                     File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
                     bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-                }
+                //}
 
             } catch (Exception e) {
                 e.printStackTrace();

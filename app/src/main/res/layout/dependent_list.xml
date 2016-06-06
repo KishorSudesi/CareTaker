@@ -9,8 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/plus_icon" />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:id="@+id/textViewRealtion"

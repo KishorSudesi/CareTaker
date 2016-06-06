@@ -202,6 +202,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
+        refreshData(month, year);
+
         return view;
     }
 
@@ -261,6 +263,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         super.onResume();
 
         Utils.log(" Called ", " OnResume ");
-        refreshData(month, year);
+
     }
 }

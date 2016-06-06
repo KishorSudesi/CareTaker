@@ -67,7 +67,6 @@ public class MileStoneFragment extends Fragment {
 
                 for (MilestoneModel milestoneModel : ActivityCompletedFragment._activityModel.getMilestoneModels()) {
 
-
                     listDataHeader.add(milestoneModel.getStrMilestoneName());
                     listDataChild.put(milestoneModel.getStrMilestoneName(), milestoneModel.getFieldModels());
                 }

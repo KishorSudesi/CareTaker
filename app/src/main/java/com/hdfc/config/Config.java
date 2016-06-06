@@ -5,9 +5,6 @@ import android.os.Build;
 import com.hdfc.caretaker.BuildConfig;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CategoryServiceModel;
-import com.hdfc.models.ClientModel;
-import com.hdfc.models.ConfirmCustomerModel;
-import com.hdfc.models.ConfirmDependentModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
@@ -17,7 +14,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -149,7 +145,7 @@ public class Config {
     public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
     public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
 
-    public static Locale locale = Locale.ENGLISH;
+
     public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;
     public static int intServiceScreen = 7;
@@ -191,11 +187,15 @@ public class Config {
    /* public static ConfirmDependentModel confirmDependentModel = null;
     public static ConfirmCustomerModel confirmCustomerModel = null;*/
 
-    public static ClientModel clientModels = new ClientModel();
-    public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
+    //public static ClientModel clientModels = new ClientModel();
+    //public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
 
     //public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
     public static String strUserName = "";
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
     public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
+
+    public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
+
+    public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
 }

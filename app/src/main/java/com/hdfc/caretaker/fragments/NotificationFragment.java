@@ -60,16 +60,15 @@ public class NotificationFragment extends Fragment {
 
         utils = new Utils(getActivity());
 
+        listViewActivities.setEmptyView(emptyTextView);
+        utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        listViewActivities.setEmptyView(emptyTextView);
-        utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
         //notificationAdapter = new NotificationAdapter(getContext(), staticNotificationModels);
-
     }
 }

@@ -574,8 +574,16 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             jsonObjectField.put("child_condition", utils.stringToJsonArray(fieldModel.getStrChildCondition()));
 
                         if (fieldModel.getiChildfieldID() != null && fieldModel.getiChildfieldID().length > 0)
-                            jsonObjectField.put("values", utils.intToJsonArray(fieldModel.getiChildfieldID()));
+                            jsonObjectField.put("child_field", utils.intToJsonArray(fieldModel.getiChildfieldID()));
                     }
+
+                    //
+                    if (fieldModel.getiArrayCount() > 0) {
+                        jsonObjectField.put("array_fields", fieldModel.getiArrayCount());
+                        jsonObjectField.put("array_type", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                        jsonObjectField.put("array_data", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                    }
+                    //
 
                     jsonArrayFields.put(jsonObjectField);
 
@@ -664,8 +672,16 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 jsonObjectField.put("child_condition", utils.stringToJsonArray(fieldModel.getStrChildCondition()));
 
                             if (fieldModel.getiChildfieldID() != null && fieldModel.getiChildfieldID().length > 0)
-                                jsonObjectField.put("values", utils.intToJsonArray(fieldModel.getiChildfieldID()));
+                                jsonObjectField.put("child_field", utils.intToJsonArray(fieldModel.getiChildfieldID()));
                         }
+
+                        //
+                        if (fieldModel.getiArrayCount() > 0) {
+                            jsonObjectField.put("array_fields", fieldModel.getiArrayCount());
+                            jsonObjectField.put("array_type", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                            jsonObjectField.put("array_data", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                        }
+                        //
 
                         jsonArrayFields.put(jsonObjectField);
 

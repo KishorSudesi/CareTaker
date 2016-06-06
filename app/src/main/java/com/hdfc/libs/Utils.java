@@ -95,6 +95,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,26 +106,28 @@ import java.util.regex.Pattern;
 public class Utils {
 
     //application specific
+    public static Locale locale = Locale.ENGLISH;
+
     public final static SimpleDateFormat readFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale);
 
     public final static SimpleDateFormat readFormatDate =
-            new SimpleDateFormat("yyyy-MM-dd", Config.locale);
+            new SimpleDateFormat("yyyy-MM-dd", locale);
 
     public final static SimpleDateFormat writeFormatMonth =
-            new SimpleDateFormat("MMM yyyy", Config.locale);
+            new SimpleDateFormat("MMM yyyy", locale);
 
     public final static SimpleDateFormat writeFormat =
-            new SimpleDateFormat("kk:mm aa dd MMM yyyy", Config.locale);
+            new SimpleDateFormat("kk:mm aa dd MMM yyyy", locale);
 
     /*   public final static SimpleDateFormat writeFormatActivity =
                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
 
     public final static SimpleDateFormat dateFormat =
-            new SimpleDateFormat("yyyy-MM-dd", Config.locale);
+            new SimpleDateFormat("yyyy-MM-dd", locale);
 
     public final static SimpleDateFormat writeFormatActivityYear =
-            new SimpleDateFormat("dd/MM/yyyy", Config.locale);
+            new SimpleDateFormat("dd/MM/yyyy", locale);
 
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
@@ -162,8 +165,8 @@ public class Utils {
     public static native String getString();
 
     public static String getStringJni() {
-        return "KaEO19Fc"; //"KaEO19Fc"
-        //return getString();//for temp fix on Native crash
+        //return "KaEO19Fc"; //"KaEO19Fc"
+        return getString();//for temp fix on Native crash
     }
 
     public static double round(double value, int places) {
@@ -1571,7 +1574,7 @@ public class Utils {
 
         int count = 0;
 
-        if (!Config.customerModel.getStrEmail().equalsIgnoreCase("")) {
+        if (Config.customerModel != null && !Config.customerModel.getStrEmail().equalsIgnoreCase("")) {
 
             try {
 
@@ -1742,7 +1745,7 @@ public class Utils {
                         jsonObject.getString("customer_email"),
                         strDocumentId, "");
 
-            System.out.println("2nd Part of obj : "+jsonObject.toString());
+            //System.out.println("2nd Part of obj : "+jsonObject.toString());
                 Config.customerModel.setStrDob(jsonObject.getString("customer_dob"));
                 Config.customerModel.setStrCountryCode(jsonObject.getString("customer_country"));
                 Config.customerModel.setStrCountryIsdCode(jsonObject.getString("customer_country_code"));
@@ -1750,10 +1753,10 @@ public class Utils {
                 Config.customerModel.setStrCity(jsonObject.getString("customer_city"));
                 Config.customerModel.setStrState(jsonObject.getString("customer_state"));
 
-                Config.customerModels.add(Config.customerModel);
+               /* Config.customerModels.add(Config.customerModel);
 
                 ClientModel clientModel = new ClientModel();
-                clientModel.setCustomerModel(Config.customerModel);
+                clientModel.setCustomerModel(Config.customerModel);*/
 
                 Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
        //     }
@@ -1795,10 +1798,37 @@ public class Utils {
 
                     //
 
-                    if (jsonObjectMilestone.has("show"))
-                        milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
-                    if (jsonObjectMilestone.has("reschedule"))
-                        milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+                    if (jsonObjectMilestone.has("show")) {
+
+                        try {
+                            milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                        } catch (Exception e) {
+                            boolean b = true;
+                            try {
+                                if (jsonObjectMilestone.getInt("show") == 0)
+                                    b = false;
+                                milestoneModel.setVisible(b);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+
+                    if (jsonObjectMilestone.has("reschedule")) {
+
+                        try {
+                            milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+                        } catch (Exception e) {
+                            boolean b = true;
+                            try {
+                                if (jsonObjectMilestone.getInt("reschedule") == 0)
+                                    b = false;
+                                milestoneModel.setReschedule(b);
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
 
                     if (jsonObjectMilestone.has("scheduled_date"))
                         milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
@@ -1872,7 +1902,7 @@ public class Utils {
                                             getJSONArray("array_type")));
 
                                 if (jsonObjectField.has("array_data"))
-                                    fieldModel.setStrArrayData(new String[]{});
+                                    fieldModel.setStrArrayData(jsonObjectField.getString("array_data"));
 
                             }
                             ////
@@ -2173,6 +2203,42 @@ public class Utils {
                         milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
                         milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
 
+                        if (jsonObjectMilestone.has("show")) {
+
+                            try {
+                                milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                            } catch (Exception e) {
+                                boolean b = true;
+                                try {
+                                    if (jsonObjectMilestone.getInt("show") == 0)
+                                        b = false;
+                                    milestoneModel.setVisible(b);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+
+                        if (jsonObjectMilestone.has("reschedule")) {
+
+                            try {
+                                milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+                            } catch (Exception e) {
+                                boolean b = true;
+                                try {
+                                    if (jsonObjectMilestone.getInt("reschedule") == 0)
+                                        b = false;
+                                    milestoneModel.setReschedule(b);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+
+                        if (jsonObjectMilestone.has("scheduled_date"))
+                            milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
+                                    getString("scheduled_date"));
+
                         if (jsonObjectMilestone.has("fields")) {
 
                             JSONArray jsonArrayFields = jsonObjectMilestone.
@@ -2240,7 +2306,7 @@ public class Utils {
                                                 getJSONArray("array_type")));
 
                                     if (jsonObjectField.has("array_data"))
-                                        fieldModel.setStrArrayData(new String[]{});
+                                        fieldModel.setStrArrayData(jsonObjectField.getString("array_data"));
 
                                 }
                                 ////
@@ -2303,7 +2369,7 @@ public class Utils {
 
                                 if (response.getJsonDocList().size() > 0) {
 
-                                    Utils.log(response.toString(), " 1 ");
+                                    //Utils.log(response.toString(), " 1 ");
 
                                     /*Config.strDependentIds.clear();
                                     Config.dependentModels.clear();*/
@@ -2645,17 +2711,24 @@ public class Utils {
             String key2 = "dependent_id";
             String value2 = Config.strDependentIds.get(iActivityCount);
 
-            Query q1 = QueryBuilder.build("provider_status", "scheduled", QueryBuilder.
-                    Operator.EQUALS);
+           /* Query q1 = QueryBuilder.build("provider_status", "scheduled", QueryBuilder.
+                    Operator.EQUALS);*/
 
             // Build query q1 for key1 equal to name and value1 equal to Nick
             Query q2 = QueryBuilder.build(key2, value2, QueryBuilder.Operator.EQUALS);
             // Build query q2 for key2 equal to age and value2
 
-            Query q3 = QueryBuilder.build("status", "upcoming", QueryBuilder.Operator.EQUALS);
-            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+            Query q3 = QueryBuilder.build("status", "new", QueryBuilder.Operator.EQUALS);
+            Query q31 = QueryBuilder.build("status", "inprocess", QueryBuilder.Operator.EQUALS);
+            Query q32 = QueryBuilder.build("status", "open", QueryBuilder.Operator.EQUALS);
 
-            Query q5 = QueryBuilder.compoundOperator(q4, QueryBuilder.Operator.AND, q3);
+            Query q33 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.OR, q31);
+            Query q34 = QueryBuilder.compoundOperator(q33, QueryBuilder.Operator.OR, q32);
+
+
+            //Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+
+            Query q5 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q34);
 
             int max = 1;
             int offset = 0;

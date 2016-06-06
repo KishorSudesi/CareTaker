@@ -30,6 +30,7 @@
                     android:layout_height="120dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="30dp"
                     android:padding="5dp"
                     android:visibility="gone">
                     <ProgressBar style="@style/GenericProgressIndicator" />
@@ -43,11 +44,11 @@
  -->
                 <com.hdfc.views.RoundedImageView
                     android:id="@+id/imageView5"
-                    android:layout_width="match_parent"
-                    android:layout_height="130dp"
-                    android:layout_centerInParent="true"
-                    android:layout_centerVertical="true"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="30dp"
                     android:background="@null"
                     android:padding="5dp"
                     android:src="@drawable/person_icon" />

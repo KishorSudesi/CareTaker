@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,7 +43,6 @@ import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -57,7 +55,6 @@ import permissions.dispatcher.RuntimePermissions;
 public class DependentDetailPersonalActivity extends AppCompatActivity {
 
     public static RoundedImageView imgButtonCamera;
-    public String drawable;
     public static String dependantImgName = "";
     public static String strImageName = "";
     public static String strDependantName = "";
@@ -71,6 +68,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private static ProgressDialog mProgress = null;
+    public String drawable;
     private Utils utils;
     private Spinner spinnerRelation;
 
@@ -213,9 +211,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     Intent selection = new Intent(DependentDetailPersonalActivity.this,
                             SignupActivity.class);
                     selection.putExtra("LIST_DEPENDANT", true);
-
+                    Config.dependentModel = null;
                     dependentModel = null;
-                    SignupActivity.dependentNames.clear();
+                    //SignupActivity.dependentNames.clear();
 
                     arg0.dismiss();
                     startActivity(selection);
@@ -563,16 +561,20 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
         //Utils.log(strImageName, " strImageName 1 ");
 
-       /* if (!Config.customerModel.getStrName().equalsIgnoreCase("")
-                && !strDependantName.equalsIgnoreCase("")) {*/
+        if (Config.dependentModel != null) {
+            dependentModel = Config.dependentModel;
+        }
 
-            if (Config.dependentModel != null) {
-                editName.setText(Config.dependentModel.getStrName());
-                editContactNo.setText(Config.dependentModel.getStrContacts());
-                editAddress.setText(Config.dependentModel.getStrAddress());
+        if (!Config.customerModel.getStrName().equalsIgnoreCase("")
+                && dependentModel != null) {
+            //&& !strDependantName.equalsIgnoreCase("")
+
+            editName.setText(dependentModel.getStrName());
+            editContactNo.setText(dependentModel.getStrContacts());
+            editAddress.setText(dependentModel.getStrAddress());
                 //editRelation.setText(dependentModel.getStrRelation());
-                editDependantEmail.setText(Config.dependentModel.getStrEmail());
-                editTextDate.setText(Config.dependentModel.getStrDob());
+            editDependantEmail.setText(dependentModel.getStrEmail());
+            editTextDate.setText(dependentModel.getStrDob());
 
                 /*drawable = Config.dependentModel.getStrImagePath();
                 int resID = getResources().getIdentifier(drawable, "drawable", getPackageName());
@@ -582,17 +584,18 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 imgButtonCamera.setImageDrawable(drawable);*/
 
                 //
-                spinnerRelation.setSelection(Config.strRelationsList.indexOf(Config.dependentModel.getStrRelation()));
+            spinnerRelation.setSelection(Config.strRelationsList.indexOf(dependentModel.getStrRelation()));
                 //
 
-                if (!strDependantName.equalsIgnoreCase("") && !isCamera) {
+            //!strDependantName.equalsIgnoreCase("") &&
+            if (!isCamera) {
                     strImageName = dependentModel.getStrImagePath();
                     backgroundThreadHandler = new BackgroundThreadHandler();
                     backgroundThreadCamera = new BackgroundThreadCamera();
                     backgroundThreadCamera.start();
                 } else isCamera = false;
             } else isCamera = false;
-       // } else isCamera = false;
+        //} else isCamera = false;
     }
 
     @Override

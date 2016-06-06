@@ -101,7 +101,8 @@ public class ActivitiesAdapter extends BaseAdapter {
 
             try {
                 if (activityModel.getStrActivityStatus().equalsIgnoreCase("new") ||
-                        activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+                        activityModel.getStrActivityStatus().equalsIgnoreCase("open")
+                        || activityModel.getStrActivityStatus().equalsIgnoreCase("inprocess")) {
 
                     String strDisplayDate = _context.getResources().getString(R.string.space) +
                             _context.getResources().getString(R.string.at) +
@@ -109,9 +110,9 @@ public class ActivitiesAdapter extends BaseAdapter {
                             utils.formatDate(activityModel.getStrActivityDate());
 
                     viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                            getColor(R.color.colorWhite));
+                            getColor(R.color.colorPrimary));
                     viewHolder.textViewTime.setTextColor(_context.getResources().
-                            getColor(R.color.colorAccentDark));
+                            getColor(R.color.colorWhite));
 
                     viewHolder.textViewUpcoming.setVisibility(View.VISIBLE);
                     viewHolder.textViewUpcoming.setText(_context.getString(R.string.up_next));

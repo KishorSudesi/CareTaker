@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.ClientModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.CheckView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -37,14 +36,13 @@ public class LoginActivity extends AppCompatActivity {
     public static Utils utils;
     private static ProgressDialog progressDialog;
     private static String userName;
+    ArrayList<DependentModel> dependentModels = Config.dependentModels;
     /* private static Thread backgroundThread;
      private static Handler threadHandler;*/
     private RelativeLayout relLayout;
     private EditText editEmail, editPassword;
     private RelativeLayout layoutLogin;
     private TextView txtForgotPassword;
-    ArrayList<DependentModel> dependentModels = Config.dependentModels;
-
     private CheckView checkView;
     private TextView editTextCaptcha;
     private EditText forgotpasswordUserName;
@@ -70,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             if (imgBg != null) {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-                        R.drawable.button_white, Config.intScreenWidth, Config.intScreenHeight));
+                        R.drawable.blue_bg, Config.intScreenWidth, Config.intScreenHeight));
             }
 
         } catch (Exception | OutOfMemoryError e) {
@@ -249,6 +247,8 @@ public class LoginActivity extends AppCompatActivity {
     }*/
 
     public void validateLogin(View v) {
+
+        showPasswordfield();
 
         utils.setEditTextDrawable(editEmail, getResources().getDrawable(R.drawable.edit_text));
         utils.setEditTextDrawable(editPassword, getResources().getDrawable(R.drawable.edit_text));

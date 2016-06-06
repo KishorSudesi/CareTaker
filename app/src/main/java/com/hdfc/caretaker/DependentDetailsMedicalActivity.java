@@ -2,12 +2,9 @@ package com.hdfc.caretaker;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.RemoteController;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,6 +15,7 @@ import android.widget.EditText;
 
 import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 
 import java.util.Date;
@@ -190,6 +188,11 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             strAge = editAge.getText().toString().trim();
 
             DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
+
+            if (Config.dependentModel != null) {
+                SignupActivity.dependentModels.remove(DependentDetailPersonalActivity.dependentModel);
+                Config.dependentModel = null;
+            }
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
 
@@ -243,6 +246,12 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
             DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
             DependentDetailPersonalActivity.dependentModel.setStrNotes(strNotes);
+
+            if (Config.dependentModel != null) {
+                SignupActivity.dependentModels.remove(DependentDetailPersonalActivity.dependentModel);
+                Config.dependentModel = null;
+            }
+
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
             DependentDetailPersonalActivity.dependentModel.setStrImageUrl("");

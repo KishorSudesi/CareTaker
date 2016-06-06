@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
 import java.text.SimpleDateFormat;
@@ -26,7 +27,7 @@ public class CalendarAdapter extends BaseAdapter {
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
     //public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy",
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Utils.locale);
     private static final int DAY_OFFSET = 1;
     private final Context _context;
     private final List<String> list;

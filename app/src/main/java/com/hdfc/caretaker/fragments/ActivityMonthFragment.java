@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.hdfc.adapters.ActivityMonthListAdapter;
 import com.hdfc.adapters.CalendarAdapter;
 import com.hdfc.caretaker.R;
-import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
@@ -30,7 +29,7 @@ import java.util.Locale;
 
 public class ActivityMonthFragment extends Fragment {
 
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Config.locale);
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Utils.locale);
     public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
@@ -56,7 +55,9 @@ public class ActivityMonthFragment extends Fragment {
         try {
 
             adapter = new CalendarAdapter(context, ActivityFragment.month, ActivityFragment.year, ActivityFragment.activitiesModelArrayList);
-            calendarView.setAdapter(adapter);
+
+            if (calendarView != null)
+                calendarView.setAdapter(adapter);
             //adapter.notifyDataSetChanged();
 
             /*activityListAdapter = new ActivityMonthListAdapter(context, ActivityFragment.activitiesModelArrayList);
@@ -219,8 +220,7 @@ public class ActivityMonthFragment extends Fragment {
                 } else activityModel = null;*/
 
                 if (activityModel != null
-                        && activityModel.getStrActivityStatus().equalsIgnoreCase("new") ||
-                        activityModel.getStrActivityStatus().equalsIgnoreCase("upcoming")) {
+                        && activityModel.getStrActivityStatus().equalsIgnoreCase("new")) {
 
                     UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().

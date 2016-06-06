@@ -31,25 +31,22 @@
                 android:id="@+id/textViewName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="police"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
 
             <TextView
                 android:id="@+id/textViewAddress"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="lisbon"
                 android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/textViewContact"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="2322334"
                 android:textSize="15sp"/>
         </LinearLayout>
 
