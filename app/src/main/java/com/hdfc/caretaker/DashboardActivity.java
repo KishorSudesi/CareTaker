@@ -196,7 +196,8 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         appCompatActivity = DashboardActivity.this;
 
-        App42API.setLoggedInUser(Config.customerModel.getStrEmail());
+        if (Config.customerModel != null)
+            App42API.setLoggedInUser(Config.customerModel.getStrEmail());
 
         try {
             if (!AccountSuccessActivity.isCreatedNow &&

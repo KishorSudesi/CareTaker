@@ -378,16 +378,9 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
                 // jsonObjectMilestone.put("show",milestoneModel.isVisible());
 
-                if (jsonObjectMilestone.has("show"))
-                    jsonObjectMilestone.put("show", milestoneModel.isVisible());
-
-                if (jsonObjectMilestone.has("reschedule"))
-                    milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
                 jsonObjectMilestone.put("show", milestoneModel.isVisible());
-
-                if (jsonObjectMilestone.has("scheduled_date"))
-                    milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
-                            getString("scheduled_date"));
+                jsonObjectMilestone.put("reschedule", milestoneModel.isReschedule());
+                jsonObjectMilestone.put("scheduled_date", milestoneModel.getStrMilestoneScheduledDate());
 
 
                 JSONArray jsonArrayFields = new JSONArray();
@@ -423,31 +416,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                             jsonObjectField.put("child_condition", utils.stringToJsonArray(fieldModel.getStrChildCondition()));
 
                         if (fieldModel.getiChildfieldID() != null && fieldModel.getiChildfieldID().length > 0)
-                            jsonObjectField.put("values", utils.intToJsonArray(fieldModel.getiChildfieldID()));
+                            jsonObjectField.put("child_field", utils.intToJsonArray(fieldModel.getiChildfieldID()));
                     }
 
-                    if (jsonObjectField.has("array_fields")) {
-
-                        try {
-                            fieldModel.setiArrayCount(jsonObjectField.getInt("array_fields"));
-                        } catch (Exception e) {
-                            int i = 0;
-                            try {
-                                i = Integer.parseInt(jsonObjectField.getString("array_fields"));
-                                fieldModel.setiArrayCount(i);
-                            } catch (Exception e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-
-                        if (jsonObjectField.has("array_type"))
-                            fieldModel.setStrArrayType(utils.jsonToStringArray(jsonObjectField.
-                                    getJSONArray("array_type")));
-
-                        if (jsonObjectField.has("array_data"))
-                            fieldModel.setStrArrayData(jsonObjectField.getString("array_data"));
-
+                    //
+                    if (fieldModel.getiArrayCount() > 0) {
+                        jsonObjectField.put("array_fields", fieldModel.getiArrayCount());
+                        jsonObjectField.put("array_type", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                        jsonObjectField.put("array_data", utils.stringToJsonArray(fieldModel.getStrArrayType()));
                     }
+                    //
                     ////
 
                     jsonArrayFields.put(jsonObjectField);
