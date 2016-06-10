@@ -38,7 +38,7 @@ public class UpcomingFragment extends Fragment {
     private Utils utils;
     private int iPosition;
 
-    private ImageButton buttonCancel;
+//    private ImageButton buttonCancel;
 
     public static UpcomingFragment newInstance(ActivityModel activityModel) {
         UpcomingFragment fragment = new UpcomingFragment();
@@ -60,7 +60,7 @@ public class UpcomingFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
-        Button buttonBack = (Button) view.findViewById(R.id.buttonBack);
+//        Button buttonBack = (Button) view.findViewById(R.id.buttonBack);
         txtViewHeader = (TextView) view.findViewById(R.id.header);
         txtViewMSG = (TextView) view.findViewById(R.id.textViewMSG);
         txtViewDate = (TextView) view.findViewById(R.id.textViewDate);
@@ -69,7 +69,7 @@ public class UpcomingFragment extends Fragment {
         imageViewCarla = (ImageView) view.findViewById(R.id.imageViewCarla);
         ImageButton msg = (ImageButton) view.findViewById(R.id.buttonMsg);
         ImageButton call = (ImageButton) view.findViewById(R.id.buttonCallUpcoming);
-        buttonCancel = (ImageButton) view.findViewById(R.id.buttonCancel);
+//        buttonCancel = (ImageButton) view.findViewById(R.id.buttonCancel);
 
         utils = new Utils(getActivity());
         progressDialog = new ProgressDialog(getActivity());
@@ -95,21 +95,21 @@ public class UpcomingFragment extends Fragment {
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToList();
+//        buttonBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                goToList();
+//
+//            }
+//        });
 
-            }
-        });
-
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //utils.toast(2, 2, getString(R.string.coming_soon));
-                goToList();
-            }
-        });
+//        buttonCancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //utils.toast(2, 2, getString(R.string.coming_soon));
+//                goToList();
+//            }
+//        });
 
         if (activityModel != null && activityModel.getStrProviderID() != null) {
             iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());

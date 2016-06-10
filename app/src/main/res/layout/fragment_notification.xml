@@ -2,9 +2,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@drawable/app_inner_bg2"
     tools:context="com.hdfc.caretaker.fragments.NotificationFragment">
 
+    <RelativeLayout
+        android:id="@+id/toplayout"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        >
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@mipmap/backarrow"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:layout_marginLeft="10dp"/>
+       <ImageView
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:background="@drawable/logo"
+           android:layout_marginTop="15dp"
+           android:layout_marginBottom="15dp"
+           android:layout_marginLeft="90dp"
+           android:layout_marginRight="90dp"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/toplayout"
+        android:background="@color/colorWhite"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/imageline">
     <include
         android:id="@+id/header"
         layout="@layout/header_activities" />
@@ -23,5 +58,5 @@
         android:gravity="center"
         android:text="@string/no_notifications" />
 
-
+    </RelativeLayout>
 </RelativeLayout>

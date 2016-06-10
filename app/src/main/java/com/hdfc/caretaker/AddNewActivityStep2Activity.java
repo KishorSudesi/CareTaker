@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -88,7 +89,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         utils = new Utils(AddNewActivityStep2Activity.this);
         progressDialog = new ProgressDialog(AddNewActivityStep2Activity.this);
 
-        Button cancelButton = (Button) findViewById(R.id.buttonBack);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.buttonBack);
         Button submitButtton = (Button) findViewById(R.id.button);
         editTextMessage = (EditText) findViewById(R.id.editText2);
         editTextDate = (EditText) findViewById(R.id.editTextDate);

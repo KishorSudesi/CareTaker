@@ -2,13 +2,13 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="75dp"
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="85dp">
+        android:layout_height="75dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -16,13 +16,13 @@
 
             <ImageButton
                 android:id="@+id/buttonCallActivity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_general"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/dashboard_activity" />
+                android:src="@mipmap/dashboard_activity" />
 
             <!--  <ImageButton
                   android:id="@+id/buttonVideo"
@@ -36,39 +36,39 @@
   -->
             <ImageButton
                 android:id="@+id/buttonSeniors"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_margin="@dimen/margin_general"
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/dashboard_seniors" />
+                android:src="@mipmap/dashboard_seniors" />
 
             <ImageButton
                 android:id="@+id/buttonNotifications"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_margin="@dimen/margin_general"
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/dashboard_notifications" />
+                android:src="@mipmap/dashboard_notifications" />
 
             <ImageButton
                 android:id="@+id/buttonAccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_margin="@dimen/margin_general"
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/dashboard_account" />
+                android:src="@mipmap/dashboard_account" />
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="15dp">
+            android:layout_height="10dp">
 
             <TextView
                 android:id="@+id/textViewActivity"
