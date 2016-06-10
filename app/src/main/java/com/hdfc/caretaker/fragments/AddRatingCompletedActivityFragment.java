@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -108,9 +109,11 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
         if (utils.isConnectingToInternet()) {
 
+/*
             progressDialog.setMessage(getString(R.string.uploading));
             progressDialog.setCancelable(false);
             progressDialog.show();
+*/
 
             Date doneDate = new Date();
 
@@ -212,28 +215,32 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                             sendPushToProvider(strUserName, strPushMessage);
                                         }
                                     } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
+                                       /* if (progressDialog.isShowing())
+                                            progressDialog.dismiss();*/
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                         utils.toast(2, 2, getActivity().getString(R.string.error));
                                     }
 
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                  /*  if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getActivity().getString(R.string.error));
                                 }
                             } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                               /* if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 utils.toast(2, 2, getActivity().getString(R.string.warning_internet));
                             }
                         }
 
                         @Override
                         public void onException(Exception e) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
                             Utils.log(e.getMessage(), " RESP ");
                             if (e != null) {
                                 utils.toast(2, 2, getActivity().getString(R.string.error));
@@ -254,8 +261,10 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
         try {
 
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+           /* if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             ActivityCompletedFragment.setMenuInitView();
             ActivityCompletedFragment.imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));

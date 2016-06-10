@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -73,9 +74,9 @@ public class GalleryFragment extends Fragment {
         context = getActivity();
 
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.loading));
+        /*progressDialog.setMessage(getString(R.string.loading));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
 
         backgroundThreadHandler = new BackgroundThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -98,7 +99,7 @@ public class GalleryFragment extends Fragment {
     public static class BackgroundThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            progressDialog.dismiss();
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             try {
 

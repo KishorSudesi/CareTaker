@@ -12,10 +12,13 @@
     <string name="name">Name</string>
     <string name="DOB">Date of Birth</string>
     <string name="password">Password</string>
+    <string name="password_hint">*****</string>
+    <string name="im_new_here">I am new here</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="forgot">Forgot?</string>
     <string name="submit">Submit</string>
+    <string name="update">Update</string>
     <string name="string_continue">Continue</string>
     <string name="create_password">Create a Password</string>
     <string name="verify_password">Verify Password</string>
@@ -45,14 +48,16 @@
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
     <string name="take_me_in">Take Me In</string>
-    <string name="am_new_here">I am New Here</string>
+    <string name="register">Register</string>
+    <string name="express_care">Express your care to loved one</string>
+    <string name="welcome">Welcome</string>
     <string name="medicine_name">Medicine Name</string>
     <string name="quantity">Quantity</string>
     <string name="add_dependent">Add a Care Recipient</string>
     <string name="myself">Myself</string>
     <string name="medicines">Medicines</string>
     <string name="loved_one">A Loved One</string>
-    <string name="existing_user">Existing User</string>
+    <string name="login">Login</string>
     <string name="who_needs_care">Who Needs Care?</string>
     <string name="your_details">Who needs care?</string>
     <string name="your_details_saved">Your Details Saved</string>

@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.DependAdapter;
 import com.hdfc.caretaker.AdditionalServicesActivity;
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -241,7 +242,8 @@ public class MyAccountFragment extends Fragment {
     public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             if (bitmap != null)
                 roundedImageView.setImageBitmap(bitmap);

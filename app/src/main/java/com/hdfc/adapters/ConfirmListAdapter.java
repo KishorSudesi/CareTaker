@@ -69,6 +69,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder.address = (TextView) convertView.findViewById(R.id.textViewAddress);
             viewHolder.client = (ImageView) convertView.findViewById(R.id.imageClients);
             viewHolder.age = (TextView)convertView.findViewById(R.id.textViewClient_age);
+            viewHolder.relation = (TextView) convertView.findViewById(R.id.textViewRealtion);
 
             convertView.setTag(viewHolder);
         } else {
@@ -90,6 +91,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         viewHolder.name.setText(strName);
         viewHolder.address.setText(strAddress);
         viewHolder.age.setText(confirmDependentModel.getStrAge());
+        viewHolder.relation.setText(confirmDependentModel.getStrRelation());
 
         File fileImage = new File(confirmDependentModel.getStrImagePath());
         //  File fileImage = Utils.createFileInternal("images/" + "rushikesh_img");
@@ -217,7 +219,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     }
 
     public  class ViewHolder{
-        TextView name, address, contact, age;
+        TextView name, address, contact, age, relation;
         ImageView client, customer;
     }
 }

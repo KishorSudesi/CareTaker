@@ -83,9 +83,9 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     }
 
     public static void refreshData(int iMonth, int iYear) {
-        progressDialog.setMessage(_context.getString(R.string.loading));
+       /* progressDialog.setMessage(_context.getString(R.string.loading));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
 
         utils.clearActivityMonthModel();
 

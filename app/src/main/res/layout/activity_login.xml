@@ -3,9 +3,23 @@
     android:id="@+id/layoutLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:background="@drawable/app_inner_bg">
 
     <ImageView
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@mipmap/back_left_arrow" />
+
+    <ImageView
+        android:layout_width="180dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/logo" />
+
+    <!--<ImageView
         android:id="@+id/imageBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,108 +27,91 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY" />-->
 
-    <!--<com.hdfc.views.RoundedImageView
-        android:id="@+id/imageButtonCamera"
-        android:layout_width="60dp"
-        android:layout_height="30dp"
-        android:layout_alignParentTop="true"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/editEmail"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/temp" />-->
+        android:layout_marginBottom="40dp"
+        android:text="@string/welcome"
+        android:textColor="@color/blue"
+        android:textSize="30sp" />
 
     <EditText
         android:id="@+id/editEmail"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_above="@+id/relativePass"
+        android:layout_above="@+id/editPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="@dimen/edit_text_margin"
         android:layout_marginRight="@dimen/edit_text_margin"
-        android:background="@drawable/edit_text"
-        android:drawableLeft="@drawable/mail_icon"
-        android:drawablePadding="10dp"
+        android:drawableLeft="@drawable/email"
+        android:drawablePadding="15dp"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="10dp" />
 
-    <RelativeLayout
-        android:id="@+id/relativePass"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:gravity="center_horizontal"
-        android:visibility="gone">
-
-        <EditText
-            android:id="@+id/editPassword"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/edit_text"
-            android:drawableLeft="@mipmap/pass_icon"
-            android:drawablePadding="10dp"
-            android:ems="10"
-            android:hint="*****"
-            android:inputType="textPassword"
-            android:padding="5dp"
-            android:paddingRight="40dp"
-            android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/txtForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/editPassword"
-            android:layout_alignRight="@+id/editPassword"
-            android:layout_alignTop="@+id/editPassword"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:gravity=""
-            android:padding="5dp"
-            android:text="@string/forgot" />
-
-    </RelativeLayout>
-
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/editPassword"
+        android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_above="@+id/textView"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="30dp"
+        android:drawableLeft="@mipmap/password"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="@string/password_hint"
+        android:inputType="textPassword"
+        android:padding="5dp"
+        android:paddingRight="40dp"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/buttonReg"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="@dimen/edit_text_margin"
         android:layout_marginRight="@dimen/edit_text_margin"
         android:background="@drawable/button_white"
-        android:onClick="validateLogin"
-        android:paddingTop="5dp"
-        android:text="@string/take_me_in"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="@dimen/edit_text_margin"
-        android:layout_marginRight="@dimen/edit_text_margin"
-        android:background="@drawable/button_back_trans"
         android:gravity="center"
         android:onClick="goToWho"
-        android:text="@string/am_new_here"
-        android:visibility="invisible" />
+        android:text="@string/take_me_in"
+        android:textColor="@color/blue"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/buttonReg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/txtForgotPassword"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="@dimen/edit_text_margin"
+        android:layout_marginRight="@dimen/edit_text_margin"
+        android:background="@drawable/button_blue"
+        android:gravity="center"
+        android:onClick="goToWho"
+        android:text="@string/im_new_here"
+        android:textColor="@color/colorWhite" />
+
+    <TextView
+        android:id="@+id/txtForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:padding="5dp"
+        android:text="@string/forgot" />
 
 </RelativeLayout>

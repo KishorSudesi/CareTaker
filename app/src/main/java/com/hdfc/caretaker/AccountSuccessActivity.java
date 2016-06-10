@@ -35,7 +35,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
             if (imgBg != null) {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-                        R.drawable.blue_bg, Config.intScreenWidth, Config.intScreenHeight));
+                        R.drawable.app_inner_bg2, Config.intScreenWidth, Config.intScreenHeight));
             }
 
         } catch (Exception | OutOfMemoryError e) {
@@ -62,10 +62,10 @@ public class AccountSuccessActivity extends AppCompatActivity {
             SignupActivity.dependentNames = null;
             DependentDetailPersonalActivity.dependentModel = null;
 
-            progressDialog.setMessage(getResources().getString(
+           /* progressDialog.setMessage(getResources().getString(
                     R.string.process_login));
             progressDialog.setCancelable(false);
-            progressDialog.show();
+            progressDialog.show();*/
 
             threadHandler = new ThreadHandler();
             Thread backgroundThread = new BackgroundThread();

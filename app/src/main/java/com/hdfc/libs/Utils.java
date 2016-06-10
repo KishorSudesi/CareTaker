@@ -1371,9 +1371,10 @@ public class Utils {
 
         if (isConnectingToInternet()) {
 
-            progressDialog.setMessage(_ctxt.getString(R.string.loading));
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+            /*progressDialog.setMessage(_ctxt.getString(R.string.loading));
             progressDialog.setCancelable(false);
-            progressDialog.show();
+            progressDialog.show();*/
 
             StorageService storageService = new StorageService(_ctxt);
 
@@ -1413,8 +1414,9 @@ public class Utils {
                                     fetchProviders(progressDialog, 1);
                                 }
                             } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 refreshNotifications();
                             }
@@ -1426,8 +1428,9 @@ public class Utils {
 
                         @Override
                         public void onFindDocFailed(App42Exception ex) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                             if (ex != null) {
                                 try {
@@ -1453,8 +1456,9 @@ public class Utils {
                     });
 
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
             refreshNotifications();
         }
@@ -1660,8 +1664,9 @@ public class Utils {
                     @Override
                     public void onFindDocSuccess(Storage response) {
 
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
+                        /*if (progressDialog.isShowing())
+                            progressDialog.dismiss();*/
+//                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                         if (response != null) {
 
@@ -1697,8 +1702,9 @@ public class Utils {
 
                     @Override
                     public void onFindDocFailed(App42Exception ex) {
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
+                        /*if (progressDialog.isShowing())
+                            progressDialog.dismiss();*/
+                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                         try {
                             JSONObject jsonObject = new JSONObject(ex.getMessage());
@@ -1724,8 +1730,9 @@ public class Utils {
                     }
                     });
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
     }
@@ -2389,13 +2396,15 @@ public class Utils {
                                         fetchLatestActivities(progressDialog, iFlag);
 
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     toast(2, 2, _ctxt.getString(R.string.error));
                                 }
                             } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
                         }
@@ -2429,8 +2438,9 @@ public class Utils {
                     });
 
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
     }
@@ -2460,6 +2470,8 @@ public class Utils {
         if (iActivityCount < Config.strDependentIds.size()) {
 
             if (isConnectingToInternet()) {
+
+                DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
                 StorageService storageService = new StorageService(_ctxt);
 
@@ -2505,8 +2517,9 @@ public class Utils {
                                     }
                                     fetchLatestActivitiesUpcoming(progressDialog, iFlag);
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
                             }
@@ -2528,8 +2541,9 @@ public class Utils {
                                         //}
 
                                     } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
+                                        /*if (progressDialog.isShowing())
+                                            progressDialog.dismiss();*/
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
                                 } catch (JSONException e1) {
@@ -2538,8 +2552,9 @@ public class Utils {
                             }
                         });
             } else {
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
+                /*if (progressDialog.isShowing())
+                    progressDialog.dismiss();*/
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
         }
@@ -2554,6 +2569,8 @@ public class Utils {
               /*  if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.
                         get(iProviderCount))) {*/
 
+                DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
                 StorageService storageService = new StorageService(_ctxt);
 
                 Query query = QueryBuilder.build("_id", Config.strProviderIds,
@@ -2564,8 +2581,9 @@ public class Utils {
 
                             @Override
                             public void onSuccess(Object o) {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 try {
                                     if (o != null) {
 
@@ -2606,8 +2624,9 @@ public class Utils {
 
                             @Override
                             public void onException(Exception e) {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 try {
                                     Utils.log(e.getMessage(), " Response Failure");
 
@@ -2628,14 +2647,16 @@ public class Utils {
                             }
                         });
             } else {
-                if (progressDialog.isShowing())
+                /*if (progressDialog.isShowing())
                     progressDialog.dismiss();
-
+*/
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             if (iFlag == 0)
                 loadImages();
             if (iFlag == 1)
@@ -2744,10 +2765,11 @@ public class Utils {
 
     public void loadImages() {
 
-        progressDialog = new ProgressDialog(_ctxt);
+       /* progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -2756,10 +2778,11 @@ public class Utils {
 
     public void loadImagesActivityMonth() {
 
-        progressDialog = new ProgressDialog(_ctxt);
+        /*progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -2770,6 +2793,7 @@ public class Utils {
 
         if (isConnectingToInternet()) {
 
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
             StorageService storageService = new StorageService(_ctxt);
 
             String key2 = "dependent_id";
@@ -2831,8 +2855,9 @@ public class Utils {
                                     fetchLatestActivities(progressDialog, iFlag);
 
                             } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
                         }
@@ -2866,8 +2891,9 @@ public class Utils {
                                     //log(e.getMessage(), " test 2");
 
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
                             } catch (JSONException e1) {
@@ -2877,8 +2903,9 @@ public class Utils {
                     }
             );
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
     }
@@ -2896,6 +2923,8 @@ public class Utils {
                                              final ProgressDialog progressDialog) {
 
         if (isConnectingToInternet()) {
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
             StorageService storageService = new StorageService(_ctxt);
 
@@ -2943,6 +2972,7 @@ public class Utils {
                             /*if (progressDialog.isShowing())
                                 progressDialog.dismiss();
 */
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
                             Storage response = (Storage) o;
 
                             if (response != null) {
@@ -2965,6 +2995,7 @@ public class Utils {
                             } else {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 ActivityFragment.activitiesModelArrayList.clear();
                                 //toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
@@ -2976,6 +3007,7 @@ public class Utils {
                         public void onException(Exception e) {
                             /*if (progressDialog.isShowing())
                                 progressDialog.dismiss();*/
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
                             try {
                                 if (e != null) {
                                     log(e.getMessage(), " f ");
@@ -2988,8 +3020,9 @@ public class Utils {
                                     toast(2, 2, strMess);
 */
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
@@ -3003,6 +3036,7 @@ public class Utils {
         } else {
           /*  if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             //ActivityFragment.reload();
             fetchProviders(progressDialog, 2);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
@@ -3013,8 +3047,9 @@ public class Utils {
         @Override
         public void handleMessage(Message msg) {
 
-            if (progressDialog != null && progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             if (Config.intSelectedMenu == Config.intNotificationScreen)
                 refreshNotifications();

@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.UserService;
+import com.hdfc.caretaker.ChromeHelpPopup;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
@@ -130,13 +131,13 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
-       /* editAreaCode.setOnClickListener(new View.OnClickListener() {
+        editAreaCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ChromeHelpPopup chromeHelpPopup = new ChromeHelpPopup(getContext(),"Country Code");
                 chromeHelpPopup.show(v);
             }
-        });*/
+        });
 
        ///
         /*TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -93,15 +94,15 @@ public class CarlaCompletedActivityFragment extends Fragment {
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
 
-        progressDialog.setMessage(getResources().getString(R.string.uploading_image));
+        /*progressDialog.setMessage(getResources().getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
     }
 
     public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            progressDialog.dismiss();
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             if (bitmap != null)
                 imageViewCarla.setImageBitmap(bitmap);

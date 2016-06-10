@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hdfc.app42service.App42GCMController;
@@ -30,9 +31,9 @@ import com.shephertz.app42.paas.sdk.android.App42API;
  */
 public class DashboardActivity extends AppCompatActivity implements App42GCMController.App42GCMListener {
 
+    public static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
     private static AppCompatActivity appCompatActivity;
-
     final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -191,6 +192,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             goToActivity();
         }
 
+        loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         utils = new Utils(DashboardActivity.this);
         progressDialog = new ProgressDialog(DashboardActivity.this);
 
@@ -207,9 +209,11 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                     Thread backgroundThread = new BackgroundThread();
                     backgroundThread.start();*/
 
-                progressDialog.setMessage(getResources().getString(R.string.loading));
+
+                loadingPanel.setVisibility(View.VISIBLE);
+                /*progressDialog.setMessage(getResources().getString(R.string.loading));
                 progressDialog.setCancelable(false);
-                progressDialog.show();
+                progressDialog.show();*/
 
 
                 Utils.iActivityCount = 0;
@@ -303,15 +307,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     public void goToDashboardMenu() {
         //if (Config.intSelectedMenu != Config.intDashboardScreen) {
         Config.intSelectedMenu = Config.intDashboardScreen;
-        progressDialog.setMessage(getResources().getString(R.string.loading));
+        /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
 
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
         Utils.iActivityCount = 0;
         Utils.iProviderCount = 0;
 
-        utils.fetchDependents(Config.customerModel.getStrCustomerID(),
-                progressDialog, 0);
+        utils.fetchDependents(Config.customerModel.getStrCustomerID(), progressDialog, 0);
         //}
     }
 

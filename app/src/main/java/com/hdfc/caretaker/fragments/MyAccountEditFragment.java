@@ -29,6 +29,7 @@ import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -216,9 +217,9 @@ public class MyAccountEditFragment extends Fragment {
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
 
-        progressDialog.setMessage(getResources().getString(R.string.loading));
+       /* progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
 
         //loadingPanel.setVisibility(View.VISIBLE);
         //
@@ -340,9 +341,9 @@ public class MyAccountEditFragment extends Fragment {
 
                     if (utils.isConnectingToInternet()) {
 
-                        progressDialog.setMessage(getActivity().getString(R.string.uploading));
+                        /*progressDialog.setMessage(getActivity().getString(R.string.uploading));
                         progressDialog.setCancelable(false);
-                        progressDialog.show();
+                        progressDialog.show();*/
 
                         StorageService storageService = new StorageService(getActivity());
 
@@ -385,7 +386,7 @@ public class MyAccountEditFragment extends Fragment {
 
                                     if (utils.isConnectingToInternet()) {
 
-                                        progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
+                                        // progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
 
                                        /* try {
                                             strOldPass = AESCrypt.encrypt(Config.string, strOldPass);
@@ -400,14 +401,16 @@ public class MyAccountEditFragment extends Fragment {
                                                 , strPass, new App42CallBack() {
                                             @Override
                                             public void onSuccess(Object o) {
-                                                progressDialog.dismiss();
+                                                // progressDialog.dismiss();
+                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                                 utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                                 goToAccount();
                                             }
 
                                             @Override
                                             public void onException(Exception e) {
-                                                progressDialog.dismiss();
+                                                // progressDialog.dismiss();
+                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                                 try {
                                                     JSONObject jsonObject = new JSONObject(e.getMessage());
                                                     JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
@@ -423,7 +426,8 @@ public class MyAccountEditFragment extends Fragment {
                                     } else utils.toast(2, 2, getString(R.string.warning_internet));
 
                                 } else {
-                                    progressDialog.dismiss();
+                                    // progressDialog.dismiss();
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                     goToAccount();
                                 }
@@ -431,7 +435,8 @@ public class MyAccountEditFragment extends Fragment {
 
                             @Override
                             public void onException(Exception e) {
-                                progressDialog.dismiss();
+                                //progressDialog.dismiss();
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 utils.toast(2, 2, e.getMessage());
                             }
                         });
@@ -458,9 +463,9 @@ public class MyAccountEditFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
                 //Utils.toast(1, 1, "Getting Image...");
-                progressDialog.setMessage(getResources().getString(R.string.loading));
+                /*progressDialog.setMessage(getResources().getString(R.string.loading));
                 progressDialog.setCancelable(false);
-                progressDialog.show();
+                progressDialog.show();*/
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
                         strCustomerImgName = Utils.customerImageUri.getPath();
@@ -487,10 +492,10 @@ public class MyAccountEditFragment extends Fragment {
         try {
 
             if (utils.isConnectingToInternet()) {
-
+/*
                 progressDialog.setMessage(getResources().getString(R.string.uploading_image));
                 progressDialog.setCancelable(false);
-                progressDialog.show();
+                progressDialog.show();*/
 
                 UploadService uploadService = new UploadService(getActivity());
 
@@ -505,8 +510,9 @@ public class MyAccountEditFragment extends Fragment {
                             if(response!=null){
                                 uploadImage();
                             }else{
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                               /* if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
@@ -521,8 +527,9 @@ public class MyAccountEditFragment extends Fragment {
                                 if (appErrorCode != 1401 ) {
                                     uploadImage();
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.error));
                                 }
 
@@ -539,8 +546,9 @@ public class MyAccountEditFragment extends Fragment {
             }
         }catch (Exception e){
             e.printStackTrace();
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.error));
         }
     }
@@ -607,8 +615,9 @@ public class MyAccountEditFragment extends Fragment {
 
                                                     roundedImageView.setImageBitmap(bitmap);
 
-                                                    if (progressDialog.isShowing())
-                                                        progressDialog.dismiss();
+                                                    /*if (progressDialog.isShowing())
+                                                        progressDialog.dismiss();*/
+                                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                                                     utils.toast(2, 2, getString(R.string.update_profile_image));
 
@@ -624,16 +633,18 @@ public class MyAccountEditFragment extends Fragment {
                                                     isImageChanged = false;
 
                                                 } else {
-                                                    if (progressDialog.isShowing())
-                                                        progressDialog.dismiss();
+                                                    /*if (progressDialog.isShowing())
+                                                        progressDialog.dismiss();*/
+                                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                                 }
                                             }
 
                                             @Override
                                             public void onException(Exception e) {
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
+                                                /*if (progressDialog.isShowing())
+                                                    progressDialog.dismiss();*/
+                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                                                 if (e != null) {
                                                     Utils.log(e.toString(), "response");
@@ -650,13 +661,15 @@ public class MyAccountEditFragment extends Fragment {
                                     }
 
                                 } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
+                                        /*if (progressDialog.isShowing())
+                                            progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.error));
                                     }
                             }else{
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                               /* if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
@@ -664,8 +677,9 @@ public class MyAccountEditFragment extends Fragment {
                         @Override
                         public void onException(Exception e) {
 
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                             if(e!=null) {
                                 Utils.log(e.toString(), "response");
@@ -677,14 +691,17 @@ public class MyAccountEditFragment extends Fragment {
                     });
 
             } else {
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
+                /*if (progressDialog.isShowing())
+                    progressDialog.dismiss();*/
+
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
             e.printStackTrace();
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.error));
         }
     }
@@ -692,8 +709,9 @@ public class MyAccountEditFragment extends Fragment {
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             if (!isImageChanged) {
 

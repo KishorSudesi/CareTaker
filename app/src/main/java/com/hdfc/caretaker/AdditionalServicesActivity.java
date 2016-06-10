@@ -89,10 +89,10 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         if (!isUpdating) {
 
                             if (utils.isConnectingToInternet()) {
-                                progressDialog.setMessage(getResources().getString(R.string.loading));
+                               /* progressDialog.setMessage(getResources().getString(R.string.loading));
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
-
+*/
                                 storageService = new StorageService(AdditionalServicesActivity.this);
 
                                 iServiceCount = 0;
@@ -250,10 +250,10 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         super.onResume();
 
         //utils.populateHeaderDependents(dynamicUserTab, Config.intServiceScreen);
-
+/*
         progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
 
         StorageService storageService = new StorageService(AdditionalServicesActivity.this);
 
@@ -321,8 +321,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     public void refreshAdapter() {
 
         try {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             if (listView != null) {
 
@@ -368,8 +369,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                         addServicesHistory();
 
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
@@ -389,8 +391,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         @Override
                         public void onInsertionFailed(App42Exception ex) {
                             try {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 if (ex != null) {
                                     JSONObject jsonObject = new JSONObject(ex.getMessage());
                                     JSONObject jsonObjectError = jsonObject.
@@ -418,8 +421,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     Config.collectionServiceHistory);
 
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -467,8 +471,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                         addServices();
 
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                   /* if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
@@ -479,8 +484,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         @Override
                         public void onException(Exception ex) {
                             try {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                               /* if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 if (ex != null) {
                                     JSONObject jsonObject = new JSONObject(ex.getMessage());
                                     JSONObject jsonObjectError = jsonObject.
@@ -499,8 +505,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     });
 
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+           /* if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -714,8 +721,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                     addServices();
 
                             } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
@@ -731,8 +739,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         @Override
                         public void onInsertionFailed(App42Exception ex) {
                             try {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 if (ex != null) {
                                     JSONObject jsonObject = new JSONObject(ex.getMessage());
                                     JSONObject jsonObjectError = jsonObject.
@@ -760,8 +769,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     Config.collectionServiceCustomer);
 
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -804,8 +814,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                                 serviceModel);
                                     }
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
@@ -825,13 +836,15 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                     if (appErrorCode == 2601 || appErrorCode == 2608)
                                         addServiceDependent(serviceModel);
                                     else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
+                                        /*if (progressDialog.isShowing())
+                                            progressDialog.dismiss();*/
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                         utils.toast(2, 2, getString(R.string.error));
                                     }
                                 } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
@@ -842,8 +855,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     });
 
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
+            /*if (progressDialog.isShowing())
+                progressDialog.dismiss();*/
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -886,8 +900,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
 
     public void serviceAdded() {
-        if (progressDialog.isShowing())
-            progressDialog.dismiss();
+        /*if (progressDialog.isShowing())
+            progressDialog.dismiss();*/
+        DashboardActivity.loadingPanel.setVisibility(View.GONE);
         isUpdating = false;
         //buttonContinue.setEnabled(false);
         utils.toast(1, 1, getString(R.string.service_added));

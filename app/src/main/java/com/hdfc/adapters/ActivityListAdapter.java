@@ -65,11 +65,9 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.Message = (TextView) convertView.findViewById(R.id.textViewkop);
             viewHolder.person = (TextView) convertView.findViewById(R.id.txtPerson);
-            viewHolder.linearLayout = (LinearLayout) convertView.findViewById(
-                    R.id.completedActivityOne);
+            viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.completedActivityOne);
 
-            viewHolder.linearLayoutDone = (LinearLayout) convertView.findViewById(
-                    R.id.linearLayoutDone);
+            viewHolder.linearLayoutDone = (LinearLayout) convertView.findViewById(R.id.linearLayoutDone);
 
             convertView.setTag(viewHolder);
         } else {
@@ -131,8 +129,6 @@ public class ActivityListAdapter extends BaseAdapter {
 
             String strMess = "";
 
-            System.out.println("Danger zone ; "+activityListModel.getStrActivityDesc());
-            System.out.println("Status is : "+activityListModel.getStrActivityStatus());
             if (activityListModel.getStrActivityStatus().equalsIgnoreCase("new")
                     || activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming"))
                 strMess = activityListModel.getStrActivityDesc();

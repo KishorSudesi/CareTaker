@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <ImageView
         android:id="@+id/imageBg"
         android:layout_width="match_parent"
@@ -12,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        android:src="@drawable/ppl_bg" />
+        android:src="@drawable/app_inner_bg" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,47 +22,67 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/gradient_bg_selection">
 
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@mipmap/back_left_arrow" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="230dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo"
+            android:layout_centerHorizontal="true"
+            android:text="@string/who_needs_care"
+            android:textColor="@color/blue"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/imageSenior"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/textView2"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/senior" />
+
+        <Button
+            android:id="@+id/buttonMyself"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/imageSenior"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/edit_text_margin"
+            android:layout_marginRight="@dimen/edit_text_margin"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/button_white"
+            android:onClick="selectedMyself"
+            android:text="@string/myself"
+            android:textAllCaps="false"
+            android:textColor="@color/blue" />
+
+        <Button
+            android:id="@+id/buttonLovedOne"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/buttonMyself"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/edit_text_margin"
+            android:layout_marginRight="@dimen/edit_text_margin"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_blue"
+            android:onClick="selectedLovedOne"
+            android:text="@string/loved_one"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite" />
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/buttonLovedOne"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="42dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginRight="7dp"
-        android:background="@drawable/button_white"
-        android:onClick="selectedLovedOne"
-        android:text="@string/loved_one"
-        android:textAllCaps="false" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonLovedOne"
-        android:layout_centerHorizontal="true"
-        android:text="@string/who_needs_care"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/buttonMyself"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="40dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginStart="7dp"
-        android:background="@drawable/button_white"
-        android:onClick="selectedMyself"
-        android:padding="4dp"
-        android:text="@string/myself"
-        android:textAllCaps="false" />
-
 
 </RelativeLayout>

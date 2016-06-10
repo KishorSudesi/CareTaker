@@ -9,8 +9,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     ArrayList<DependentModel> dependentModels = Config.dependentModels;
     /* private static Thread backgroundThread;
      private static Handler threadHandler;*/
-    private RelativeLayout relLayout;
+    // private RelativeLayout relLayout;
     private EditText editEmail, editPassword;
     private RelativeLayout layoutLogin;
     private TextView txtForgotPassword;
@@ -55,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        relLayout = (RelativeLayout) findViewById(R.id.relativePass);
+        //  relLayout = (RelativeLayout) findViewById(R.id.relativePass);
         layoutLogin = (RelativeLayout) findViewById(R.id.layoutLogin);
         editEmail = (EditText) findViewById(R.id.editEmail);
         editPassword = (EditText) findViewById(R.id.editPassword);
@@ -68,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             if (imgBg != null) {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-                        R.drawable.blue_bg, Config.intScreenWidth, Config.intScreenHeight));
+                        R.drawable.app_inner_bg2, Config.intScreenWidth, Config.intScreenHeight));
             }
 
         } catch (Exception | OutOfMemoryError e) {
@@ -78,12 +76,12 @@ public class LoginActivity extends AppCompatActivity {
         Utils.log(utils.convertDateToString(new Date()), "DATE");
 
 
-        editEmail.setOnClickListener(new View.OnClickListener() {
+        /*editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPasswordfield();
             }
-        });
+        });*/
 
         txtForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                showPasswordfield();
+                //showPasswordfield();
                 utils.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text),
                         getResources().getDrawable(R.drawable.edit_text_blue), editPassword);
             }
@@ -215,7 +213,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void showPasswordfield() {
+    /*private void showPasswordfield() {
         if (relLayout.getVisibility() == View.GONE) {
 
             relLayout.setVisibility(View.VISIBLE);
@@ -234,7 +232,7 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     @Override
     protected void onResume() {
@@ -248,12 +246,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public void validateLogin(View v) {
 
-        showPasswordfield();
+        //showPasswordfield();
 
         utils.setEditTextDrawable(editEmail, getResources().getDrawable(R.drawable.edit_text));
         utils.setEditTextDrawable(editPassword, getResources().getDrawable(R.drawable.edit_text));
 
-        if (relLayout.getVisibility() == View.VISIBLE) {
+        // if (relLayout.getVisibility() == View.VISIBLE) {
 
             editEmail.setError(null);
             editPassword.setError(null);
@@ -362,7 +360,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else utils.toast(2, 2, getString(R.string.warning_internet));
             }
-        }
+        //   }
     }
 
 

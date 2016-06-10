@@ -58,6 +58,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public static String dependantImgName = "";
     public static String strImageName = "";
     public static String strDependantName = "";
+    public static String relation;
     public static Bitmap bitmap = null;
     public static Uri uri;
     public static DependentModel dependentModel = null;
@@ -69,9 +70,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private static ProgressDialog mProgress = null;
     public String drawable;
+    Button buttonContinue;
     private Utils utils;
     private Spinner spinnerRelation;
-
     private String strRelation;
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
@@ -138,6 +139,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     strRelation = (String) parent.getItemAtPosition(position);
+                    relation = spinnerRelation.getSelectedItem().toString();
                 }
 
                 @Override
@@ -151,7 +153,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         editDependantEmail = (EditText) findViewById(R.id.editDependantEmail);
         mProgress = new ProgressDialog(DependentDetailPersonalActivity.this);
 
-        Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        buttonContinue = (Button) findViewById(R.id.buttonContinue);
 
         imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);
 
@@ -243,6 +245,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         final String strAddress = editAddress.getText().toString().trim();
         final String strEmail = editDependantEmail.getText().toString().trim();
         final String strDob = editTextDate.getText().toString().trim();
+        final String relation = spinnerRelation.getSelectedItem().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -253,7 +256,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             cancel = true;
         }*/
 
-        if (TextUtils.isEmpty(strRelation) || strRelation.equalsIgnoreCase("Select a Relation")) {
+        if (TextUtils.isEmpty(relation) || relation.equalsIgnoreCase("Select a Relation")) {
                 /*editRelation.setError(getString(R.string.error_field_required));
                 focusView = editRelation;*/
                 cancel = true;
@@ -344,7 +347,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                                 // strAddress, strContactNo, strEmail, "", 0
 
                                 dependentModel.setStrName(strDependantName);
-                                dependentModel.setStrRelation(strRelation);
+                                dependentModel.setStrRelation(relation);
                                 dependentModel.setStrImagePath(strImageName);
                                 dependentModel.setStrAddress(strAddress);
                                 dependentModel.setStrContacts(strContactNo);
@@ -357,7 +360,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                                         && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
 
                                     dependentModel.setStrName(strDependantName);
-                                    dependentModel.setStrRelation(strRelation);
+                                    dependentModel.setStrRelation(relation);
                                     dependentModel.setStrImagePath(strImageName);
                                     dependentModel.setStrAddress(strAddress);
                                     dependentModel.setStrContacts(strContactNo);
@@ -596,6 +599,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 } else isCamera = false;
             } else isCamera = false;
         //} else isCamera = false;
+
+
     }
 
     @Override

@@ -12,11 +12,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -167,15 +167,16 @@ public class UpcomingFragment extends Fragment {
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
 
-        progressDialog.setMessage(getResources().getString(R.string.uploading_image));
+        /*progressDialog.setMessage(getResources().getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog.show();*/
     }
 
     public static class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
             if (bitmap != null)
                 imageViewCarla.setImageBitmap(bitmap);
