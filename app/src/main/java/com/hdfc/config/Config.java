@@ -50,6 +50,8 @@ public class Config {
     public static final boolean isDebuggable = true;
     public static final boolean release = false;
 
+    public static final int intCompressWidth = 480, intCompressHeight = 600, iQuality = 60;
+
     public static final String strRelations[] = {"Select a Relation", "Father", "Mother", "Uncle", "Aunt", "Grand Father", "Grand Mother", "Father-in-law", "Mother-in-law", "Other"};
 
     public static final String[] countryNames = {"Select Country", "Afghanistan", "Albania",

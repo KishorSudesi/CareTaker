@@ -550,6 +550,7 @@ public class GuruDetailsFragment extends Fragment {
                     strCustomerImgName = galleryFile.getAbsolutePath();
                     InputStream is = getActivity().getContentResolver().openInputStream(uri);
                     utils.copyInputStreamToFile(is, galleryFile);
+                    utils.compressImageFromPath(strCustomerImgName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
                     bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth,
                             Config.intHeight);
                 }
@@ -566,6 +567,7 @@ public class GuruDetailsFragment extends Fragment {
 
             try {
                 if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
+                    utils.compressImageFromPath(strCustomerImgName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
                     bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth,
                             Config.intHeight);
                 }

@@ -642,6 +642,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     strImageName = galleryFile.getAbsolutePath();
                     InputStream is = getContentResolver().openInputStream(uri);
                     utils.copyInputStreamToFile(is, galleryFile);
+                    utils.compressImageFromPath(strImageName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
                     bitmap = utils.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);
@@ -658,6 +659,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
             try {
                 if (strImageName != null && !strImageName.equalsIgnoreCase("")) {
+                    utils.compressImageFromPath(strImageName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
                     bitmap = utils.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
                 }
                 backgroundThreadHandler.sendEmptyMessage(0);

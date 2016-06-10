@@ -79,6 +79,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -2643,6 +2644,69 @@ public class Utils {
                 loadImagesActivityMonth();
         }
     }
+
+    //
+    public boolean compressImageFromPath(String strPath, int reqWidth, int reqHeight, int iQuality) {
+
+        boolean b = true;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bmp = null;
+        try {
+            // First decode with inJustDecodeBounds=true to check dimensions
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(strPath, options);
+
+            // Calculate inSampleSize
+            options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, reqWidth,
+                    reqHeight);
+
+            // Decode bitmap with inSampleSize set
+            options.inJustDecodeBounds = false;
+            options.inDither = false;
+
+          /*  reqWidth = options.outWidth;
+            reqHeight = options.outHeight;*/
+
+            log(String.valueOf(reqWidth), " WIDTH ");
+            log(String.valueOf(reqHeight), " HEIGHT ");
+
+            bmp = createScaledBitmap(BitmapFactory.decodeFile(strPath), reqWidth,
+                    reqHeight);
+
+            //jpeg compress
+            byte[] bmpPicByteArray;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.reset();
+            bmp.compress(Bitmap.CompressFormat.JPEG, iQuality, bos);
+            bmpPicByteArray = bos.toByteArray();
+            bmp.recycle();
+
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(new File(strPath));
+                fos.write(bmpPicByteArray);
+                fos.flush();
+                fos.close();
+                bos.reset();
+
+            } catch (IOException e) {
+                fos.flush();
+                fos.close();
+                bos.reset();
+                e.printStackTrace();
+                b = false;
+            }
+            //
+
+        } catch (Exception | OutOfMemoryError e) {
+            e.printStackTrace();
+            b = false;
+        }
+
+        return b;
+    }
+    //
 
     public void loadAllFiles() {
         for (int i = 0; i < Config.fileModels.size(); i++) {
