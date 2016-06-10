@@ -14,4 +14,5 @@
     <color name="polygonViewCircleStrokeColor">#ff59a9ff</color>
     <color name="polygonViewCircleBackground">#90e5f8ff</color>
     <color name="red">#FF0000</color>
+    <color name="blue">#6495ED</color>
 </resources>

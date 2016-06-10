@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@drawable/header_border"
+    android:background="@drawable/transprant_btn"
     android:orientation="vertical"
     android:padding="@dimen/padding_general">
 
@@ -17,6 +17,8 @@
         android:layout_weight="1"
         android:background="@drawable/button_back_trans"
         android:text="List"
+        android:textSize="20sp"
+        android:textColor="@color/colorWhite"
         android:textAllCaps="false"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -25,8 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:gravity="center"
+        android:background="@drawable/transprant_btn"
         android:orientation="horizontal"
-        android:background="#EEEEEE"
         android:layout_centerHorizontal="true">
 
         <ImageView android:id="@+id/prevMonth"

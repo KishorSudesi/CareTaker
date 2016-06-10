@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private RelativeLayout layoutLogin;
     private TextView txtForgotPassword;
     private CheckView checkView;
-    private TextView editTextCaptcha;
+    private EditText editTextCaptcha;
     private EditText forgotpasswordUserName;
     private ImageButton reloadCaptcha;
     private char[] res = new char[4];
