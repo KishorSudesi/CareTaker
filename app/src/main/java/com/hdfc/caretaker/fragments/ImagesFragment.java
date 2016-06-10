@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -17,6 +16,7 @@ import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.MyLinearView;
+import com.hdfc.views.RoundedImageView;
 
 public class ImagesFragment extends Fragment {
 
@@ -24,7 +24,7 @@ public class ImagesFragment extends Fragment {
     private static Handler threadHandler;
     private Bitmap bitmap;
     private int intPosition;
-    private ImageView imageView;
+    private RoundedImageView imageView;
     private RelativeLayout loadingPanel;
 
     public static Fragment newInstance(Context context, int pos,
@@ -48,7 +48,7 @@ public class ImagesFragment extends Fragment {
 
         loadingPanel = (RelativeLayout) l.findViewById(R.id.loadingPanel);
 
-        imageView = (ImageView) l.findViewById(R.id.content);
+        imageView = (RoundedImageView) l.findViewById(R.id.content);
 
         utils = new Utils(getActivity());
 

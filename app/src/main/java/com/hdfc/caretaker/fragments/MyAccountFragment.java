@@ -84,23 +84,23 @@ public class MyAccountFragment extends Fragment {
         roundedImageView = (RoundedImageView) view.findViewById(R.id.imageView5);
 
 
-        if(Config.dependentNames.size()<=1)
-            roundedImageView.setVisibility(View.INVISIBLE);
+        /*if(Config.dependentNames.size()<=1)
+            roundedImageView.setVisibility(View.INVISIBLE);*/
 
         try {
-            if(Config.dependentNames.size()>0) {
+           /* if(Config.dependentNames.size()>0) {
                 int intPosition = 0;
 
                 if (Config.dependentNames.size() > 1)
                     intPosition = 1;
 
-                iPosition = intPosition;
+                iPosition = intPosition;*/
 
                 threadHandler = new ThreadHandler();
                 Thread backgroundThread = new BackgroundThread();
                 backgroundThread.start();
 
-            }
+            //}
         } catch (Exception e) {
             e.printStackTrace();
         }
