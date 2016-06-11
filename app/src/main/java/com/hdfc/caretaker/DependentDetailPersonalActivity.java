@@ -105,11 +105,13 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dependent_detail_personal);
 
         utils = new Utils(DependentDetailPersonalActivity.this);
+        utils.setStatusBarColor("#2196f3");
 
         editName = (EditText) findViewById(R.id.editDependantName);
         editContactNo = (EditText) findViewById(R.id.editContactNo);
         editAddress = (EditText) findViewById(R.id.editAddress);
         editTextDate = (EditText)findViewById(R.id.editDOB);
+
         //Button buttonSkip = (Button)findViewById(R.id.buttonSkip);
 
         /*if (buttonSkip != null) {

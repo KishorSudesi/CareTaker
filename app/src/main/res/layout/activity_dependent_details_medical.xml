@@ -114,7 +114,8 @@
                 android:layout_marginTop="35dp"
                 android:background="@drawable/button_blue"
                 android:text="@string/skip"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite" />
 
         </LinearLayout>
 

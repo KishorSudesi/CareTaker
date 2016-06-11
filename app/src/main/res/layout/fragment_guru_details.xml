@@ -217,7 +217,8 @@
                 android:background="@drawable/button_blue"
                 android:onClick="validateUser"
                 android:text="@string/string_continue"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite" />
 
         </LinearLayout>
 

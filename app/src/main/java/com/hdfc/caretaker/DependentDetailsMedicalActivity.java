@@ -36,6 +36,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dependent_details_medical);
 
         utils = new Utils(DependentDetailsMedicalActivity.this);
+        utils.setStatusBarColor("#2196f3");
+
         progressDialog = new ProgressDialog(DependentDetailsMedicalActivity.this);
 
         editAge = (EditText) findViewById(R.id.editAge);

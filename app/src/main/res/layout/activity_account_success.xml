@@ -24,10 +24,11 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="@dimen/margin_general"
-        android:background="@drawable/button_white"
+        android:background="@drawable/button_blue"
         android:onClick="goToDashboard"
         android:text="@string/view_dashboard"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite" />
 
     <TextView
         android:id="@+id/textViewMess"
@@ -39,7 +40,8 @@
         android:layout_marginRight="10dp"
         android:padding="10dp"
         android:text="@string/account_success_message"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite" />
 
     <TextView
         android:id="@+id/textViewHeader"
@@ -52,7 +54,8 @@
         android:padding="10dp"
         android:text="@string/account_success_header"
         android:textAlignment="center"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite" />
 
     <ImageView
         android:id="@+id/imageView2"
