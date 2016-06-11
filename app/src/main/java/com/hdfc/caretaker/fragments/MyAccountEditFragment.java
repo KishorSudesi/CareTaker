@@ -719,7 +719,7 @@ public class MyAccountEditFragment extends Fragment {
                     roundedImageView.setImageBitmap(bitmap);
                 else {
                     roundedImageView.setBackgroundDrawable(getActivity().getResources().
-                            getDrawable(R.mipmap.camera_icon));
+                            getDrawable(R.mipmap.camera));
                     utils.toast(2, 2, getString(R.string.error));
                 }
             }
@@ -729,7 +729,7 @@ public class MyAccountEditFragment extends Fragment {
                     checkImage();
                 else {
                     roundedImageView.setBackgroundDrawable(getActivity().getResources().
-                            getDrawable(R.mipmap.camera_icon));
+                            getDrawable(R.mipmap.camera));
                     utils.toast(2, 2, getString(R.string.error));
                 }
             }

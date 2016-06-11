@@ -93,7 +93,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     if (checkBox.isChecked()) {
                         checkBox.setChecked(false);
                         checkBox.setButtonDrawable(getResources().
-                                getDrawable(R.mipmap.check_off));
+                                getDrawable(R.mipmap.tick_disable));
                         selectedServiceModel = null;
                     } else {
 
@@ -107,7 +107,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 */
                         checkBox.setChecked(true);
                         checkBox.setButtonDrawable(getResources().
-                                getDrawable(R.mipmap.check_on));
+                                getDrawable(R.mipmap.tick));
                         selectedServiceModel = serviceModel;
                     }
 

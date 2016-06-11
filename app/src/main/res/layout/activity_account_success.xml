@@ -60,5 +60,5 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/textViewHeader"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/ok" />
+        android:src="@mipmap/tick" />
 </RelativeLayout>

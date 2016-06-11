@@ -45,7 +45,7 @@
                 android:background="@drawable/button_back_trans"
                 android:onClick="backToDashboard"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/play_icon_32" />
+                android:src="@drawable/video_play" />
 
             <ImageButton
                 android:id="@+id/imageButtonImage"
@@ -55,7 +55,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/img_icon_32" />
+                android:src="@drawable/image_viewer" />
 
             <ImageButton
                 android:id="@+id/imageButtonRating"
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/smiley_icon_32" />
+                android:src="@drawable/feedback_smiley" />
 
             <ImageButton
                 android:id="@+id/imageButtonAdd"

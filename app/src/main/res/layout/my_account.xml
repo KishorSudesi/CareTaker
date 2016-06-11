@@ -61,7 +61,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="@dimen/edit_text_margin"
-                    android:src="@drawable/edit" />
+                    android:src="@drawable/notes_icon" />
 
                 <TextView
                     android:id="@+id/textViewName"
@@ -101,7 +101,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bottom_border_grey"
-                    android:drawableLeft="@drawable/receiver_icon"
+                    android:drawableLeft="@drawable/contact"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
@@ -116,7 +116,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bottom_border_grey"
-                    android:drawableLeft="@drawable/address_icon"
+                    android:drawableLeft="@drawable/location"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
@@ -132,7 +132,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bottom_border_grey"
-                    android:drawableLeft="@drawable/wallet_icon_32"
+                    android:drawableLeft="@drawable/wallet"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
@@ -175,7 +175,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bottom_border_grey"
-                    android:drawableLeft="@drawable/logout_icon_32"
+                    android:drawableLeft="@drawable/log_out"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"

@@ -47,7 +47,7 @@
                 android:layout_marginRight="@dimen/margin_general"
                 android:layout_marginTop="30dp"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/done" />
+                android:src="@drawable/tick" />
 
         </LinearLayout>
 

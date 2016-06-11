@@ -35,7 +35,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
             if (imgBg != null) {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-                        R.drawable.app_inner_bg2, Config.intScreenWidth, Config.intScreenHeight));
+                        R.drawable.app_header_blue, Config.intScreenWidth, Config.intScreenHeight));
             }
 
         } catch (Exception | OutOfMemoryError e) {

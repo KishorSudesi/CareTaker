@@ -26,8 +26,8 @@ import java.util.List;
  */
 public class RatingCompletedAdapter extends BaseAdapter {
 
-    private static final int[] intImageIds = new int[]{R.mipmap.rate_icon_1, R.mipmap.rate_icon_2,
-            R.mipmap.rate_icon_3, R.mipmap.smiley_icon, R.mipmap.rate_icon_4};
+    private static final int[] intImageIds = new int[]{R.mipmap.feedback_smiley, R.mipmap.feedback_smiley,
+            R.mipmap.feedback_smiley, R.mipmap.feedback_smiley, R.mipmap.feedback_smiley};
     private static LayoutInflater inflater = null;
     private static Context _ctx;
     private static Utils utils;

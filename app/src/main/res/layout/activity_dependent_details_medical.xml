@@ -50,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="7dp"
-                    android:src="@drawable/steth_icon" />
+                    android:src="@drawable/health" />
 
                 <EditText
                     android:id="@+id/editDiseases"

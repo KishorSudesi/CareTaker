@@ -300,7 +300,8 @@ public class ConfirmFragment extends Fragment {
                                     pDialog.dismiss();
                                 strCustomerImageUrl = fileList.get(0).getUrl();
                                 Config.customerModel.setStrImgUrl(strCustomerImageUrl);
-                                checkStorage();
+                                //checkStorage();
+                                uploadData();
                             } else {
                                 utils.toast(2, 2, ((Upload) response).getStrResponse());
                                 uploadImage();
@@ -322,7 +323,8 @@ public class ConfirmFragment extends Fragment {
                             if (appErrorCode == 2100) {
                                 if (pDialog.isShowing())
                                     pDialog.dismiss();
-                                checkStorage();
+                                //checkStorage();
+                                uploadData();
                             } else {
                                 utils.toast(2, 2, getString(R.string.error));
                                 uploadImage();
@@ -468,6 +470,10 @@ public class ConfirmFragment extends Fragment {
     public void uploadData() {
 
         boolean isRegistered = prepareData(strCustomerImageUrl);
+
+        progressDialog.setMessage(getActivity().getResources().getString(R.string.uploading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         if (utils.isConnectingToInternet()) {
 
@@ -649,7 +655,10 @@ public class ConfirmFragment extends Fragment {
 
                     //jsonDependant.put("services", new JSONArray());
 
-                    if (utils.isConnectingToInternet()) {
+                    insertDependent(dependentModel.getStrEmail(), jsonDependant,
+                            iSelectedDependent);
+
+                    /*if (utils.isConnectingToInternet()) {
 
                         StorageService storageService = new StorageService(getActivity());
 
@@ -735,7 +744,7 @@ public class ConfirmFragment extends Fragment {
                         if (progressDialog.isShowing())
                             progressDialog.dismiss();
                         utils.toast(2, 2, getString(R.string.warning_internet));
-                    }
+                    }*/
                 } else {
                     iDependentCount++;
                     createDependent();
@@ -781,7 +790,14 @@ public class ConfirmFragment extends Fragment {
                                             Config.strDependentIds.add(strDependentDocId);
                                         //
 
-                                        createDependentUser(strDependentEmail);
+                                        iDependentCount++;
+
+                                        if (SignupActivity.dependentModels.size() == iDependentCount)
+                                            callSuccess();
+                                        else
+                                            createDependent();
+
+                                        //createDependentUser(strDependentEmail);
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -810,8 +826,16 @@ public class ConfirmFragment extends Fragment {
                                     progressDialog.dismiss();
 
                                 if (ex != null) {
-                                    Utils.log(ex.getMessage(), "");
-                                    utils.toast(2, 2, getString(R.string.error_register));
+                                    /*Utils.log(ex.getMessage(), "");
+                                    utils.toast(2, 2, getString(R.string.error_register));*/
+
+                                    iDependentCount++;
+
+                                    if (SignupActivity.dependentModels.size() == iDependentCount)
+                                        callSuccess();
+                                    else
+                                        createDependent();
+
                                 } else {
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                             }

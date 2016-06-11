@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:button="@mipmap/check_off"
+                android:button="@mipmap/tick_disable"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false" />

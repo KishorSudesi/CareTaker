@@ -92,7 +92,7 @@ public class DependentViewAdapter extends BaseAdapter {
                     //holder.textViewLabel.setVisibility(View.GONE);
 
                     holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
-                            R.drawable.plus_icon));
+                            R.drawable.plus));
                 }
 
             } catch (Exception e) {

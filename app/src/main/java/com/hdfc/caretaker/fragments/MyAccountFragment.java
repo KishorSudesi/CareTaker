@@ -249,7 +249,7 @@ public class MyAccountFragment extends Fragment {
                 roundedImageView.setImageBitmap(bitmap);
             else {
                 roundedImageView.setBackgroundDrawable(context.getResources().
-                        getDrawable(R.mipmap.camera_icon));
+                        getDrawable(R.mipmap.camera));
             }
 
             loadingPanel.setVisibility(View.GONE);

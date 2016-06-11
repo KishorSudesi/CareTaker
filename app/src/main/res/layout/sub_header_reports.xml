@@ -34,7 +34,7 @@
                 android:background="@drawable/button_back_trans"
                 android:onClick="backToDashboard"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/reports_icon" />
+                android:src="@mipmap/report" />
 
             <ImageButton
                 android:id="@+id/buttonCall"
@@ -44,7 +44,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/med_icon" />
+                android:src="@mipmap/medicine" />
 
             <ImageButton
                 android:id="@+id/buttonSmiley"
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/health_icon" />
+                android:src="@mipmap/health" />
 
             <ImageButton
                 android:id="@+id/buttonCancel"
@@ -64,7 +64,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/weight_icon" />
+                android:src="@mipmap/wallet" />
 
         </TableRow>
 

@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             if (imgBg != null) {
                 imgBg.setImageBitmap(Utils.decodeSampledBitmapFromResource(getResources(),
-                        R.drawable.app_inner_bg2, Config.intScreenWidth, Config.intScreenHeight));
+                        R.drawable.app_header_blue, Config.intScreenWidth, Config.intScreenHeight));
             }
 
         } catch (Exception | OutOfMemoryError e) {
@@ -348,9 +348,10 @@ public class LoginActivity extends AppCompatActivity {
                                     JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                     String strMess = jsonObjectError.getString("details");
 
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    utils.toast(2, 2, strMess);
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } else {
                                 utils.toast(2, 2, getString(R.string.warning_internet));

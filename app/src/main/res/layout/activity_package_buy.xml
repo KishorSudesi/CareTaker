@@ -58,21 +58,21 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ok"
+                        android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
                         android:text="Senior assistance with daily task" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ok"
+                        android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
                         android:text="Medical Checkups" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ok"
+                        android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
                         android:text="Senior assistance with daily task" />
                 </LinearLayout>
@@ -122,21 +122,21 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ok"
+                        android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
                         android:text="All services of base package" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ok"
+                        android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
                         android:text="Financial services" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@mipmap/ok"
+                        android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
                         android:text="Will creation and more" />
                 </LinearLayout>

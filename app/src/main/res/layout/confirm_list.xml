@@ -83,7 +83,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/address_icon" />
+                    android:background="@drawable/location" />
 
                 <TextView
                     android:id="@+id/textAddress"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
                 android:layout_weight="1"
-                    android:drawableLeft="@drawable/receiver_icon"
+                    android:drawableLeft="@drawable/location"
                     android:drawablePadding="10dp"
                 android:padding="@dimen/padding_general"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/mail_icon"
+                android:drawableLeft="@drawable/mail_icon_32"
                 android:drawablePadding="10dp"
                 android:padding="8dp"
                 android:textAppearance="?android:attr/textAppearanceMedium" />

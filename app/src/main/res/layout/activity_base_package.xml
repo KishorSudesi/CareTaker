@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_inner_bg2"
+    android:background="@drawable/app_header_blue"
     android:orientation="vertical">
 
 
@@ -31,18 +31,18 @@
                     android:id="@+id/buttonBack"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@mipmap/backarrow"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="20dp"
-                    android:visibility="gone"
-                    android:layout_marginLeft="10dp"/>
+                    android:background="@mipmap/back_arrow"
+                    android:visibility="gone" />
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/logo"
-                    android:layout_marginTop="15dp"
                     android:layout_marginBottom="15dp"
                     android:layout_marginLeft="90dp"
-                    android:layout_marginRight="90dp"/>
+                    android:layout_marginRight="90dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/logo" />
 
             </RelativeLayout>
 
@@ -91,10 +91,10 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
-                    android:textSize="18sp"
                     android:gravity="center"
                     android:text="Best suitable for seniors who need a little assistance to get their life organized"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="18sp" />
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -118,7 +118,7 @@
                             android:layout_height="30dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="@dimen/margin_general"
-                            android:background="@drawable/verysmall"
+                            android:background="@drawable/tick"
                             android:padding="@dimen/padding_general" />
                     </LinearLayout>
 
@@ -164,7 +164,7 @@
                             android:layout_height="30dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="@dimen/margin_general"
-                            android:background="@drawable/verysmall"
+                            android:background="@drawable/tick"
                             android:padding="@dimen/padding_general" />
                     </LinearLayout>
 
@@ -210,7 +210,7 @@
                             android:layout_height="30dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="@dimen/margin_general"
-                            android:background="@drawable/verysmall"
+                            android:background="@drawable/tick"
                             android:padding="@dimen/padding_general" />
                     </LinearLayout>
 
@@ -257,7 +257,7 @@
                             android:layout_height="30dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="@dimen/margin_general"
-                            android:background="@drawable/verysmall"
+                            android:background="@drawable/tick"
                             android:padding="@dimen/padding_general" />
                     </LinearLayout>
 

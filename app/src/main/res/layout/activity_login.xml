@@ -3,14 +3,14 @@
     android:id="@+id/layoutLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_inner_bg">
+    android:background="@drawable/app_header_blue">
 
     <ImageView
         android:layout_width="30dp"
         android:layout_height="25dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:background="@mipmap/back_left_arrow" />
+        android:background="@mipmap/back_arrow" />
 
     <ImageView
         android:layout_width="180dp"
@@ -48,7 +48,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="@dimen/edit_text_margin"
         android:layout_marginRight="@dimen/edit_text_margin"
-        android:drawableLeft="@drawable/email"
+        android:drawableLeft="@drawable/mail_icon_32"
         android:drawablePadding="15dp"
         android:ems="10"
         android:hint="@string/email"

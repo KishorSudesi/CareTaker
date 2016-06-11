@@ -477,7 +477,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             editDependantEmail.setText("");
 
             imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-                    R.mipmap.camera_icon));
+                    R.mipmap.camera));
 
             if (cur != null && cur.getCount() > 0) {
                 while (cur.moveToNext()) {
@@ -527,7 +527,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     }
                 } else {
                     imgButtonCamera.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-                            R.mipmap.camera_icon));
+                            R.mipmap.camera));
                     strImageName = "";
                 }
 

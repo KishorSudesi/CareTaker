@@ -22,7 +22,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/dashboard_activity" />
+                android:src="@mipmap/activity" />
 
             <!--  <ImageButton
                   android:id="@+id/buttonVideo"
@@ -42,7 +42,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/dashboard_seniors" />
+                android:src="@mipmap/senior" />
 
             <ImageButton
                 android:id="@+id/buttonNotifications"
@@ -52,7 +52,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/dashboard_notifications" />
+                android:src="@mipmap/notification" />
 
             <ImageButton
                 android:id="@+id/buttonAccount"
@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_back_trans"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/dashboard_account" />
+                android:src="@mipmap/my_account" />
 
         </TableRow>
 

@@ -174,12 +174,12 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             selectedServiceModels.remove(serviceModel);
                             checkBox.setChecked(false);
                             checkBox.setButtonDrawable(getResources().
-                                    getDrawable(R.mipmap.check_off));
+                                    getDrawable(R.mipmap.tick_disable));
                         } else {
                             selectedServiceModels.add(serviceModel);
                             checkBox.setChecked(true);
                             checkBox.setButtonDrawable(getResources().
-                                    getDrawable(R.mipmap.check_on));
+                                    getDrawable(R.mipmap.tick));
                         }
 
                         if (selectedServiceModels.size() > 0 || selectedServiceHistoryModels.size() > 0)
