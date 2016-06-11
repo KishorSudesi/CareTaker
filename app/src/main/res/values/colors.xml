@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#66a6b2</color>
-    <color name="colorPrimaryDark">#3d7f8d</color>
+    <color name="colorPrimary">#2196f3</color>
+    <color name="colorPrimaryDark">#046abc</color>
     <color name="colorAccent">#292929</color>
     <color name="colorAccentDark">#181818</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="statusBG">#5cabb2</color>
+    <color name="statusBG">#2196f3</color>
     <color name="orange">#FFA726</color>
 
-    <color name="colorHeaderGradientStart">#96d4ce</color>
+    <color name="colorHeaderGradientStart">#2196f3</color>
     <color name="colorHeaderGradientEnd">#6fb6c4</color>
 
     <color name="polygonViewCircleStrokeColor">#ff59a9ff</color>
-    <color name="polygonViewCircleBackground">#90e5f8ff</color>
+    <color name="polygonViewCircleBackground">#046abc</color>
     <color name="red">#FF0000</color>
-    <color name="colorBlue">#6495ED</color>
-    <color name="blue">#6495ED</color>
+    <color name="blue">#2196f3</color>
+    <color name="colorDarkBlue">#046abc</color>
+    <color name="colorHightlight">#ff2c55</color>
+    <color name="colorBlackDark">#222222</color>
 </resources>

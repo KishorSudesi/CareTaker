@@ -22,9 +22,8 @@
                 android:id="@+id/roundedImageView"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_general"
-                android:padding="@dimen/padding_general" />
+                android:background="@drawable/bullet_1" />
 
         </LinearLayout>
 
@@ -55,16 +54,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="13dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14sp" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/blue" />
 
                 <TextView
                     android:id="@+id/textViewTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="13dp"
-                    android:textColor="#333333"
-                    android:textSize="12sp" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/blue" />
 
             </LinearLayout>
 

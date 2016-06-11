@@ -12,8 +12,8 @@
     <RelativeLayout
         android:id="@+id/toplayout"
         android:layout_width="match_parent"
-        android:layout_height="92dp"
-        >
+        android:layout_height="120dp">
+
         <ImageButton
             android:id="@+id/buttonBack"
             android:layout_width="25dp"
@@ -22,13 +22,10 @@
             android:layout_marginTop="20dp"
             android:background="@mipmap/back_arrow"
             android:visibility="gone" />
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="90dp"
-            android:layout_marginRight="90dp"
-            android:layout_marginTop="15dp"
             android:background="@drawable/logo" />
 
     </RelativeLayout>
@@ -60,15 +57,6 @@
         android:gravity="center"
         android:text="@string/no_services"
         android:visibility="gone" />
-
-    <!--  <ListView
-          android:id="@+id/listView1"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_above="@+id/buttonContinue"
-          android:layout_below="@+id/includeDashboardList">
-
-      </ListView>-->
 
     <ExpandableListView
         android:id="@+id/listView1"

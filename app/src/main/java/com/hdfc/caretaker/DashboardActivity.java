@@ -34,6 +34,12 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     public static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
     private static AppCompatActivity appCompatActivity;
+
+    private static ImageButton buttonActivity, buttonNotifications, buttonAccount, buttonSeniors;
+    private static TextView txtViewActivity, textViewNotifications, textViewAccount, textViewSeniors;
+
+    private static Context context;
+
     final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -76,6 +82,23 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         transaction.addToBackStack(null);
         transaction.commit();
         //}
+
+        setMenu();
+
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+        textViewSeniors.setTextColor(context.getResources().getColor(R.color.blue));
+    }
+
+    private static void setMenu() {
+        buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity));
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+        buttonNotifications.setImageDrawable(context.getResources().getDrawable(R.mipmap.notification));
+        buttonAccount.setImageDrawable(context.getResources().getDrawable(R.mipmap.my_account));
+
+        textViewAccount.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
+        textViewNotifications.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
+        textViewSeniors.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
+        txtViewActivity.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
     }
 
     @Override
@@ -83,17 +106,21 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_layout);
 
-        ImageButton buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
-        TextView txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
+        buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
+        txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
 
-        ImageButton buttonNotifications = (ImageButton) findViewById(R.id.buttonNotifications);
-        TextView textViewNotifications = (TextView) findViewById(R.id.textViewNotifications);
+        buttonNotifications = (ImageButton) findViewById(R.id.buttonNotifications);
+        textViewNotifications = (TextView) findViewById(R.id.textViewNotifications);
 
-        ImageButton buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
-        TextView textViewAccount = (TextView) findViewById(R.id.textViewAccount);
+        buttonAccount = (ImageButton) findViewById(R.id.buttonAccount);
+        textViewAccount = (TextView) findViewById(R.id.textViewAccount);
 
-        ImageButton buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
-        TextView textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
+        buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
+        textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
+
+        context = DashboardActivity.this;
+
+        setMenu();
 
         if (txtViewActivity != null) {
             txtViewActivity.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +223,8 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         utils = new Utils(DashboardActivity.this);
         progressDialog = new ProgressDialog(DashboardActivity.this);
 
+        utils.setStatusBarColor("#2196f3");
+
         appCompatActivity = DashboardActivity.this;
 
         if (Config.customerModel != null)
@@ -277,6 +306,11 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+
+        setMenu();
+
+        buttonNotifications.setImageDrawable(getResources().getDrawable(R.mipmap.notification_active));
+        textViewNotifications.setTextColor(getResources().getColor(R.color.blue));
         // }
     }
 
@@ -288,10 +322,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+
+        setMenu();
+
+        buttonAccount.setImageDrawable(getResources().getDrawable(R.mipmap.my_account_active));
+        textViewAccount.setTextColor(getResources().getColor(R.color.blue));
         //}
     }
 
-    public void goToActivity() {
+    private void goToActivity() {
 
         //if (Config.intSelectedMenu == Config.intListActivityScreen ||
         //Config.intSelectedMenu == Config.intActivityScreen) {
@@ -301,6 +340,11 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+
+        setMenu();
+
+        buttonActivity.setImageDrawable(getResources().getDrawable(R.mipmap.activity_active));
+        txtViewActivity.setTextColor(getResources().getColor(R.color.blue));
         //}
     }
 
@@ -311,7 +355,12 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         progressDialog.setCancelable(false);
         progressDialog.show();*/
 
-        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+        setMenu();
+
+        buttonSeniors.setImageDrawable(getResources().getDrawable(R.mipmap.senior));
+        textViewSeniors.setTextColor(getResources().getColor(R.color.blue));
+
+        loadingPanel.setVisibility(View.VISIBLE);
         Utils.iActivityCount = 0;
         Utils.iProviderCount = 0;
 

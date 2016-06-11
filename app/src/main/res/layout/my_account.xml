@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@drawable/my_account"
     android:orientation="vertical">
 
     <ScrollView
@@ -17,7 +17,6 @@
                 android:id="@+id/relLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/header_gradient"
                 android:paddingBottom="20dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="0dp"
@@ -42,16 +41,6 @@
                      android:layout_height="120dp"
                      android:layout_gravity="center" />
  -->
-                <com.hdfc.views.RoundedImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:layout_marginTop="30dp"
-                    android:background="@null"
-                    android:padding="5dp"
-                    android:src="@drawable/person_icon" />
 
                 <ImageView
                     android:id="@+id/imgPen"
@@ -81,6 +70,16 @@
                     android:layout_marginTop="40dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorWhite" />
+
+                <com.hdfc.views.RoundedImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_below="@+id/imgPen"
+                    android:layout_centerHorizontal="true"
+                    android:background="@null"
+                    android:padding="5dp"
+                    android:src="@drawable/person_icon" />
 
             </RelativeLayout>
 

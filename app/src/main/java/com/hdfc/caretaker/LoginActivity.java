@@ -62,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
         utils = new Utils(LoginActivity.this);
         progressDialog = new ProgressDialog(LoginActivity.this);
 
+        utils.setStatusBarColor("#2196f3");
+
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
             if (imgBg != null) {
@@ -90,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+       /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 //showPasswordfield();
@@ -105,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                 utils.traverseEditTexts(layoutLogin, getResources().getDrawable(R.drawable.edit_text),
                         getResources().getDrawable(R.drawable.edit_text_blue), editEmail);
             }
-        });
+        });*/
 
 
         //According to http://android-developers.blogspot.com.es/2013/08/some-securerandom-thoughts.html
@@ -244,12 +246,16 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(selection);
     }*/
 
+    public void goBackToMain(View v) {
+        goBack();
+    }
+
     public void validateLogin(View v) {
 
         //showPasswordfield();
 
-        utils.setEditTextDrawable(editEmail, getResources().getDrawable(R.drawable.edit_text));
-        utils.setEditTextDrawable(editPassword, getResources().getDrawable(R.drawable.edit_text));
+      /*  utils.setEditTextDrawable(editEmail, getResources().getDrawable(R.drawable.edit_text));
+        utils.setEditTextDrawable(editPassword, getResources().getDrawable(R.drawable.edit_text));*/
 
         // if (relLayout.getVisibility() == View.VISIBLE) {
 
@@ -369,6 +375,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         /*super.onBackPressed();
         moveTaskToBack(true);*/
+        goBack();
+    }
+
+    private void goBack() {
         Intent selection = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(selection);
         finish();

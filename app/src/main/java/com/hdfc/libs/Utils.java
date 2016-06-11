@@ -861,7 +861,7 @@ public class Utils {
 
         Date lastDayOfMonth = calendar.getTime();
 
-        strLastDateMonth = dateFormat.format(lastDayOfMonth) + "T23:59:59.999+0000";
+        strLastDateMonth = dateFormat.format(lastDayOfMonth) + "T05:29:59.999Z";
         log(strLastDateMonth, "LAST DATE ");
 
         return strLastDateMonth;
@@ -1325,12 +1325,13 @@ public class Utils {
             //params.setMargins(3, 0, 3, 0);
             bt.setLayoutParams(params);
             bt.setAllCaps(false);
-            bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Small);
+            bt.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
+            bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
 
             if (i == 0)
-                bt.setBackgroundResource(R.drawable.one_side_border);
+                bt.setBackgroundResource(R.color.colorBlackDark);
             else
-                bt.setBackgroundResource(R.drawable.button_back_trans);
+                bt.setBackgroundResource(R.color.blue);
 
             bt.setOnClickListener(new View.OnClickListener() {
 
@@ -1501,11 +1502,11 @@ public class Utils {
         for (int i = 0; i < Config.dependentModels.size(); i++) {
             Button tab = (Button) v.findViewById(i);
             if (i == id) {
-                tab.setBackgroundResource(R.drawable.one_side_border);
-                tab.setTextColor(_ctxt.getResources().getColor(R.color.colorPrimaryDark));
+                tab.setBackgroundResource(R.color.blue);
+                //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorPrimaryDark));
             } else {
-                tab.setBackgroundResource(R.drawable.button_back_trans);
-                tab.setTextColor(_ctxt.getResources().getColor(R.color.colorAccentDark));
+                tab.setBackgroundResource(R.color.colorBlackDark);
+                //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorAccentDark));
             }
 
         }
@@ -2743,11 +2744,11 @@ public class Utils {
 
     public void refreshNotificationsImages() {
 
-        progressDialog = new ProgressDialog(_ctxt);
+        /*progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
         progressDialog.show();
-
+*/
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
@@ -2937,7 +2938,7 @@ public class Utils {
 
             String strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
 
-            String strFromDate = strMonthDate + "T00:00:00.000+0000";
+            String strFromDate = strMonthDate + "T05:30:00.000Z";
 
             log(strFromDate, " FDATE ");
 
