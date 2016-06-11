@@ -18,6 +18,7 @@
     <string name="new_password">New Password</string>
     <string name="forgot">Forgot Password?</string>
     <string name="submit">Submit</string>
+    <string name="save_text">Save</string>
     <string name="update">Update</string>
     <string name="string_continue">Continue</string>
     <string name="create_password">Create a Password</string>

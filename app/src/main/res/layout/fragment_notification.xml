@@ -14,6 +14,10 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/imageline">
 
+        <include
+            android:id="@+id/header"
+            layout="@layout/header_activities" />
+
         <ListView
             android:id="@+id/listViewActivity"
             android:layout_width="match_parent"
@@ -29,5 +33,4 @@
             android:text="@string/no_notifications" />
 
     </RelativeLayout>
-
 </RelativeLayout>

@@ -74,7 +74,13 @@ public class ActivityMonthListAdapter extends BaseAdapter {
             // ActivityModel activityModel = data.get(position);
 
             viewHolder.textViewActivity.setText(data.get(position).getStrActivityName());
-            viewHolder.textViewDescription.setText(data.get(position).getStrActivityDesc());
+
+            String strTemp = data.get(position).getStrActivityDesc();
+
+            if (strTemp.length() > 60)
+                strTemp = strTemp.substring(0, 58) + "..";
+
+            viewHolder.textViewDescription.setText(strTemp);
 
             viewHolder.textViewActivity.setTag(data.get(position));
 

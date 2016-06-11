@@ -10,7 +10,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/my_account_white">
 
             <RelativeLayout
                 android:id="@+id/loadingPanel"
@@ -25,6 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/circle"
                 android:padding="5dp" />
 
             <TextView
@@ -58,7 +61,6 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/person_icon"
                     android:drawablePadding="15dp"
                     android:drawableStart="@drawable/person_icon"
@@ -73,7 +75,6 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
-                    android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/activity_icon_32"
                     android:drawablePadding="10dp"
                     android:focusableInTouchMode="false"
@@ -103,7 +104,6 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
-                    android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/password"
                     android:drawablePadding="10dp"
                     android:drawableStart="@drawable/password"
@@ -118,7 +118,6 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
-                    android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/password"
                     android:drawablePadding="10dp"
                     android:drawableStart="@drawable/password"
@@ -133,7 +132,6 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
-                    android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/re_password"
                     android:drawablePadding="10dp"
                     android:drawableStart="@drawable/re_password"
@@ -166,7 +164,6 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
-                    android:background="@drawable/edit_text"
                     android:drawableLeft="@drawable/location"
                     android:drawablePadding="10dp"
                     android:paddingLeft="10dp"
@@ -216,7 +213,6 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:layout_marginTop="2dp"
                         android:layout_weight="0.4"
-                        android:background="@drawable/edit_text"
                         android:drawablePadding="10dp"
                         android:enabled="false"
                         android:hint="@string/country_code"
@@ -232,7 +228,6 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:layout_marginTop="2dp"
                         android:layout_weight="0.5"
-                        android:background="@drawable/edit_text"
                         android:drawablePadding="10dp"
                         android:hint="@string/area_code"
                         android:inputType="number"
@@ -247,7 +242,6 @@
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:layout_marginTop="2dp"
                         android:layout_weight="1.1"
-                        android:background="@drawable/edit_text"
                         android:drawablePadding="10dp"
                         android:hint="@string/contact_number"
                         android:inputType="number"
@@ -265,23 +259,24 @@
                     android:layout_marginTop="20dp"
                     android:layout_weight="0.55"
                     android:background="@drawable/button_success"
-                    android:text="@string/submit"
-                    android:textAllCaps="false" />
+                    android:text="@string/save_text"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite" />
 
 
             </LinearLayout>
 
-            <Button
+            <ImageButton
                 android:id="@+id/buttonBack"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_below="@+id/loadingPanel"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageView5"
+                android:layout_toEndOf="@+id/loadingPanel"
+                android:layout_toRightOf="@+id/loadingPanel"
                 android:layout_weight="1"
-                android:background="@drawable/button_back_grey"
-                android:text="@string/back"
-                android:textAllCaps="false"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/colorAccentDark" />
+                android:background="@color/blue"
+                android:src="@drawable/backarrow"
+                android:textAllCaps="false" />
 
         </RelativeLayout>
 

@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -122,7 +123,7 @@ public class MyAccountEditFragment extends Fragment {
 
         name = (EditText) view.findViewById(R.id.editTextGuruName);
 
-        Button buttonBack = (Button) view.findViewById(R.id.buttonBack);
+        ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
 
         editTextOldPassword = (EditText) view.findViewById(R.id.editOldPassword);
         editTextPassword = (EditText) view.findViewById(R.id.editPassword);

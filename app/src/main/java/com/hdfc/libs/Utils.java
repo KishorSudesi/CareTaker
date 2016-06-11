@@ -110,7 +110,7 @@ public class Utils {
     public static Locale locale = Locale.ENGLISH;
 
     public final static SimpleDateFormat readFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale);
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
 
     public final static SimpleDateFormat readFormatDate =
             new SimpleDateFormat("yyyy-MM-dd", locale);
@@ -1329,9 +1329,9 @@ public class Utils {
             bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
 
             if (i == 0)
-                bt.setBackgroundResource(R.color.colorBlackDark);
-            else
                 bt.setBackgroundResource(R.color.blue);
+            else
+                bt.setBackgroundResource(R.color.colorBlackDark);
 
             bt.setOnClickListener(new View.OnClickListener() {
 

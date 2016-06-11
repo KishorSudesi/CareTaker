@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/my_account"
     android:orientation="vertical">
 
     <ScrollView
@@ -11,7 +10,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin_general"
+            android:background="@drawable/my_account_white">
 
             <RelativeLayout
                 android:id="@+id/relLayout1"
@@ -68,6 +69,7 @@
                     android:layout_below="@+id/imageView5"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="40dp"
+                    android:drawableLeft="@drawable/mail_icon_32"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorWhite" />
 
@@ -77,7 +79,7 @@
                     android:layout_height="120dp"
                     android:layout_below="@+id/imgPen"
                     android:layout_centerHorizontal="true"
-                    android:background="@null"
+                    android:background="@drawable/circle"
                     android:padding="5dp"
                     android:src="@drawable/person_icon" />
 

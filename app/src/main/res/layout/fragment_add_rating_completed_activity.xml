@@ -32,7 +32,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_smiley"
+                        android:src="@mipmap/feedback_1_star"
                         android:tag="5" />
 
                     <ImageView
@@ -40,7 +40,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_smiley_3"
+                        android:src="@mipmap/feedback_2_star"
                         android:tag="4" />
 
                     <ImageView
@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_smiley_2"
+                        android:src="@mipmap/feedback_3_star"
                         android:tag="3" />
 
                     <ImageView
@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_smiley"
+                        android:src="@mipmap/feedback_4_star"
                         android:tag="2" />
 
                     <ImageView
@@ -64,36 +64,56 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_smiley"
+                        android:src="@mipmap/feedback_5_star"
                         android:tag="1" />
 
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/editFeedBack"
+                <RelativeLayout
+                    android:id="@+id/relative1"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/edit_text"
-                    android:gravity="top|left"
-                    android:hint="Your Feedback"
-                    android:inputType="textMultiLine"
-                    android:lines="8"
-                    android:maxLines="10"
-                    android:minLines="4"
-                    android:padding="10dp"
-                    android:scrollbarStyle="insideInset"
-                    android:scrollbars="vertical" />
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="25dp">
+
+                    <ImageView
+                        android:id="@+id/image1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="7dp"
+                        android:src="@drawable/notes_icon" />
+
+                    <EditText
+                        android:id="@+id/editFeedBack"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toEndOf="@+id/image1"
+                        android:layout_toRightOf="@+id/image1"
+                        android:gravity="top|left"
+                        android:hint="Your Feedback"
+                        android:inputType="textMultiLine"
+                        android:lines="8"
+                        android:maxLines="10"
+                        android:minLines="4"
+                        android:paddingTop="10dp"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical" />
+                </RelativeLayout>
 
                 <CheckBox
                     android:id="@+id/checkReport"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:button="@mipmap/tick_red"
                     android:drawablePadding="15dp"
                     android:gravity="center_vertical"
                     android:padding="@dimen/padding_general"
-                    android:text="I want to report this activity" />
+                    android:text="I want to report this activity"
+                    android:textColor="@color/red" />
 
                 <Button
                     android:id="@+id/btnSubmit"
@@ -102,7 +122,8 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/button_success"
                     android:text="Submit Activity Feedback"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite" />
 
             </LinearLayout>
 
