@@ -19,9 +19,9 @@
     <ImageView
         android:id="@+id/logo"
         android:layout_width="200dp"
-        android:layout_height="180dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
-        android:background="@mipmap/logo" />
+        android:background="@drawable/logo" />
 
     <TextView
         android:id="@+id/header"
@@ -29,11 +29,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
         android:layout_weight="2"
         android:padding="@dimen/text_padding"
         android:text="@string/your_details"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/blue" />
+        android:textColor="@color/blue"
+        android:textSize="28sp" />
 
     <include
         android:id="@+id/include"

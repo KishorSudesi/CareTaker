@@ -29,7 +29,7 @@
         android:layout_alignParentStart="true"
         android:layout_margin="@dimen/margin_general"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/button_success"
+        android:background="@drawable/button_blue"
         android:text="@string/submit"
         android:textAllCaps="false"
         android:visibility="gone" />

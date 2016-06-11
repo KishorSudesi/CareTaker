@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@drawable/app_header"
     android:orientation="vertical">
 
     <include
@@ -27,8 +27,7 @@
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="40dp"
-                android:background="@drawable/edit_text"
-                android:drawableLeft="@drawable/person_icon"
+                android:drawableLeft="@drawable/username"
                 android:drawablePadding="10dp"
                 android:enabled="false"
                 android:hint="@string/age"
@@ -42,15 +41,14 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/edit_text">
+                android:layout_marginTop="25dp">
 
                 <ImageView
                     android:id="@+id/image1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="7dp"
-                    android:src="@drawable/health" />
+                    android:src="@drawable/any_major_illness" />
 
                 <EditText
                     android:id="@+id/editDiseases"
@@ -59,7 +57,6 @@
                     android:layout_centerHorizontal="true"
                     android:layout_toEndOf="@+id/image1"
                     android:layout_toRightOf="@+id/image1"
-                    android:background="@drawable/edit_text_white_back"
                     android:gravity="top|left"
                     android:hint="@string/illness"
                     android:inputType="textMultiLine"
@@ -78,8 +75,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/edit_text">
+                android:layout_marginTop="25dp">
 
                 <ImageView
                     android:id="@+id/image2"
@@ -96,7 +92,6 @@
                     android:layout_centerHorizontal="true"
                     android:layout_toEndOf="@+id/image2"
                     android:layout_toRightOf="@+id/image2"
-                    android:background="@drawable/edit_text_white_back"
                     android:gravity="top|left"
                     android:hint="@string/notes"
                     android:lines="8"
@@ -117,7 +112,7 @@
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="35dp"
-                android:background="@drawable/button_success"
+                android:background="@drawable/button_blue"
                 android:text="@string/skip"
                 android:textAllCaps="false" />
 

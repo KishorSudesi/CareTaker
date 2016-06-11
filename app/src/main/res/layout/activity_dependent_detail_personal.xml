@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_header">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/header_white" />
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_below="@+id/include"
     android:orientation="vertical">
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <include
-        android:id="@+id/include"
-        layout="@layout/header_white" />
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,6 +30,7 @@
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="40dp"
+                android:background="@color/blue"
                 android:focusableInTouchMode="true"
                 android:queryHint="@string/search_contacts" />
 
@@ -146,3 +150,4 @@
 
 </LinearLayout>
     </ScrollView>
+</RelativeLayout>
