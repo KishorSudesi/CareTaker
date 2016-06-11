@@ -2,34 +2,38 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@drawable/header_gradient"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <Button
         android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_weight="1"
-        android:background="@drawable/button_back_trans"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@mipmap/back_arrow"
         android:onClick="backToSelection"
-        android:text="@string/back"
         android:textAllCaps="false"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="200dp"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:background="@mipmap/logo" />
 
     <TextView
         android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_weight="2"
         android:padding="@dimen/text_padding"
         android:text="@string/your_details"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/blue" />
 
     <include
         android:id="@+id/include"
@@ -38,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true" />
+        android:layout_marginTop="10dp" />
 
 </RelativeLayout>
 
