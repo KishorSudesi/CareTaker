@@ -331,10 +331,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 listDataChild.clear();
 
                 for (CategoryServiceModel categoryServiceModel : Config.categoryServiceModels) {
-
                     listDataHeader.add(categoryServiceModel.getStrCategoryName());
-                    listDataChild.put(categoryServiceModel.getStrCategoryName(),
-                            categoryServiceModel.getServiceModels());
+                    listDataChild.put(categoryServiceModel.getStrCategoryName(), categoryServiceModel.getServiceModels());
                 }
 
                 additionalServicesAdapter.notifyDataSetChanged();

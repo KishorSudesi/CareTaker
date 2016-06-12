@@ -1326,6 +1326,7 @@ public class Utils {
             bt.setLayoutParams(params);
             bt.setAllCaps(false);
             bt.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
+            // bt.setTextColor(Color.parseColor("white"));
             bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
 
             if (i == 0)

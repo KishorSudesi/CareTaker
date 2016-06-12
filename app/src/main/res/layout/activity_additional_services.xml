@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/app_header">
 
     <include
         android:id="@+id/includeLayoutHeaderBack"
-        layout="@layout/header_back"/>
+        layout="@layout/header_common" />
 
     <!-- <include
          android:id="@+id/includeDashboardList"
@@ -72,6 +73,7 @@
         android:background="@drawable/button_success"
         android:enabled="false"
         android:text="@string/buy_services"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite" />
 
 </RelativeLayout>

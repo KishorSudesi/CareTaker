@@ -40,7 +40,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/blue" />
 
         <TextView
             android:id="@+id/txtActivityDetails"
@@ -49,6 +49,7 @@
             android:layout_margin="@dimen/margin_general"
             android:clickable="false"
             android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:focusableInTouchMode="false"
+            android:textColor="@color/colorAccent" />
     </LinearLayout>
 </LinearLayout>

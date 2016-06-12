@@ -6,82 +6,46 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_general"
+            android:layout_marginTop="74dp"
             android:background="@drawable/my_account_white">
 
             <RelativeLayout
                 android:id="@+id/relLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="100dp"
                 android:paddingBottom="20dp"
                 android:paddingLeft="20dp"
-                android:paddingRight="0dp"
-                android:paddingTop="5dp">
-
-                <RelativeLayout
-                    android:id="@+id/loadingPanel"
-                    style="@style/GenericProgressBackground"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="30dp"
-                    android:padding="5dp"
-                    android:visibility="gone">
-                    <ProgressBar style="@style/GenericProgressIndicator" />
-                </RelativeLayout>
-
-                <!-- <android.support.v4.view.ViewPager
-                     android:id="@+id/dependCarousel"
-                     android:layout_width="match_parent"
-                     android:layout_height="120dp"
-                     android:layout_gravity="center" />
- -->
-
-                <ImageView
-                    android:id="@+id/imgPen"
-                    android:layout_width="24dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:layout_marginTop="@dimen/edit_text_margin"
-                    android:src="@drawable/notes_icon" />
+                android:paddingRight="0dp">
 
                 <TextView
                     android:id="@+id/textViewName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageView5"
                     android:layout_centerHorizontal="true"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@color/colorWhite" />
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
                     android:id="@+id/textViewEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageView5"
+                    android:layout_below="@+id/textViewName"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="40dp"
                     android:drawableLeft="@drawable/mail_icon_32"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorWhite" />
+                    android:drawablePadding="10dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <com.hdfc.views.RoundedImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_below="@+id/imgPen"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/circle"
-                    android:padding="5dp"
-                    android:src="@drawable/person_icon" />
 
             </RelativeLayout>
 
@@ -101,7 +65,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bottom_border_grey"
+                    android:background="@drawable/bottom_border_blue"
                     android:drawableLeft="@drawable/contact"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
@@ -116,7 +80,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bottom_border_grey"
+                    android:background="@drawable/bottom_border_blue"
                     android:drawableLeft="@drawable/location"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
@@ -132,7 +96,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bottom_border_grey"
+                    android:background="@drawable/bottom_border_blue"
                     android:drawableLeft="@drawable/wallet"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
@@ -175,7 +139,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/bottom_border_grey"
+                    android:background="@drawable/bottom_border_blue"
                     android:drawableLeft="@drawable/log_out"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
@@ -185,8 +149,47 @@
 
             </LinearLayout>
 
+
+        </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/loadingPanel"
+                style="@style/GenericProgressBackground"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignLeft="@+id/imageView5"
+                android:layout_alignStart="@+id/imageView5"
+                android:layout_alignTop="@+id/imageView5"
+                android:padding="5dp"
+                android:visibility="visible">
+
+                <ProgressBar style="@style/GenericProgressIndicator" />
+
+            </RelativeLayout>
+
+            <com.hdfc.views.RoundedImageView
+                android:id="@+id/imageView5"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/circle"
+                android:padding="5dp"
+                android:src="@drawable/person_icon" />
         </RelativeLayout>
 
     </ScrollView>
+
+
+    <ImageView
+        android:id="@+id/imgPen"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/edit_text_margin"
+        android:src="@drawable/notes_icon" />
 
 </RelativeLayout>
