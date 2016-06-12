@@ -1,41 +1,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_header_blue"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/toplayout"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        >
-        <ImageButton
-            android:id="@+id/buttonBack"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@mipmap/back_arrow" />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/logo" />
 
-    </RelativeLayout>
+    <!--  <ImageView
+          android:id="@+id/imageline"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_below="@+id/toplayout"
+          android:background="@color/colorWhite"/>-->
 
-    <ImageView
-        android:id="@+id/imageline"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/toplayout"
-        android:background="@color/colorWhite"/>
-
-    <include
-        android:id="@+id/includeDashboardList"
-        layout="@layout/header_add_activity2"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_margin="@dimen/margin_general"
+        android:gravity="center"
+        android:padding="@dimen/padding_general"
+        android:text="@string/add_new_activity"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/blue"
+        android:visibility="visible" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -49,27 +40,40 @@
             android:layout_height="300dp"
             android:background="@null" />
 
-        <TextView
-            android:id="@+id/textView7"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorWhite" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="18dp"
+            android:layout_marginLeft="30dp"
+            android:alpha="0.7"
+            android:background="@drawable/indigo_box"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/textView7"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorWhite" />
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_general"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_general"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </RelativeLayout>
-
 
     <TextView
         android:id="@+id/textViewLabel"
@@ -77,7 +81,10 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center|center_horizontal"
+        android:layout_margin="@dimen/margin_general"
         android:background="@color/colorWhite"
+        android:gravity="center"
+        android:padding="@dimen/padding_general"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/blue"
         android:textStyle="bold" />
@@ -98,10 +105,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/edit_text"
-            android:drawableLeft="@drawable/activity_icon_32"
+            android:drawableLeft="@drawable/add_new_activity"
             android:drawablePadding="20dp"
-            android:drawableRight="@drawable/activity_icon_32"
+            android:drawableRight="@drawable/activity_selected"
             android:hint="@string/date_time"
             android:inputType="datetime"
             android:paddingEnd="20dp"
@@ -117,8 +123,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
             android:layout_weight="0.48"
-            android:background="@drawable/edit_text"
-            android:drawableLeft="@drawable/add_msg"
+            android:drawableLeft="@drawable/notes_icon"
             android:hint="@string/add_message"
             android:padding="15dp" />
 

@@ -214,7 +214,7 @@
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
                 android:layout_marginTop="35dp"
-                android:background="@drawable/button_blue"
+                android:background="@drawable/button_blue_white_border"
                 android:onClick="validateUser"
                 android:text="@string/string_continue"
                 android:textAllCaps="false"

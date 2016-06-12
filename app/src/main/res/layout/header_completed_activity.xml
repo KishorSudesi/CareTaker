@@ -23,7 +23,7 @@
                 android:background="@color/colorWhite"
                 android:onClick="backToDashboard"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/my_account_active" />
+                android:src="@mipmap/my_account" />
 
             <ImageButton
                 android:id="@+id/imageButtonMS"
@@ -34,7 +34,7 @@
                 android:background="@color/colorWhite"
                 android:onClick="backToDashboard"
                 android:padding="@dimen/padding_general"
-                android:src="@mipmap/activity_active" />
+                android:src="@mipmap/activity" />
 
             <ImageButton
                 android:id="@+id/imageButtonVideo"

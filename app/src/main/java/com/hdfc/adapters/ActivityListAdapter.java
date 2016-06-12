@@ -80,24 +80,25 @@ public class ActivityListAdapter extends BaseAdapter {
 
             if ((activityListModel.getStrActivityStatus().equalsIgnoreCase("open"))
                     || activityListModel.getStrActivityStatus().equalsIgnoreCase("inprocess")) {
-                viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                        getColor(R.color.orange));
+                /*viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.orange));*/
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
 
             }
 
             if (activityListModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
-                viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                        getColor(R.color.colorPrimary));
+                /*viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.colorPrimary));*/
                 viewHolder.linearLayoutDone.setVisibility(View.VISIBLE);
             }
 
             if (activityListModel.getStrActivityStatus().equalsIgnoreCase("new")) {
-                viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                        getColor(R.color.colorWhite));
+               /* viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.colorWhite));*/
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
 
             }
+
 
             int iPosition = Config.strProviderIds.indexOf(activityListModel.getStrProviderID());
             String strCarlaName = Config.providerModels.get(iPosition).getStrName();
@@ -142,6 +143,9 @@ public class ActivityListAdapter extends BaseAdapter {
             viewHolder.person.setText(strAuthor);
             // viewHolder.Message.setText(data.get(i).getStrMessage());
             // viewHolder.dateTime.setText(data.get(i).getStrDateTime());
+
+            viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                    getColor(R.color.colorWhite));
 
         }
 

@@ -108,8 +108,7 @@ public class NotificationAdapter extends BaseAdapter {
                 String strDate = notificationModel.getStrDateTime();
                 String strDisplayDate = _context.getResources().getString(R.string.space) +
                         _context.getResources().getString(R.string.at) +
-                        _context.getResources().getString(R.string.space) +
-                        utils.formatDate(strDate);
+                        _context.getResources().getString(R.string.space) + utils.formatDate(strDate);
 
                 viewHolder.textViewTime.setText(strDisplayDate);
             } catch (Exception e) {

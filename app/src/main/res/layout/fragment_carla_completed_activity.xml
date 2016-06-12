@@ -1,65 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_height="match_parent"
+        android:layout_marginTop="2dp"
+        android:background="@color/colorWhite">
 
-        <ImageView
-            android:id="@+id/imageViewCarla"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textViewHead1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="54dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorWhite" />
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
 
-        <TextView
-            android:id="@+id/textViewHead2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/colorWhite" />
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/imageViewCarla"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null" />
 
-    <TextView
-        android:id="@+id/textViewDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/relativeLayout"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="20dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#000000" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginLeft="30dp"
+                    android:alpha="0.7"
+                    android:background="@drawable/indigo_box"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewMSG"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textViewDate"
-        android:layout_alignStart="@+id/textViewDate"
-        android:layout_below="@+id/textViewDate"
-        android:layout_marginTop="20dp"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+                    <TextView
+                        android:id="@+id/textViewHead1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_general"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textViewHead2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_general"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/relativeLayout"
+                android:layout_marginLeft="28dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="20dp"
+                android:drawableLeft="@drawable/add_new_activity"
+                android:drawablePadding="5dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/textViewMSG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewDate"
+                android:layout_alignStart="@+id/textViewDate"
+                android:layout_below="@+id/textViewDate"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="40dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </RelativeLayout>
+
+
+    </ScrollView>
 
 </RelativeLayout>

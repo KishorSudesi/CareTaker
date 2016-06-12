@@ -27,7 +27,7 @@ public class CalendarAdapter extends BaseAdapter {
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
     //public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy",
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Utils.locale);
+    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Utils.locale);
     private static final int DAY_OFFSET = 1;
     private final Context _context;
     private final List<String> list;
@@ -169,7 +169,7 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         if (day_color[1].equals("WHITE")) {
-            gridcell.setTextColor(Color.BLACK);
+            gridcell.setTextColor(Color.WHITE);
         }
 
         if (day_color[1].equals("BLUE")) {
@@ -207,7 +207,7 @@ public class CalendarAdapter extends BaseAdapter {
                         }
 
                         //gridcell.setBackground(_context.getResources().getDrawable(R.drawable.bottom_border_green));
-                        gridcell.setTextColor(Color.BLACK);
+                        gridcell.setTextColor(Color.WHITE);
                     }
                 }
             } catch (Exception e) {

@@ -128,38 +128,48 @@ public class ActivityMonthFragment extends Fragment {
                     }
                 }*/
 
+                activitiesModelSelected.clear();
+
                 Button gridcell = (Button) view.findViewById(R.id.calendar_day_gridcell);
 
                 String date_month_year = (String) gridcell.getTag();
 
                 if(position>6) {
 
-                    String[] day_color = date_month_year.split("-");
 
-                    int theday = Integer.parseInt(day_color[0]);
-                    String themonth = day_color[1];
-                    int theyear = Integer.parseInt(day_color[2]);
+                    int theday = 0, theyear = 0;
+                    String themonth = "";
+                    try {
 
-                    //
-                    String strDate = getString(R.string.activities_on) + theday + "-" + themonth
-                            + "-" + theyear;
+                        String[] day_color = date_month_year.split("-");
 
-                    if (iSelectedPosition > -1) {
-                        v = parent.getChildAt(iSelectedPosition);
-                        Button gridcell1 = (Button) v.findViewById(R.id.calendar_day_gridcell);
-                        gridcell1.setTextColor(iSelectedColor);
+                        theday = Integer.parseInt(day_color[0]);
+                        themonth = day_color[1];
+                        theyear = Integer.parseInt(day_color[2]);
+
+                        //
+                        String strDate = getString(R.string.activities_on) + theday + "-" + themonth
+                                + "-" + theyear;
+
+                        if (iSelectedPosition > -1) {
+                            v = parent.getChildAt(iSelectedPosition);
+                            Button gridcell1 = (Button) v.findViewById(R.id.calendar_day_gridcell);
+                            gridcell1.setTextColor(iSelectedColor);
+                        }
+
+                        if (iSelectedPosition != position) {
+                            iSelectedPosition = position;
+                            iSelectedColor = gridcell.getCurrentTextColor();
+                        }
+                        gridcell.setTextColor(getActivity().getResources().getColor(
+                                R.color.colorPrimaryDark));
+
+                        txtViewDate.setText(strDate);
+
+                        activitiesModelSelected.clear();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-
-                    if (iSelectedPosition != position) {
-                        iSelectedPosition = position;
-                        iSelectedColor = gridcell.getCurrentTextColor();
-                    }
-                    gridcell.setTextColor(getActivity().getResources().getColor(
-                            R.color.colorPrimaryDark));
-
-                    txtViewDate.setText(strDate);
-
-                    activitiesModelSelected.clear();
 
                     if (position > 6) {
 
@@ -185,9 +195,9 @@ public class ActivityMonthFragment extends Fragment {
                                 int iActivityYear = Integer.parseInt(writeFormatYear.format(fullDate));
                                 int iActivityDate = Integer.parseInt(writeFormatDate.format(fullDate));
 
-                                Utils.log(String.valueOf(iActivityYear + " == " + theyear + " && "
+                             /*   Utils.log(String.valueOf(iActivityYear + " == " + theyear + " && "
                                         + strActivityMonth + " EQS " + themonth + " && " + iActivityDate
-                                        + " == " + theday), " Compare ");
+                                        + " == " + theday), " Compare ");*/
 
                                 if (iActivityYear == theyear &&
                                         strActivityMonth.trim().equalsIgnoreCase(themonth) &&

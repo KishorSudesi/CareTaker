@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_header_blue"
+    android:background="@drawable/app_header"
     android:clickable="false"
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
@@ -21,12 +21,16 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:background="@mipmap/back_arrow"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/logo" />
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/logo"
+            android:foregroundGravity="center" />
 
     </RelativeLayout>
 
@@ -43,17 +47,31 @@
         android:layout_below="@+id/imageline"
         android:background="@color/colorWhite">
 
-    <include
-        android:id="@+id/includeDashboardList"
-        layout="@layout/header_add_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         />
+        <TextView
+            android:id="@+id/textViewLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_general"
+            android:gravity="center"
+            android:padding="@dimen/padding_general"
+            android:text="@string/add_new_activity"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/blue"
+            android:visibility="visible" />
 
-    <TextView
+        <TextView
+            android:id="@+id/textViewColor"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/textViewLabel"
+            android:background="@color/blue" />
+
+        <TextView
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+            android:layout_above="@+id/buttonContinue"
+            android:layout_below="@+id/textViewColor"
         android:gravity="center"
         android:text="@string/no_services"
         android:visibility="gone" />
@@ -63,7 +81,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttonContinue"
-        android:layout_below="@+id/includeDashboardList" />
+        android:layout_below="@+id/textViewColor"
+        android:divider="@color/blue"
+        android:dividerHeight="1dp" />
 
 
     <Button

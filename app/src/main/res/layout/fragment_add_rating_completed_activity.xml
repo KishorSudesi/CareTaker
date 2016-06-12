@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cccccc"
+    android:background="@color/colorWhite"
     android:orientation="vertical">
 
     <ScrollView
@@ -33,7 +33,7 @@
                         android:layout_weight="1"
                         android:onClick="setRating"
                         android:src="@mipmap/feedback_1_star"
-                        android:tag="5" />
+                        android:tag="1" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                         android:layout_weight="1"
                         android:onClick="setRating"
                         android:src="@mipmap/feedback_2_star"
-                        android:tag="4" />
+                        android:tag="2" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
                         android:layout_weight="1"
                         android:onClick="setRating"
                         android:src="@mipmap/feedback_4_star"
-                        android:tag="2" />
+                        android:tag="4" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
                         android:layout_weight="1"
                         android:onClick="setRating"
                         android:src="@mipmap/feedback_5_star"
-                        android:tag="1" />
+                        android:tag="5" />
 
                 </LinearLayout>
 

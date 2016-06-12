@@ -78,7 +78,7 @@
             android:layout_marginLeft="@dimen/edit_text_margin"
             android:layout_marginRight="@dimen/edit_text_margin"
             android:layout_marginTop="10dp"
-            android:background="@drawable/button_blue"
+            android:background="@drawable/button_blue_white_border"
             android:onClick="selectedLovedOne"
             android:text="@string/loved_one"
             android:textAllCaps="false"

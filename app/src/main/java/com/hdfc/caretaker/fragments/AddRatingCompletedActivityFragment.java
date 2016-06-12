@@ -96,6 +96,11 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                     utils.toast(2, 2, getString(R.string.select_rating));
                 }
 
+                if (!ActivityCompletedFragment._activityModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
+                    b = false;
+                    utils.toast(2, 2, getString(R.string.activity_not_completed));
+                }
+
                 if (b)
                     uploadCheckBox();
 
@@ -114,6 +119,8 @@ public class AddRatingCompletedActivityFragment extends Fragment {
             progressDialog.setCancelable(false);
             progressDialog.show();
 */
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
             Date doneDate = new Date();
 

@@ -863,6 +863,7 @@ public class Utils {
 
         strLastDateMonth = dateFormat.format(lastDayOfMonth) + "T05:29:59.999Z";
         log(strLastDateMonth, "LAST DATE ");
+        //05:29:59.999
 
         return strLastDateMonth;
     }
@@ -1322,7 +1323,7 @@ public class Utils {
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
-            //params.setMargins(3, 0, 3, 0);
+            //params.setMargins(5, 5, 5, 5);
             bt.setLayoutParams(params);
             bt.setAllCaps(false);
             bt.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
@@ -1333,6 +1334,7 @@ public class Utils {
                 bt.setBackgroundResource(R.color.blue);
             else
                 bt.setBackgroundResource(R.color.colorBlackDark);
+
 
             bt.setOnClickListener(new View.OnClickListener() {
 
@@ -1350,6 +1352,8 @@ public class Utils {
                     }
                 }
             });
+
+            bt.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
 
             dynamicUserTab.addView(bt);
         }
@@ -1398,7 +1402,7 @@ public class Utils {
 
                             if (storage != null) {
 
-                                Utils.log(storage.toString(), "not ");
+                                //Utils.log(storage.toString(), "not ");
 
                                 if (storage.getJsonDocList().size() > 0) {
 
@@ -1413,15 +1417,16 @@ public class Utils {
 
                                     iProviderCount = 0;
 
-                                    fetchProviders(progressDialog, 1);
+                                    //fetchProviders(progressDialog, 1);
                                 }
                             } else {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                                refreshNotifications();
                             }
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            refreshNotifications();
                         }
 
                         @Override
@@ -1471,10 +1476,10 @@ public class Utils {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);
 
-            if (jsonObjectProvider.has("notification_message")) {
+            if (jsonObjectProvider.has("message")) {
 
                 NotificationModel notificationModel = new NotificationModel(
-                        jsonObjectProvider.getString("notification_message"),
+                        jsonObjectProvider.getString("message"),
                         jsonObjectProvider.getString("time"),
                         jsonObjectProvider.getString("user_type"),
                         jsonObjectProvider.getString("created_by_type"),
@@ -1502,12 +1507,13 @@ public class Utils {
 
         for (int i = 0; i < Config.dependentModels.size(); i++) {
             Button tab = (Button) v.findViewById(i);
+            tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             if (i == id) {
                 tab.setBackgroundResource(R.color.blue);
-                //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorPrimaryDark));
+                //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             } else {
                 tab.setBackgroundResource(R.color.colorBlackDark);
-                //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorAccentDark));
+                //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             }
 
         }
@@ -2940,6 +2946,7 @@ public class Utils {
             String strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
 
             String strFromDate = strMonthDate + "T05:30:00.000Z";
+            // 05:30:00.000Z
 
             log(strFromDate, " FDATE ");
 

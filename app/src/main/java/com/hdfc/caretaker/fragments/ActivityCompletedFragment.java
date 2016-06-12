@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -52,7 +51,7 @@ public class ActivityCompletedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_activity_completed, container, false);
-        Button buttonBack = (Button) view.findViewById(R.id.buttonBack);
+        ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
         TextView txtViewHeader = (TextView) view.findViewById(R.id.header);
 
         _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.config.Config;
@@ -38,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 
 public class AddNewActivityStep2Activity extends AppCompatActivity {
@@ -45,7 +47,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private static final String[] CARLAS = new String[]{"carla1@gmail.com"};
     private static final int iActivityCreated = 1;
     public static String message, time;
-    public static JSONObject jsonObjectCarla;
+    public static JSONObject jsonObjectCarla, jsonObject;
     private static StorageService storageService;
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
@@ -265,7 +267,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                             jsonObjectCarla = new JSONObject(strDocument);
                             textView6.setText(jsonObjectCarla.getString("provider_name"));
                             textView7.setText(jsonObjectCarla.getString("provider_email"));
-                            getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                            //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
                             //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
                             strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
@@ -361,10 +363,36 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             jsonObjectServices.put("videos", jsonArray);
             jsonObjectServices.put("images", jsonArray);
 
-            strPushMessage = Config.customerModel.getStrName() + getString(R.string.has_created) +
-                    serviceModel.getStrServiceName() + getString(R.string.to) +
-                    Config.dependentModels.get(Config.intSelectedDependent).getStrName() +
-                    getString(R.string.on) + strDate;
+            String strDateNow = "";
+            Calendar calendar = Calendar.getInstance();
+            Date dateNow = calendar.getTime();
+            strDateNow = utils.convertDateToString(dateNow);
+
+            strPushMessage = getString(R.string.activity_create_notification_1)
+                    + serviceModel.getStrCategoryName()
+                    + getString(R.string.activity_create_notification_2)
+                    + getString(R.string.activity_create_notification_3)
+                    + serviceModel.getStrServiceName()
+                    + getString(R.string.to)
+                    + Config.dependentModels.get(Config.intSelectedDependent).getStrName()
+                    + getString(R.string.has_created)
+                    + getString(R.string.at) + strDate;
+
+            jsonObject = new JSONObject();
+
+            try {
+
+                jsonObject.put("created_by", Config.customerModel.getStrCustomerID());
+                jsonObject.put("time", strDate);
+                jsonObject.put("user_type", "provider");
+                jsonObject.put("user_id", strProviderId);
+                jsonObject.put("activity_id", strDateNow);//todo add to care taker
+                jsonObject.put("created_by_type", "customer");
+                jsonObject.put(App42GCMService.ExtraMessage, strPushMessage);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            /////////////////////
 
 
             JSONArray jsonArrayMilestones = new JSONArray();
@@ -424,7 +452,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                     if (fieldModel.getiArrayCount() > 0) {
                         jsonObjectField.put("array_fields", fieldModel.getiArrayCount());
                         jsonObjectField.put("array_type", utils.stringToJsonArray(fieldModel.getStrArrayType()));
-                        jsonObjectField.put("array_data", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                        jsonObjectField.put("array_data", fieldModel.getStrArrayData());
                     }
                     //
                     ////
@@ -617,7 +645,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         public void onSuccess(Object o) {
                             try {
                                 if (o != null) {
-                                    sendPushToProvider(getStrSelectedCarla, strPushMessage);
+                                    insertNotification();
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
@@ -657,6 +685,65 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
+
+
+    ///////////////////////
+    private void insertNotification() {
+
+        if (utils.isConnectingToInternet()) {
+
+            storageService.insertDocs(jsonObject,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            try {
+                                if (response.isResponseSuccess()) {
+                                    sendPushToProvider(getStrSelectedCarla, jsonObject.toString());
+                                } else {
+                                    strAlert = getString(R.string.no_push_actiity_added);
+                                    goToActivityList(strAlert);
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                goToActivityList(strAlert);
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                            strAlert = getString(R.string.activity_added);
+
+                            if (ex == null)
+                                strAlert = getString(R.string.no_push_actiity_added);
+                            goToActivityList(strAlert);
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    },
+                    Config.collectionNotification);
+        } else {
+            strAlert = getString(R.string.no_push_actiity_added);
+
+            goToActivityList(strAlert);
+        }
+    }
+    ///////////////////////
 
     public void sendPushToProvider(String strUserName, String strMessage) {
 

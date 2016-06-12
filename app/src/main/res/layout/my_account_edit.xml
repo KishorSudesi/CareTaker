@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue"
     android:orientation="vertical">
 
     <ScrollView
@@ -49,6 +50,7 @@
                     android:layout_below="@+id/textView18"
                     android:layout_centerHorizontal="true"
                     android:drawableLeft="@drawable/mail_icon_32"
+                    android:drawablePadding="5dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <LinearLayout
@@ -281,21 +283,8 @@
                 android:layout_height="150dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/circle"
-                android:padding="5dp" />
+                android:background="@drawable/circle" />
 
-            <ImageButton
-                android:id="@+id/buttonBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="@color/blue"
-                android:src="@drawable/backarrow"
-                android:textAllCaps="false" />
 
         </RelativeLayout>
 

@@ -28,7 +28,8 @@
         android:onClick="goToDashboard"
         android:text="@string/view_dashboard"
         android:textAllCaps="false"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textViewMess"
@@ -41,7 +42,8 @@
         android:padding="10dp"
         android:text="@string/account_success_message"
         android:textAlignment="center"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textViewHeader"
@@ -55,7 +57,8 @@
         android:text="@string/account_success_header"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -63,5 +66,5 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/textViewHeader"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/tick" />
+        android:src="@mipmap/tick_disable" />
 </RelativeLayout>

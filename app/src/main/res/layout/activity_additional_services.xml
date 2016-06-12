@@ -76,4 +76,20 @@
         android:textAllCaps="false"
         android:textColor="@color/colorWhite" />
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        style="@style/GenericProgressBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/txt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <ProgressBar style="@style/GenericProgressIndicator" />
+    </RelativeLayout>
+
 </RelativeLayout>

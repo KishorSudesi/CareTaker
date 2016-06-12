@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0.7"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,6 +15,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/border_right_blue"
             android:orientation="vertical">
 
             <TextView
@@ -24,7 +24,8 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
                 android:textColor="@color/blue"
-                android:textSize="50sp" />
+                android:textSize="50sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView31"
@@ -32,7 +33,8 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
                 android:textColor="#222222"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -67,7 +69,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:textColor="#222222"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,7 +82,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/blue"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtDateTime"
@@ -87,7 +91,8 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
                     android:textColor="@color/blue"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 

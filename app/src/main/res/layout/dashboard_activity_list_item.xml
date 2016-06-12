@@ -50,7 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginTop="2dp"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textViewTime"

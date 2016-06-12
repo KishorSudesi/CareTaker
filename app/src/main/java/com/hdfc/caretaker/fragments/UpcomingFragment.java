@@ -60,7 +60,7 @@ public class UpcomingFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
-//        Button buttonBack = (Button) view.findViewById(R.id.buttonBack);
+        ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
         txtViewHeader = (TextView) view.findViewById(R.id.header);
         txtViewMSG = (TextView) view.findViewById(R.id.textViewMSG);
         txtViewDate = (TextView) view.findViewById(R.id.textViewDate);
@@ -95,13 +95,13 @@ public class UpcomingFragment extends Fragment {
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
 
-//        buttonBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                goToList();
-//
-//            }
-//        });
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToList();
+
+            }
+        });
 
 //        buttonCancel.setOnClickListener(new View.OnClickListener() {
 //            @Override

@@ -58,6 +58,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
         ImageButton imageButtonBuyServices = (ImageButton) findViewById(R.id.imageButtonBuyServices);
+        //ImageButton buttonBack = (ImageButton) findViewById(R.id.buttonBack);
 
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
 
@@ -157,7 +158,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
             });
         }*/
 
-        Button cancelButton = (Button) findViewById(R.id.buttonCancel);
+        ImageButton cancelButton = (ImageButton) findViewById(R.id.buttonBack);
         if (cancelButton != null) {
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,70 +177,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
                 }
             });
         }
-    }
 
-    public void goBack() {
-        Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
-        Config.intSelectedMenu = Config.intActivityScreen;
-        startActivity(newIntent);
-        finish();
-    }
 
-    public void refreshAdapter() {
-
-        try {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
-
-            if (listView != null) {
-
-                listDataHeader.clear();
-                listDataChild.clear();
-
-                for (CategoryServiceModel categoryServiceModel : categoryServiceModels) {
-
-                    listDataHeader.add(categoryServiceModel.getStrCategoryName());
-                    listDataChild.put(categoryServiceModel.getStrCategoryName(),
-                            categoryServiceModel.getServiceModels());
-                }
-
-                activityServicesAdapter.notifyDataSetChanged();
-
-                int count = activityServicesAdapter.getGroupCount();
-                for (int i = 0; i < count; i++)
-                    listView.expandGroup(i);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addNewActivityStep2(View v) {
-
-        if (selectedServiceModel != null) {
-
-            if ((selectedServiceModel.getiUnit() - selectedServiceModel.getiUnitUsed()) > 0) {
-
-                Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
-                startActivity(newIntent);
-                finish();
-
-            } else utils.toast(2, 2, getResources().getString(R.string.error_service_zero));
-
-        } else utils.toast(2, 2, getResources().getString(R.string.error_service));
-    }
-
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        //finish();
-        goBack();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+        //
         progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -319,7 +259,70 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     public void onUpdateDocFailed(App42Exception ex) {
                     }
                 });
+        //
+    }
 
+    public void goBack() {
+        Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
+        Config.intSelectedMenu = Config.intActivityScreen;
+        startActivity(newIntent);
+        finish();
+    }
+
+    public void refreshAdapter() {
+
+        try {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+
+            if (listView != null) {
+
+                listDataHeader.clear();
+                listDataChild.clear();
+
+                for (CategoryServiceModel categoryServiceModel : categoryServiceModels) {
+
+                    listDataHeader.add(categoryServiceModel.getStrCategoryName());
+                    listDataChild.put(categoryServiceModel.getStrCategoryName(),
+                            categoryServiceModel.getServiceModels());
+                }
+
+                activityServicesAdapter.notifyDataSetChanged();
+
+                int count = activityServicesAdapter.getGroupCount();
+                for (int i = 0; i < count; i++)
+                    listView.expandGroup(i);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addNewActivityStep2(View v) {
+
+        if (selectedServiceModel != null) {
+
+            if ((selectedServiceModel.getiUnit() - selectedServiceModel.getiUnitUsed()) > 0) {
+
+                Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
+                startActivity(newIntent);
+                //finish();
+
+            } else utils.toast(2, 2, getResources().getString(R.string.error_service_zero));
+
+        } else utils.toast(2, 2, getResources().getString(R.string.error_service));
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        //finish();
+        goBack();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void createActivityServiceModel(String strDocumentId, JSONObject jsonObject) {

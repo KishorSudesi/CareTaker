@@ -85,21 +85,29 @@ public class App42GCMService extends IntentService {
     //
     private void validatePushIfRequired(String message, final Intent intent) {
         try {
-            final JSONObject json = new JSONObject(message);
-            final String geoBaseType = json.optString(App42GeoTag, null);
+            final JSONObject jsonObject = new JSONObject(message);
 
-            //Log.e("HDFC", message);
+            if (jsonObject.has("created_by")) {
 
-            final String alertMessage = json.optString(Alert, null);
+                String strMessage = jsonObject.getString(App42GCMService.ExtraMessage)
+                        + " " + jsonObject.getString("time");
+                showNotification(strMessage, intent);
 
-            /*if (geoBaseType == null) {
-                showNotification(json.toString(),intent);
-            }*/
+            } else {
 
-            if (alertMessage != null) {
-                showNotification(json.getString("alert"), intent);
-                //Log.e("HDFC", "1");
+                final String geoBaseType = jsonObject.optString(App42GeoTag, null);
+
+                /*if (geoBaseType == null) {
+                    showNotification(json.toString(),intent);
+                }*/
+
+                final String alertMessage = jsonObject.optString(Alert, null);
+
+                if (alertMessage != null) {
+                    showNotification(jsonObject.getString("alert"), intent);
+                }
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
             //Log.e("HDFC", "2");

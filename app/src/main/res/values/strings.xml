@@ -28,6 +28,7 @@
     <string name="country_code">Country Code</string>
     <string name="age">Age</string>
     <string name="activity">Activity</string>
+    <string name="activity_process">Activity inProcess/Completed</string>
     <string name="my_account">My Account</string>
     <string name="my_account_edit">Edit My Account</string>
     <string name="activity_month">Monthly</string>
@@ -43,7 +44,7 @@
     <string name="to">&#160;for&#160;</string>
     <string name="dated">&#160;Dated&#160;</string>
     <string name="on">\nOn: &#160;</string>
-    <string name="has_created">&#160;has created&#160;</string>
+    <string name="has_created">&#160;has been placed&#160;</string>
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
 
     <!--Info/App Specific Strings-->
@@ -108,6 +109,10 @@
     <string name="selected_date">Selected &#160;</string>
     <string name="no_images">No Images Found</string>
     <string name="click_here">Click Here</string>
+    <string name="activity_create_notification_1">Notification from New Zeal Care Services on the&#160;</string>
+    <string name="activity_create_notification_2">Pls login to your account for more details</string>
+    <string name="activity_create_notification_3">The request for the</string>
+    <string name="rating">Rating&#160;:</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
@@ -164,6 +169,7 @@
     <string name="warning_profile_pic">We need a Profile Picture</string>
     <string name="warning_internet">Please check your internet connection and try again</string>
     <string name="select_rating">Select a Rating</string>
+    <string name="activity_not_completed">Activity is not completed</string>
 
     <!--Permission Strings-->
     <string name="permission_contact_rationale">We need access to Contacts to Proceed Further</string>

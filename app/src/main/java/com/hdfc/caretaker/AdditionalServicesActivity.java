@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hdfc.adapters.AdditionalServicesAdapter;
@@ -42,6 +43,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     public static List<ServiceModel> selectedServiceHistoryModels = new ArrayList<>();
 
     public static AdditionalServicesAdapter additionalServicesAdapter;
+    public static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
     private static StorageService storageService;
     //private static LinearLayout dynamicUserTab;
@@ -69,6 +71,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         utils = new Utils(AdditionalServicesActivity.this);
         progressDialog = new ProgressDialog(AdditionalServicesActivity.this);
 
+        loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         //dynamicUserTab = (LinearLayout) findViewById(R.id.dynamicUserTab);
 
         // utils = new Utils(AdditionalServicesActivity.this);
@@ -93,6 +96,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 progressDialog.setCancelable(false);
                                 progressDialog.show();
 */
+
+                                loadingPanel.setVisibility(View.VISIBLE);
                                 storageService = new StorageService(AdditionalServicesActivity.this);
 
                                 iServiceCount = 0;
@@ -255,6 +260,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();*/
 
+        loadingPanel.setVisibility(View.VISIBLE);
+
         StorageService storageService = new StorageService(AdditionalServicesActivity.this);
 
         storageService.findAllDocs(Config.collectionService,
@@ -323,7 +330,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         try {
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            loadingPanel.setVisibility(View.GONE);
 
             if (listView != null) {
 
@@ -369,7 +376,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 } else {
                                     /*if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
@@ -391,7 +398,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             try {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                loadingPanel.setVisibility(View.GONE);
                                 if (ex != null) {
                                     JSONObject jsonObject = new JSONObject(ex.getMessage());
                                     JSONObject jsonObjectError = jsonObject.
@@ -421,7 +428,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -471,7 +478,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 } else {
                                    /* if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
@@ -484,7 +491,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             try {
                                /* if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                loadingPanel.setVisibility(View.GONE);
                                 if (ex != null) {
                                     JSONObject jsonObject = new JSONObject(ex.getMessage());
                                     JSONObject jsonObjectError = jsonObject.
@@ -505,7 +512,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
            /* if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -586,7 +593,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     if (fieldModel.getiArrayCount() > 0) {
                         jsonObjectField.put("array_fields", fieldModel.getiArrayCount());
                         jsonObjectField.put("array_type", utils.stringToJsonArray(fieldModel.getStrArrayType()));
-                        jsonObjectField.put("array_data", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                        jsonObjectField.put("array_data", fieldModel.getStrArrayData());
                     }
                     //
 
@@ -684,7 +691,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         if (fieldModel.getiArrayCount() > 0) {
                             jsonObjectField.put("array_fields", fieldModel.getiArrayCount());
                             jsonObjectField.put("array_type", utils.stringToJsonArray(fieldModel.getStrArrayType()));
-                            jsonObjectField.put("array_data", utils.stringToJsonArray(fieldModel.getStrArrayType()));
+                            jsonObjectField.put("array_data", fieldModel.getStrFieldData());
                         }
                         //
 
@@ -708,8 +715,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         public void onDocumentInserted(Storage response) {
                             if (response != null) {
 
-                                Utils.log(String.valueOf(selectedServiceModels.
-                                        remove(iServiceCount)), " REMOVED ");
+                                /*Utils.log(String.valueOf(selectedServiceModels.
+                                        remove(iServiceCount)), " REMOVED ");*/
 
                                 selectedServiceHistoryModels.add(serviceModel);
 
@@ -721,7 +728,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             } else {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                loadingPanel.setVisibility(View.GONE);
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
@@ -739,7 +746,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             try {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                loadingPanel.setVisibility(View.GONE);
                                 if (ex != null) {
                                     JSONObject jsonObject = new JSONObject(ex.getMessage());
                                     JSONObject jsonObjectError = jsonObject.
@@ -769,7 +776,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -814,7 +821,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 } else {
                                     /*if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
@@ -836,13 +843,13 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                     else {
                                         /*if (progressDialog.isShowing())
                                             progressDialog.dismiss();*/
-                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        loadingPanel.setVisibility(View.GONE);
                                         utils.toast(2, 2, getString(R.string.error));
                                     }
                                 } else {
                                     /*if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    loadingPanel.setVisibility(View.GONE);
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
@@ -855,7 +862,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         } else {
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            loadingPanel.setVisibility(View.GONE);
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
@@ -900,7 +907,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     public void serviceAdded() {
         /*if (progressDialog.isShowing())
             progressDialog.dismiss();*/
-        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+        loadingPanel.setVisibility(View.GONE);
         isUpdating = false;
         //buttonContinue.setEnabled(false);
         utils.toast(1, 1, getString(R.string.service_added));

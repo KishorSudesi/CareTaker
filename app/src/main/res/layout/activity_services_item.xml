@@ -49,7 +49,8 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/blue"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtActivityDetails"
@@ -58,6 +59,9 @@
             android:layout_margin="@dimen/margin_general"
             android:clickable="false"
             android:focusable="false"
-            android:focusableInTouchMode="false" />
+            android:focusableInTouchMode="false"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/colorBlackDark"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

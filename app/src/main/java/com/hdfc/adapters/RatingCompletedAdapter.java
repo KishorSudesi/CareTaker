@@ -90,7 +90,7 @@ public class RatingCompletedAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            String strTimeStamp = utils.formatDate(data.get(position).getStrFeedBackTime());
+            String strTimeStamp = _ctx.getString(R.string.at) + " " + utils.formatDate(data.get(position).getStrFeedBackTime());
 
             viewHolder.dateTime.setText(strTimeStamp);
 

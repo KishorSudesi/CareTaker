@@ -224,6 +224,7 @@ public class MyAccountEditFragment extends Fragment {
 
         //loadingPanel.setVisibility(View.VISIBLE);
         //
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -345,6 +346,8 @@ public class MyAccountEditFragment extends Fragment {
                         /*progressDialog.setMessage(getActivity().getString(R.string.uploading));
                         progressDialog.setCancelable(false);
                         progressDialog.show();*/
+
+                        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
                         StorageService storageService = new StorageService(getActivity());
 
