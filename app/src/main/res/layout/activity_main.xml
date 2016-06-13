@@ -46,7 +46,7 @@
         android:layout_marginRight="@dimen/edit_text_margin"
         android:background="@drawable/button_white"
         android:onClick="goToLogin"
-        android:text="@string/login"
+        android:text="@string/take_me_in"
         android:textAllCaps="false"
         android:textColor="@color/blue" />
 
@@ -60,7 +60,7 @@
         android:layout_marginRight="@dimen/edit_text_margin"
         android:background="@drawable/button_trans_white_border"
         android:onClick="goToWho"
-        android:text="@string/register"
+        android:text="@string/im_new_here"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite" />
 

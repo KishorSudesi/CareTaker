@@ -26,7 +26,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="25dp"
                 android:drawableLeft="@drawable/username"
                 android:drawablePadding="10dp"
                 android:enabled="false"
@@ -53,7 +53,7 @@
                 <EditText
                     android:id="@+id/editDiseases"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="130dp"
                     android:layout_centerHorizontal="true"
                     android:layout_toEndOf="@+id/image1"
                     android:layout_toRightOf="@+id/image1"
@@ -71,11 +71,11 @@
             <RelativeLayout
                 android:id="@+id/relative2"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="130dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp">
+                android:layout_marginTop="15dp">
 
                 <ImageView
                     android:id="@+id/image2"
@@ -111,7 +111,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="@dimen/edit_text_margin"
                 android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/button_blue_white_border"
                 android:text="@string/skip"
                 android:textAllCaps="false"

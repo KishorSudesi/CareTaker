@@ -64,7 +64,7 @@ public class AddDependentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setMessage("Would you like to add more dependents?");
+                alertDialogBuilder.setMessage(R.string.add_recipients);
                 alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

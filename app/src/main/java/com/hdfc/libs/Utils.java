@@ -970,6 +970,15 @@ public class Utils {
         return isValid;
     }
 
+    public boolean validateMobile(String number) {
+        boolean isValid = false;
+
+        if (number.length() == 10)
+            isValid = true;
+
+        return isValid;
+    }
+
     /*public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {

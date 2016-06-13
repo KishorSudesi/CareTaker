@@ -16,6 +16,7 @@
         android:layout_height="match_parent">
 
             <RelativeLayout
+                android:id="@+id/relativeLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
@@ -26,13 +27,7 @@
                 android:layout_marginTop="74dp"
                 android:background="@drawable/my_account_white">
 
-        <RelativeLayout
-            android:id="@+id/loadingPanel"
-            style="@style/GenericProgressBackground"
-            android:visibility="gone">
 
-            <ProgressBar style="@style/GenericProgressIndicator" />
-        </RelativeLayout>
 
                 <TextView
                     android:id="@+id/textView18"
@@ -285,6 +280,22 @@
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/circle" />
 
+            <RelativeLayout
+                android:id="@+id/loadingPanel"
+
+                style="@style/GenericProgressBackground"
+                android:layout_alignBottom="@+id/imageView5"
+                android:layout_alignEnd="@+id/imageView5"
+                android:layout_alignLeft="@+id/imageView5"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/imageView5"
+                android:layout_alignStart="@+id/imageView5"
+                android:visibility="gone">
+
+                <ProgressBar
+
+                    style="@style/GenericProgressIndicator" />
+            </RelativeLayout>
 
         </RelativeLayout>
 

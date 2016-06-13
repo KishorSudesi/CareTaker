@@ -60,6 +60,21 @@
         android:layout_below="@+id/txt"
         android:layout_marginTop="15dp" />
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        style="@style/GenericProgressBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/buttonContinue"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <ProgressBar style="@style/GenericProgressIndicator" />
+    </RelativeLayout>
+
     <Button
         android:id="@+id/buttonContinue"
         android:layout_width="match_parent"
@@ -72,24 +87,8 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/button_success"
         android:enabled="false"
-        android:text="@string/buy_services"
+        android:text="@string/get_services"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite" />
-
-    <RelativeLayout
-        android:id="@+id/loadingPanel"
-        style="@style/GenericProgressBackground"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_above="@+id/txt"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_gravity="center"
-        android:layout_marginBottom="24dp"
-        android:padding="5dp"
-        android:visibility="gone">
-
-        <ProgressBar style="@style/GenericProgressIndicator" />
-    </RelativeLayout>
 
 </RelativeLayout>

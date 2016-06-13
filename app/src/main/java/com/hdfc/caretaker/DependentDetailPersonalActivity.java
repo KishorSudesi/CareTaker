@@ -275,7 +275,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 editContactNo.setError(getString(R.string.error_field_required));
                 focusView = editContactNo;
                 cancel = true;
-            } else if (!utils.validCellPhone(strContactNo)) {
+            } else if (!utils.validateMobile(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_invalid_contact_no));
                 focusView = editContactNo;
                 cancel = true;

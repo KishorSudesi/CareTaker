@@ -21,6 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by Admin on 19-02-2016.
  */
+
 public class NotificationAdapter extends BaseAdapter {
 
     private LayoutInflater inflater = null;

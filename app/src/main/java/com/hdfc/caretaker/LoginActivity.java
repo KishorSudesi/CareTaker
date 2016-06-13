@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextCaptcha;
     private EditText forgotpasswordUserName;
     private ImageButton reloadCaptcha;
+    private Button buttonBack;
     private char[] res = new char[4];
     private String email;
 
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         editEmail = (EditText) findViewById(R.id.editEmail);
         editPassword = (EditText) findViewById(R.id.editPassword);
         txtForgotPassword = (TextView) findViewById(R.id.txtForgotPassword);
+        buttonBack = (Button) findViewById(R.id.buttonBack);
 
         utils = new Utils(LoginActivity.this);
         progressDialog = new ProgressDialog(LoginActivity.this);
@@ -84,6 +87,13 @@ public class LoginActivity extends AppCompatActivity {
                 showPasswordfield();
             }
         });*/
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBack();
+            }
+        });
 
         txtForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,12 +381,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    @Override
+    /*@Override
     public void onBackPressed() {
-        /*super.onBackPressed();
-        moveTaskToBack(true);*/
+        *//*super.onBackPressed();
+        moveTaskToBack(true);*//*
         goBack();
-    }
+    }*/
 
     private void goBack() {
         Intent selection = new Intent(LoginActivity.this, MainActivity.class);

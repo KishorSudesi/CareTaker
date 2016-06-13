@@ -17,6 +17,7 @@
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="forgot">Forgot Password?</string>
+    <string name="add_recipients">Would you like to add more Care Recipients?</string>
     <string name="submit">Submit</string>
     <string name="save_text">Save</string>
     <string name="update">Update</string>
