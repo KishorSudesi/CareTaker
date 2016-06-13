@@ -2812,7 +2812,11 @@ public class Utils {
             StorageService storageService = new StorageService(_ctxt);
 
             String key2 = "dependent_id";
-            String value2 = Config.strDependentIds.get(iActivityCount);
+            String value2 = "";
+
+            if (iActivityCount <= Config.strDependentIds.size()) {
+                value2 = Config.strDependentIds.get(iActivityCount);
+            }
 
            /* Query q1 = QueryBuilder.build("provider_status", "scheduled", QueryBuilder.
                     Operator.EQUALS);*/

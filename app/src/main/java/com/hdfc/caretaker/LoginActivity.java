@@ -381,14 +381,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    /*@Override
+    @Override
     public void onBackPressed() {
-        *//*super.onBackPressed();
-        moveTaskToBack(true);*//*
+        super.onBackPressed();
+       /*
+        moveTaskToBack(true);*/
         goBack();
-    }*/
+    }
 
     private void goBack() {
+        //moveTaskToBack(true);
         Intent selection = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(selection);
         finish();
