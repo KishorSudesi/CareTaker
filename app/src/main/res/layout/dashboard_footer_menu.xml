@@ -2,13 +2,21 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
+    android:layout_height="79dp"
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:background="@color/blue">
+
+    </RelativeLayout>
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp">
+        android:layout_height="75dp"
+        android:layout_below="@+id/line">
 
         <TableRow
             android:layout_width="match_parent"
