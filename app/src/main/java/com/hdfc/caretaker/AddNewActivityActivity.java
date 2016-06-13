@@ -485,7 +485,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                     categoryServiceModels.add(categoryServiceModel);
 
-                    System.out.println("aniketttttttttttttttttttt"+jsonObject.getString("category_name"));
+                    //System.out.println("aniketttttttttttttttttttt"+jsonObject.getString("category_name"));
                 } else {
                     int iPosition = strServiceCategoryNames.indexOf(jsonObject.getString("category_name"));
                     categoryServiceModels.get(iPosition).setServiceModels(serviceModel);

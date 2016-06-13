@@ -80,6 +80,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         selectedServiceHistoryModels.clear();
 
         isUpdating = false;
+        buttonContinue.setTextColor(getResources().getColor(R.color.colorBlackDark));
 
         if (buttonContinue != null) {
 
@@ -187,10 +188,13 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                     getDrawable(R.mipmap.tick));
                         }
 
-                        if (selectedServiceModels.size() > 0 || selectedServiceHistoryModels.size() > 0)
+                        if (selectedServiceModels.size() > 0 || selectedServiceHistoryModels.size() > 0) {
                             buttonContinue.setEnabled(true);
-                        else
+                            buttonContinue.setTextColor(getResources().getColor(R.color.colorWhite));
+                        } else {
                             buttonContinue.setEnabled(false);
+                            buttonContinue.setTextColor(getResources().getColor(R.color.colorBlackDark));
+                        }
 
                     } else resetUpdate();
 
@@ -211,6 +215,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 selectedServiceModels.clear();
                 selectedServiceHistoryModels.clear();
                 buttonContinue.setEnabled(false);
+                buttonContinue.setTextColor(getResources().getColor(R.color.colorBlackDark));
             }
         });
         builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -219,6 +224,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 dialog.dismiss();
                 utils.toast(2, 2, getString(R.string.service_continue));
                 buttonContinue.setEnabled(true);
+                buttonContinue.setTextColor(getResources().getColor(R.color.colorWhite));
             }
         });
         builder.show();

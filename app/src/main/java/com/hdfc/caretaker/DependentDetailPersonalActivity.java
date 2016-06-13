@@ -33,12 +33,10 @@ import android.widget.Spinner;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
-import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.RoundedImageView;
-import com.shephertz.app42.paas.sdk.android.App42CallBack;
 
 import java.io.File;
 import java.io.IOException;
@@ -312,7 +310,45 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         } else {
             try {
 
-                mProgress.setMessage(getString(R.string.loading));
+                if (!SignupActivity.dependentNames.contains(strDependantName)) {
+                    dependentModel = new DependentModel();
+
+                    //strDependantName, strRelation, strImageName, "", "",
+                    // strAddress, strContactNo, strEmail, "", 0
+
+                    dependentModel.setStrName(strDependantName);
+                    dependentModel.setStrRelation(relation);
+                    dependentModel.setStrImagePath(strImageName);
+                    dependentModel.setStrAddress(strAddress);
+                    dependentModel.setStrContacts(strContactNo);
+                    dependentModel.setStrEmail(strEmail);
+                    dependentModel.setStrDob(strDob);
+                    SignupActivity.dependentNames.add(strDependantName);
+                } else {
+                    if (dependentModel != null &&
+                            SignupActivity.dependentNames.contains(strDependantName)
+                            && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
+
+                        dependentModel.setStrName(strDependantName);
+                        dependentModel.setStrRelation(relation);
+                        dependentModel.setStrImagePath(strImageName);
+                        dependentModel.setStrAddress(strAddress);
+                        dependentModel.setStrContacts(strContactNo);
+                        dependentModel.setStrEmail(strEmail);
+                        dependentModel.setStrDob(strDob);
+                    } else {
+                        utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                    }
+                }
+
+                utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                strImageName = "";
+                Intent selection = new Intent(DependentDetailPersonalActivity.this,
+                        DependentDetailsMedicalActivity.class);
+                startActivity(selection);
+                finish();
+
+                /*mProgress.setMessage(getString(R.string.loading));
                 mProgress.setCancelable(false);
                 mProgress.show();
 
@@ -342,49 +378,13 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                             //Utils.log(strImageName, " strImageName ");
 
-                            if (!SignupActivity.dependentNames.contains(strDependantName)) {
-                                dependentModel = new DependentModel();
 
-                                //strDependantName, strRelation, strImageName, "", "",
-                                // strAddress, strContactNo, strEmail, "", 0
-
-                                dependentModel.setStrName(strDependantName);
-                                dependentModel.setStrRelation(relation);
-                                dependentModel.setStrImagePath(strImageName);
-                                dependentModel.setStrAddress(strAddress);
-                                dependentModel.setStrContacts(strContactNo);
-                                dependentModel.setStrEmail(strEmail);
-                                dependentModel.setStrDob(strDob);
-                                SignupActivity.dependentNames.add(strDependantName);
-                            } else {
-                                if (dependentModel != null &&
-                                        SignupActivity.dependentNames.contains(strDependantName)
-                                        && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
-
-                                    dependentModel.setStrName(strDependantName);
-                                    dependentModel.setStrRelation(relation);
-                                    dependentModel.setStrImagePath(strImageName);
-                                    dependentModel.setStrAddress(strAddress);
-                                    dependentModel.setStrContacts(strContactNo);
-                                    dependentModel.setStrEmail(strEmail);
-                                    dependentModel.setStrDob(strDob);
-                                } else {
-                                    utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
-                                }
-                            }
-
-                            utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
-                            strImageName = "";
-                            Intent selection = new Intent(DependentDetailPersonalActivity.this,
-                                    DependentDetailsMedicalActivity.class);
-                            startActivity(selection);
-                            finish();
                         } else {
                             utils.toast(2, 2, getString(R.string.warning_internet));
                         }
                     }
                 });
-
+*/
             } catch (Exception e) {
                 e.printStackTrace();
             }

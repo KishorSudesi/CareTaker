@@ -51,13 +51,11 @@ import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.caretaker.fragments.ActivityFragment;
-import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.CategoryServiceModel;
 import com.hdfc.models.ClientModel;
-import com.hdfc.models.ConfirmViewModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FeedBackModel;
@@ -1588,7 +1586,7 @@ public class Utils {
         return strDisplayDate;
     }*/
 
-    public int retrieveConfirmDependants() {
+   /* public int retrieveConfirmDependants() {
 
         ConfirmViewModel confirmViewModel;
 
@@ -1636,7 +1634,7 @@ public class Utils {
         }
 
         return count;
-    }
+    }*/
 
     public String formatDate(String strDate){
 

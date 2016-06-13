@@ -1,6 +1,7 @@
 package com.hdfc.caretaker.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -50,6 +51,7 @@ public class ConfirmFragment extends Fragment {
     private static ProgressDialog progressDialog, pDialog;
     private static String jsonDocId;
     private static String strAddDependent;
+    private static Context context;
     public Button buttonContinue;
     private Utils utils;
     private String strCustomerImageUrl = "";
@@ -91,6 +93,20 @@ public class ConfirmFragment extends Fragment {
         }
     }
 
+    public static void setListView() {
+        try {
+            /*adapter = new ConfirmListAdapter(getContext(),
+                    ConfirmFragment.CustomListViewValuesArr);*/
+            prepareListData();
+
+            adapter = new ConfirmListAdapter(context, listDataHeader, listDataChild);
+            expListView.setAdapter(adapter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -115,6 +131,8 @@ public class ConfirmFragment extends Fragment {
         expListView = (ExpandableListView)addFragment.findViewById(R.id.expList);
 
         progressDialog = new ProgressDialog(getActivity());
+
+        context = getActivity();
 
         strAddDependent = getString(R.string.add_dependent);
 
@@ -467,7 +485,6 @@ public class ConfirmFragment extends Fragment {
 
         return isFormed;
     }
-
 
     public void uploadData() {
 
@@ -957,21 +974,8 @@ public class ConfirmFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        prepareListData();
+        setListData();
 
         setListView();
     }
-
-    public void setListView() {
-        try {
-            /*adapter = new ConfirmListAdapter(getContext(),
-                    ConfirmFragment.CustomListViewValuesArr);*/
-            setListData();
-
-            adapter = new ConfirmListAdapter(getContext(),listDataHeader,listDataChild);
-            expListView.setAdapter(adapter);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }}
 }

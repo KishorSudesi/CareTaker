@@ -14,19 +14,24 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
+import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.FeedBackModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -37,6 +42,8 @@ public class AddRatingCompletedActivityFragment extends Fragment {
     private static int iRating = 0;
     private static View previousViewButton;
     private static Context context;
+    private static String strUserName;
+    private static JSONObject jsonObjectMess;
     private EditText editFeedBack;
     private CheckBox checkReport;
     private boolean checked = false;
@@ -80,6 +87,19 @@ public class AddRatingCompletedActivityFragment extends Fragment {
         utils = new Utils(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
+        checkReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkReport.isChecked()) {
+                    checkReport.setButtonDrawable(getResources().
+                            getDrawable(R.mipmap.tick_red));
+                } else {
+                    checkReport.setButtonDrawable(getResources().
+                            getDrawable(R.mipmap.tick));
+                }
+            }
+        });
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +107,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                 boolean b = true;
 
-                if (!ActivityCompletedFragment._activityModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
+                if (!ActivityCompletedFragment._activityModel.getStrActivityStatus().equalsIgnoreCase("completed")) { //
                     b = false;
                     utils.toast(2, 2, getString(R.string.activity_not_completed));
 
@@ -215,15 +235,37 @@ public class AddRatingCompletedActivityFragment extends Fragment {
                                             }
 
                                             int iPosition = Config.strProviderIds.indexOf(ActivityCompletedFragment._activityModel.getStrProviderID());
-                                            String strUserName = Config.providerModels.get(iPosition).getStrEmail();
+                                            strUserName = Config.providerModels.get(iPosition).getStrEmail();
 
 
                                             String strPushMessage = Config.customerModel.getStrName() + getString(R.string.has_given_feedback) +
-                                                    ActivityCompletedFragment._activityModel.getStrActivityName() + getString(R.string.dated) +
-                                                    ActivityCompletedFragment._activityModel.getStrActivityDate() +
+                                                    utils.convertStringToDate(ActivityCompletedFragment._activityModel.getStrActivityName()) + getString(R.string.dated) +
+                                                    utils.convertStringToDate(ActivityCompletedFragment._activityModel.getStrActivityDate()) +
                                                     getString(R.string.on) + strDoneDate;
 
-                                            sendPushToProvider(strUserName, strPushMessage);
+                                            //
+                                            String strDateNow = "";
+                                            Calendar calendar = Calendar.getInstance();
+                                            Date dateNow = calendar.getTime();
+                                            strDateNow = utils.convertDateToString(dateNow);
+
+                                            jsonObjectMess = new JSONObject();
+
+                                            try {
+
+                                                jsonObjectMess.put("created_by", Config.customerModel.getStrCustomerID());
+                                                jsonObjectMess.put("time", strDateNow);
+                                                jsonObjectMess.put("user_type", "provider");
+                                                jsonObjectMess.put("user_id", ActivityCompletedFragment._activityModel.getStrProviderID());
+                                                jsonObjectMess.put("activity_id", ActivityCompletedFragment._activityModel.getStrActivityID());//todo add to care taker
+                                                jsonObjectMess.put("created_by_type", "customer");
+                                                jsonObjectMess.put(App42GCMService.ExtraMessage, strPushMessage);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            //
+
+                                            insertNotification();
                                         }
                                     } else {
                                        /* if (progressDialog.isShowing())
@@ -317,4 +359,55 @@ public class AddRatingCompletedActivityFragment extends Fragment {
             populateFeedbacks();
         }
     }
+
+    ///////////////////////
+    private void insertNotification() {
+
+        if (utils.isConnectingToInternet()) {
+
+            final StorageService storageService = new StorageService(getActivity());
+
+            storageService.insertDocs(jsonObjectMess,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            try {
+                                if (response.isResponseSuccess()) {
+                                    sendPushToProvider(strUserName, jsonObjectMess.toString());
+                                } else {
+                                    populateFeedbacks();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                            populateFeedbacks();
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    },
+                    Config.collectionNotification);
+        } else {
+            populateFeedbacks();
+        }
+    }
+    ///////////////////////
 }

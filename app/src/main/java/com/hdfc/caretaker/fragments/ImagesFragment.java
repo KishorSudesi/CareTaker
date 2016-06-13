@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,9 +59,20 @@ public class ImagesFragment extends Fragment {
 
             loadingPanel.setVisibility(View.VISIBLE);
 
-            threadHandler = new ThreadHandler();
+            bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+                    utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
+                    Config.intWidth, Config.intHeight);
+
+            if (bitmap != null)
+                imageView.setImageBitmap(bitmap);
+            else
+                imageView.setImageBitmap(Utils.noBitmap);
+
+            loadingPanel.setVisibility(View.GONE);
+
+          /*  threadHandler = new ThreadHandler();
             Thread backgroundThread = new BackgroundThread();
-            backgroundThread.start();
+            backgroundThread.start();*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,9 +89,10 @@ public class ImagesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Utils.log(" 4 ", " IN ");
+
     }
 
-    public class ThreadHandler extends Handler {
+ /*   public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             loadingPanel.setVisibility(View.GONE);
@@ -107,5 +118,5 @@ public class ImagesFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }
