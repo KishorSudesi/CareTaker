@@ -240,8 +240,10 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                                             String strPushMessage = Config.customerModel.getStrName() + getString(R.string.has_given_feedback) +
                                                     ActivityCompletedFragment._activityModel.getStrActivityName() + getString(R.string.dated) +
-                                                    utils.convertStringToDate(ActivityCompletedFragment._activityModel.getStrActivityDate()) +
-                                                    getString(R.string.on) + strDoneDate;
+                                                    utils.convertStringToDate(ActivityCompletedFragment._activityModel.getStrActivityDate());
+
+                                            /* +
+                                                    getString(R.string.on) + strDoneDate;*/
 
                                             //
                                             String strDateNow = "";

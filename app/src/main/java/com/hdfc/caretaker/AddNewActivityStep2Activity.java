@@ -383,10 +383,9 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             try {
 
                 jsonObject.put("created_by", Config.customerModel.getStrCustomerID());
-                jsonObject.put("time", strDate);
+                jsonObject.put("time", strDateNow);
                 jsonObject.put("user_type", "provider");
                 jsonObject.put("user_id", strProviderId);
-                jsonObject.put("activity_id", strDateNow);//todo add to care taker
                 jsonObject.put("created_by_type", "customer");
                 jsonObject.put(App42GCMService.ExtraMessage, strPushMessage);
             } catch (JSONException e) {
@@ -481,6 +480,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 if (response.getJsonDocList().size() > 0) {
                                     strInsertedDocumentId = response.getJsonDocList().get(0).getDocId();
                                     iUpdateFlag = iActivityCreated;
+                                    jsonObject.put("activity_id", strInsertedDocumentId);//todo add to care taker
                                     fetchService(serviceModel);
                                 } else {
                                     if (progressDialog.isShowing())
