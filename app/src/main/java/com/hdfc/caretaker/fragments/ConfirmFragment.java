@@ -49,10 +49,10 @@ public class ConfirmFragment extends Fragment {
     private static HashMap<CustomerModel, List<DependentModel>> listDataChild = new HashMap<>();
     private static ProgressDialog progressDialog, pDialog;
     private static String jsonDocId;
+    private static String strAddDependent;
     public Button buttonContinue;
     private Utils utils;
     private String strCustomerImageUrl = "";
-
     private int iDependentCount = 0;
 
     public ConfirmFragment() {
@@ -63,6 +63,32 @@ public class ConfirmFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void prepareListData() {
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
+
+//        if (expListView != null) {
+
+         /*   listDataHeader.clear();
+            listDataChild.clear();
+
+            for (ClientModel clientModel : Config.clientModels) {*/
+        if (Config.customerModel != null) {
+            listDataHeader.add(Config.customerModel);
+
+            ArrayList<DependentModel> dependentModels = new ArrayList<>();
+
+            for (DependentModel dependentModel : SignupActivity.dependentModels) {
+
+                if (!dependentModel.getStrName().equalsIgnoreCase(strAddDependent)) {
+                    dependentModels.add(dependentModel);
+                }
+            }
+
+            listDataChild.put(Config.customerModel, dependentModels);
+        }
     }
 
     @Override
@@ -89,6 +115,8 @@ public class ConfirmFragment extends Fragment {
         expListView = (ExpandableListView)addFragment.findViewById(R.id.expList);
 
         progressDialog = new ProgressDialog(getActivity());
+
+        strAddDependent = getString(R.string.add_dependent);
 
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,32 +169,6 @@ public class ConfirmFragment extends Fragment {
         Intent intent = new Intent(getActivity(), AccountSuccessActivity.class);
         startActivity(intent);
         getActivity().finish();
-    }
-
-    private void prepareListData() {
-        listDataHeader = new ArrayList<>();
-        listDataChild = new HashMap<>();
-
-//        if (expListView != null) {
-
-         /*   listDataHeader.clear();
-            listDataChild.clear();
-
-            for (ClientModel clientModel : Config.clientModels) {*/
-        if(Config.customerModel!=null) {
-            listDataHeader.add(Config.customerModel);
-
-            ArrayList<DependentModel> dependentModels = new ArrayList<>();
-
-            for (DependentModel dependentModel : SignupActivity.dependentModels) {
-
-                if (!dependentModel.getStrName().equalsIgnoreCase(getString(R.string.add_dependent))) {
-                    dependentModels.add(dependentModel);
-                }
-            }
-
-            listDataChild.put(Config.customerModel, dependentModels);
-        }
     }
 
     public void uploadDependentImages() {
@@ -945,7 +947,7 @@ public class ConfirmFragment extends Fragment {
 
         if (Config.customerModel != null && Config.customerModel.getStrName() != null
                 && !Config.customerModel.getStrName().equalsIgnoreCase(""))
-            intCount = utils.retrieveConfirmDependants();
+            intCount = SignupActivity.dependentModels.size();
 
         if (intCount > 1)
             buttonContinue.setVisibility(View.VISIBLE);

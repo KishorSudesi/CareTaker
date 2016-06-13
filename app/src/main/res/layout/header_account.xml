@@ -29,6 +29,7 @@
         android:layout_marginLeft="27dp"
         android:layout_marginStart="27dp"
         android:layout_weight="1"
+        android:background="@color/colorWhite"
         android:src="@drawable/left_arrow_active"
         android:textAllCaps="false" />
 

@@ -223,10 +223,17 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 if (AddDependentFragment.adapter != null)
                     AddDependentFragment.adapter.notifyDataSetChanged();
 
-                utils.retrieveConfirmDependants();
+        //CustomViewPager.setPagingEnabled(true);
+
+              /*  utils.retrieveConfirmDependants();
 
                 if (ConfirmFragment.adapter != null)
+                    ConfirmFragment.adapter.notifyDataSetChanged();*/
+
+        if (ConfirmFragment.adapter != null) {
+            ConfirmFragment.prepareListData();
                     ConfirmFragment.adapter.notifyDataSetChanged();
+        }
                 //
 
                 progressDialog.dismiss();

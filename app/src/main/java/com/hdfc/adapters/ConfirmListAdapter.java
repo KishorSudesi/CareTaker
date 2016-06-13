@@ -190,7 +190,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.customer);
         }else{
-            System.out.println("Does not exists");
+            //System.out.println("Does not exists");
             //viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
         }
 

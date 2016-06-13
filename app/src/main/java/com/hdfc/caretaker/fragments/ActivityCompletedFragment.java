@@ -58,7 +58,11 @@ public class ActivityCompletedFragment extends Fragment {
 
         strActivityId = _activityModel.getStrActivityID();
 
-        txtViewHeader.setText(getActivity().getResources().getString(R.string.completed_activity));
+        if (_activityModel.getStrActivityStatus().equalsIgnoreCase("completed"))
+            txtViewHeader.setText(getActivity().getResources().getString(R.string.completed_activity));
+
+        if (!_activityModel.getStrActivityStatus().equalsIgnoreCase("completed"))
+            txtViewHeader.setText(getActivity().getResources().getString(R.string.process_activity));
 
         feedBackModels = _activityModel.getFeedBackModels();
 

@@ -32,7 +32,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_1_star"
+                        android:src="@drawable/feedback_1_star"
                         android:tag="1" />
 
                     <ImageView
@@ -40,7 +40,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_2_star"
+                        android:src="@drawable/feedback_2_star"
                         android:tag="2" />
 
                     <ImageView
@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_3_star"
+                        android:src="@drawable/feedback_3_star"
                         android:tag="3" />
 
                     <ImageView
@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_4_star"
+                        android:src="@drawable/feedback_4_star"
                         android:tag="4" />
 
                     <ImageView
@@ -64,7 +64,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="setRating"
-                        android:src="@mipmap/feedback_5_star"
+                        android:src="@drawable/feedback_5_star"
                         android:tag="5" />
 
                 </LinearLayout>

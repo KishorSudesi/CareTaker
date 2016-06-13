@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ViewPagerAdapter;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.CustomViewPager;
@@ -156,6 +157,7 @@ public class SignupActivity extends FragmentActivity {
                     //customerModels = new ArrayList<>();
                     dependentModels = new ArrayList<>();
                     dependentNames = new ArrayList<>();
+                    Config.customerModel = null;
                     DependentDetailPersonalActivity.dependentModel = null;
 
                     startActivity(selection);

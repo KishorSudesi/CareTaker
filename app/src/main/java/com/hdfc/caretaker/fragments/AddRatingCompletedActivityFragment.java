@@ -61,7 +61,8 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
         previousViewButton = v;
 
-        v.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_cell_blue));
+        //v.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.rounded_cell_blue));
+        v.setBackgroundColor(context.getResources().getColor(R.color.blue));
     }
 
 
@@ -86,20 +87,23 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
                 boolean b = true;
 
-                if (TextUtils.isEmpty(editFeedBack.getText().toString())) {
-                    b = false;
-                    editFeedBack.setError(getString(R.string.error_field_required));
-                }
-
-                if (iRating == 0) {
-                    b = false;
-                    utils.toast(2, 2, getString(R.string.select_rating));
-                }
-
                 if (!ActivityCompletedFragment._activityModel.getStrActivityStatus().equalsIgnoreCase("completed")) {
                     b = false;
                     utils.toast(2, 2, getString(R.string.activity_not_completed));
+
+                } else {
+
+                    if (TextUtils.isEmpty(editFeedBack.getText().toString())) {
+                        b = false;
+                        editFeedBack.setError(getString(R.string.error_field_required));
+                    }
+
+                    if (iRating == 0) {
+                        b = false;
+                        utils.toast(2, 2, getString(R.string.select_rating));
+                    }
                 }
+
 
                 if (b)
                     uploadCheckBox();

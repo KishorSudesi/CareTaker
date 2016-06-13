@@ -411,8 +411,6 @@ public class GuruDetailsFragment extends Fragment {
                                 if (!strMess.equalsIgnoreCase("")
                                         && strMess.equalsIgnoreCase("Not Found")) {
 
-                                    CustomViewPager.setPagingEnabled(true);
-
                                     if (Config.customerModel != null
                                             && Config.customerModel.getStrName() != null
                                             && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
@@ -450,13 +448,17 @@ public class GuruDetailsFragment extends Fragment {
                                     //chk this
                                     utils.retrieveDependants();//strEmail
 
+                                    CustomViewPager.setPagingEnabled(true);
+
                                     if (AddDependentFragment.adapter != null)
                                         AddDependentFragment.adapter.notifyDataSetChanged();
 
-                                    utils.retrieveConfirmDependants();
+                                    //utils.retrieveConfirmDependants();
 
-                                    if (ConfirmFragment.adapter != null)
+                                    if (ConfirmFragment.adapter != null) {
+                                        ConfirmFragment.prepareListData();
                                         ConfirmFragment.adapter.notifyDataSetChanged();
+                                    }
 
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();

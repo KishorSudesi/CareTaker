@@ -2,13 +2,13 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="60dp"
     android:background="@drawable/header_border"
     android:orientation="vertical">
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="60dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                 android:background="@color/colorWhite"
                 android:onClick="backToDashboard"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/video_play" />
+                android:src="@mipmap/video_play" />
 
             <ImageButton
                 android:id="@+id/imageButtonImage"
@@ -55,7 +55,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorWhite"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/image_viewer" />
+                android:src="@mipmap/image_viewer" />
 
             <ImageButton
                 android:id="@+id/imageButtonRating"
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorWhite"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/feedback_smiley" />
+                android:src="@mipmap/feedback_smiley" />
 
             <ImageButton
                 android:id="@+id/imageButtonAdd"
@@ -75,7 +75,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorWhite"
                 android:padding="@dimen/padding_general"
-                android:src="@drawable/feedback_add" />
+                android:src="@mipmap/feedback_add" />
 
         </TableRow>
 
