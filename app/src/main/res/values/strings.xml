@@ -113,8 +113,8 @@
     <string name="no_images">No Images Found</string>
     <string name="click_here">Click Here</string>
     <string name="activity_create_notification_1">Notification from New Zeal Care Services on the&#160;</string>
-    <string name="activity_create_notification_2">Pls login to your account for more details</string>
-    <string name="activity_create_notification_3">The request for the</string>
+    <string name="activity_create_notification_2">. &#160;Pls login to your account for more details&#160;</string>
+    <string name="activity_create_notification_3">&#160;The request for the&#160;</string>
     <string name="rating">Rating&#160;:</string>
 
     <!--Success Strings-->
