@@ -74,7 +74,7 @@ public class SignupActivity extends FragmentActivity {
         switch (action) {
             case 0:
                 setButton(_btn1);
-                texViewHeader.setText(getString(R.string.your_details));
+                texViewHeader.setText(getString(R.string.personal_info));
                 break;
 
             case 1:

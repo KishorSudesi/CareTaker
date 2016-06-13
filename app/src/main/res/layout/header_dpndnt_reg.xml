@@ -19,9 +19,10 @@
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
-        android:layout_height="130dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/logo" />
+        android:layout_marginTop="20dp"
+        android:background="@drawable/logo1" />
 
     <TextView
         android:id="@+id/header"
@@ -32,7 +33,7 @@
         android:layout_marginTop="15dp"
         android:layout_weight="2"
         android:padding="@dimen/text_padding"
-        android:text="@string/your_details"
+        android:text="@string/personal_info"
         android:textColor="@color/blue"
         android:textSize="28sp" />
 

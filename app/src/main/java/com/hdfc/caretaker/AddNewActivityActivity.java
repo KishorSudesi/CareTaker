@@ -86,8 +86,6 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                     View v2 = parent.getChildAt(groupPosition);*/
 
-
-
                     RadioButton checkBox = (RadioButton) v.findViewById(R.id.checkBoxService);
                     ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
 

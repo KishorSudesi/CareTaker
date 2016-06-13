@@ -49,9 +49,10 @@
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
 
     <!--Info/App Specific Strings-->
-    <string name="account_success_message">Good job. We all are set to care for your seniors. Go to your Dashboard to see how</string>
+    <string name="account_success_message">Welcome to care services of New Zeal (an HDFC Life initiative). View Dashboard to view your account.</string>
     <string name="take_me_in">Take Me In</string>
     <string name="register">Register</string>
+    <string name="personal_info">Personal Information</string>
     <string name="express_care">Express your care to loved one</string>
     <string name="welcome">Welcome</string>
     <string name="medicine_name">Medicine Name</string>
