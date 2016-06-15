@@ -308,7 +308,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             transaction.commit();
 
         setMenu();
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.seniors_icon));
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
         buttonNotifications.setImageDrawable(getResources().getDrawable(R.mipmap.notification_active));
         textViewNotifications.setTextColor(getResources().getColor(R.color.blue));
         // }
@@ -324,7 +324,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             transaction.commit();
 
         setMenu();
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.seniors_icon));
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
         buttonAccount.setImageDrawable(getResources().getDrawable(R.mipmap.my_account_active));
         textViewAccount.setTextColor(getResources().getColor(R.color.blue));
         //}
@@ -342,7 +342,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             transaction.commit();
 
         setMenu();
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.seniors_icon));
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
         buttonActivity.setImageDrawable(getResources().getDrawable(R.mipmap.activity_active));
         txtViewActivity.setTextColor(getResources().getColor(R.color.blue));
         //}
