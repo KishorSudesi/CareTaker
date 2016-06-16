@@ -1,18 +1,20 @@
-package com.hdfc.caretaker.fragments;
+package com.hdfc.caretaker;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,31 +23,39 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import com.shephertz.app42.paas.sdk.android.App42CallBack;
-
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.hdfc.app42service.StorageService;
+import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
-import com.hdfc.caretaker.R;
-import com.hdfc.caretaker.SignupActivity;
+import com.hdfc.caretaker.fragments.AddDependentFragment;
+import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.config.Config;
+import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
+import com.shephertz.app42.paas.sdk.android.upload.Upload;
+import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class GuruDetailsFragment extends Fragment {
+/**
+ * Created by Admin on 15-06-2016.
+ */
+public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
     public static RoundedImageView imgButtonCamera;
 
@@ -55,14 +65,18 @@ public class GuruDetailsFragment extends Fragment {
     public static String citizenshipVal;
     private static Thread backgroundThreadCamera, backgroundThread;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo, strDate;//,strAddress;
+    private static String strName, strEmail, strConfirmPass, strContactNo, strDate,strPass,strCountryCode,strCountry;//,strAddress;
     private static ProgressDialog mProgress = null;
     String strMess = "";
+    private static String jsonDocId;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
     //editAddress
     private Utils utils;
     private RadioButton mobile;
     private Spinner citizenship;
+    private String strCustomerImageUrl = "";
+    public static int uploadSize, uploadingCount=0;
+
     private String strAreaCode = "";
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -84,44 +98,28 @@ public class GuruDetailsFragment extends Fragment {
         }
     };
 
-    public GuruDetailsFragment() {
-    }
-
-    public static GuruDetailsFragment newInstance() {
-        GuruDetailsFragment fragment = new GuruDetailsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        bitmap = null;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        utils = new Utils(getActivity());
-    }
+        setContentView(R.layout.activity_guru_personal_info);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        View rootView = inflater.inflate(R.layout.fragment_guru_details, container, false);
-        imgButtonCamera = (RoundedImageView) rootView.findViewById(R.id.imageButtonCamera);
+        utils = new Utils(ActivityGuruPersonalInfo.this);
 
-        editName = (EditText) rootView.findViewById(R.id.editName);
-        editEmail = (EditText) rootView.findViewById(R.id.editEmail);
-        editPass = (EditText) rootView.findViewById(R.id.editPassword);
-        editConfirmPass = (EditText) rootView.findViewById(R.id.editConfirmPassword);
-        editContactNo = (EditText) rootView.findViewById(R.id.editContactNo);
-        editAreaCode = (EditText) rootView.findViewById(R.id.editAreaCode);
-        editCountryCode = (EditText) rootView.findViewById(R.id.editCountryCode);
+        imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);
 
-        mobile = (RadioButton) rootView.findViewById(R.id.radioMobile);
+        editName = (EditText) findViewById(R.id.editName);
+        editEmail = (EditText) findViewById(R.id.editEmail);
+        editPass = (EditText)  findViewById(R.id.editPassword);
+        editConfirmPass = (EditText) findViewById(R.id.editConfirmPassword);
+        editContactNo = (EditText) findViewById(R.id.editContactNo);
+        editAreaCode = (EditText) findViewById(R.id.editAreaCode);
+        editCountryCode = (EditText) findViewById(R.id.editCountryCode);
+
+
+
+        mobile = (RadioButton) findViewById(R.id.radioMobile);
         //RadioButton landline = (RadioButton) rootView.findViewById(R.id.radioLandline);
 
         mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -147,12 +145,12 @@ public class GuruDetailsFragment extends Fragment {
         /*TelephonyManager telephonyManager = (TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         editContactNo.setText( telephonyManager.getNetworkCountryIso());*/
 
-        editTextDate = (EditText) rootView.findViewById(R.id.editDOB);
+        editTextDate = (EditText) findViewById(R.id.editDOB);
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SlideDateTimePicker.Builder(getActivity().getSupportFragmentManager())
+                new SlideDateTimePicker.Builder(ActivityGuruPersonalInfo.this.getSupportFragmentManager())
                         .setListener(listener)
                         .setInitialDate(new Date())
                         .build()
@@ -160,16 +158,16 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
-        Button buttonContinue = (Button) rootView.findViewById(R.id.buttonContinue);
+        Button buttonContinue = (Button) findViewById(R.id.buttonContinue);
         //editAddress = (EditText) rootView.findViewById(R.id.editAddress);
 
-        mProgress = new ProgressDialog(getActivity());
+        mProgress = new ProgressDialog(this);
 
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
-                utils.selectImage(String.valueOf(calendar.getTimeInMillis()) + ".jpeg", GuruDetailsFragment.this, null);
+                utils.selectImage(String.valueOf(calendar.getTimeInMillis()) + ".jpeg", null, ActivityGuruPersonalInfo.this);
             }
         });
 
@@ -181,9 +179,9 @@ public class GuruDetailsFragment extends Fragment {
         });
 
 
-        citizenship = (Spinner) rootView.findViewById(R.id.input_citizenship);
+        citizenship = (Spinner) findViewById(R.id.input_citizenship);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, Config.countryNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ActivityGuruPersonalInfo.this, R.layout.spinner_item, Config.countryNames);
         citizenship.setAdapter(adapter);
         citizenship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -200,49 +198,300 @@ public class GuruDetailsFragment extends Fragment {
             }
         });
 
-       /* CustomerModel customerModel = new CustomerModel();
-        customerModel.setStrName(strName);
-        customerModel.setStrEmail(strEmail);
-        customerModel.setStrDob(strDate);
-        customerModel.setStrAddress(citizenshipVal);
-        customerModel.setStrContacts(strContactNo);
-        customerModel.setStrImgUrl(strCustomerImgName);
-        Config.customerModel=customerModel;
-
-        Config.customerModel.setStrImgPath(strCustomerImgName);*/
-        return rootView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void uploadImage() {
 
-        if (Config.customerModel != null && Config.customerModel.getStrName() != null
-                && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
+        try {
 
-            editName.setText(Config.customerModel.getStrName());
-            editEmail.setText(Config.customerModel.getStrEmail());
-            editContactNo.setText(Config.customerModel.getStrContacts());
-            //editAddress.setText(Config.customerModel.getStrAddress());
+            if (utils.isConnectingToInternet()) {
 
-            editTextDate.setText(Config.customerModel.getStrDob());
-            editCountryCode.setText(Config.customerModel.getStrCountryIsdCode());
+                UploadService uploadService = new UploadService(ActivityGuruPersonalInfo.this);
 
-            if (Config.customerModel.getStrCountryAreaCode().equalsIgnoreCase("")) {
-                mobile.setChecked(true);
-                editAreaCode.setVisibility(View.GONE);
+                /*if (mProgress.isShowing())
+                    mProgress.setProgress(uploadSize+1);*/
+
+                uploadService.uploadImageCommon(strCustomerImgName,
+                        strName, "Profile Picture",
+                        strEmail,
+                        UploadFileType.IMAGE, new App42CallBack() {
+
+                            public void onSuccess(Object response) {
+
+                                Utils.log(response.toString()," TAG ");
+                                if(response!=null) {
+                                    Upload upload = (Upload) response;
+                                    ArrayList<Upload.File> fileList = upload.getFileList();
+
+                                    if (fileList.size() > 0) {
+                                        if (mProgress.isShowing())
+                                            mProgress.dismiss();
+                                        strCustomerImageUrl = fileList.get(0).getUrl();
+                                        Config.customerModel.setStrImgUrl(strCustomerImageUrl);
+                                        //checkStorage();
+                                        uploadData();
+                                    } else {
+                                        if (mProgress.isShowing())
+                                            mProgress.dismiss();
+
+                                        utils.toast(2, 2, ((Upload) response).getStrResponse());
+                                        //uploadImage();
+                                    }
+                                }else{
+                                    if (mProgress.isShowing())
+                                        mProgress.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+
+                                Utils.log(e.getMessage()," TAG ");
+
+                                if (mProgress.isShowing())
+                                    mProgress.dismiss();
+                                if(e!=null) {
+                                    App42Exception exception = (App42Exception) e;
+                                    int appErrorCode = exception.getAppErrorCode();
+
+                                    if (appErrorCode == 2100) {
+                                        if (mProgress.isShowing())
+                                            mProgress.dismiss();
+
+                                        //checkStorage();
+                                        //uploadData();
+                                    }
+                                 /*   else {
+                                        utils.toast(2, 2, getString(R.string.error));
+                                        uploadImage();
+                                    }*/
+                                }else{
+                                    if (mProgress.isShowing())
+                                        mProgress.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+                        });
             } else {
-                editAreaCode.setVisibility(View.VISIBLE);
-                editAreaCode.setText(Config.customerModel.getStrCountryAreaCode());
+                if (mProgress.isShowing())
+                    mProgress.dismiss();
+                utils.toast(2, 2, getString(R.string.warning_internet));
             }
-
-            citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
-            //citizenship.setSelection(Config.strCountries.indexOf(citizenshipVal));
-
-            backgroundThreadHandler = new BackgroundThreadHandler();
-            backgroundThreadCamera = new BackgroundThreadCamera();
-            backgroundThreadCamera.start();
+        }catch (Exception e){
+            e.printStackTrace();
+            if (mProgress.isShowing())
+                mProgress.dismiss();
+            utils.toast(2, 2, getString(R.string.error));
         }
+    }
+
+
+    public void uploadData() {
+
+        boolean isRegistered = prepareData(strCustomerImageUrl);
+
+        mProgress.setMessage(ActivityGuruPersonalInfo.this.getResources().getString(R.string.uploading));
+        mProgress.setCancelable(false);
+        mProgress.show();
+
+        if (utils.isConnectingToInternet()) {
+
+            if (isRegistered) {
+
+                StorageService storageService = new StorageService(ActivityGuruPersonalInfo.this);
+
+                storageService.insertDocs(Config.jsonCustomer,
+                        new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                            @Override
+                            public void onDocumentInserted(Storage response) {
+
+                                if (response != null){
+                                    Utils.log(response.toString(), "");
+                                    if (response.isResponseSuccess()) {
+                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                                        jsonDocId = jsonDocument.getDocId();
+                                        createUser();
+
+                                    }
+                                }else{
+                                    if (mProgress.isShowing())
+                                        mProgress.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onUpdateDocSuccess(Storage response) {
+                            }
+
+                            @Override
+                            public void onFindDocSuccess(Storage response) {
+                            }
+
+                            @Override
+                            public void onInsertionFailed(App42Exception ex) {
+                                if (mProgress.isShowing())
+                                    mProgress.dismiss();
+
+                                if(ex!=null){
+                                    //int appErrorCode = ex.getAppErrorCode();
+                                    Utils.log(ex.getMessage(), "");
+                                    utils.toast(2, 2, getString(R.string.error_register));
+                                }else{
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onFindDocFailed(App42Exception ex) {
+                            }
+
+                            @Override
+                            public void onUpdateDocFailed(App42Exception ex) {
+                            }
+                        }, Config.collectionCustomer);
+            } else {
+                if (mProgress.isShowing())
+                    mProgress.dismiss();
+                utils.toast(2, 2, getString(R.string.error_register));
+            }
+        } else {
+            if (mProgress.isShowing())
+                mProgress.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+    }
+
+    private void createUser(){
+        UserService userService = new UserService(ActivityGuruPersonalInfo.this);
+
+        ArrayList<String> roleList = new ArrayList<>();
+        roleList.add("customer");
+
+        userService.onCreateUser(strEmail,
+                strPass, strEmail,
+                new App42CallBack() {
+
+                    @Override
+                    public void onSuccess(Object o) {
+                        if (mProgress.isShowing())
+                            mProgress.dismiss();
+                        if (o != null) {
+
+                            //chk this
+                                       /* utils.retrieveDependants();//strEmail
+
+                                        CustomViewPager.setPagingEnabled(true);
+
+                                        if (AddDependentFragment.adapter != null)
+                                            AddDependentFragment.adapter.notifyDataSetChanged();
+
+                                        //utils.retrieveConfirmDependants();
+
+                                        if (ConfirmFragment.adapter != null) {
+                                            ConfirmFragment.setListView();
+                                            //ConfirmFragment.adapter.notifyDataSetChanged();
+                                        }*/
+
+                            if (mProgress.isShowing())
+                                mProgress.dismiss();
+
+                            utils.toast(1, 1, getString(R.string.your_details_saved));
+
+                            //Config.clientModels.setCustomerModel(Config.customerModel);
+
+//                                        SignupActivity._mViewPager.setCurrentItem(1);
+                            Intent next = new Intent(ActivityGuruPersonalInfo.this,SignupActivity.class);
+                            startActivity(next);
+
+                        } else {
+                            if (mProgress.isShowing())
+                                mProgress.dismiss();
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        if(mProgress.isShowing())
+                            mProgress.dismiss();
+                        if (e != null) {
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(e.getMessage());
+                                JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+
+                                int appErrorCode = ((App42Exception)e).getAppErrorCode();
+
+                                if (appErrorCode == 2001) {
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityGuruPersonalInfo.this);
+                                    builder.setTitle("Care Taker");
+                                    builder.setMessage(getString(R.string.email__already_exists))
+                                            .setCancelable(false)
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    Intent i = new Intent(ActivityGuruPersonalInfo.this,LoginActivity.class);
+                                                    startActivity(i);                                                            }
+                                            })
+                                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+
+
+//                                                utils.toast(2,2,getString(R.string.email__already_exists));
+                                }else {
+                                    strMess = jsonObjectError.getString("message");
+                                    utils.toast(2, 2, e.getMessage());
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+
+                        }
+
+                    }
+                }, roleList);
+
+    }
+
+    public boolean prepareData(String strCustomerImageUrl) {
+
+        boolean isFormed;
+
+        try {
+
+            Config.jsonCustomer = new JSONObject();
+
+            Config.jsonCustomer.put("customer_name", Config.customerModel.getStrName());
+            Config.jsonCustomer.put("customer_address", Config.customerModel.getStrCountryCode());//
+            Config.jsonCustomer.put("customer_city", "");
+            Config.jsonCustomer.put("customer_state", "");
+            Config.jsonCustomer.put("customer_contact_no", Config.customerModel.getStrContacts());
+            Config.jsonCustomer.put("customer_email", Config.customerModel.getStrEmail());
+            Config.jsonCustomer.put("customer_profile_url", strCustomerImageUrl);
+            Config.jsonCustomer.put("paytm_account", "paytm_account");
+
+            Config.jsonCustomer.put("customer_dob", Config.customerModel.getStrDob());
+            Config.jsonCustomer.put("customer_country", Config.customerModel.getStrCountryCode());
+            Config.jsonCustomer.put("customer_country_code", Config.customerModel.getStrCountryIsdCode());
+            Config.jsonCustomer.put("customer_area_code", Config.customerModel.getStrCountryAreaCode());
+
+
+            isFormed = true;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            isFormed = false;
+        }
+
+        return isFormed;
     }
 
     private void validateUser() {
@@ -260,7 +509,7 @@ public class GuruDetailsFragment extends Fragment {
 
         strName = editName.getText().toString().trim();
         strEmail = editEmail.getText().toString().trim();
-        String strPass = editPass.getText().toString().trim();
+        strPass = editPass.getText().toString().trim();
         strConfirmPass = editConfirmPass.getText().toString().trim();
         strContactNo = editContactNo.getText().toString().trim();
         strDate = editTextDate.getText().toString().trim();
@@ -270,11 +519,11 @@ public class GuruDetailsFragment extends Fragment {
             strAreaCode = editAreaCode.getText().toString().trim();
         }
 
-        final String strCountryCode = editCountryCode.getText().toString().trim();
+        strCountryCode = editCountryCode.getText().toString().trim();
 
         //strAddress = editAddress.getText().toString().trim();
         //final String strDob = editTextDate.getText().toString().trim();
-        final String strCountry = citizenship.getSelectedItem().toString().trim();
+        strCountry = citizenship.getSelectedItem().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -387,110 +636,46 @@ public class GuruDetailsFragment extends Fragment {
                     mProgress.setCancelable(false);
                     mProgress.show();
 
-                    UserService userService = new UserService(getActivity());
+                    //
+                    if (Config.customerModel != null
+                            && Config.customerModel.getStrName() != null
+                            && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
 
-                    ArrayList<String> roleList = new ArrayList<>();
-                    roleList.add("customer");
-
-                    userService.onCreateUser(strEmail,
-                            strPass, strEmail,
-                            new App42CallBack() {
-
-                                @Override
-                                public void onSuccess(Object o) {
-                                    if (mProgress.isShowing())
-                                        mProgress.dismiss();
-                                    if (o != null) {
-                                        if (Config.customerModel != null
-                                                && Config.customerModel.getStrName() != null
-                                                && !Config.customerModel.getStrName().equalsIgnoreCase("")) {
-
-                                            Config.customerModel.setStrName(strName);
+                        Config.customerModel.setStrName(strName);
 
                                        /* if (!Config.customerModel.getStrAddress().
                                                 equalsIgnoreCase(""))
                                             Config.customerModel.setStrAddress(strAddress);*/
 
-                                            Config.customerModel.setStrContacts(strContactNo);
-                                            Config.customerModel.setStrEmail(strEmail);
+                        Config.customerModel.setStrContacts(strContactNo);
+                        Config.customerModel.setStrEmail(strEmail);
 
-                                            if (!strCustomerImgName.equalsIgnoreCase(""))
-                                                Config.customerModel.setStrImgPath(strCustomerImgName);
+                        if (!strCustomerImgName.equalsIgnoreCase(""))
+                            Config.customerModel.setStrImgPath(strCustomerImgName);
 
-                                        } else {
+                    } else {
 
-                                            Config.customerModel = new CustomerModel(strName, "", "",
-                                                    "", strContactNo, strEmail, "",
-                                                    strCustomerImgName);
+                        Config.customerModel = new CustomerModel(strName, "", "",
+                                "", strContactNo, strEmail, "",
+                                strCustomerImgName);
 
-                                            //strAddress
-                                        }
+                        //strAddress
+                    }
 
-                                        Config.customerModel.setStrDob(strDate);
-                                        Config.customerModel.setStrCountryCode(strCountry);
-                                        Config.customerModel.setStrAddress(strCountry);
-                                        Config.customerModel.setStrCountryIsdCode(strCountryCode);
-                                        Config.customerModel.setStrCountryAreaCode(strAreaCode);
+                    Config.customerModel.setStrDob(strDate);
+                    Config.customerModel.setStrCountryCode(strCountry);
+                    Config.customerModel.setStrAddress(strCountry);
+                    Config.customerModel.setStrCountryIsdCode(strCountryCode);
+                    Config.customerModel.setStrCountryAreaCode(strAreaCode);
 
-                                        if (strConfirmPass != null && !strConfirmPass.equalsIgnoreCase(""))
-                                            SignupActivity.strCustomerPass = strConfirmPass;
+                    if (strConfirmPass != null && !strConfirmPass.equalsIgnoreCase(""))
+                        SignupActivity.strCustomerPass = strConfirmPass;
 
-                                        //chk this
-                                        utils.retrieveDependants();//strEmail
 
-                                        CustomViewPager.setPagingEnabled(true);
+                    //
 
-                                        if (AddDependentFragment.adapter != null)
-                                            AddDependentFragment.adapter.notifyDataSetChanged();
+                    uploadImage();
 
-                                        //utils.retrieveConfirmDependants();
-
-                                        if (ConfirmFragment.adapter != null) {
-                                            ConfirmFragment.setListView();
-                                            //ConfirmFragment.adapter.notifyDataSetChanged();
-                                        }
-
-                                        if (mProgress.isShowing())
-                                            mProgress.dismiss();
-
-                                        utils.toast(1, 1, getString(R.string.your_details_saved));
-
-                                        //Config.clientModels.setCustomerModel(Config.customerModel);
-
-                                        SignupActivity._mViewPager.setCurrentItem(1);
-                                    } else {
-                                        if (mProgress.isShowing())
-                                            mProgress.dismiss();
-                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                }
-
-                                @Override
-                                public void onException(Exception e) {
-                                    if(mProgress.isShowing())
-                                        mProgress.dismiss();
-                                    if (e != null) {
-
-                                        try {
-                                            JSONObject jsonObject = new JSONObject(e.getMessage());
-                                            JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
-
-                                            int appErrorCode = ((App42Exception)e).getAppErrorCode();
-
-                                            if (appErrorCode == 2001) {
-                                                utils.toast(2,2,getString(R.string.email__already_exists));
-                                            }else {
-                                                strMess = jsonObjectError.getString("message");
-                                                utils.toast(2, 2, e.getMessage());
-                                            }
-                                        } catch (JSONException e1) {
-                                            e1.printStackTrace();
-                                        }
-
-                                    }
-
-                                }
-                            }, roleList);
 
                     /*
                     userService.getUser(strEmail, new App42CallBack() {
@@ -604,8 +789,6 @@ public class GuruDetailsFragment extends Fragment {
             }
         }
     }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -663,7 +846,7 @@ public class GuruDetailsFragment extends Fragment {
 
                     File galleryFile = utils.createFileInternalImage(strFileName);
                     strCustomerImgName = galleryFile.getAbsolutePath();
-                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
+                    InputStream is = ActivityGuruPersonalInfo.this.getContentResolver().openInputStream(uri);
                     utils.copyInputStreamToFile(is, galleryFile);
                     utils.compressImageFromPath(strCustomerImgName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
                     bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth,

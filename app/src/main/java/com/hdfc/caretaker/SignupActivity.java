@@ -47,7 +47,7 @@ public class SignupActivity extends FragmentActivity {
         ViewPagerAdapter _adapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
         _mViewPager.setAdapter(_adapter);
         _mViewPager.setCurrentItem(0);
-        _mViewPager.setOffscreenPageLimit(3);
+        _mViewPager.setOffscreenPageLimit(2);
 
         texViewHeader = (TextView) findViewById(R.id.header);
         initButton();
@@ -74,38 +74,37 @@ public class SignupActivity extends FragmentActivity {
         switch (action) {
             case 0:
                 setButton(_btn1);
-                texViewHeader.setText(getString(R.string.personal_info));
+                texViewHeader.setText(getString(R.string.dependents));
+
+//                texViewHeader.setText(getString(R.string.personal_info));
                 break;
 
             case 1:
                 setButton(_btn2);
-                texViewHeader.setText(getString(R.string.dependents));
+                texViewHeader.setText(getString(R.string.confirm_details));
+
                 break;
 
-            case 2:
-                setButton(_btn3);
-                texViewHeader.setText(getString(R.string.confirm_details));
-                break;
-        }
+                   }
     }
 
     private void initButton() {
-        _btn1 = (Button) findViewById(R.id.btn1);
-        _btn2 = (Button) findViewById(R.id.btn2);
-        _btn3 = (Button) findViewById(R.id.btn3);
+//        _btn1 = (Button) findViewById(R.id.btn1);
+        _btn1 = (Button) findViewById(R.id.btn2);
+        _btn2 = (Button) findViewById(R.id.btn3);
     }
 
     public void setButton(Button btn) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Utils.setDrawable(_btn1, getDrawable(R.drawable.rounded_cell_blue));
             Utils.setDrawable(_btn2, getDrawable(R.drawable.rounded_cell_blue));
-            Utils.setDrawable(_btn3, getDrawable(R.drawable.rounded_cell_blue));
+//            Utils.setDrawable(_btn3, getDrawable(R.drawable.rounded_cell_blue));
 
             Utils.setDrawable(btn, getDrawable(R.drawable.rounded_cell));
         } else {
             Utils.setDrawable(_btn1, getResources().getDrawable(R.drawable.rounded_cell_blue));
             Utils.setDrawable(_btn2, getResources().getDrawable(R.drawable.rounded_cell_blue));
-            Utils.setDrawable(_btn3, getResources().getDrawable(R.drawable.rounded_cell_blue));
+//            Utils.setDrawable(_btn3, getResources().getDrawable(R.drawable.rounded_cell_blue));
 
             Utils.setDrawable(btn, getResources().getDrawable(R.drawable.rounded_cell));
         }

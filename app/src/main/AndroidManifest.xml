@@ -40,7 +40,7 @@
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan">
             <!-- <intent-filter>
                  <action android:name="android.intent.action.MAIN" />
 
@@ -104,6 +104,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".ActivityGuruPersonalInfo"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
         <activity
             android:name=".AddNewActivityActivity"
             android:screenOrientation="portrait"

@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
       /*  Intent selection = new Intent(MainActivity.this, CareSelectionActivity.class);
         startActivity(selection);*/
 
-        Intent selection = new Intent(MainActivity.this, SignupActivity.class);
+        Intent selection = new Intent(MainActivity.this, ActivityGuruPersonalInfo.class);
         startActivity(selection);
     }
 

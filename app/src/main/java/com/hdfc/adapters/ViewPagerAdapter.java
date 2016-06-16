@@ -22,14 +22,15 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         Fragment f = new Fragment();
         switch (position) {
             case 0:
-                f = GuruDetailsFragment.newInstance();
+                f = AddDependentFragment.newInstance();
+
+//                f = GuruDetailsFragment.newInstance();
                 break;
             case 1:
-                f = AddDependentFragment.newInstance();
-                break;
-            case 2:
                 f = ConfirmFragment.newInstance();
+
                 break;
+
         }
         return f;
     }

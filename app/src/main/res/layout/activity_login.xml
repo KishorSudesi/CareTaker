@@ -7,8 +7,8 @@
 
     <include
         android:id="@+id/include"
-        layout="@layout/header_login"
-        android:layout_height="200dp" />
+        layout="@layout/header_common"
+        />
 
     <ScrollView
         android:layout_width="match_parent"

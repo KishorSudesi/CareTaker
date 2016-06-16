@@ -5,6 +5,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/toplayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <Button
         android:id="@+id/buttonBack"
         android:layout_width="30dp"
@@ -24,11 +28,13 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/logo_final" />
 
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logo"
+        android:layout_below="@+id/toplayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:layout_weight="2"

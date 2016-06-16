@@ -144,6 +144,8 @@
     <string name="error_invalid_area_code">Invalid Area Code</string>
     <string name="error_invalid_age">Invalid Age</string>
     <string name="email_exists">Email Id Already Exists!!!</string>
+    <string name="email__already_exists">Email Id Already Exists Please Proceed to Login</string>
+
     <string name="error_field_required">This Field is Required</string>
     <string name="error">Something went wrong. Please try Again!!!</string>
     <string name="error_same_password">New and Old Password cannot be same</string>
