@@ -53,10 +53,10 @@ import permissions.dispatcher.RuntimePermissions;
 public class DependentDetailPersonalActivity extends AppCompatActivity {
 
     public static RoundedImageView imgButtonCamera;
+    public static String strCustomerPass = "";
     public static String dependantImgName = "";
     public static String strImageName = "";
     public static String strDependantName = "";
-    public static String relation;
     public static Bitmap bitmap = null;
     public static Uri uri;
     public static DependentModel dependentModel = null;
@@ -66,6 +66,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static boolean isCamera = false;
     private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
+    public static String strContactNo,strAddress,strEmail,strDob,relation;
+
+
     private static ProgressDialog mProgress = null;
     public String drawable;
     Button buttonContinue;
@@ -241,11 +244,11 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         //editRelation.setError(null);
 
         strDependantName = editName.getText().toString().trim();
-        final String strContactNo = editContactNo.getText().toString().trim();
-        final String strAddress = editAddress.getText().toString().trim();
-        final String strEmail = editDependantEmail.getText().toString().trim();
-        final String strDob = editTextDate.getText().toString().trim();
-        final String relation = spinnerRelation.getSelectedItem().toString().trim();
+        strContactNo = editContactNo.getText().toString().trim();
+        strAddress = editAddress.getText().toString().trim();
+        strEmail = editDependantEmail.getText().toString().trim();
+        strDob = editTextDate.getText().toString().trim();
+        relation = spinnerRelation.getSelectedItem().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -309,25 +312,17 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 focusView.requestFocus();
         } else {
             try {
+                if (utils.isConnectingToInternet()) {
 
-                if (!SignupActivity.dependentNames.contains(strDependantName)) {
-                    dependentModel = new DependentModel();
+                    mProgress.setMessage(getResources().getString(R.string.loading));
+                    mProgress.setCancelable(false);
+                    mProgress.show();
 
-                    //strDependantName, strRelation, strImageName, "", "",
-                    // strAddress, strContactNo, strEmail, "", 0
+                    if (!SignupActivity.dependentNames.contains(strDependantName)) {
+                        dependentModel = new DependentModel();
 
-                    dependentModel.setStrName(strDependantName);
-                    dependentModel.setStrRelation(relation);
-                    dependentModel.setStrImagePath(strImageName);
-                    dependentModel.setStrAddress(strAddress);
-                    dependentModel.setStrContacts(strContactNo);
-                    dependentModel.setStrEmail(strEmail);
-                    dependentModel.setStrDob(strDob);
-                    SignupActivity.dependentNames.add(strDependantName);
-                } else {
-                    if (dependentModel != null &&
-                            SignupActivity.dependentNames.contains(strDependantName)
-                            && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
+                        //strDependantName, strRelation, strImageName, "", "",
+                        // strAddress, strContactNo, strEmail, "", 0
 
                         dependentModel.setStrName(strDependantName);
                         dependentModel.setStrRelation(relation);
@@ -336,17 +331,32 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                         dependentModel.setStrContacts(strContactNo);
                         dependentModel.setStrEmail(strEmail);
                         dependentModel.setStrDob(strDob);
-                    } else {
-                        utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
-                    }
-                }
+                        //dependentModel.setStrImagePath(strImageName);
+                        SignupActivity.dependentNames.add(strDependantName);
 
-                utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
-                strImageName = "";
-                Intent selection = new Intent(DependentDetailPersonalActivity.this,
-                        DependentDetailsMedicalActivity.class);
-                startActivity(selection);
-                finish();
+                    } else {
+                        if (dependentModel != null &&
+                                SignupActivity.dependentNames.contains(strDependantName)
+                                && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
+
+                            dependentModel.setStrName(strDependantName);
+                            dependentModel.setStrRelation(relation);
+                            dependentModel.setStrImagePath(strImageName);
+                            dependentModel.setStrAddress(strAddress);
+                            dependentModel.setStrContacts(strContactNo);
+                            dependentModel.setStrEmail(strEmail);
+                            dependentModel.setStrDob(strDob);
+                        } else {
+                            utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                        }
+                    }
+
+                    utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                    strImageName = "";
+                    Intent selection = new Intent(DependentDetailPersonalActivity.this,
+                            DependentDetailsMedicalActivity.class);
+                    startActivity(selection);
+                    finish();
 
                 /*mProgress.setMessage(getString(R.string.loading));
                 mProgress.setCancelable(false);
@@ -385,6 +395,11 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     }
                 });
 */
+                }else {
+                        if (mProgress.isShowing())
+                            mProgress.dismiss();
+                        utils.toast(2, 2, getString(R.string.warning_internet));
+                    }
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -61,11 +62,13 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
     public static String strCustomerImgName = "";
     public static Bitmap bitmap = null;
+    private static int idregisterflag = 0;
     public static Uri uri;
     public static String citizenshipVal;
     private static Thread backgroundThreadCamera, backgroundThread;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo, strDate,strPass,strCountryCode,strCountry;//,strAddress;
+    private static String strName, strEmail, strConfirmPass, strContactNo, strDate,strCountryCode,strCountry;//,strAddress;
+    public static String strPass;
     private static ProgressDialog mProgress = null;
     String strMess = "";
     private static String jsonDocId;
@@ -76,6 +79,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     private Spinner citizenship;
     private String strCustomerImageUrl = "";
     public static int uploadSize, uploadingCount=0;
+    ImageButton back;
 
     private String strAreaCode = "";
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
@@ -107,6 +111,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         utils = new Utils(ActivityGuruPersonalInfo.this);
 
+        back = (ImageButton)findViewById(R.id.buttonBack);
+
         imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);
 
         editName = (EditText) findViewById(R.id.editName);
@@ -118,6 +124,14 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         editCountryCode = (EditText) findViewById(R.id.editCountryCode);
 
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               if(idregisterflag==1&&idregisterflag==2&&idregisterflag==3) {
+                    goBack();
+                }
+            }
+        });
 
         mobile = (RadioButton) findViewById(R.id.radioMobile);
         //RadioButton landline = (RadioButton) rootView.findViewById(R.id.radioLandline);
@@ -171,12 +185,14 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             }
         });
 
-        buttonContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateUser();
-            }
-        });
+        if (buttonContinue != null) {
+            buttonContinue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    validateUser();
+                }
+            });
+        }
 
 
         citizenship = (Spinner) findViewById(R.id.input_citizenship);
@@ -229,7 +245,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         strCustomerImageUrl = fileList.get(0).getUrl();
                                         Config.customerModel.setStrImgUrl(strCustomerImageUrl);
                                         //checkStorage();
-                                        uploadData();
+                                        idregisterflag=1;
+                                            uploadData();
                                     } else {
                                         if (mProgress.isShowing())
                                             mProgress.dismiss();
@@ -312,7 +329,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                     if (response.isResponseSuccess()) {
                                         Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
                                         jsonDocId = jsonDocument.getDocId();
-                                        createUser();
+                                        idregisterflag = 2;
+                                            createUser();
 
                                     }
                                 }else{
@@ -320,7 +338,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         mProgress.dismiss();
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
-                            }
+                         }
 
                             @Override
                             public void onUpdateDocSuccess(Storage response) {
@@ -403,6 +421,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                             //Config.clientModels.setCustomerModel(Config.customerModel);
 
 //                                        SignupActivity._mViewPager.setCurrentItem(1);
+                            idregisterflag = 3;
                             Intent next = new Intent(ActivityGuruPersonalInfo.this,SignupActivity.class);
                             startActivity(next);
 
@@ -477,6 +496,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             Config.jsonCustomer.put("customer_email", Config.customerModel.getStrEmail());
             Config.jsonCustomer.put("customer_profile_url", strCustomerImageUrl);
             Config.jsonCustomer.put("paytm_account", "paytm_account");
+            Config.jsonCustomer.put("customer_register", false);
+
 
             Config.jsonCustomer.put("customer_dob", Config.customerModel.getStrDob());
             Config.jsonCustomer.put("customer_country", Config.customerModel.getStrCountryCode());
@@ -674,7 +695,14 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                     //
 
-                    uploadImage();
+                    if(idregisterflag==0)
+                        uploadImage();
+
+                    if(idregisterflag==1)
+                        uploadData();
+
+                    if(idregisterflag==2)
+                        createUser();
 
 
                     /*
@@ -875,4 +903,21 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             }
         }
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+       /*
+        moveTaskToBack(true);*/
+        if(idregisterflag==1&&idregisterflag==2&&idregisterflag==3) {
+            goBack();
+        }
+    }
+
+    private void goBack() {
+        //moveTaskToBack(true);
+        Intent selection = new Intent(ActivityGuruPersonalInfo.this, MainActivity.class);
+        startActivity(selection);
+        finish();
+    }
+
 }
