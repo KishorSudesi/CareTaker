@@ -1,6 +1,7 @@
 package com.hdfc.caretaker.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.ActivityListAdapter;
+import com.hdfc.caretaker.CompletedActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.models.ActivityModel;
 
@@ -68,12 +70,22 @@ public class ActivityListFragment extends Fragment {
                     ft.commit();
 
                 } else {
-                    ActivityCompletedFragment completedFragment =
+                   /* ActivityCompletedFragment completedFragment =
                             ActivityCompletedFragment.newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().
                             beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();
+*/
+                    Intent intent = new Intent(getActivity(), CompletedActivity.class);
+                    Bundle args = new Bundle();
+                    args.putSerializable("ACTIVITY", activityModel);
+                    args.putBoolean("WHICH_SCREEN", true);
+                    args.putInt("ACTIVITY_POSITION", position);
+                    intent.putExtras(args);
+                    startActivity(intent);
+
+
                 }
             }
         });

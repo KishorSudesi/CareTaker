@@ -61,8 +61,13 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
      *
      * @return A new instance of fragment ActivityFragment.
      */
-    public static ActivityFragment newInstance() {
-        return new ActivityFragment();
+    public static ActivityFragment newInstance(boolean bReload) {
+        ActivityFragment fragment = new ActivityFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("RELOAD", bReload);
+        fragment.setArguments(args);
+        return fragment;
+        //return new ActivityFragment(bReload);
     }
 
     /**
@@ -94,7 +99,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     public static void reload() {
 
-        activitiesModelArrayList = Config.dependentModels.get(Config.intSelectedDependent).
+        if (Config.intSelectedDependent < Config.dependentModels.size())
+            activitiesModelArrayList = Config.dependentModels.get(Config.intSelectedDependent).
                 getMonthActivityModel();
 
         if (Config.intSelectedMenu == Config.intListActivityScreen) {
@@ -202,7 +208,22 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
-        refreshData(month, year);
+        boolean bReload = false;
+
+        if (this.getArguments() != null)
+            bReload = this.getArguments().getBoolean("RELOAD", false);
+
+
+        if (bReload)
+            refreshData(month, year);
+        else {
+            reload();
+            /*if (Config.intSelectedMenu == Config.intListActivityScreen) {
+
+            }else{
+
+            }*/
+        }
 
         return view;
     }

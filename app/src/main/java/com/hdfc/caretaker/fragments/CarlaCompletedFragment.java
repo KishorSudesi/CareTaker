@@ -24,7 +24,7 @@ import java.io.File;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CarlaCompletedActivityFragment extends Fragment {
+public class CarlaCompletedFragment extends Fragment {
 
     private static Bitmap bitmap;
     private static Handler threadHandler;
@@ -35,13 +35,13 @@ public class CarlaCompletedActivityFragment extends Fragment {
     private Utils utils;
     private int iPosition;
 
-    public CarlaCompletedActivityFragment() {
+    public CarlaCompletedFragment() {
         // Required empty public constructor
     }
 
-    public static CarlaCompletedActivityFragment newInstance() {
+    public static CarlaCompletedFragment newInstance() {
 
-        return new CarlaCompletedActivityFragment();
+        return new CarlaCompletedFragment();
     }
 
     @Override

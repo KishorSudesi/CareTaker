@@ -37,7 +37,7 @@ import java.util.Date;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddRatingCompletedActivityFragment extends Fragment {
+public class AddRatingFragment extends Fragment {
 
     private static int iRating = 0;
     private static View previousViewButton;
@@ -50,13 +50,13 @@ public class AddRatingCompletedActivityFragment extends Fragment {
     private Utils utils;
     private ProgressDialog progressDialog;
 
-    public AddRatingCompletedActivityFragment() {
+    public AddRatingFragment() {
         // Required empty public constructor
     }
 
-    public static AddRatingCompletedActivityFragment newInstance() {
+    public static AddRatingFragment newInstance() {
 
-        return new AddRatingCompletedActivityFragment();
+        return new AddRatingFragment();
     }
 
     public static void setRating(View v) {
@@ -323,7 +323,7 @@ public class AddRatingCompletedActivityFragment extends Fragment {
 
             ActivityCompletedFragment.setMenuInitView();
             ActivityCompletedFragment.imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance();
+            ViewRatingFragment newFragment = ViewRatingFragment.newInstance();
 
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_completed_activity, newFragment);

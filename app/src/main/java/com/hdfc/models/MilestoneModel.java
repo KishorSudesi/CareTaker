@@ -14,8 +14,23 @@ public class MilestoneModel implements Serializable {
     private String strMilestoneDate;
     private String strMilestoneScheduledDate;
 
+    private ArrayList<FileModel> fileModels = new ArrayList<>();
+
     private boolean isVisible;
     private boolean isReschedule;
+    private ArrayList<FieldModel> fieldModels = new ArrayList<>();
+
+    public void setFileModel(FileModel fileModel) {
+        this.fileModels.add(fileModel);
+    }
+
+    public ArrayList<FileModel> getFileModels() {
+        return fileModels;
+    }
+
+    public void setFileModels(ArrayList<FileModel> fileModels) {
+        this.fileModels = fileModels;
+    }
 
     public boolean isVisible() {
         return isVisible;
@@ -25,10 +40,12 @@ public class MilestoneModel implements Serializable {
         isVisible = visible;
     }
 
-    private ArrayList<FieldModel> fieldModels = new ArrayList<>();
-
     public ArrayList<FieldModel> getFieldModels() {
         return fieldModels;
+    }
+
+    public void setFieldModels(ArrayList<FieldModel> fieldModels) {
+        this.fieldModels = fieldModels;
     }
 
     public void setFieldModel(FieldModel fieldModel) {

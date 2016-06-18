@@ -39,7 +39,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -119,6 +122,9 @@ public class Utils {
     public final static SimpleDateFormat writeFormat =
             new SimpleDateFormat("kk:mm aa dd MMM yyyy", locale);
 
+    public final static SimpleDateFormat writeFormatDateDB = new
+            SimpleDateFormat("yyyy-MM-dd", locale);
+
     /*   public final static SimpleDateFormat writeFormatActivity =
                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
 
@@ -127,6 +133,9 @@ public class Utils {
 
     public final static SimpleDateFormat writeFormatActivityYear =
             new SimpleDateFormat("dd/MM/yyyy", locale);
+
+    private final static SimpleDateFormat queryFormat =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
 
     public static Uri customerImageUri;
     public static int iProviderCount = 0;
@@ -152,7 +161,8 @@ public class Utils {
         Config.intScreenWidth = metrics.widthPixels;
         Config.intScreenHeight = metrics.heightPixels;
 
-        readFormat.setTimeZone(TimeZone.getTimeZone("UTC")); //TimeZone.getDefault()
+        readFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        queryFormat.setTimeZone(TimeZone.getDefault());
 
         try {
             noBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
@@ -740,6 +750,56 @@ public class Utils {
         }
     }
 
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ExpandableListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+
+        //////////////
+       /* view = listAdapter.getView(0, view, listView);
+        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.EXACTLY);
+        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, View.MeasureSpec.EXACTLY);
+        view.measure(widthMeasureSpec, heightMeasureSpec);*/
+        //////////////
+
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
     public void toast(int type, int duration, String message) {
 
         String strColor = "#ffffff";
@@ -859,7 +919,7 @@ public class Utils {
 
         Date lastDayOfMonth = calendar.getTime();
 
-        strLastDateMonth = dateFormat.format(lastDayOfMonth) + "T05:29:59.999Z";
+        strLastDateMonth = dateFormat.format(lastDayOfMonth); // + "T05:29:59.999Z"
         log(strLastDateMonth, "LAST DATE ");
         //05:29:59.999
 
@@ -877,6 +937,17 @@ public class Utils {
         }
         return date; //
     }
+
+    /*private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
+
+        if (v == null)
+            return;
+
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
+    }*/
 
     /**
      * Method to extract the user's age from the entered Date of Birth.
@@ -915,15 +986,14 @@ public class Utils {
         return false;
     }
 
-    /*private void updateView(int index, ListView listView) {
-        View v = listView.getChildAt(index -
-                listView.getFirstVisiblePosition());
-
-        if (v == null)
-            return;
-
-        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
-        //someText.setText("Hi! I updated you manually!");
+    /*public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }*/
 
     /**
@@ -976,16 +1046,6 @@ public class Utils {
 
         return isValid;
     }
-
-    /*public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }*/
 
     public File createFileInternalImage(String strFileName) {
 
@@ -1152,6 +1212,8 @@ public class Utils {
         return ints;
     }
 
+    //Application Specigfic Start
+
     public JSONArray stringToJsonArray(String string[]) {
 
         JSONArray jsonArray = new JSONArray();
@@ -1185,8 +1247,6 @@ public class Utils {
 
         return jsonArray;
     }
-
-    //Application Specigfic Start
 
     //load image from url
     public void loadImageFromWeb(String strFileName, String strFileUrl) {
@@ -1526,38 +1586,6 @@ public class Utils {
         }
     }
 
-    public File getInternalFileImages(String strFileName) {
-
-        File file = null;
-        try {
-            file = new File(_ctxt.getFilesDir(), "images/" + strFileName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
-
-    public int retrieveDependants() {
-
-        int count = SignupActivity.dependentModels.size();
-
-        if (count == 0) {
-            DependentModel dpndntModel = new DependentModel();
-            dpndntModel.setStrName(_ctxt.getResources().getString(R.string.add_dependent));
-            dpndntModel.setStrRelation("");
-            dpndntModel.setStrImagePath("");
-            dpndntModel.setStrNotes("");
-            dpndntModel.setStrAddress("");
-            dpndntModel.setStrContacts("");
-            dpndntModel.setStrEmail("");
-
-            SignupActivity.dependentModels.add(dpndntModel);
-            count++;
-        }
-
-        return count;
-    }
-
    /* public String formatDateActivity(String strDate){
 
         String strDisplayDate="06-03-2016 20:55:00";
@@ -1635,6 +1663,38 @@ public class Utils {
 
         return count;
     }*/
+
+    public File getInternalFileImages(String strFileName) {
+
+        File file = null;
+        try {
+            file = new File(_ctxt.getFilesDir(), "images/" + strFileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+    public int retrieveDependants() {
+
+        int count = SignupActivity.dependentModels.size();
+
+        if (count == 0) {
+            DependentModel dpndntModel = new DependentModel();
+            dpndntModel.setStrName(_ctxt.getResources().getString(R.string.add_dependent));
+            dpndntModel.setStrRelation("");
+            dpndntModel.setStrImagePath("");
+            dpndntModel.setStrNotes("");
+            dpndntModel.setStrAddress("");
+            dpndntModel.setStrContacts("");
+            dpndntModel.setStrEmail("");
+
+            SignupActivity.dependentModels.add(dpndntModel);
+            count++;
+        }
+
+        return count;
+    }
 
     public String formatDate(String strDate){
 
@@ -2142,7 +2202,7 @@ public class Utils {
                                     jsonObjectFeedback.getString("feedback_message"),
                                     jsonObjectFeedback.getString("feedback_by"),
                                     jsonObjectFeedback.getInt("feedback_rating"),
-                                    jsonObjectFeedback.getBoolean("feedback_report"),
+                                    false, //jsonObjectFeedback.getBoolean("feedback_report")
                                     jsonObjectFeedback.getString("feedback_time"),
                                     jsonObjectFeedback.getString("feedback_by_type"));
 
@@ -2225,6 +2285,38 @@ public class Utils {
                         milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
                         milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
                         milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+
+                        // ArrayList<FileModel> fileModels = new ArrayList<>();
+
+                        if (jsonObjectMilestone.has("files")) {
+
+                            JSONArray jsonArrayMsFiles = jsonObjectMilestone.
+                                    getJSONArray("files");
+
+                            for (int m = 0; m < jsonArrayMsFiles.length(); m++) {
+
+                                JSONObject jsonObjectMsFile = jsonArrayMsFiles.
+                                        getJSONObject(m);
+
+                                if (jsonObjectMsFile.has("file_name")) {
+
+                                    Utils.log(jsonObjectMsFile.toString(), " JSONOBJECT ");
+
+                                    FileModel fileModel = new FileModel(
+                                            jsonObjectMsFile.getString("file_name"),
+                                            jsonObjectMsFile.getString("file_url"),
+                                            jsonObjectMsFile.getString("file_type"),
+                                            jsonObjectMsFile.getString("file_desc"),
+                                            jsonObjectMsFile.getString("file_path"),
+                                            jsonObjectMsFile.getString("file_time"));
+
+                                    Config.fileModels.add(new FileModel(jsonObjectMsFile.getString("file_name"),
+                                            jsonObjectMsFile.getString("file_url"), jsonObjectMsFile.getString("file_type")));
+
+                                    milestoneModel.setFileModel(fileModel);
+                                }
+                            }
+                        }
 
                         if (jsonObjectMilestone.has("show")) {
 
@@ -2574,6 +2666,7 @@ public class Utils {
             }
         }
     }
+    //
 
     public void fetchProviders(final ProgressDialog progressDialog, final int iFlag) {
 
@@ -2742,7 +2835,6 @@ public class Utils {
 
         return b;
     }
-    //
 
     public void loadAllFiles() {
         for (int i = 0; i < Config.fileModels.size(); i++) {
@@ -2938,6 +3030,34 @@ public class Utils {
         }
     }
 
+    public String convertDateToStringQuery(Date dtDate) {
+
+        String date = null;
+
+        try {
+            date = readFormat.format(dtDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //log("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
+    public Date convertStringToDateQuery(String strDate) {
+
+        Date date = null;
+
+        try {
+            date = queryFormat.parse(strDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //log("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
     public void fetchLatestActivitiesByMonth(int iMonth, int iYear,
                                              final ProgressDialog progressDialog) {
 
@@ -2956,26 +3076,35 @@ public class Utils {
 
             String strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
 
-            String strFromDate = strMonthDate + "T05:30:00.000Z";
-            // 05:30:00.000Z
+            //String strFromDate = strMonthDate + "T05:30:00.000Z";
 
-            log(strFromDate, " FDATE ");
+            //
+
+
+            String strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
+            //
+
+
 
             String strToDate = getMonthLastDate(strMonthDate);
+
+            log(strToDate, " EDATE ");
+
+            String strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
 
             String key2 = "dependent_id";
             //String value2 = Config.strDependentIds.get(iActivityCount);
 
             Query q1 = QueryBuilder.build(key2, Config.strDependentIds, QueryBuilder.Operator.INLIST);
 
-            Query q2 = QueryBuilder.build("activity_date", strFromDate, QueryBuilder.
+            Query q2 = QueryBuilder.build("activity_date", strStartDate, QueryBuilder.
                     Operator.GREATER_THAN_EQUALTO);
 
             // Build query q1 for key1 equal to name and value1 equal to Nick
 
             // Build query q2 for key2 equal to age and value2
 
-            Query q3 = QueryBuilder.build("activity_date", strToDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
+            Query q3 = QueryBuilder.build("activity_date", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
 
             Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
 
@@ -2984,8 +3113,12 @@ public class Utils {
            /* int max = 1;
             int offset = 0;
 */
-            storageService.findDocsByQuery(Config.collectionActivity, q5, //1 for descending
-                    new App42CallBack() {
+
+
+            // storageService.findDocsByQuery(Config.collectionActivity, q5, //1 for descending
+            //new App42CallBack()
+            storageService.findDocsByQueryOrderBy(Config.collectionActivity, q5, 3000, 0,
+                    "activity_date", 1, new App42CallBack() {
 
                         @Override
                         public void onSuccess(Object o) {
@@ -3062,6 +3195,7 @@ public class Utils {
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
     }
+    //Application Specig=fic End
 
     public class ThreadHandler extends Handler {
         @Override
@@ -3097,5 +3231,4 @@ public class Utils {
             threadHandler.sendEmptyMessage(0);
         }
     }
-    //Application Specig=fic End
 }

@@ -70,7 +70,7 @@ public class ActivityCompletedFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ActivityFragment fragment = ActivityFragment.newInstance();
+                ActivityFragment fragment = ActivityFragment.newInstance(false);
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_dashboard, fragment);
                 transaction.addToBackStack(null);
@@ -138,7 +138,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToCarlaDescription() {
         setMenuInitView();
         imageButtonDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        CarlaCompletedActivityFragment newFragment = CarlaCompletedActivityFragment.newInstance();
+        CarlaCompletedFragment newFragment = CarlaCompletedFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
@@ -159,7 +159,7 @@ public class ActivityCompletedFragment extends Fragment {
 
         setMenuInitView();
         imageButtonVideo.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        VideoCompletedActivityFragment newFragment = VideoCompletedActivityFragment.newInstance();
+        VideoFragment newFragment = VideoFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
@@ -181,7 +181,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToAddRating() {
         setMenuInitView();
         imageButtonAdd.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        AddRatingCompletedActivityFragment newFragment = AddRatingCompletedActivityFragment.newInstance();
+        AddRatingFragment newFragment = AddRatingFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);
@@ -192,7 +192,7 @@ public class ActivityCompletedFragment extends Fragment {
     public void goToViewRating() {
         setMenuInitView();
         imageButtonRating.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        ViewRatingCompletedActivityFragment newFragment = ViewRatingCompletedActivityFragment.newInstance();
+        ViewRatingFragment newFragment = ViewRatingFragment.newInstance();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_completed_activity, newFragment);
         transaction.addToBackStack(null);

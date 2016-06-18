@@ -34,6 +34,23 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="AddRatingStyleLarge" parent="@android:style/Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:gravity">left</item>
+        <!--  <item name="android:textColor">@color/blue</item>-->
+        <item name="android:background">@color/blue</item>
+        <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <style name="AddRatingStyleMedium" parent="@android:style/Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">left</item>
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
     <style name="ChromeStylePopup" parent="android:Widget.TextView">
         <item name="android:gravity">center</item>
         <item name="android:minHeight">50dp</item>

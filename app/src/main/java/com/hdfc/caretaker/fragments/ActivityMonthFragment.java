@@ -1,6 +1,7 @@
 package com.hdfc.caretaker.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.ActivityMonthListAdapter;
 import com.hdfc.adapters.CalendarAdapter;
+import com.hdfc.caretaker.CompletedActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
@@ -33,7 +35,6 @@ public class ActivityMonthFragment extends Fragment {
     public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
     public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
     public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
-    public static List<ActivityModel> activityModels = new ArrayList<>();
     public static List<ActivityModel> activitiesModelSelected = new ArrayList<>();
     public static GridView calendarView;
     public static CalendarAdapter adapter=null;
@@ -239,12 +240,19 @@ public class ActivityMonthFragment extends Fragment {
                     ft.commit();
 
                 } else {
-                    ActivityCompletedFragment completedFragment = ActivityCompletedFragment.
+                   /* ActivityCompletedFragment completedFragment = ActivityCompletedFragment.
                             newInstance(activityModel);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().
                             beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();
+*/
+                    Intent intent = new Intent(getActivity(), CompletedActivity.class);
+                    Bundle args = new Bundle();
+                    args.putSerializable("ACTIVITY", activityModel);
+                    args.putBoolean("WHICH_SCREEN", true);
+                    intent.putExtras(args);
+                    startActivity(intent);
                 }
             }
         });

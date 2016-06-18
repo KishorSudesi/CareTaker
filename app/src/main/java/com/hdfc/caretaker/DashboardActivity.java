@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.hdfc.app42service.App42GCMController;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.caretaker.fragments.ActivityFragment;
-import com.hdfc.caretaker.fragments.AddRatingCompletedActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
@@ -40,7 +39,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     private static Context context;
 
-    final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent
@@ -120,6 +119,14 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         context = DashboardActivity.this;
 
+        Bundle b = getIntent().getExtras();
+
+        boolean bReloadActivity = false;
+
+        if (b != null) {
+            bReloadActivity = b.getBoolean("RELAOD", false);
+        }
+
         setMenu();
 
         if (txtViewActivity != null) {
@@ -127,7 +134,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 @Override
                 public void onClick(View v) {
                     Config.intSelectedMenu = Config.intActivityScreen;
-                    goToActivity();
+                    goToActivity(true);
                 }
             });
         }
@@ -137,7 +144,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 @Override
                 public void onClick(View v) {
                     Config.intSelectedMenu = Config.intActivityScreen;
-                    goToActivity();
+                    goToActivity(true);
                 }
             });
         }
@@ -216,7 +223,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         if (Config.intSelectedMenu == Config.intActivityScreen ||
                 Config.intSelectedMenu == Config.intListActivityScreen) {
            // Config.intSelectedMenu = 0;
-            goToActivity();
+            goToActivity(bReloadActivity);
         }
 
         loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
@@ -330,12 +337,12 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         //}
     }
 
-    private void goToActivity() {
+    private void goToActivity(boolean bReload) {
 
         //if (Config.intSelectedMenu == Config.intListActivityScreen ||
         //Config.intSelectedMenu == Config.intActivityScreen) {
         Config.intSelectedMenu = Config.intActivityScreen;
-            ActivityFragment fragment = ActivityFragment.newInstance();
+        ActivityFragment fragment = ActivityFragment.newInstance(bReload);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, fragment);
             transaction.addToBackStack(null);
@@ -348,7 +355,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         //}
     }
 
-    public void goToDashboardMenu() {
+    private void goToDashboardMenu() {
         //if (Config.intSelectedMenu != Config.intDashboardScreen) {
         Config.intSelectedMenu = Config.intDashboardScreen;
         /*progressDialog.setMessage(getResources().getString(R.string.loading));
@@ -390,9 +397,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         builder.show();
     }
 
-    public void setRating(View v) {
-        AddRatingCompletedActivityFragment.setRating(v);
-    }
+    /*public void setRating(View v) {
+        AddRatingFragment.setRating(v);
+    }*/
 
     @Override
     protected void onResume() {
@@ -417,13 +424,18 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
         try {
             unregisterReceiver(mBroadcastReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     /* public class BackgroundThread extends Thread {
         @Override

@@ -208,6 +208,14 @@ public class ActivityModel implements Serializable {
         this.feedBackModels = feedBackModels;
     }
 
+    public void setFeedBackModel(FeedBackModel feedBackModel) {
+        this.feedBackModels.add(feedBackModel);
+    }
+
+    public void clearFeedBackModel() {
+        this.feedBackModels.clear();
+    }
+
     public String getStrActivityProviderMessage() {
         return strActivityProviderMessage;
     }

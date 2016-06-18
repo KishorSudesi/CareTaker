@@ -52,7 +52,7 @@
             android:layout_height="150dp"
             android:layout_below="@+id/textView2"
             android:layout_marginTop="10dp"
-            android:background="@drawable/senior" />
+            android:background="@drawable/seniors" />
 
         <Button
             android:id="@+id/buttonMyself"

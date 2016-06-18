@@ -15,17 +15,17 @@ import com.hdfc.caretaker.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoCompletedActivityFragment extends Fragment {
+public class VideoFragment extends Fragment {
 
     ListView listView;
     TextView emptyTextView;
 
-    public VideoCompletedActivityFragment() {
+    public VideoFragment() {
         // Required empty public constructor
     }
 
-    public static VideoCompletedActivityFragment newInstance() {
-        return new VideoCompletedActivityFragment();
+    public static VideoFragment newInstance() {
+        return new VideoFragment();
     }
 
     @Override

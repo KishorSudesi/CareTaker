@@ -35,6 +35,7 @@
     <string name="activity_month">Monthly</string>
     <string name="activity_list">List</string>
     <string name="logout">Logout</string>
+    <string name="attachments">Attachments</string>
     <string name="close">Close</string>
     <string name="at">&#160;at&#160;</string>
     <string name="image">Image</string>
@@ -46,11 +47,13 @@
     <string name="dated">&#160;Dated&#160;</string>
     <string name="on">\nOn: &#160;</string>
     <string name="has_created">&#160;has been placed&#160;</string>
+    <string name="submit_feedback">Submit your Feedback</string>
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Welcome to care services of New Zeal (an HDFC Life initiative). View Dashboard to view your account.</string>
     <string name="take_me_in">Take Me In</string>
+    <string name="tasks">Tasks</string>
     <string name="register">Register</string>
     <string name="personal_info">Personal Information</string>
     <string name="express_care">Express your care to loved one</string>
@@ -116,6 +119,8 @@
     <string name="activity_create_notification_2">. &#160;Pls login to your account for more details&#160;</string>
     <string name="activity_create_notification_3">&#160;The request for the&#160;</string>
     <string name="rating">Rating&#160;:</string>
+    <string name="ratings">Ratings</string>
+    <string name="rating_add">Add a Rating</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

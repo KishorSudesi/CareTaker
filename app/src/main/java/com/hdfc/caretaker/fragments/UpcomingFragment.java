@@ -152,7 +152,7 @@ public class UpcomingFragment extends Fragment {
     }
 
     public void goToList() {
-        ActivityFragment fragment = ActivityFragment.newInstance();
+        ActivityFragment fragment = ActivityFragment.newInstance(false);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_dashboard, fragment);
         transaction.addToBackStack(null);

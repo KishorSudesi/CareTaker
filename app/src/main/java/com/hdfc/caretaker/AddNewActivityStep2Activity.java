@@ -411,6 +411,12 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 jsonObjectMilestone.put("scheduled_date", milestoneModel.getStrMilestoneScheduledDate());
 
 
+                /*JSONArray jsonArray = new JSONArray();
+
+                jsonArray.put("{\"0\":\"empty\"}");*/
+
+                jsonObjectMilestone.put("files", jsonArray);
+
                 JSONArray jsonArrayFields = new JSONArray();
 
                 for (FieldModel fieldModel : milestoneModel.getFieldModels()) {
@@ -481,6 +487,39 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                     strInsertedDocumentId = response.getJsonDocList().get(0).getDocId();
                                     iUpdateFlag = iActivityCreated;
                                     jsonObject.put("activity_id", strInsertedDocumentId);//todo add to care taker
+
+
+                                    //
+                                    Calendar calendar = Calendar.getInstance();
+
+                                    Date startDate = null, endDate = null;
+                                    String strStartDateCopy, strEndDateCopy;
+                                    String strDateNow = "";
+                                    Date activityDate = null;
+
+                                    try {
+                                        Date dateNow = calendar.getTime();
+                                        strEndDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T23:59:59.999Z";
+                                        strStartDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T00:00:00.000Z";
+                                        activityDate = utils.convertStringToDate(_strDate);
+
+                                        endDate = utils.convertStringToDate(strEndDateCopy);
+                                        startDate = utils.convertStringToDate(strStartDateCopy);
+
+                                        Utils.log(String.valueOf(endDate + " ! " + startDate + " ! " + activityDate), " CRATED ");
+
+                                        if (activityDate.before(endDate) && activityDate.after(startDate)) {
+                                            utils.createActivityModel(
+                                                    response.getJsonDocList().get(0).getDocId(),
+                                                    response.getJsonDocList().get(0).getJsonDoc(), 1
+                                            );
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    //
+
                                     fetchService(serviceModel);
                                 } else {
                                     if (progressDialog.isShowing())
@@ -830,6 +869,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
         Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
         Config.intSelectedMenu = Config.intListActivityScreen;
+        newIntent.putExtra("RELOAD", false);
         startActivity(newIntent);
         finish();
     }

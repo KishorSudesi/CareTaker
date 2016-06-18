@@ -191,7 +191,7 @@ public class DashboardFragment extends Fragment {
         super.onResume();
 
         listViewActivities.setEmptyView(emptyTextView);
-        //loadData(0);
+        loadData(0);
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 

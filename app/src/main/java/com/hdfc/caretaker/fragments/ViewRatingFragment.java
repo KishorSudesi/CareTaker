@@ -15,17 +15,17 @@ import com.hdfc.caretaker.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ViewRatingCompletedActivityFragment extends Fragment {
+public class ViewRatingFragment extends Fragment {
 
     private static ListView listView;
     private static TextView emptyTextView;
 
-    public ViewRatingCompletedActivityFragment() {
+    public ViewRatingFragment() {
         // Required empty public constructor
     }
 
-    public static ViewRatingCompletedActivityFragment newInstance() {
-        return new ViewRatingCompletedActivityFragment();
+    public static ViewRatingFragment newInstance() {
+        return new ViewRatingFragment();
     }
 
     @Override
