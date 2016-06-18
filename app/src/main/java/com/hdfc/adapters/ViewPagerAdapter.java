@@ -10,7 +10,7 @@ import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.caretaker.fragments.GuruDetailsFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    public static int totalPage = 3;
+    public static int totalPage = 2;
 
     public ViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);

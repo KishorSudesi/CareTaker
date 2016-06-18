@@ -16,6 +16,7 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.AccountSuccessActivity;
+import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
@@ -142,21 +143,9 @@ public class ConfirmFragment extends Fragment {
 
                 if (utils.isConnectingToInternet()) {
 
-                    uploadSize = SignupActivity.dependentModels.size();
+                    //uploadDependentImages();
 
-                    pDialog = new ProgressDialog(getActivity());
-                    pDialog.setMessage(getResources().getString(R.string.uploading_profile_pic));
-                    pDialog.setIndeterminate(false);
-                    pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    pDialog.setProgress(0);
-                    pDialog.setCancelable(false);
-                    pDialog.setMax(uploadSize);
-                    pDialog.show();
-
-                    uploadingCount = 0;
-
-                    uploadDependentImages();
-
+                    confirmRegister();
                 } else utils.toast(2, 2, getString(R.string.warning_internet));
             }
         });
@@ -164,6 +153,73 @@ public class ConfirmFragment extends Fragment {
         //adapter = new ConfirmListAdapter();
 
         return addFragment;
+    }
+
+    private void confirmRegister() {
+
+        try {
+
+
+        if (utils.isConnectingToInternet()) {
+
+            StorageService storageService = new StorageService(getActivity());
+
+            JSONObject jsonToUpdate = new JSONObject();
+
+            jsonToUpdate.put("customer_register", true);
+
+            storageService.updateDocs(jsonToUpdate,
+                    Config.customerModel.getStrCustomerID(),
+                    Config.collectionCustomer, new App42CallBack() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            try {
+                                if (o != null) {
+                                    Utils.log(o.toString(), "LOG");
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    callSuccess();
+
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            } catch (Exception e1) {
+                                utils.toast(2, 2, getString(R.string.error));
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                e1.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+
+                            try {
+
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+
+                                if (e != null) {
+                                    Utils.log(e.toString(),"TAG");
+                                    utils.toast(2, 2, getString(R.string.error));
+                                }else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+
+
+                        }
+                    });
+
+        }
+    }catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void callSuccess() {
@@ -188,6 +244,7 @@ public class ConfirmFragment extends Fragment {
         startActivity(intent);
         getActivity().finish();
     }
+/*
 
     public void uploadDependentImages() {
 
@@ -677,7 +734,8 @@ public class ConfirmFragment extends Fragment {
                     insertDependent(dependentModel.getStrEmail(), jsonDependant,
                             iSelectedDependent);
 
-                    /*if (utils.isConnectingToInternet()) {
+                    */
+/*if (utils.isConnectingToInternet()) {
 
                         StorageService storageService = new StorageService(getActivity());
 
@@ -763,7 +821,8 @@ public class ConfirmFragment extends Fragment {
                         if (progressDialog.isShowing())
                             progressDialog.dismiss();
                         utils.toast(2, 2, getString(R.string.warning_internet));
-                    }*/
+                    }*//*
+
                 } else {
                     iDependentCount++;
                     createDependent();
@@ -845,8 +904,10 @@ public class ConfirmFragment extends Fragment {
                                     progressDialog.dismiss();
 
                                 if (ex != null) {
-                                    /*Utils.log(ex.getMessage(), "");
-                                    utils.toast(2, 2, getString(R.string.error_register));*/
+                                    */
+/*Utils.log(ex.getMessage(), "");
+                                    utils.toast(2, 2, getString(R.string.error_register));*//*
+
 
                                     iDependentCount++;
 
@@ -957,6 +1018,7 @@ public class ConfirmFragment extends Fragment {
             utils.toast(2, 2, getString(R.string.error));
         }
     }
+*/
 
     public void setListData() {
 

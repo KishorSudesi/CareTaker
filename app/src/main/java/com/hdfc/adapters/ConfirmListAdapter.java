@@ -24,6 +24,7 @@ import java.util.List;
 
 public class ConfirmListAdapter extends BaseExpandableListAdapter {
     private Context _context;
+
     //private List<ConfirmCustomerModel> _listDataHeader;
     private List<CustomerModel> _listDataHeader;
     // child data in format of header title, child title
@@ -107,11 +108,12 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 //
-                Config.dependentModel = (DependentModel) v.getTag();
+               // Config.dependentModel = (DependentModel) v.getTag();
                 //Config.customerModel = null;
 
-                Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
-                _context.startActivity(intent);
+           /*     Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
+                intent.putExtra("editflag", true);
+                _context.startActivity(intent);*/
             }
         });
 

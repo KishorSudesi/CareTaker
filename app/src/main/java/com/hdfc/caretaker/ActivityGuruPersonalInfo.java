@@ -330,6 +330,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
                                         jsonDocId = jsonDocument.getDocId();
                                         idregisterflag = 2;
+                                        Config.customerModel.setStrCustomerID(jsonDocId);
                                             createUser();
 
                                     }

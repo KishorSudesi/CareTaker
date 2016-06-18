@@ -64,11 +64,10 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
+    public static Boolean editflag=false;
     private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     public static String strContactNo,strAddress,strEmail,strDob,relation;
-
-
     private static ProgressDialog mProgress = null;
     public String drawable;
     Button buttonContinue;
@@ -105,6 +104,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dependent_detail_personal);
 
+        if(getIntent().getExtras()!=null) {
+            editflag = getIntent().getExtras().getBoolean("editflag");
+        }
         utils = new Utils(DependentDetailPersonalActivity.this);
         utils.setStatusBarColor("#2196f3");
 
@@ -318,6 +320,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     mProgress.setCancelable(false);
                     mProgress.show();
 
+                    boolean bContinue=true;
+
                     if (!SignupActivity.dependentNames.contains(strDependantName)) {
                         dependentModel = new DependentModel();
 
@@ -348,16 +352,22 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                             dependentModel.setStrDob(strDob);
                         } else {
                             utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                            bContinue=false;
                         }
                     }
 
-                    utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
-                    strImageName = "";
-                    Intent selection = new Intent(DependentDetailPersonalActivity.this,
-                            DependentDetailsMedicalActivity.class);
-                    startActivity(selection);
-                    finish();
+                    mProgress.dismiss();
 
+                    if(bContinue) {
+
+
+                        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                        strImageName = "";
+                        Intent selection = new Intent(DependentDetailPersonalActivity.this,
+                                DependentDetailsMedicalActivity.class);
+                        startActivity(selection);
+                        finish();
+                    }
                 /*mProgress.setMessage(getString(R.string.loading));
                 mProgress.setCancelable(false);
                 mProgress.show();
