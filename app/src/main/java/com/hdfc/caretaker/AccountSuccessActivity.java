@@ -91,7 +91,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
             File fromFile1 = new File(Config.customerModel.getStrImgPath());
             File toFile1 = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
 
-            utils.moveFile(fromFile1, toFile1); //todo check file name
+            utils.moveFile(fromFile1, toFile1);
 
         } catch (IOException e) {
             e.printStackTrace();
