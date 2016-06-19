@@ -119,7 +119,7 @@ public class ActivitiesAdapter extends BaseAdapter {
                     String strTemp = providerModel.getStrName() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
 
-                    viewHolder.textViewText.setText(activityModel.getStrActivityDesc());
+                    viewHolder.textViewText.setText(activityModel.getStrActivityName());
                 } else {
 
                     String strDisplayDate = _context.getResources().getString(R.string.space) +
@@ -137,7 +137,7 @@ public class ActivitiesAdapter extends BaseAdapter {
                     String strTemp = providerModel.getStrName() + " " + strDisplayDate;
                     viewHolder.textViewTime.setText(strTemp);
 
-                    viewHolder.textViewText.setText(activityModel.getStrActivityProviderMessage());
+                    viewHolder.textViewText.setText(activityModel.getStrActivityName());
                 }
             }catch (Exception e){
                 e.printStackTrace();
