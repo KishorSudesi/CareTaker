@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -29,13 +28,10 @@ import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
-import com.hdfc.caretaker.fragments.AddDependentFragment;
-import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
-import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -48,7 +44,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,25 +57,24 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
     public static String strCustomerImgName = "";
     public static Bitmap bitmap = null;
-    private static int idregisterflag = 0;
     public static Uri uri;
     public static String citizenshipVal;
+    public static String strPass;
+    public static int uploadSize, uploadingCount = 0;
+    private static int idregisterflag = 0;
     private static Thread backgroundThreadCamera, backgroundThread;
     private static Handler backgroundThreadHandler;
     private static String strName, strEmail, strConfirmPass, strContactNo, strDate,strCountryCode,strCountry;//,strAddress;
-    public static String strPass;
     private static ProgressDialog mProgress = null;
-    String strMess = "";
     private static String jsonDocId;
+    String strMess = "";
+    ImageButton back;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
     //editAddress
     private Utils utils;
     private RadioButton mobile;
     private Spinner citizenship;
     private String strCustomerImageUrl = "";
-    public static int uploadSize, uploadingCount=0;
-    ImageButton back;
-
     private String strAreaCode = "";
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -107,6 +101,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guru_personal_info);
 
+        idregisterflag = 0;
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         utils = new Utils(ActivityGuruPersonalInfo.this);
@@ -127,9 +123,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(idregisterflag==1&&idregisterflag==2&&idregisterflag==3) {
                     goBack();
-                }
             }
         });
 
@@ -203,7 +197,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 editCountryCode.setText(Config.countryAreaCodes[position]);
-                editAreaCode.setText(Config.countryCodes[position]);
+                //editAreaCode.setText(Config.countryCodes[position]);
                 citizenshipVal = citizenship.getSelectedItem().toString();
                 //System.out.println("Citizenship value is : "+citizenshipVal);
             }
@@ -240,12 +234,12 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                     ArrayList<Upload.File> fileList = upload.getFileList();
 
                                     if (fileList.size() > 0) {
-                                        if (mProgress.isShowing())
-                                            mProgress.dismiss();
+                                      /*  if (mProgress.isShowing())
+                                            mProgress.dismiss();*/
                                         strCustomerImageUrl = fileList.get(0).getUrl();
                                         Config.customerModel.setStrImgUrl(strCustomerImageUrl);
                                         //checkStorage();
-                                        idregisterflag=1;
+                                        idregisterflag = 2;
                                             uploadData();
                                     } else {
                                         if (mProgress.isShowing())
@@ -266,23 +260,23 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                                 Utils.log(e.getMessage()," TAG ");
 
-                                if (mProgress.isShowing())
-                                    mProgress.dismiss();
+
                                 if(e!=null) {
                                     App42Exception exception = (App42Exception) e;
                                     int appErrorCode = exception.getAppErrorCode();
 
                                     if (appErrorCode == 2100) {
-                                        if (mProgress.isShowing())
-                                            mProgress.dismiss();
+                                        idregisterflag = 2;
+                                        uploadData();
 
                                         //checkStorage();
                                         //uploadData();
-                                    }
-                                 /*   else {
+                                    } else {
+                                        if (mProgress.isShowing())
+                                            mProgress.dismiss();
                                         utils.toast(2, 2, getString(R.string.error));
-                                        uploadImage();
-                                    }*/
+                                        //uploadImage();
+                                    }
                                 }else{
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
@@ -323,20 +317,41 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                             @Override
                             public void onDocumentInserted(Storage response) {
-
+                                if (mProgress.isShowing())
+                                    mProgress.dismiss();
                                 if (response != null){
                                     Utils.log(response.toString(), "");
                                     if (response.isResponseSuccess()) {
                                         Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
                                         jsonDocId = jsonDocument.getDocId();
-                                        idregisterflag = 2;
+                                        idregisterflag = 3;
                                         Config.customerModel.setStrCustomerID(jsonDocId);
-                                            createUser();
+                                        //createUser();
+
+                                        if (mProgress.isShowing())
+                                            mProgress.dismiss();
+
+                                        utils.toast(1, 1, getString(R.string.your_details_saved));
+
+                                       /* if (AddDependentFragment.adapter != null)
+                                            AddDependentFragment.adapter.notifyDataSetChanged();
+
+                                        //utils.retrieveConfirmDependants();
+
+                                        if (ConfirmFragment.adapter != null) {
+                                            ConfirmFragment.setListView();
+                                            ConfirmFragment.adapter.notifyDataSetChanged();
+                                        }*/
+
+
+                                        Intent next = new Intent(ActivityGuruPersonalInfo.this, SignupActivity.class);
+                                        startActivity(next);
+
 
                                     }
                                 }else{
-                                    if (mProgress.isShowing())
-                                        mProgress.dismiss();
+                                    /*if (mProgress.isShowing())
+                                        mProgress.dismiss();*/
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                          }
@@ -395,8 +410,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(Object o) {
-                        if (mProgress.isShowing())
-                            mProgress.dismiss();
+
                         if (o != null) {
 
                             //chk this
@@ -414,17 +428,13 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                             //ConfirmFragment.adapter.notifyDataSetChanged();
                                         }*/
 
-                            if (mProgress.isShowing())
-                                mProgress.dismiss();
-
-                            utils.toast(1, 1, getString(R.string.your_details_saved));
 
                             //Config.clientModels.setCustomerModel(Config.customerModel);
 
 //                                        SignupActivity._mViewPager.setCurrentItem(1);
-                            idregisterflag = 3;
-                            Intent next = new Intent(ActivityGuruPersonalInfo.this,SignupActivity.class);
-                            startActivity(next);
+                            idregisterflag = 1;
+
+                            uploadImage();
 
                         } else {
                             if (mProgress.isShowing())
@@ -697,13 +707,16 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     //
 
                     if(idregisterflag==0)
-                        uploadImage();
+                        createUser();
+
 
                     if(idregisterflag==1)
-                        uploadData();
+                        uploadImage();
+
 
                     if(idregisterflag==2)
-                        createUser();
+                        uploadData();
+
 
 
                     /*
@@ -852,6 +865,27 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+       /*
+        moveTaskToBack(true);*/
+        goBack();
+    }
+
+    private void goBack() {
+        //moveTaskToBack(true);
+        if ((Config.customerModel != null && Config.customerModel.getStrCustomerID() != null &&
+                !Config.customerModel.getStrCustomerID().equalsIgnoreCase(""))
+                && idregisterflag != 0) {
+            utils.toast(2, 2, getString(R.string.proceed_dependent));
+        } else {
+            Intent selection = new Intent(ActivityGuruPersonalInfo.this, MainActivity.class);
+            startActivity(selection);
+            finish();
+        }
+    }
+
     public static class BackgroundThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -903,22 +937,6 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-       /*
-        moveTaskToBack(true);*/
-        if(idregisterflag==1&&idregisterflag==2&&idregisterflag==3) {
-            goBack();
-        }
-    }
-
-    private void goBack() {
-        //moveTaskToBack(true);
-        Intent selection = new Intent(ActivityGuruPersonalInfo.this, MainActivity.class);
-        startActivity(selection);
-        finish();
     }
 
 }

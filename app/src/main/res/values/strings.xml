@@ -47,6 +47,7 @@
     <string name="dated">&#160;Dated&#160;</string>
     <string name="on">\nOn: &#160;</string>
     <string name="has_created">&#160;has been placed&#160;</string>
+    <string name="hyphen">&#160;-&#160;</string>
     <string name="submit_feedback">Submit your Feedback</string>
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
 
@@ -121,6 +122,8 @@
     <string name="rating">Rating&#160;:</string>
     <string name="ratings">Ratings</string>
     <string name="rating_add">Add a Rating</string>
+    <string name="proceed_dependent">Please continue to add Dependents</string>
+    <string name="proceedsubmit">Cannot go Back. Please Complete Registration</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
@@ -142,13 +145,14 @@
     <string name="uploading_profile_pic">Setting Profile Images…</string>
 
     <!--Error Strings-->
-    <string name="dpndnt_details_not_saved">Care Recipient Not Saved. Check Name</string>
+    <string name="dpndnt_details_not_saved">Care Recipient Not Saved. Check Mobile Number</string>
     <string name="error_confirm_password">Invalid Confirm Password</string>
     <string name="error_invalid_email">Invalid Email</string>
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
     <string name="error_invalid_area_code">Invalid Area Code</string>
     <string name="error_invalid_age">Invalid Age</string>
     <string name="email_exists">Email Id Already Exists!!!</string>
+    <string name="mobile_exists">Mobile Number Already Exists!!!</string>
     <string name="email__already_exists">Email Id Already Exists Please Proceed to Login</string>
 
     <string name="error_field_required">This Field is Required</string>

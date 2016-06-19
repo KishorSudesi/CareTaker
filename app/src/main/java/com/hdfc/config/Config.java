@@ -146,8 +146,7 @@ public class Config {
 
     public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
     public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
-
-
+    public static final String strReload = "RELOAD";
     public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;
     public static int intServiceScreen = 7;
@@ -157,41 +156,33 @@ public class Config {
     public static int intDashboardScreen = 1;
     public static int intReportsScreen = 4;
     public static int intScreenWidth = 0;
-    public static int intScreenHeight = 0;
 
     //public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     //User Specific clear at logout or whenever needed
-
+    public static int intScreenHeight = 0;
     public static JSONObject jsonCustomer = null;
     public static int intSelectedMenu = 0;
     //public static int intDependentsCount = 0;
     public static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
     public static ArrayList<String> dependentNames = new ArrayList<>();
-
     public static ArrayList<String> strDependentIds = new ArrayList<>();
     public static ArrayList<String> strNotificationIds = new ArrayList<>();
     public static ArrayList<String> strServcieIds = new ArrayList<>();
-
     public static ArrayList<String> strActivityIds = new ArrayList<>();
-
     public static ArrayList<String> strProviderIds = new ArrayList<>();
     public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
-
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
-
     public static CustomerModel customerModel ;
     public static DependentModel dependentModel = null;
-
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
-    public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
 
    /* public static ConfirmDependentModel confirmDependentModel = null;
     public static ConfirmCustomerModel confirmCustomerModel = null;*/
 
     //public static ClientModel clientModels = new ClientModel();
     //public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
-
+    public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
     //public static ArrayList<ActivityModel> activityModels = new ArrayList<>();
     public static String strUserName = "";
     public static ArrayList<FileModel> fileModels = new ArrayList<>();

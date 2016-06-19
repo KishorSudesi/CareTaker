@@ -23,6 +23,16 @@
             android:layout_height="wrap_content">
 
             <ImageButton
+                android:id="@+id/buttonSeniors"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/margin_general"
+                android:layout_weight="1"
+                android:background="@color/colorWhite"
+                android:padding="@dimen/padding_general"
+                android:src="@mipmap/senior" />
+
+            <ImageButton
                 android:id="@+id/buttonCallActivity"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -42,15 +52,7 @@
                   android:padding="@dimen/padding_general"
                   android:src="@drawable/dashboard_reports" />
   -->
-            <ImageButton
-                android:id="@+id/buttonSeniors"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/margin_general"
-                android:layout_weight="1"
-                android:background="@color/colorWhite"
-                android:padding="@dimen/padding_general"
-                android:src="@mipmap/senior" />
+
 
             <ImageButton
                 android:id="@+id/buttonNotifications"
@@ -79,6 +81,17 @@
             android:layout_height="10dp">
 
             <TextView
+                android:id="@+id/textViewSeniors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/menu_seniors"
+                android:textColor="@color/colorHeaderGradientStart"
+                android:textSize="9sp" />
+
+
+            <TextView
                 android:id="@+id/textViewActivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -95,15 +108,6 @@
                  android:text="@string/menu_reports"
                  android:textSize="9sp" />-->
 
-            <TextView
-                android:id="@+id/textViewSeniors"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/menu_seniors"
-                android:textColor="@color/colorHeaderGradientStart"
-                android:textSize="9sp" />
 
             <TextView
                 android:id="@+id/textViewNotifications"

@@ -13,25 +13,16 @@ import android.widget.ExpandableListView;
 
 import com.hdfc.adapters.ConfirmListAdapter;
 import com.hdfc.app42service.StorageService;
-import com.hdfc.app42service.UploadService;
-import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.AccountSuccessActivity;
-import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
-import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ConfirmViewModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
-import com.shephertz.app42.paas.sdk.android.App42Exception;
-import com.shephertz.app42.paas.sdk.android.storage.Storage;
-import com.shephertz.app42.paas.sdk.android.upload.Upload;
-import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -144,6 +135,10 @@ public class ConfirmFragment extends Fragment {
                 if (utils.isConnectingToInternet()) {
 
                     //uploadDependentImages();
+
+                    progressDialog.setMessage(getActivity().getResources().getString(R.string.uploading));
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
 
                     confirmRegister();
                 } else utils.toast(2, 2, getString(R.string.warning_internet));
@@ -1024,8 +1019,7 @@ public class ConfirmFragment extends Fragment {
 
         int intCount = 0;
 
-        if (Config.customerModel != null && Config.customerModel.getStrName() != null
-                && !Config.customerModel.getStrName().equalsIgnoreCase(""))
+        if (SignupActivity.dependentModels != null)
             intCount = SignupActivity.dependentModels.size();
 
         if (intCount > 1)

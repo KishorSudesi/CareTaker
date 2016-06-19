@@ -128,15 +128,20 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.dateTime.setText(strFullTimeStamp);
 
-            String strMess = "";
+            String strMess = activityListModel.getStrActivityName() + _context.getResources().getString(R.string.hyphen);
 
             if (activityListModel.getStrActivityStatus().equalsIgnoreCase("new")
                     || activityListModel.getStrActivityStatus().equalsIgnoreCase("upcoming"))
-                strMess = activityListModel.getStrActivityDesc();
+                strMess += activityListModel.getStrActivityDesc();
             else
-                strMess = activityListModel.getStrActivityDesc();//getStrActivityProviderMessage
+                strMess += activityListModel.getStrActivityDesc();//getStrActivityProviderMessage
+
+            if (strMess.length() > 38)
+                strMess = strMess.substring(0, 36) + "..";
 
             viewHolder.Message.setText(strMess);
+
+            strMess = "";
 
             String strAuthor = strCarlaName + _context.getResources().getString(R.string.at);
 

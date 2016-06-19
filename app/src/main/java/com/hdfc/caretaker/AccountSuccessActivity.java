@@ -14,6 +14,7 @@ import com.hdfc.libs.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AccountSuccessActivity extends AppCompatActivity {
 
@@ -58,8 +59,8 @@ public class AccountSuccessActivity extends AppCompatActivity {
             SignupActivity.strCustomerPass = "";
             Config.strUserName = Config.customerModel.getStrEmail();
 
-            SignupActivity.dependentModels = null;
-            SignupActivity.dependentNames = null;
+            SignupActivity.dependentModels = new ArrayList<>();
+            SignupActivity.dependentNames = new ArrayList<>();
             DependentDetailPersonalActivity.dependentModel = null;
 
            /* progressDialog.setMessage(getResources().getString(
@@ -90,8 +91,16 @@ public class AccountSuccessActivity extends AppCompatActivity {
             File fromFile1 = new File(Config.customerModel.getStrImgPath());
             File toFile1 = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
 
-            utils.moveFile(fromFile1, toFile1);
+            utils.moveFile(fromFile1, toFile1); //todo check file name
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            File fromFile2;
+            File toFile2;
             for (int i = 0; i < Config.dependentModels.size(); i++) {
 
                 if (Config.dependentModels.get(i).getStrImagePath() != null
@@ -100,11 +109,11 @@ public class AccountSuccessActivity extends AppCompatActivity {
                     Utils.log(Config.dependentModels.get(i).getStrImagePath() + " ~ " +
                             Config.dependentModels.get(i).getStrDependentID(), " PATH ");
 
-                    fromFile1 = new File(Config.dependentModels.get(i).getStrImagePath());
-                    toFile1 = utils.getInternalFileImages(Config.dependentModels.get(i).
+                    fromFile2 = new File(Config.dependentModels.get(i).getStrImagePath());
+                    toFile2 = utils.getInternalFileImages(Config.dependentModels.get(i).
                             getStrDependentID());
 
-                    utils.moveFile(fromFile1, toFile1);
+                    utils.moveFile(fromFile2, toFile2);
                 }
             }
 

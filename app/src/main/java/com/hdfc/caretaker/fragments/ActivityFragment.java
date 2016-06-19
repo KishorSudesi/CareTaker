@@ -64,7 +64,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     public static ActivityFragment newInstance(boolean bReload) {
         ActivityFragment fragment = new ActivityFragment();
         Bundle args = new Bundle();
-        args.putSerializable("RELOAD", bReload);
+        args.putBoolean("RELOAD", bReload);
         fragment.setArguments(args);
         return fragment;
         //return new ActivityFragment(bReload);
@@ -76,7 +76,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
      */
     public static void setGridCellAdapterToDate(int month, int year) {
 
-        Utils.log(String.valueOf(month + "-" + year), " DATE ");
+        // Utils.log(String.valueOf(month + "-" + year), " DATE ");
 
         calendar.set(year, month - 1, calendar.get(Calendar.DAY_OF_MONTH));
 

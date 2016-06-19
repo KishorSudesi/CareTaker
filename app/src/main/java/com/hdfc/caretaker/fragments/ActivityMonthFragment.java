@@ -247,10 +247,13 @@ public class ActivityMonthFragment extends Fragment {
                     ft.replace(R.id.fragment_dashboard, completedFragment);
                     ft.commit();
 */
+
+                    //Utils.log(String.valueOf(Config.dependentModels.get(Config.intSelectedDependent).getActivityModels().indexOf(activityModel)), " POS ");
                     Intent intent = new Intent(getActivity(), CompletedActivity.class);
                     Bundle args = new Bundle();
                     args.putSerializable("ACTIVITY", activityModel);
-                    args.putBoolean("WHICH_SCREEN", true);
+                    args.putBoolean("WHICH_SCREEN", false);
+                    //args.putInt("ACTIVITY_POSITION", position);//todo
                     intent.putExtras(args);
                     startActivity(intent);
                 }

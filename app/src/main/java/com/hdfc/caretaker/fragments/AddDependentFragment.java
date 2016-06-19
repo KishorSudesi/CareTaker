@@ -15,7 +15,6 @@ import com.hdfc.adapters.DependentViewAdapter;
 import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
-import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 
 public class AddDependentFragment extends Fragment {
@@ -36,8 +35,7 @@ public class AddDependentFragment extends Fragment {
 
         int intCount = 0;
 
-        if (Config.customerModel != null && Config.customerModel.getStrName() != null
-                && !Config.customerModel.getStrName().equalsIgnoreCase(""))
+        if (SignupActivity.dependentModels != null)
             intCount = utils.retrieveDependants();
 
         if (intCount > 1)

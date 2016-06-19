@@ -67,6 +67,21 @@ public class ActivityModel implements Serializable {
         this.feedBackModels = feedBackModels;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj instanceof ActivityModel) {
+            if (this.strActivityID.equalsIgnoreCase(((ActivityModel) obj).strActivityID))
+                return true;
+        }
+
+        return false;
+    }
+
+    public int hashCode() {
+        return strActivityID.hashCode();
+    }
+
     public ArrayList<MilestoneModel> getMilestoneModels() {
         return milestoneModels;
     }

@@ -868,8 +868,11 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         utils.toast(2, 2, strMess);
 
         Intent newIntent = new Intent(AddNewActivityStep2Activity.this, DashboardActivity.class);
-        Config.intSelectedMenu = Config.intListActivityScreen;
-        newIntent.putExtra("RELOAD", false);
+        //Config.intSelectedMenu = Config.intListActivityScreen;
+
+        Bundle args = new Bundle();
+        args.putBoolean(Config.strReload, false);
+        newIntent.putExtras(args);
         startActivity(newIntent);
         finish();
     }

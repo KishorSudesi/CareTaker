@@ -119,12 +119,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         context = DashboardActivity.this;
 
-        Bundle b = getIntent().getExtras();
+        // Bundle b = getIntent().getExtras();
+
+        Intent i = getIntent();
+        Bundle extras = i.getExtras();
 
         boolean bReloadActivity = false;
 
-        if (b != null) {
-            bReloadActivity = b.getBoolean("RELAOD", false);
+        if (extras != null) {
+            bReloadActivity = extras.getBoolean(Config.strReload, false);
         }
 
         setMenu();
@@ -341,7 +344,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         //if (Config.intSelectedMenu == Config.intListActivityScreen ||
         //Config.intSelectedMenu == Config.intActivityScreen) {
-        Config.intSelectedMenu = Config.intActivityScreen;
+        // Config.intSelectedMenu = Config.intActivityScreen;
         ActivityFragment fragment = ActivityFragment.newInstance(bReload);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_dashboard, fragment);

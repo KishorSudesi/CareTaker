@@ -262,8 +262,10 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
     public void goBack() {
         Intent newIntent = new Intent(AddNewActivityActivity.this, DashboardActivity.class);
-        Config.intSelectedMenu = Config.intActivityScreen;
-        newIntent.putExtra("RELOAD", false);
+        //Config.intSelectedMenu = Config.intActivityScreen;
+        Bundle args = new Bundle();
+        args.putBoolean(Config.strReload, false);
+        newIntent.putExtras(args);
         startActivity(newIntent);
         finish();
     }

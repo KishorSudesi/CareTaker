@@ -18,7 +18,8 @@
         android:background="@mipmap/back_arrow"
         android:onClick="backToSelection"
         android:textAllCaps="false"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/logo"

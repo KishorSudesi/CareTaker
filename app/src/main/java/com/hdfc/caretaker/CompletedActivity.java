@@ -66,6 +66,8 @@ public class CompletedActivity extends AppCompatActivity {
     private static JSONObject jsonObjectMess;
     private static RatingCompletedAdapter ratingCompletedAdapter;
     private static ArrayList<String> strImageTitles = new ArrayList<>();
+    private static ListView listView;
+    private static boolean bReload;
     private String strCarlaImageName;
     private Utils utils;
     private EditText editFeedBack;
@@ -100,6 +102,8 @@ public class CompletedActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            bReload = false;
 
            /* try {
                 ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
@@ -265,7 +269,7 @@ public class CompletedActivity extends AppCompatActivity {
                     });
                 }
 
-                ListView listView = (ListView) findViewById(R.id.listViewRatings);
+                listView = (ListView) findViewById(R.id.listViewRatings);
                 TextView emptyTextView = (TextView) findViewById(android.R.id.empty);
 
                 ratingCompletedAdapter = new RatingCompletedAdapter(context, activityModel.
@@ -397,8 +401,8 @@ public class CompletedActivity extends AppCompatActivity {
 
                                                     activityModel.setFeedBackModel(feedBackModel);
 
-                                                    Config.dependentModels.get(Config.intSelectedDependent).
-                                                            getActivityModels().get(iActivityPosition).setFeedBackModel(feedBackModel);
+                                                   /* Config.dependentModels.get(Config.intSelectedDependent).
+                                                            getActivityModels().get(iActivityPosition).setFeedBackModel(feedBackModel);*/
                                                 }
                                             }
 
@@ -582,6 +586,8 @@ public class CompletedActivity extends AppCompatActivity {
             transaction.commit();*/
 
             ratingCompletedAdapter.notifyDataSetChanged();
+            bReload = true;
+            Utils.setListViewHeightBasedOnChildren(listView);
 
             utils.toast(2, 2, getString(R.string.rating_added));
 
@@ -641,12 +647,16 @@ public class CompletedActivity extends AppCompatActivity {
         Intent dashboardIntent = new Intent(CompletedActivity.this,
                 DashboardActivity.class);
 
+        Bundle args = new Bundle();
+        args.putBoolean(Config.strReload, bReload);
+        dashboardIntent.putExtras(args);
+
         if (bWhichScreen)
             Config.intSelectedMenu = Config.intListActivityScreen;
         else
             Config.intSelectedMenu = Config.intActivityScreen;
 
-        dashboardIntent.putExtra("RELOAD", false);
+        //dashboardIntent.putExtra("RELOAD", true);//todo may relaod for refreshing feedback
 
         startActivity(dashboardIntent);
         finish();
@@ -791,11 +801,13 @@ public class CompletedActivity extends AppCompatActivity {
                             if (activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileUrl() != null
                                     && !activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileUrl().equalsIgnoreCase("")) {
 
-                      /*  utils.loadImageFromWeb(activityModel.getImageModels().get(i).getStrImageName(),
+                        /*utils.loadImageFromWeb(activityModel.getImageModels().get(i).getStrImageName(),
                                 activityModel.getImageModels().get(i).getStrImageUrl());*/
 
+                                Utils.log(activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileName(), " MS IMAGE ");
+
                                 File file = utils.getInternalFileImages(utils.replaceSpace(
-                                        activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileUrl()
+                                        activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileName()
                                 ));
 
                                 Bitmap bitmap = utils.getBitmapFromFile(file.getAbsolutePath(),

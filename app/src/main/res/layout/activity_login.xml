@@ -10,23 +10,10 @@
         layout="@layout/header_common"
         />
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/include"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:gravity="center"
-        android:padding="@dimen/text_padding"
-        android:text="@string/welcome"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/blue" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/include"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
@@ -34,8 +21,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/include"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:padding="@dimen/text_padding"
+                android:text="@string/welcome"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue" />
 
             <EditText
                 android:id="@+id/editEmail"
@@ -92,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_margin="@dimen/margin_general"
+                android:layout_marginBottom="30dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:gravity="center"

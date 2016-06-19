@@ -21,8 +21,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import com.shephertz.app42.paas.sdk.android.App42CallBack;
-
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.UserService;
@@ -31,7 +29,6 @@ import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
-import com.hdfc.views.CustomViewPager;
 import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -436,11 +433,11 @@ public class GuruDetailsFragment extends Fragment {
                                             SignupActivity.strCustomerPass = strConfirmPass;
 
                                         //chk this
-                                        utils.retrieveDependants();//strEmail
+                                        /*utils.retrieveDependants();//strEmail
 
-                                        CustomViewPager.setPagingEnabled(true);
+                                        CustomViewPager.setPagingEnabled(true);*/
 
-                                        if (AddDependentFragment.adapter != null)
+                                       /* if (AddDependentFragment.adapter != null)
                                             AddDependentFragment.adapter.notifyDataSetChanged();
 
                                         //utils.retrieveConfirmDependants();
@@ -448,7 +445,7 @@ public class GuruDetailsFragment extends Fragment {
                                         if (ConfirmFragment.adapter != null) {
                                             ConfirmFragment.setListView();
                                             //ConfirmFragment.adapter.notifyDataSetChanged();
-                                        }
+                                        }*/
 
                                         if (mProgress.isShowing())
                                             mProgress.dismiss();

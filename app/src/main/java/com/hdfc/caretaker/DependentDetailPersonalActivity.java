@@ -61,13 +61,13 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public static Uri uri;
     public static DependentModel dependentModel = null;
     public static int iDate, iMonth, iYear;
+    public static Boolean editflag = false;
+    public static String strContactNo, strAddress, strEmail, strDob, relation;
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
-    public static Boolean editflag=false;
     private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
-    public static String strContactNo,strAddress,strEmail,strDob,relation;
     private static ProgressDialog mProgress = null;
     public String drawable;
     Button buttonContinue;
@@ -105,7 +105,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dependent_detail_personal);
 
         if(getIntent().getExtras()!=null) {
-            editflag = getIntent().getExtras().getBoolean("editflag");
+            editflag = false;//getIntent().getExtras().getBoolean("editflag");
         }
         utils = new Utils(DependentDetailPersonalActivity.this);
         utils.setStatusBarColor("#2196f3");
@@ -322,7 +322,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                     boolean bContinue=true;
 
-                    if (!SignupActivity.dependentNames.contains(strDependantName)) {
+                    if (!SignupActivity.dependentNames.contains(strContactNo)) {
                         dependentModel = new DependentModel();
 
                         //strDependantName, strRelation, strImageName, "", "",
@@ -336,12 +336,12 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                         dependentModel.setStrEmail(strEmail);
                         dependentModel.setStrDob(strDob);
                         //dependentModel.setStrImagePath(strImageName);
-                        SignupActivity.dependentNames.add(strDependantName);
+                        SignupActivity.dependentNames.add(strContactNo);
 
                     } else {
                         if (dependentModel != null &&
-                                SignupActivity.dependentNames.contains(strDependantName)
-                                && dependentModel.getStrName().equalsIgnoreCase(strDependantName)) {
+                                SignupActivity.dependentNames.contains(strContactNo)
+                                && dependentModel.getStrContacts().equalsIgnoreCase(strContactNo)) {
 
                             dependentModel.setStrName(strDependantName);
                             dependentModel.setStrRelation(relation);
@@ -361,7 +361,6 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     if(bContinue) {
 
 
-                        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
                         strImageName = "";
                         Intent selection = new Intent(DependentDetailPersonalActivity.this,
                                 DependentDetailsMedicalActivity.class);

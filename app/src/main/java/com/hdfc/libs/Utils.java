@@ -1451,23 +1451,22 @@ public class Utils {
 
             StorageService storageService = new StorageService(_ctxt);
 
-            storageService.findDocsByKeyValue(Config.collectionNotification,
+         /*   storageService.findDocsByKeyValue(Config.collectionNotification,
                     "user_id",
                     Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
-                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                    new AsyncApp42ServiceApi.App42StorageServiceListener()*/
+
+            Query q1 = QueryBuilder.build("user_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), QueryBuilder.Operator.EQUALS);
+
+            storageService.findDocsByQueryOrderBy(Config.collectionNotification, q1, 3000, 0,
+                    "time", 1, new App42CallBack() {
 
                         @Override
-                        public void onDocumentInserted(Storage response) {
-                        }
+                        public void onSuccess(Object o) {
 
-                        @Override
-                        public void onUpdateDocSuccess(Storage response) {
-                        }
+                            if (o != null) {
 
-                        @Override
-                        public void onFindDocSuccess(Storage storage) {
-
-                            if (storage != null) {
+                                Storage storage = (Storage) o;
 
                                 //Utils.log(storage.toString(), "not ");
 
@@ -1497,35 +1496,29 @@ public class Utils {
                         }
 
                         @Override
-                        public void onInsertionFailed(App42Exception ex) {
-                        }
+                        public void onException(Exception e) {
 
-                        @Override
-                        public void onFindDocFailed(App42Exception ex) {
-                            /*if (progressDialog.isShowing())
+                              /*if (progressDialog.isShowing())
                                 progressDialog.dismiss();*/
                             DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                            if (ex != null) {
-                                try {
-                                       /* JSONObject jsonObject = new JSONObject(ex.getMessage());
+                            if (e != null) {
+                               /* try {
+                                       *//* JSONObject jsonObject = new JSONObject(ex.getMessage());
                                         JSONObject jsonObjectError = jsonObject.
                                                 getJSONObject("app42Fault");
                                         String strMess = jsonObjectError.getString("details");
 
-                                        toast(2, 2, strMess);*/
+                                        toast(2, 2, strMess);*//*
                                     //toast(2, 2, _ctxt.getString(R.string.error));
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
-                                }
+                                }*/
                             } else {
                                 toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
                             refreshNotifications();
-                        }
 
-                        @Override
-                        public void onUpdateDocFailed(App42Exception ex) {
                         }
                     });
 
@@ -1668,7 +1661,18 @@ public class Utils {
 
         File file = null;
         try {
+            File mFolder = new File(_ctxt.getFilesDir(), "images/");
             file = new File(_ctxt.getFilesDir(), "images/" + strFileName);
+
+            //
+            if (!mFolder.exists()) {
+                mFolder.mkdir();
+            }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            //
+
         } catch (Exception e) {
             e.printStackTrace();
         }
