@@ -466,6 +466,7 @@ public class MyAccountEditFragment extends Fragment {
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
+                DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
                 //Utils.toast(1, 1, "Getting Image...");
                 /*progressDialog.setMessage(getResources().getString(R.string.loading));
                 progressDialog.setCancelable(false);
@@ -538,14 +539,14 @@ public class MyAccountEditFragment extends Fragment {
                                 }
 
                             }else{
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
                     });
 
             } else {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 utils.toast(2, 2, getString(R.string.warning_internet));
             }
         }catch (Exception e){
@@ -715,10 +716,10 @@ public class MyAccountEditFragment extends Fragment {
         public void handleMessage(Message msg) {
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
 
             if (!isImageChanged) {
-
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 if (bitmap != null)
                     roundedImageView.setImageBitmap(bitmap);
                 else {
@@ -732,6 +733,7 @@ public class MyAccountEditFragment extends Fragment {
                 if (bitmap != null)
                     checkImage();
                 else {
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
                     roundedImageView.setBackgroundDrawable(getActivity().getResources().
                             getDrawable(R.mipmap.camera));
                     utils.toast(2, 2, getString(R.string.error));

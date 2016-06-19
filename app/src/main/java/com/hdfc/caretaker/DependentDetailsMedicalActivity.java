@@ -265,7 +265,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
 
-            createJson();
+            //createJson();
 
             if(DependentDetailPersonalActivity.editflag) {
               /*  deleteImage();
@@ -358,9 +358,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 Config.dependentModel = null;
             }
 
-            if (DependentDetailPersonalActivity.dependentModel != null) {
-                createJson();
-            }
+
             //
 
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
@@ -470,8 +468,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                                     if (progressDialog.isShowing())
                                                         progressDialog.dismiss();
                                                     String strImagePath = fileList.get(0).getUrl();
-                                                    SignupActivity.dependentModels.get(progress)
-                                                            .setStrImageUrl(strImagePath);
+                                                   /* SignupActivity.dependentModels.get(progress)
+                                                            .setStrImageUrl(strImagePath);*/
 
                                                     DependentDetailPersonalActivity.dependentModel.setStrImageUrl(strImagePath);
                                                     //uploadingCount++;
@@ -671,6 +669,9 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         try {
 
 
+            if (DependentDetailPersonalActivity.dependentModel != null) {
+                createJson();
+            }
 
           /*  SignupActivity.dependentModels.get(iDependentCount).setIntHealthBp(70 +
                     iDependentCount);

@@ -381,8 +381,8 @@ public class CompletedActivity extends AppCompatActivity {
 
                                             activityModel.getFeedBackModels().clear();
 
-                                            Config.dependentModels.get(Config.intSelectedDependent).
-                                                    getActivityModels().get(iActivityPosition).clearFeedBackModel();
+                                          /*  Config.dependentModels.get(Config.intSelectedDependent).
+                                                    getMonthActivityModel().get(iActivityPosition).clearFeedBackModel();*/
 
                                             for (int k = 0; k < jsonArrayFeedback.length(); k++) {
 

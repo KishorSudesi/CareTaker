@@ -2085,8 +2085,12 @@ public class Utils {
                     dependentModel.setStrContacts(jsonObjectDependent.
                             getString("dependent_contact_no"));
                     dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
-                    dependentModel.setStrImageUrl(jsonObjectDependent.
-                            getString("dependent_profile_url"));
+
+                    if (jsonObjectDependent.has("dependent_profile_url")) {
+                        dependentModel.setStrImageUrl(jsonObjectDependent.
+                                getString("dependent_profile_url"));
+                    }
+
                     dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
                     dependentModel.setStrAge(jsonObjectDependent.getString("dependent_age"));
 
@@ -2440,8 +2444,11 @@ public class Utils {
 
                 if (iFlag == 0) {
                     if (!Config.strActivityIds.contains(strActivityId)) {
-                        Config.dependentModels.get(iActivityCount).
-                                setActivityModels(activityModel);
+
+                        if (iActivityCount < Config.dependentModels.size()) {
+                            Config.dependentModels.get(iActivityCount).
+                                    setActivityModels(activityModel);
+                        }
 
                         Config.strActivityIds.add(strActivityId);
                     }
@@ -2451,7 +2458,8 @@ public class Utils {
 
                     int iPosition = Config.strDependentIds.indexOf(jsonObjectActivity.getString("dependent_id"));
 
-                    Config.dependentModels.get(iPosition).setMonthActivityModel(activityModel);
+                    if (iPosition > -1)
+                        Config.dependentModels.get(iPosition).setMonthActivityModel(activityModel);
 
                     if (!Config.strActivityIds.contains(strActivityId))
                         Config.strActivityIds.add(strActivityId);
