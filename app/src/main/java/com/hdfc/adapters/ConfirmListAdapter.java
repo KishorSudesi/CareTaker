@@ -2,6 +2,7 @@ package com.hdfc.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,12 +109,14 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 //
-               // Config.dependentModel = (DependentModel) v.getTag();
+                Config.dependentModel = (DependentModel) v.getTag();
                 //Config.customerModel = null;
 
-           /*     Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
-                intent.putExtra("editflag", true);
-                _context.startActivity(intent);*/
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("editflag", true);
+                Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
+                intent.putExtras(bundle);
+                _context.startActivity(intent);
             }
         });
 

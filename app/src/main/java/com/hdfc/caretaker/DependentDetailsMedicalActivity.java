@@ -268,7 +268,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             //createJson();
 
             if(DependentDetailPersonalActivity.editflag) {
-              /*  deleteImage();
+                deleteImage();
 
                 //
                 if (editregisterflag == 0)
@@ -276,7 +276,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                 if (editregisterflag == 1)
                     updateDependentData();
-*/
 
 
             }else {
@@ -364,13 +363,13 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
             if(DependentDetailPersonalActivity.editflag) {
-               /* deleteImage();
+                deleteImage();
 
                 if (editregisterflag == 0)
                     edituploadDependentImages();
 
                 if (editregisterflag == 1)
-                    updateDependentData();*/
+                    updateDependentData();
 
 
 
@@ -955,6 +954,10 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         }
     }
     public void updateDependentData(){
+
+        if (DependentDetailPersonalActivity.dependentModel != null) {
+            createJson();
+        }
         if (utils.isConnectingToInternet()) {
 
             StorageService storageService = new StorageService(DependentDetailsMedicalActivity.this);
