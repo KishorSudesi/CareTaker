@@ -45,7 +45,7 @@ public class ConfirmFragment extends Fragment {
     private static String strAddDependent;
     private static Context context;
     public Button buttonContinue;
-    private Utils utils;
+    public static Utils utils;
     private String strCustomerImageUrl = "";
     private int iDependentCount = 0;
 
@@ -141,6 +141,7 @@ public class ConfirmFragment extends Fragment {
                     progressDialog.show();
 
                     confirmRegister();
+                    callSuccess();
                 } else utils.toast(2, 2, getString(R.string.warning_internet));
             }
         });
@@ -150,14 +151,14 @@ public class ConfirmFragment extends Fragment {
         return addFragment;
     }
 
-    private void confirmRegister() {
+    public static void confirmRegister() {
 
         try {
 
 
         if (utils.isConnectingToInternet()) {
 
-            StorageService storageService = new StorageService(getActivity());
+            StorageService storageService = new StorageService(context);
 
             JSONObject jsonToUpdate = new JSONObject();
 
@@ -178,10 +179,10 @@ public class ConfirmFragment extends Fragment {
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    utils.toast(2, 2, context.getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
-                                utils.toast(2, 2, getString(R.string.error));
+                                utils.toast(2, 2, context.getString(R.string.error));
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
                                 e1.printStackTrace();
@@ -199,9 +200,9 @@ public class ConfirmFragment extends Fragment {
 
                                 if (e != null) {
                                     Utils.log(e.toString(),"TAG");
-                                    utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, context.getString(R.string.error));
                                 }else {
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    utils.toast(2, 2, context.getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
                                 e1.printStackTrace();
@@ -217,13 +218,13 @@ public class ConfirmFragment extends Fragment {
         }
     }
 
-    public void callSuccess() {
+    public static void callSuccess() {
 
         //remove "Add Dependent"
 
         for (int i = 0; i < SignupActivity.dependentModels.size(); i++) {
             if (SignupActivity.dependentModels.get(i).getStrName().
-                    equalsIgnoreCase(getActivity().
+                    equalsIgnoreCase(context.
                             getResources().
                             getString(R.string.add_dependent))) {
                 SignupActivity.dependentModels.remove(i);
@@ -233,11 +234,10 @@ public class ConfirmFragment extends Fragment {
 
         if (progressDialog.isShowing())
             progressDialog.dismiss();
-        utils.toast(2, 2, getString(R.string.register_success));
+        utils.toast(2, 2, context.getString(R.string.register_success));
 
-        Intent intent = new Intent(getActivity(), AccountSuccessActivity.class);
-        startActivity(intent);
-        getActivity().finish();
+        Intent intent = new Intent(context, AccountSuccessActivity.class);
+        context.startActivity(intent);
     }
 /*
 

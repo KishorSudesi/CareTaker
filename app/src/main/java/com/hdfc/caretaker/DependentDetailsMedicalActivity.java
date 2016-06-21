@@ -258,11 +258,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
 
-            if (Config.dependentModel != null) {
-                SignupActivity.dependentModels.remove(DependentDetailPersonalActivity.dependentModel);
-                Config.dependentModel = null;
-            }
-            SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
 
             //createJson();
@@ -352,7 +347,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             DependentDetailPersonalActivity.dependentModel.setStrIllness(strDiseases);
             DependentDetailPersonalActivity.dependentModel.setStrNotes(strNotes);
 
-            if (Config.dependentModel != null) {
+          /*  if (Config.dependentModel != null) {
                 SignupActivity.dependentModels.remove(DependentDetailPersonalActivity.dependentModel);
                 Config.dependentModel = null;
             }
@@ -360,7 +355,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             //
 
-            SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
+            SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);*/
 
             if(DependentDetailPersonalActivity.editflag) {
                 deleteImage();
@@ -717,19 +712,31 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                             gotoDependnetList();
                                         else*/
                                         idregisterflag = 3;
-                                        //createDependentUser();
+
+                                        if (Config.dependentModel != null) {
+                                            SignupActivity.dependentModels.remove(DependentDetailPersonalActivity.dependentModel);
+                                            Config.dependentModel = null;
+                                        }
+                                        SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
 
-                                        DependentDetailPersonalActivity.dependentModel = null;
-                                        Intent next = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
+                                        if (SignupActivity.dependentModels.size() == 2) {
+                                            ConfirmFragment.confirmRegister();
+                                        } else {
+                                            //createDependentUser();
 
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
 
-                                        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                                            DependentDetailPersonalActivity.dependentModel = null;
+                                            Intent next = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
 
-                                        startActivity(next);
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
 
+                                            utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+
+                                            startActivity(next);
+
+                                        }
 
                                         //createDependentUser(strDependentEmail);
                                     } else {
