@@ -451,7 +451,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                 !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                             uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                    utils.replaceSpace(dependentModel.getStrName()), "Profile Picture",
+                                    utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
                                     dependentModel.getStrEmail(),
                                     UploadFileType.IMAGE, new App42CallBack() {
 
@@ -568,7 +568,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                 !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                             uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                    utils.replaceSpace(dependentModel.getStrName()), "Profile Picture",
+                                    utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
                                     dependentModel.getStrEmail(),
                                     UploadFileType.IMAGE, new App42CallBack() {
 
@@ -904,7 +904,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                /* if (progressDialog.isShowing())
                     progressDialog.setProgress(1);
 */
-                uploadService.removeImage(DependentDetailPersonalActivity.dependentModel.getStrName(),
+                uploadService.removeImage(DependentDetailPersonalActivity.dependentModel.getStrContacts(),
                         DependentDetailPersonalActivity.dependentModel.getStrEmail(),
                         new App42CallBack() {
                             public void onSuccess(Object response) {
@@ -962,11 +962,11 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             StorageService storageService = new StorageService(DependentDetailsMedicalActivity.this);
 
-            JSONObject jsonToUpdate = new JSONObject();
+            //JSONObject jsonToUpdate = new JSONObject();
 
-            storageService.updateDocs(jsonToUpdate,
+            storageService.updateDocs(jsonDependant,
                     DependentDetailPersonalActivity.dependentModel.getStrDependentID(),
-                    Config.collectionCustomer, new App42CallBack() {
+                    Config.collectionDependent, new App42CallBack() {
                         @Override
                         public void onSuccess(Object o) {
                             try {

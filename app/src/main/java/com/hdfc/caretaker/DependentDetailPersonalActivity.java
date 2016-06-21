@@ -106,22 +106,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
 //        if(getIntent().getExtras()!=null)
 
-        Bundle getBundle  = getIntent().getExtras();
-        editflag = getBundle.getBoolean("editflag");
 
-            if(editflag){
-                editDependantEmail.setEnabled(false);
-                editDependantEmail.setFocusable(false);
-                editDependantEmail.setFocusableInTouchMode(false);
-                editDependantEmail.setKeyListener(null);
-                editDependantEmail.setClickable(false);
-
-                editContactNo.setEnabled(false);
-                editContactNo.setFocusableInTouchMode(false);
-                editContactNo.setFocusable(false);
-                editContactNo.setKeyListener(null);
-                editContactNo.setClickable(false);
-            }
 
 
 
@@ -217,6 +202,25 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         setupSearchView();
 
         utils.setStatusBarColor("#cccccc");
+
+        Bundle getBundle  = getIntent().getExtras();
+        if(getBundle!=null)
+            editflag = getBundle.getBoolean("editflag");
+
+        if(editflag){
+            editDependantEmail.setEnabled(false);
+            editDependantEmail.setFocusable(false);
+            editDependantEmail.setFocusableInTouchMode(false);
+            editDependantEmail.setKeyListener(null);
+            editDependantEmail.setClickable(false);
+
+            editContactNo.setEnabled(false);
+            editContactNo.setFocusableInTouchMode(false);
+            editContactNo.setFocusable(false);
+            editContactNo.setKeyListener(null);
+            editContactNo.setClickable(false);
+        }
+
     }
 
     @Override

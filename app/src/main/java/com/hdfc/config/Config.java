@@ -173,7 +173,7 @@ public class Config {
     public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
-    public static CustomerModel customerModel ;
+    public static CustomerModel customerModel =null;
     public static DependentModel dependentModel = null;
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
 

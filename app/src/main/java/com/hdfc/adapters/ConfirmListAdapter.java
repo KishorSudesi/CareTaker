@@ -113,7 +113,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
                 //Config.customerModel = null;
 
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("editflag", true);
+                bundle.putBoolean("editflag",true);
                 Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
                 intent.putExtras(bundle);
                 _context.startActivity(intent);
