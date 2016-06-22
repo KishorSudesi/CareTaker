@@ -44,7 +44,7 @@
                 android:layout_marginTop="5dp"
                 android:paddingLeft="5dip"
                 android:paddingRight="5dip"
-                android:text="This is a Text"
+
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#000000"
                 android:textStyle="bold" />
@@ -63,8 +63,6 @@
                     android:id="@+id/textViewName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
-                    android:text="Name"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/blue" />
 
@@ -72,8 +70,6 @@
                     android:id="@+id/textViewTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Time"
-
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/blue" />
 
