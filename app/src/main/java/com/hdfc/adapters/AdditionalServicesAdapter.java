@@ -2,6 +2,7 @@ package com.hdfc.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,14 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.hdfc.caretaker.AdditionalServicesActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.models.ServiceModel;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Admin on 2/23/2016.
@@ -99,6 +103,7 @@ public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
 
         final ServiceModel serviceModel = (ServiceModel) getChild(groupPosition, childPosition);
 
+
         final ViewHolder viewHolder;
         if (inflater == null) {
             inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -109,9 +114,19 @@ public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
             viewHolder.activityTitle = (TextView) convertView.findViewById(R.id.txtActivityTitle);
             viewHolder.activityDetails = (TextView) convertView.findViewById(R.id.txtActivityDetails);
             viewHolder.checkBoxService = (CheckBox) convertView.findViewById(R.id.checkBoxService);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        if(AdditionalServicesActivity.serviceIds.contains(serviceModel.getStrServiceId()))
+        {
+            viewHolder.checkBoxService.setChecked(true);
+            viewHolder.checkBoxService.setButtonDrawable(convertView.getResources().getDrawable(R.mipmap.tick));
+        } else {
+            viewHolder.checkBoxService.setChecked(false);
+            viewHolder.checkBoxService.setButtonDrawable(convertView.getResources().getDrawable(R.mipmap.tick_disable));
         }
 
         String strTemp = serviceModel.getStrServiceName();
