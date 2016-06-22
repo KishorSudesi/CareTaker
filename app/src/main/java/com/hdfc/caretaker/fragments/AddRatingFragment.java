@@ -114,8 +114,10 @@ public class AddRatingFragment extends Fragment {
                 } else {
 
                     if (TextUtils.isEmpty(editFeedBack.getText().toString())) {
+
                         b = false;
                         editFeedBack.setError(getString(R.string.error_field_required));
+
                     }
 
                     if (iRating == 0) {

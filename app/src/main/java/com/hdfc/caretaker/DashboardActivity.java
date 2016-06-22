@@ -75,6 +75,10 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     public static void goToDashboard() {
         //if (Config.intSelectedMenu != Config.intDashboardScreen) {
         Config.intSelectedMenu = Config.intDashboardScreen;
+        setMenu();
+
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior_active));
+        textViewSeniors.setTextColor(context.getResources().getColor(R.color.blue));
         DashboardFragment newFragment = DashboardFragment.newInstance();
         FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_dashboard, newFragment);
@@ -82,10 +86,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         transaction.commit();
         //}
 
-        setMenu();
 
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
-        textViewSeniors.setTextColor(context.getResources().getColor(R.color.blue));
     }
 
     private static void setMenu() {
@@ -131,7 +132,8 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         }
 
         setMenu();
-
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior_active));
+        textViewSeniors.setTextColor(context.getResources().getColor(R.color.blue));
         if (txtViewActivity != null) {
             txtViewActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -366,9 +368,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         progressDialog.show();*/
 
         setMenu();
-
-        buttonSeniors.setImageDrawable(getResources().getDrawable(R.mipmap.senior));
+        buttonSeniors.setImageDrawable(getResources().getDrawable(R.mipmap.senior_active));
         textViewSeniors.setTextColor(getResources().getColor(R.color.blue));
+
 
         loadingPanel.setVisibility(View.VISIBLE);
         Utils.iActivityCount = 0;

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_header_blue"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
 
@@ -25,7 +25,8 @@
             <RelativeLayout
                 android:id="@+id/toplayout"
                 android:layout_width="match_parent"
-                android:layout_height="92dp"
+                android:layout_height="120dip"
+                android:background="@drawable/header_background"
                 >
                 <ImageButton
                     android:id="@+id/buttonBack"

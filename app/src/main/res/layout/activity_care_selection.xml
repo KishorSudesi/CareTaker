@@ -13,7 +13,7 @@
         android:layout_alignParentTop="true"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        android:src="@drawable/app_header_blue" />
+        android:src="@drawable/header_background" />
 
     <RelativeLayout
         android:layout_width="match_parent"

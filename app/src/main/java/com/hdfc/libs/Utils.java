@@ -39,6 +39,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -120,7 +121,7 @@ public class Utils {
             new SimpleDateFormat("MMM yyyy", locale);
 
     public final static SimpleDateFormat writeFormat =
-            new SimpleDateFormat("kk:mm aa dd MMM yyyy", locale);
+            new SimpleDateFormat("kk:mm dd MMM yyyy", locale);
 
     public final static SimpleDateFormat writeFormatDateDB = new
             SimpleDateFormat("yyyy-MM-dd", locale);
@@ -680,7 +681,7 @@ public class Utils {
 
             Config.boolIsLoggedIn = false;
 
-           // Config.customerModel = null;
+            // Config.customerModel = null;
             Config.strUserName = "";
 
             Config.fileModels.clear();
@@ -792,7 +793,7 @@ public class Utils {
             if (i == 0)
                 view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            view.measure(desiredWidth, View.MeasureSpec.EXACTLY);
             totalHeight += view.getMeasuredHeight();
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
@@ -1026,7 +1027,6 @@ public class Utils {
             mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }*/
-
     public boolean validCellPhone(String number) {
         //return android.util.Patterns.PHONE.matcher(number).matches();
 
@@ -1700,14 +1700,14 @@ public class Utils {
         return count;
     }
 
-    public String formatDate(String strDate){
+    public String formatDate(String strDate) {
 
-        String strDisplayDate="06-03-2016 20:55:00";
+        String strDisplayDate = "06-03-2016 20:55:00";
 
-        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+        if (strDate != null && !strDate.equalsIgnoreCase("")) {
             Date date = convertStringToDate(strDate);
 
-            if(date!=null)
+            if (date != null)
                 strDisplayDate = writeFormat.format(date);
         }
 
@@ -1732,81 +1732,81 @@ public class Utils {
 
             storageService.findDocsByKeyValue(Config.collectionCustomer, "customer_email",
                     Config.strUserName, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                    @Override
-                    public void onDocumentInserted(Storage response) {
-                    }
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                        }
 
-                    @Override
-                    public void onUpdateDocSuccess(Storage response) {
-                    }
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
 
-                    @Override
-                    public void onFindDocSuccess(Storage response) {
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
 
                         /*if (progressDialog.isShowing())
                             progressDialog.dismiss();*/
 //                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                        if (response != null) {
+                            if (response != null) {
 
-                            if (response.getJsonDocList().size() > 0) {
+                                if (response.getJsonDocList().size() > 0) {
 
-                                Storage.JSONDocument jsonDocument = response.getJsonDocList().
-                                        get(0);
+                                    Storage.JSONDocument jsonDocument = response.getJsonDocList().
+                                            get(0);
 
-                                String strDocument = jsonDocument.getJsonDoc();
+                                    String strDocument = jsonDocument.getJsonDoc();
 
-                                try {
-                                    //Config.jsonCustomer = new JSONObject(strDocument);
-                                    createCustomerModel(jsonDocument.getDocId(), strDocument);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                    try {
+                                        //Config.jsonCustomer = new JSONObject(strDocument);
+                                        createCustomerModel(jsonDocument.getDocId(), strDocument);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    if (iFlag == 1)
+                                        goToDashboard();
+
+
+                                } else {
+                                    toast(2, 2, _ctxt.getString(R.string.error));
                                 }
-
-                                if (iFlag == 1)
-                                    goToDashboard();
-
-
                             } else {
-                                toast(2, 2, _ctxt.getString(R.string.error));
+                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
-                        } else {
-                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
                         }
-                    }
 
-                    @Override
-                    public void onInsertionFailed(App42Exception ex) {
-                    }
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                        }
 
-                    @Override
-                    public void onFindDocFailed(App42Exception ex) {
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
                         /*if (progressDialog.isShowing())
                             progressDialog.dismiss();*/
-                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                        try {
-                            JSONObject jsonObject = new JSONObject(ex.getMessage());
-                            JSONObject jsonObjectError =
-                                    jsonObject.getJSONObject("app42Fault");
+                            try {
+                                JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                JSONObject jsonObjectError =
+                                        jsonObject.getJSONObject("app42Fault");
 
-                            int appErrorCode = jsonObjectError.getInt("appErrorCode");
+                                int appErrorCode = jsonObjectError.getInt("appErrorCode");
 
-                            String strMess = jsonObjectError.getString("details");
+                                String strMess = jsonObjectError.getString("details");
 
-                            if (appErrorCode == 2601)
-                                toast(2, 2, _ctxt.getString(R.string.invalid_credentials));
-                            else
-                                toast(2, 2, strMess);
+                                if (appErrorCode == 2601)
+                                    toast(2, 2, _ctxt.getString(R.string.invalid_credentials));
+                                else
+                                    toast(2, 2, strMess);
 
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onUpdateDocFailed(App42Exception ex) {
-                    }
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
                     });
         } else {
             /*if (progressDialog.isShowing())
@@ -1819,34 +1819,34 @@ public class Utils {
     public void createCustomerModel(String strDocumentId, String strDocument) {
         try {
             JSONObject jsonObject = new JSONObject(strDocument);
-            System.out.println("1st Part of obj : "+jsonObject.toString());
+            System.out.println("1st Part of obj : " + jsonObject.toString());
             //   if (jsonObject.has("customer_name")) {
 
-                System.out.println("Police : "+jsonObject.getString("customer_name"));
-                Config.customerModel = new CustomerModel(
-                        jsonObject.getString("customer_name"),
-                        jsonObject.getString("paytm_account"),
-                        jsonObject.getString("customer_profile_url"),
-                        jsonObject.getString("customer_address"),
-                        jsonObject.getString("customer_contact_no"),
-                        jsonObject.getString("customer_email"),
-                        strDocumentId, "");
+            System.out.println("Police : " + jsonObject.getString("customer_name"));
+            Config.customerModel = new CustomerModel(
+                    jsonObject.getString("customer_name"),
+                    jsonObject.getString("paytm_account"),
+                    jsonObject.getString("customer_profile_url"),
+                    jsonObject.getString("customer_address"),
+                    jsonObject.getString("customer_contact_no"),
+                    jsonObject.getString("customer_email"),
+                    strDocumentId, "");
 
             //System.out.println("2nd Part of obj : "+jsonObject.toString());
-                Config.customerModel.setStrDob(jsonObject.getString("customer_dob"));
-                Config.customerModel.setStrCountryCode(jsonObject.getString("customer_country"));
-                Config.customerModel.setStrCountryIsdCode(jsonObject.getString("customer_country_code"));
-                Config.customerModel.setStrCountryAreaCode(jsonObject.getString("customer_area_code"));
-                Config.customerModel.setStrCity(jsonObject.getString("customer_city"));
-                Config.customerModel.setStrState(jsonObject.getString("customer_state"));
+            Config.customerModel.setStrDob(jsonObject.getString("customer_dob"));
+            Config.customerModel.setStrCountryCode(jsonObject.getString("customer_country"));
+            Config.customerModel.setStrCountryIsdCode(jsonObject.getString("customer_country_code"));
+            Config.customerModel.setStrCountryAreaCode(jsonObject.getString("customer_area_code"));
+            Config.customerModel.setStrCity(jsonObject.getString("customer_city"));
+            Config.customerModel.setStrState(jsonObject.getString("customer_state"));
 
                /* Config.customerModels.add(Config.customerModel);
 
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);*/
 
-                Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
-       //     }
+            Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
+            //     }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1862,7 +1862,7 @@ public class Utils {
             serviceModel.setiServiceNo(jsonObject.getInt("service_no"));
             serviceModel.setStrCategoryName(jsonObject.getString("category_name"));
             serviceModel.setiUnit(jsonObject.getInt("unit"));
-          //  serviceModel.setStrServiceType(jsonObject.getString("service_type"));
+            //  serviceModel.setStrServiceType(jsonObject.getString("service_type"));
             serviceModel.setiUnitValue(jsonObject.getInt("unit_value"));
 
             if (jsonObject.has("milestones")) {
@@ -1881,7 +1881,7 @@ public class Utils {
                     milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
                     milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
                     milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
-                   // milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                    // milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
 
                     //
 
@@ -2180,7 +2180,7 @@ public class Utils {
 
                 if (jsonObjectActivity.has("activity_done_date"))
                     activityModel.setStrActivityDoneDate(jsonObjectActivity.
-                        getString("activity_done_date"));
+                            getString("activity_done_date"));
 
                 activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
 
@@ -2215,6 +2215,10 @@ public class Utils {
                                     jsonObjectFeedback.getString("feedback_by_type"));
 
                             feedBackModels.add(feedBackModel);
+
+                            if (feedBackModel.getStrFeedBackByType().equalsIgnoreCase("customer") && feedBackModel.getStrFeedBackBy().equalsIgnoreCase(activityModel.getStrustomerID())) {
+                                activityModel.setRatingAddedByCutsm(true);
+                            }
                         }
                     }
                     activityModel.setFeedBackModels(feedBackModels);
@@ -2512,7 +2516,7 @@ public class Utils {
                                     }
 
                                     //if (iFlag == 1)
-                                        fetchLatestActivities(progressDialog, iFlag);
+                                    fetchLatestActivities(progressDialog, iFlag);
 
                                 } else {
                                     /*if (progressDialog.isShowing())
@@ -2656,7 +2660,7 @@ public class Utils {
                                         Utils.log(e.getMessage(), " 4 ");
 
                                         //if (appErrorCode == 2608) {
-                                            fetchLatestActivitiesUpcoming(progressDialog, iFlag);
+                                        fetchLatestActivitiesUpcoming(progressDialog, iFlag);
                                         //}
 
                                     } else {
@@ -3097,7 +3101,6 @@ public class Utils {
             //
 
 
-
             String strToDate = getMonthLastDate(strMonthDate);
 
             log(strToDate, " EDATE ");
@@ -3208,6 +3211,59 @@ public class Utils {
         }
     }
     //Application Specig=fic End
+
+    public void setListViewHeight(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
+    /* method to set expandable lsit view's height based on children when any group is expanded */
+    public void setListViewHeight(ExpandableListView listView,
+                                  int group) {
+        ExpandableListAdapter listAdapter = listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.AT_MOST);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += groupItem.getMeasuredHeight();
+
+            if (((listView.isGroupExpanded(i)) && (i != group))
+                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                    View listItem = listAdapter.getChildView(i, j, false, null,
+                            listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                    totalHeight += listItem.getMeasuredHeight();
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+
+    }
+
+    /* method to set expandable lsit view's height based on children */
 
     public class ThreadHandler extends Handler {
         @Override

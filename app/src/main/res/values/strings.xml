@@ -103,7 +103,7 @@
     <string name="space">&#160;</string>
     <string name="add_message">Add a Message</string>
     <string name="will_assist">&#160;will Assist in</string>
-    <string name="assisted_in">&#160;Assisted In&#160;</string>
+    <string name="assisted_by">&#160;Assisted By&#160;</string>
     <string name="years">&#160;Yrs</string>
     <string name="select_date">Select a Date</string>
     <string name="no_ratings">No Ratings</string>
@@ -124,6 +124,8 @@
     <string name="rating_add">Add a Rating</string>
     <string name="proceed_dependent">Please continue to add Dependents</string>
     <string name="proceedsubmit">Cannot go Back. Please Complete Registration</string>
+    <string name="validation_feedback">Please provide feedback.</string>
+    <string name="validation_rating">Rating Already Added.</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
@@ -175,7 +177,7 @@
     <!--Dashboard Menu Strings-->
     <string name="menu_activities">Activities</string>
     <string name="menu_reports">Reports</string>
-    <string name="menu_seniors">Seniors</string>
+    <string name="menu_seniors">Care Recipients</string>
     <string name="menu_notification">Notifications</string>
     <string name="menu_account">My Account</string>
 

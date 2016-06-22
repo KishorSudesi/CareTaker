@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -75,6 +76,9 @@ public class CompletedActivity extends AppCompatActivity {
     private boolean checked = false;
     private List<String> listDataHeader = new ArrayList<>();
     private HashMap<String, List<FieldModel>> listDataChild = new HashMap<>();
+    private int[] locationOnScreen = new int[2];
+    private ScrollView sv;
+    private TextView tvTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,18 +121,19 @@ public class CompletedActivity extends AppCompatActivity {
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }*/
-
+            TextView txtAdditionalServices = (TextView) findViewById(R.id.txtAdditionalServices);
             TextView txtViewMSG = (TextView) findViewById(R.id.textViewMSG);
             TextView txtViewDate = (TextView) findViewById(R.id.textViewDate);
             TextView txtViewHead1 = (TextView) findViewById(R.id.textViewHead1);
             TextView txtViewHead2 = (TextView) findViewById(R.id.textViewHead2);
             imageViewCarla = (ImageView) findViewById(R.id.imageViewCarla);
             loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
+            tvTasks = (TextView) findViewById(R.id.tvTasks);
 
             final LinearLayout linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
             final TextView textViewAddRating = (TextView) findViewById(R.id.textViewAddRating);
 
-            final ScrollView sv = (ScrollView) findViewById(R.id.scrollView);
+            sv = (ScrollView) findViewById(R.id.scrollView);
 
             if (textViewAddRating != null) {
                 textViewAddRating.setOnClickListener(new View.OnClickListener() {
@@ -145,35 +150,42 @@ public class CompletedActivity extends AppCompatActivity {
                       /*  Animation animation   =    AnimationUtils.loadAnimation(context, R.anim.float_anim);
                         animation.setDuration(500);*/
 
-                        if (linearLayoutRatingAdd != null) {
-                            //linearLayoutRatingAdd.startAnimation(ta);
+                        // in future need to add a check based on customer id and freedbacktype=customer
+                        if (activityModel.getFeedBackModels() != null && activityModel.getFeedBackModels().size() > 0 && activityModel.isRatingAddedByCutsm()) {
+                            utils.toast(2, 2, getString(R.string.validation_rating));
+                        } else {
 
-                            //linearLayoutRatingAdd.startAnimation(animation);
+                            if (linearLayoutRatingAdd != null) {
+                                //linearLayoutRatingAdd.startAnimation(ta);
+
+                                //linearLayoutRatingAdd.startAnimation(animation);
 
 
-                            if (linearLayoutRatingAdd.getVisibility() == View.GONE) {
+                                if (linearLayoutRatingAdd.getVisibility() == View.GONE) {
 
-                                if (sv != null) {
-                                    sv.scrollTo(0, sv.getScrollY() + 50);
-                                    //linearLayoutRatingAdd.startAnimation(ta);
+                                    if (sv != null) {
+                                        sv.scrollTo(0, sv.getScrollY() + 50);
+                                        //linearLayoutRatingAdd.startAnimation(ta);
+                                    }
+
+                                    linearLayoutRatingAdd.setVisibility(View.VISIBLE);
+                                    textViewAddRating.setTextAppearance(context, -1);
+                                    textViewAddRating.setTextAppearance(context, R.style.AddRatingStyleMedium);
+
+
+                                } else {
+                                    if (sv != null) {
+                                        sv.scrollTo(0, sv.getScrollY() - 50);
+                                        //linearLayoutRatingAdd.startAnimation(ta);
+                                    }
+
+                                    linearLayoutRatingAdd.setVisibility(View.GONE);
+                                    textViewAddRating.setTextAppearance(context, -1);
+                                    textViewAddRating.setTextAppearance(context, R.style.AddRatingStyleLarge);
                                 }
-
-                                linearLayoutRatingAdd.setVisibility(View.VISIBLE);
-                                textViewAddRating.setTextAppearance(context, -1);
-                                textViewAddRating.setTextAppearance(context, R.style.AddRatingStyleMedium);
-
-
-                            } else {
-                                if (sv != null) {
-                                    sv.scrollTo(0, sv.getScrollY() - 50);
-                                    //linearLayoutRatingAdd.startAnimation(ta);
-                                }
-
-                                linearLayoutRatingAdd.setVisibility(View.GONE);
-                                textViewAddRating.setTextAppearance(context, -1);
-                                textViewAddRating.setTextAppearance(context, R.style.AddRatingStyleLarge);
                             }
                         }
+
                     }
                 });
             }
@@ -183,17 +195,23 @@ public class CompletedActivity extends AppCompatActivity {
             if (activityModel != null) {
 
                 int iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
-
+                String strDate = "\n" + utils.formatDate(activityModel.getStrActivityDate());
+                if (txtAdditionalServices != null) {
+                    txtAdditionalServices.setText(activityModel.getStrActivityName() + strDate);
+                }
                 if (txtViewHead2 != null) {
                     txtViewHead2.setText(activityModel.getStrActivityName());
+                    txtViewHead2.setVisibility(View.GONE);
                 }
-                String strHead = Config.providerModels.get(iPosition).getStrName() + getResources().getString(R.string.assisted_in);
+                String strHead = getResources().getString(R.string.assisted_by) + Config.providerModels.get(iPosition).getStrName();
                 if (txtViewHead1 != null) {
                     txtViewHead1.setText(strHead);
                 }
-                String strDate = getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
+
                 if (txtViewDate != null) {
                     txtViewDate.setText(strDate);
+                    txtViewDate.setVisibility(View.GONE);
+
                 }
                 if (txtViewMSG != null) {
                     txtViewMSG.setText(activityModel.getStrActivityDesc());
@@ -210,6 +228,25 @@ public class CompletedActivity extends AppCompatActivity {
 
                 expandableListView.setAdapter(mileStoneAdapter);
 
+                // Utils.setListViewHeightBasedOnChildren(expandableListView);
+                mileStoneAdapter.notifyDataSetChanged();
+                tvTasks.getLocationOnScreen(locationOnScreen);
+                expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                    @Override
+                    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                        // utils.setListViewHeight(expandableListView, groupPosition);
+                        return false;
+                    }
+                });
+                expandableListView.setOnTouchListener(new View.OnTouchListener() {
+                    // Setting on Touch Listener for handling the touch inside ScrollView
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        // Disallow the touch request for parent scroll on touch of child view
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        return false;
+                    }
+                });
                 _thumbnails = (LinearLayout) findViewById(R.id.thumbnails);
                 //imageGallery = (ImageView) findViewById(R.id.imageViewGallery);
 
@@ -245,7 +282,6 @@ public class CompletedActivity extends AppCompatActivity {
                                 utils.toast(2, 2, getString(R.string.activity_not_completed));
 
                             } else {
-
                                 if (iRating == 0) {
                                     b = false;
                                     utils.toast(2, 2, getString(R.string.select_rating));
@@ -257,6 +293,7 @@ public class CompletedActivity extends AppCompatActivity {
                                     if (TextUtils.isEmpty(editFeedBack.getText().toString())) {
                                         b = false;
                                         editFeedBack.setError(getString(R.string.error_field_required));
+                                        utils.toast(2, 2, getString(R.string.validation_feedback));
                                     }
                                 }
                             }
@@ -298,6 +335,7 @@ public class CompletedActivity extends AppCompatActivity {
                 threadHandler = new ThreadHandler();
                 Thread backgroundThread = new BackgroundThread();
                 backgroundThread.start();
+
             }
 
         } catch (Exception e) {
@@ -305,6 +343,7 @@ public class CompletedActivity extends AppCompatActivity {
         }
 
     }
+
 
     private void uploadCheckBox() {
 
@@ -636,6 +675,8 @@ public class CompletedActivity extends AppCompatActivity {
                             activityModel.getMilestoneModels().get(i).getFieldModels()
                     );
                 }
+                 /* method to set expandable lsit view's height based on children */
+
                 //mileStoneAdapter.notifyDataSetChanged();
             }
         } catch (Exception e) {
@@ -828,6 +869,10 @@ public class CompletedActivity extends AppCompatActivity {
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
+            tvTasks.getLocationOnScreen(locationOnScreen);
+            sv.smoothScrollTo(locationOnScreen[0], locationOnScreen[1] - (locationOnScreen[1] / 2));
+
+
         }
     }
 }

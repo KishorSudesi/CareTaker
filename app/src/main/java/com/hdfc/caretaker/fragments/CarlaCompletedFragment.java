@@ -73,7 +73,10 @@ public class CarlaCompletedFragment extends Fragment {
             iPosition = Config.strProviderIds.indexOf(ActivityCompletedFragment._activityModel.getStrProviderID());
 
             txtViewHead2.setText(ActivityCompletedFragment._activityModel.getStrActivityName());
-            String strHead = Config.providerModels.get(iPosition).getStrName() + getActivity().getResources().getString(R.string.assisted_in);
+            iPosition = Config.strProviderIds.indexOf(ActivityCompletedFragment._activityModel.getStrProviderID());
+
+            txtViewHead2.setText(ActivityCompletedFragment._activityModel.getStrActivityName());
+            String strHead = getActivity().getResources().getString(R.string.assisted_by) + Config.providerModels.get(iPosition).getStrName();
             txtViewHead1.setText(strHead);
             String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(ActivityCompletedFragment._activityModel.getStrActivityDate());
             txtViewDate.setText(strDate);

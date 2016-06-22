@@ -50,7 +50,12 @@ public class MileStoneFragment extends Fragment {
         mileStoneAdapter = new MileStoneAdapter(getActivity(), listDataChild, listDataHeader);
 
         expandableListView.setAdapter(mileStoneAdapter);
-
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                return false;
+            }
+        });
         refreshAdapter();
 
         return view;
@@ -76,5 +81,6 @@ public class MileStoneFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
 
 }

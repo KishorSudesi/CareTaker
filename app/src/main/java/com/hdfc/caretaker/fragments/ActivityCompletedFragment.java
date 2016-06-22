@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.FeedBackModel;
 
@@ -23,6 +24,7 @@ public class ActivityCompletedFragment extends Fragment {
     public static ActivityModel _activityModel;
     public static ArrayList<FeedBackModel> feedBackModels;
     public static String strActivityId;
+    private Utils utils;
 
     public static ActivityCompletedFragment newInstance(ActivityModel activityModel) {
         ActivityCompletedFragment fragment = new ActivityCompletedFragment();
@@ -53,13 +55,13 @@ public class ActivityCompletedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_activity_completed, container, false);
         ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
         TextView txtViewHeader = (TextView) view.findViewById(R.id.header);
-
+        utils = new Utils(getActivity());
         _activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
 
         strActivityId = _activityModel.getStrActivityID();
 
         if (_activityModel.getStrActivityStatus().equalsIgnoreCase("completed"))
-            txtViewHeader.setText(getActivity().getResources().getString(R.string.completed_activity));
+            txtViewHeader.setText(getString(R.string.completed_activity));
 
         if (!_activityModel.getStrActivityStatus().equalsIgnoreCase("completed"))
             txtViewHeader.setText(getActivity().getResources().getString(R.string.process_activity));
@@ -179,14 +181,19 @@ public class ActivityCompletedFragment extends Fragment {
     }
 
     public void goToAddRating() {
-        setMenuInitView();
-        imageButtonAdd.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        AddRatingFragment newFragment = AddRatingFragment.newInstance();
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_completed_activity, newFragment);
-        transaction.addToBackStack(null);
+        if (feedBackModels != null && feedBackModels.size() > 0) {
+            utils.toast(1, 1, getString(R.string.validation_rating));
+        } else {
+            setMenuInitView();
+            imageButtonAdd.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            AddRatingFragment newFragment = AddRatingFragment.newInstance();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_completed_activity, newFragment);
+            transaction.addToBackStack(null);
 
-        transaction.commit();
+            transaction.commit();
+        }
+
     }
 
     public void goToViewRating() {

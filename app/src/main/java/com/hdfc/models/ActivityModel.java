@@ -31,6 +31,7 @@ public class ActivityModel implements Serializable {
 
 
     private boolean bActivityOverdue;
+    private boolean isRatingAddedByCutsm;
 
     private ArrayList<ImageModel> imageModels = new ArrayList<>();
     private ArrayList<VideoModel> videoModels = new ArrayList<>();
@@ -48,7 +49,7 @@ public class ActivityModel implements Serializable {
                          String strActivityDoneDate, String strActivityProviderStatus,
                          boolean bActivityOverdue, String[] strFeatures, String[] strFeaturesDone,
                          ArrayList<ImageModel> imageModels, ArrayList<VideoModel> videoModels,
-                         ArrayList<FeedBackModel> feedBackModels) {
+                         ArrayList<FeedBackModel> feedBackModels, boolean isRatingAddedByCutsm) {
         this.strActivityID = strActivityID;
         this.strustomerID = strustomerID;
         this.strDependentID = strDependentID;
@@ -65,6 +66,7 @@ public class ActivityModel implements Serializable {
         this.imageModels = imageModels;
         this.videoModels = videoModels;
         this.feedBackModels = feedBackModels;
+        this.isRatingAddedByCutsm = isRatingAddedByCutsm;
     }
 
     @Override
@@ -88,6 +90,14 @@ public class ActivityModel implements Serializable {
 
     public void setMilestoneModels(ArrayList<MilestoneModel> milestoneModels) {
         this.milestoneModels = milestoneModels;
+    }
+
+    public boolean isRatingAddedByCutsm() {
+        return isRatingAddedByCutsm;
+    }
+
+    public void setRatingAddedByCutsm(boolean ratingAddedByCutsm) {
+        isRatingAddedByCutsm = ratingAddedByCutsm;
     }
 
     public void setMilestoneModel(MilestoneModel milestoneModel) {
