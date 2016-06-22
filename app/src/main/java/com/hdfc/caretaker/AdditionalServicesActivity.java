@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -35,7 +36,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AdditionalServicesActivity extends AppCompatActivity {
 
@@ -54,6 +57,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     private List<String> listDataHeader = new ArrayList<>();
     private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
+    public static ArrayList<String> serviceIds= new ArrayList<String>();
 
     private ExpandableListView listView;
 
@@ -78,6 +82,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
         selectedServiceModels.clear();
         selectedServiceHistoryModels.clear();
+        serviceIds.clear();
 
         isUpdating = false;
         buttonContinue.setTextColor(getResources().getColor(R.color.colorBlackDark));
@@ -177,11 +182,13 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
 
                         if (checkBox.isChecked()) {
+                            serviceIds.remove(serviceModel.getStrServiceId());
                             selectedServiceModels.remove(serviceModel);
                             checkBox.setChecked(false);
                             checkBox.setButtonDrawable(getResources().
                                     getDrawable(R.mipmap.tick_disable));
                         } else {
+                            serviceIds.add(serviceModel.getStrServiceId());
                             selectedServiceModels.add(serviceModel);
                             checkBox.setChecked(true);
                             checkBox.setButtonDrawable(getResources().
