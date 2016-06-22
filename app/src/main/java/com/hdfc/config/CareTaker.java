@@ -3,6 +3,8 @@ package com.hdfc.config;
 import android.app.Application;
 import android.content.res.Configuration;
 
+import com.hdfc.dbconfig.DbCon;
+
 /**
  * Created by balamurugan@adstringo.in on 02-01-2016.
  */
@@ -11,6 +13,8 @@ public class CareTaker extends Application {
     //private ObjectGraph objectGraph;
 
     //public static DbCon dbCon = null;
+
+    public static DbCon dbCon = null;
 
 
     @Override

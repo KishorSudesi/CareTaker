@@ -138,3 +138,8 @@
  -keepnames class * implements android.os.Parcelable {
      public static final ** CREATOR;
  }
+
+  #sql cipher
+  -dontwarn net.sqlcipher.**
+  -keep class net.sqlcipher.** { *; }
+  -keep interface net.sqlcipher.** { *; }

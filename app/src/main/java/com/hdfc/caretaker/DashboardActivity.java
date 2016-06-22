@@ -21,6 +21,7 @@ import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.shephertz.app42.paas.sdk.android.App42API;
@@ -390,6 +391,11 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                ///
+                if (CareTaker.dbCon != null) {
+                    CareTaker.dbCon.close();
+                }
+                //
                 Utils.logout();
             }
         });
