@@ -138,7 +138,7 @@ public class Utils {
     private final static SimpleDateFormat queryFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
 
-    public static Uri customerImageUri;
+    public static Uri customerImageUri=null;
     public static int iProviderCount = 0;
     public static Bitmap noBitmap;
     public static int iActivityCount = 0;

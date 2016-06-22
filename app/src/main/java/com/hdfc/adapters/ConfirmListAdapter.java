@@ -114,6 +114,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("editflag",true);
+                bundle.putInt("childposition",childPosition);
                 Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
                 intent.putExtras(bundle);
                 _context.startActivity(intent);

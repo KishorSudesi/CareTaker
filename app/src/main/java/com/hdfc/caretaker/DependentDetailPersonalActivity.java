@@ -74,6 +74,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private Utils utils;
     private Spinner spinnerRelation;
     private String strRelation;
+    public static int mPosition =0;
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -203,24 +204,34 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
         utils.setStatusBarColor("#cccccc");
 
-        Bundle getBundle  = getIntent().getExtras();
-        if(getBundle!=null)
-            editflag = getBundle.getBoolean("editflag");
+        try {
+            Bundle getBundle = getIntent().getExtras();
+            if (getBundle != null) {
+                editflag = getBundle.getBoolean("editflag");
+                mPosition = getBundle.getInt("childposition");
+            }
 
-        if(editflag){
-            editDependantEmail.setEnabled(false);
-            editDependantEmail.setFocusable(false);
-            editDependantEmail.setFocusableInTouchMode(false);
-            editDependantEmail.setKeyListener(null);
-            editDependantEmail.setClickable(false);
+            if (editflag) {
 
-            editContactNo.setEnabled(false);
-            editContactNo.setFocusableInTouchMode(false);
-            editContactNo.setFocusable(false);
-            editContactNo.setKeyListener(null);
-            editContactNo.setClickable(false);
+                //if (Config.dependentModel != null) {
+                    dependentModel = SignupActivity.dependentModels.get(mPosition+1);
+               // }
+
+                editDependantEmail.setEnabled(false);
+                editDependantEmail.setFocusable(false);
+                editDependantEmail.setFocusableInTouchMode(false);
+                editDependantEmail.setKeyListener(null);
+                editDependantEmail.setClickable(false);
+
+                editContactNo.setEnabled(false);
+                editContactNo.setFocusableInTouchMode(false);
+                editContactNo.setFocusable(false);
+                editContactNo.setKeyListener(null);
+                editContactNo.setClickable(false);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
     }
 
     @Override
@@ -232,36 +243,22 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     }
 
     public void backToSelection() {
-        final AlertDialog.Builder alertbox =
-                new AlertDialog.Builder(DependentDetailPersonalActivity.this);
-        alertbox.setTitle(getString(R.string.app_code_name));
-        alertbox.setMessage(getString(R.string.delete_info));
-        alertbox.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
+        try {
+            Intent selection = new Intent(DependentDetailPersonalActivity.this,
+                    SignupActivity.class);
+            selection.putExtra("LIST_DEPENDANT", true);
+            Config.dependentModel = null;
+            dependentModel = null;
+            //SignupActivity.dependentNames.clear();
 
-                try {
-                    Intent selection = new Intent(DependentDetailPersonalActivity.this,
-                            SignupActivity.class);
-                    selection.putExtra("LIST_DEPENDANT", true);
-                    Config.dependentModel = null;
-                    dependentModel = null;
-                    //SignupActivity.dependentNames.clear();
-
-                    arg0.dismiss();
-                    startActivity(selection);
-                    finish();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        alertbox.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                arg0.dismiss();
-            }
-        });
-        alertbox.show();
+            startActivity(selection);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     private void validateDependant() {
         editName.setError(null);
@@ -615,9 +612,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
         //Utils.log(strImageName, " strImageName 1 ");
 
-        if (Config.dependentModel != null) {
-            dependentModel = Config.dependentModel;
-        }
+
 
         if (!Config.customerModel.getStrName().equalsIgnoreCase("")
                 && dependentModel != null) {

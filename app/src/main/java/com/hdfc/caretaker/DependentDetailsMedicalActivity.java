@@ -21,6 +21,7 @@ import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -48,6 +49,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private Button buttonContinue;
     private int iDependentCount = 0;
+    private static int dependentFlag = 0;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -248,6 +250,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
     public void skip() {
 
+
         if (DependentDetailPersonalActivity.dependentModel != null) {
 
             progressDialog.setMessage(getString(R.string.loading));
@@ -263,15 +266,28 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             //createJson();
 
             if(DependentDetailPersonalActivity.editflag) {
-                deleteImage();
+
+                if (DependentDetailPersonalActivity.dependentModel.getStrImagePath() != null &&
+                        !DependentDetailPersonalActivity.dependentModel.getStrImagePath().equalsIgnoreCase("")
+                        &&!SignupActivity.dependentModels.get(DependentDetailPersonalActivity.mPosition+1).getStrImagePath().equalsIgnoreCase(DependentDetailPersonalActivity.dependentModel.getStrImagePath())) {
+
+                    if(editregisterflag==0)
+                    deleteImage();
+
+                    if (editregisterflag == 1)
+                        edituploadDependentImages();
+
+                    Utils.log("w ", " 1 ");
+                }
+
 
                 //
-                if (editregisterflag == 0)
-                    edituploadDependentImages();
 
-                if (editregisterflag == 1)
-                    updateDependentData();
 
+                if (editregisterflag == 2)
+                    //if(DependentDetailPersonalActivity.dependentModel!=null) {
+                        updateDependentData();
+                    //}
 
             }else {
                 if (idregisterflag == 0)
@@ -358,14 +374,23 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);*/
 
             if(DependentDetailPersonalActivity.editflag) {
-                deleteImage();
 
-                if (editregisterflag == 0)
-                    edituploadDependentImages();
+                if (DependentDetailPersonalActivity.dependentModel.getStrImagePath() != null &&
+                        !DependentDetailPersonalActivity.dependentModel.getStrImagePath().equalsIgnoreCase("")
+                        &&!SignupActivity.dependentModels.get(0).getStrImagePath().equalsIgnoreCase(DependentDetailPersonalActivity.dependentModel.getStrImagePath())) {
+
+                    if(editregisterflag==0)
+                    deleteImage();
+
+                    if (editregisterflag == 0)
+                        edituploadDependentImages();
+                }
+
 
                 if (editregisterflag == 1)
-                    updateDependentData();
-
+                 //   if(DependentDetailPersonalActivity.dependentModel!=null) {
+                        updateDependentData();
+                   // }
 
 
             }else {
@@ -468,7 +493,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                                     DependentDetailPersonalActivity.dependentModel.setStrImageUrl(strImagePath);
                                                     //uploadingCount++;
 
-                                                    editregisterflag=1;
+                                                    editregisterflag=2;
                                                     updateDependentData();
                                                     /*  if (uploadingCount == uploadSize) {
                                                     uploadImage();*/
@@ -493,6 +518,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                                    /* if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
                                                     //uploadingCount++;
+                                                    editregisterflag=2;
                                                     updateDependentData();
 
                                                 }else {
@@ -719,9 +745,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                         }
                                         SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
-
                                         if (SignupActivity.dependentModels.size() == 2) {
-                                            ConfirmFragment.confirmRegister();
+                                            confirmRegister();
                                         } else {
                                             //createDependentUser();
 
@@ -800,6 +825,82 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
             utils.toast(2, 2, getString(R.string.error));
+        }
+    }
+
+    private void confirmRegister() {
+
+        try {
+
+
+            if (utils.isConnectingToInternet()) {
+
+                StorageService storageService = new StorageService(DependentDetailsMedicalActivity.this);
+
+                JSONObject jsonToUpdate = new JSONObject();
+
+                jsonToUpdate.put("customer_register", true);
+
+                storageService.updateDocs(jsonToUpdate,
+                        Config.customerModel.getStrCustomerID(),
+                        Config.collectionCustomer, new App42CallBack() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                try {
+                                    if (o != null) {
+                                        Utils.log(o.toString(), "LOG");
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+
+
+                                        DependentDetailPersonalActivity.dependentModel = null;
+                                        Intent next = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
+
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+
+                                        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+
+                                        startActivity(next);
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+                                } catch (Exception e1) {
+                                    utils.toast(2, 2, getString(R.string.error));
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    e1.printStackTrace();
+                                }
+
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+
+                                try {
+
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+
+                                    if (e != null) {
+                                        Utils.log(e.toString(),"TAG");
+                                        utils.toast(2, 2, getString(R.string.error));
+                                    }else {
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+
+
+                            }
+                        });
+
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -918,6 +1019,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                                 if(response!=null){
 
+                                    editregisterflag=1;
                                     edituploadDependentImages();
                                 }else{
                                 if (progressDialog.isShowing())
@@ -935,6 +1037,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                     int appErrorCode = exception.getAppErrorCode();
                                     //1401
                                     if (appErrorCode == 2103 ) {
+                                        editregisterflag=1;
                                         edituploadDependentImages();
                                     } else {
                                     if (progressDialog.isShowing())
@@ -987,7 +1090,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                     //Config.clientModels.setCustomerModel(Config.customerModel);
 
 //                                        SignupActivity._mViewPager.setCurrentItem(1);
-                                    editregisterflag = 2;
+                                    editregisterflag=3;
                                     Intent next = new Intent(DependentDetailsMedicalActivity.this,SignupActivity.class);
                                     startActivity(next);
 
@@ -1008,7 +1111,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                         @Override
                         public void onException(Exception e) {
                             progressDialog.dismiss();
-                            editregisterflag = 2;
+                            editregisterflag=3;
                             Intent next = new Intent(DependentDetailsMedicalActivity.this,SignupActivity.class);
                             startActivity(next);
                         }
