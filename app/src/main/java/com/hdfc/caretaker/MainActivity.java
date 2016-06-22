@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.hdfc.config.CareTaker;
 import com.hdfc.dbconfig.DbCon;
-import com.hdfc.libs.CrashLogger;
 import com.hdfc.libs.Utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         Utils utils = new Utils(MainActivity.this);
         utils.setStatusBarColor("#2196f3");
 
-        CrashLogger.getInstance().init(MainActivity.this);
+        //CrashLogger.getInstance().init(MainActivity.this);
 
         CareTaker.dbCon = DbCon.getInstance(getApplicationContext());
 
