@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -228,17 +227,17 @@ public class CompletedActivity extends AppCompatActivity {
 
                 expandableListView.setAdapter(mileStoneAdapter);
 
-                // Utils.setListViewHeightBasedOnChildren(expandableListView);
+                //Utils.setListViewHeightBasedOnChildren(expandableListView);
                 mileStoneAdapter.notifyDataSetChanged();
                 tvTasks.getLocationOnScreen(locationOnScreen);
                 expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
                     @Override
                     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                        // utils.setListViewHeight(expandableListView, groupPosition);
+                        utils.setListViewHeight(expandableListView, groupPosition);
                         return false;
                     }
                 });
-                expandableListView.setOnTouchListener(new View.OnTouchListener() {
+                /*expandableListView.setOnTouchListener(new View.OnTouchListener() {
                     // Setting on Touch Listener for handling the touch inside ScrollView
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
@@ -246,7 +245,7 @@ public class CompletedActivity extends AppCompatActivity {
                         v.getParent().requestDisallowInterceptTouchEvent(true);
                         return false;
                     }
-                });
+                });*/
                 _thumbnails = (LinearLayout) findViewById(R.id.thumbnails);
                 //imageGallery = (ImageView) findViewById(R.id.imageViewGallery);
 

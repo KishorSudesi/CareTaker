@@ -61,8 +61,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public static Uri uri;
     public static DependentModel dependentModel = null;
     public static int iDate, iMonth, iYear;
-    public static Boolean editflag = false;
     public static String strContactNo, strAddress, strEmail, strDob, relation;
+    static Boolean editflag = false;
+    static int mPosition = -1;
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
@@ -74,8 +75,6 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private Utils utils;
     private Spinner spinnerRelation;
     private String strRelation;
-    public static int mPosition =0;
-
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -209,9 +208,13 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             if (getBundle != null) {
                 editflag = getBundle.getBoolean("editflag");
                 mPosition = getBundle.getInt("childposition");
+            } else {
+                editflag = false;
+                mPosition = -1;
+                dependentModel = null;
             }
 
-            if (editflag) {
+            if (editflag && mPosition > -1) {
 
                 //if (Config.dependentModel != null) {
                     dependentModel = SignupActivity.dependentModels.get(mPosition+1);

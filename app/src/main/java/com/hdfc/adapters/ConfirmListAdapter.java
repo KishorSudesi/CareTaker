@@ -109,7 +109,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 //
-                Config.dependentModel = (DependentModel) v.getTag();
+                ///Config.dependentModel = (DependentModel) v.getTag();
                 //Config.customerModel = null;
 
                 Bundle bundle = new Bundle();

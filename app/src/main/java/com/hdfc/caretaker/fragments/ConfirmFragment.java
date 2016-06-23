@@ -140,7 +140,7 @@ public class ConfirmFragment extends Fragment {
                     progressDialog.setCancelable(false);
                     progressDialog.show();
 
-                    confirmRegister();
+                    //confirmRegister();
                     callSuccess();
                 } else utils.toast(2, 2, getString(R.string.warning_internet));
             }
