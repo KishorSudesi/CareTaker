@@ -56,7 +56,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dependent_details_medical);
 
-        idregisterflag = 0;
         utils = new Utils(DependentDetailsMedicalActivity.this);
         utils.setStatusBarColor("#2196f3");
 
@@ -479,7 +478,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                             uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
                                     utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                                    dependentModel.getStrEmail(),
+                                    dependentModel.getStrContacts(),
                                     UploadFileType.IMAGE, new App42CallBack() {
 
                                         public void onSuccess(Object response) {
@@ -597,7 +596,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                             uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
                                     utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                                    dependentModel.getStrEmail(),
+                                    dependentModel.getStrContacts(),
                                     UploadFileType.IMAGE, new App42CallBack() {
 
                                         public void onSuccess(Object response) {

@@ -617,16 +617,16 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
 
 
-        if (!Config.customerModel.getStrName().equalsIgnoreCase("")
-                && dependentModel != null) {
-            //&& !strDependantName.equalsIgnoreCase("")
+            if (!Config.customerModel.getStrName().equalsIgnoreCase("")
+                    && dependentModel != null) {
+                //&& !strDependantName.equalsIgnoreCase("")
 
-            editName.setText(dependentModel.getStrName());
-            editContactNo.setText(dependentModel.getStrContacts());
-            editAddress.setText(dependentModel.getStrAddress());
+                editName.setText(dependentModel.getStrName());
+                editContactNo.setText(dependentModel.getStrContacts());
+                editAddress.setText(dependentModel.getStrAddress());
                 //editRelation.setText(dependentModel.getStrRelation());
-            editDependantEmail.setText(dependentModel.getStrEmail());
-            editTextDate.setText(dependentModel.getStrDob());
+                editDependantEmail.setText(dependentModel.getStrEmail());
+                editTextDate.setText(dependentModel.getStrDob());
 
                 /*drawable = Config.dependentModel.getStrImagePath();
                 int resID = getResources().getIdentifier(drawable, "drawable", getPackageName());
@@ -636,17 +636,18 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 imgButtonCamera.setImageDrawable(drawable);*/
 
                 //
-            spinnerRelation.setSelection(Config.strRelationsList.indexOf(dependentModel.getStrRelation()));
+                spinnerRelation.setSelection(Config.strRelationsList.indexOf(dependentModel.getStrRelation()));
                 //
 
-            //!strDependantName.equalsIgnoreCase("") &&
-            if (!isCamera) {
+                //!strDependantName.equalsIgnoreCase("") &&
+                if (!isCamera) {
                     strImageName = dependentModel.getStrImagePath();
                     backgroundThreadHandler = new BackgroundThreadHandler();
                     backgroundThreadCamera = new BackgroundThreadCamera();
                     backgroundThreadCamera.start();
                 } else isCamera = false;
             } else isCamera = false;
+
         //} else isCamera = false;
 
 
