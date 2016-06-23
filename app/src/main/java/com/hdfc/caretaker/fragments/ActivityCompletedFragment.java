@@ -186,12 +186,12 @@ public class ActivityCompletedFragment extends Fragment {
         } else {
             setMenuInitView();
             imageButtonAdd.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            AddRatingFragment newFragment = AddRatingFragment.newInstance();
+           /* AddRatingFragment newFragment = AddRatingFragment.newInstance();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_completed_activity, newFragment);
             transaction.addToBackStack(null);
 
-            transaction.commit();
+            transaction.commit();*/
         }
 
     }

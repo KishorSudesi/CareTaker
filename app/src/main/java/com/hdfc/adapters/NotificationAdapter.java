@@ -57,6 +57,8 @@ public class NotificationAdapter extends BaseAdapter {
 
         final ViewHolder viewHolder;
 
+        int mNotifyPosition;
+
         if (inflater == null)
             inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -79,6 +81,8 @@ public class NotificationAdapter extends BaseAdapter {
 
         if (adapterNotificationModels.size() > 0) {
 
+            mNotifyPosition = -1;
+
             NotificationModel notificationModel = adapterNotificationModels.get(position);
 
             String strId = notificationModel.getStrCreatedByID();
@@ -89,15 +93,19 @@ public class NotificationAdapter extends BaseAdapter {
 
             if (notificationModel.getStrCreatedByType().equalsIgnoreCase("provider")) {
                 if (Config.strProviderIds.contains(strId)) {
-                    strName = Config.providerModels.get(Config.strProviderIds.
-                            indexOf(strId)).getStrName();
+                    mNotifyPosition = Config.strProviderIds.indexOf(strId);
+
+                    if (mNotifyPosition > -1 && mNotifyPosition < Config.providerModels.size())
+                        strName = Config.providerModels.get(mNotifyPosition).getStrName();
                 }
             }
 
             if (notificationModel.getStrCreatedByType().equalsIgnoreCase("dependent")) {
                 if (Config.strDependentIds.contains(strId)) {
-                    strName = Config.dependentModels.get(Config.strDependentIds.
-                            indexOf(strId)).getStrName();
+                    mNotifyPosition = Config.strDependentIds.indexOf(strId);
+
+                    if (mNotifyPosition > -1 && mNotifyPosition < Config.dependentModels.size())
+                        strName = Config.dependentModels.get(mNotifyPosition).getStrName();
                 }
             }
 

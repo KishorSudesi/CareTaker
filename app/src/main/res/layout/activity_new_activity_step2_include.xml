@@ -107,8 +107,7 @@
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/add_new_activity"
             android:drawablePadding="20dp"
-            android:drawableRight="@drawable/activity_selected"
-            android:hint="@string/date_time"
+            android:hint="@string/select_date"
             android:inputType="datetime"
             android:paddingEnd="20dp"
             android:paddingLeft="20dp"
@@ -124,7 +123,7 @@
             android:layout_marginTop="20dp"
             android:layout_weight="0.48"
             android:drawableLeft="@drawable/notes_icon"
-            android:hint="@string/add_message"
+            android:hint="@string/select_date"
             android:padding="15dp" />
 
         <Button

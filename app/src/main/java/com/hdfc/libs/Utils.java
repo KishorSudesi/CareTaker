@@ -1398,9 +1398,9 @@ public class Utils {
             bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
 
             if (i == 0)
-                bt.setBackgroundResource(R.color.blue);
-            else
                 bt.setBackgroundResource(R.color.colorBlackDark);
+            else
+                bt.setBackgroundResource(R.color.blue);
 
 
             bt.setOnClickListener(new View.OnClickListener() {
@@ -1569,10 +1569,10 @@ public class Utils {
             Button tab = (Button) v.findViewById(i);
             tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             if (i == id) {
-                tab.setBackgroundResource(R.color.blue);
+                tab.setBackgroundResource(R.color.colorBlackDark);
                 //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             } else {
-                tab.setBackgroundResource(R.color.colorBlackDark);
+                tab.setBackgroundResource(R.color.blue);
                 //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             }
 
@@ -1751,6 +1751,8 @@ public class Utils {
 
                                 if (response.getJsonDocList().size() > 0) {
 
+                                    boolean mIsRegistered = true;
+
                                     Storage.JSONDocument jsonDocument = response.getJsonDocList().
                                             get(0);
 
@@ -1759,12 +1761,24 @@ public class Utils {
                                     try {
                                         //Config.jsonCustomer = new JSONObject(strDocument);
                                         createCustomerModel(jsonDocument.getDocId(), strDocument);
+
+                                        JSONObject jsonObject = new JSONObject(strDocument);
+
+                                        if (jsonObject.has("customer_register"))
+                                            mIsRegistered = jsonObject.getBoolean("customer_register");
+
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
 
-                                    if (iFlag == 1)
+                                    if (iFlag == 1) {
+
+                                        if (!mIsRegistered) {
+                                            //todo add logic for taking to dependent add screen
+                                        }
+
                                         goToDashboard();
+                                    }
 
 
                                 } else {
@@ -1819,7 +1833,7 @@ public class Utils {
     public void createCustomerModel(String strDocumentId, String strDocument) {
         try {
             JSONObject jsonObject = new JSONObject(strDocument);
-            System.out.println("1st Part of obj : " + jsonObject.toString());
+            //System.out.println("1st Part of obj : " + jsonObject.toString());
             //   if (jsonObject.has("customer_name")) {
 
             System.out.println("Police : " + jsonObject.getString("customer_name"));
@@ -2516,7 +2530,8 @@ public class Utils {
                                     }
 
                                     //if (iFlag == 1)
-                                    fetchLatestActivities(progressDialog, iFlag);
+                                    //fetchLatestActivities(progressDialog, iFlag);
+                                    fetchProviders(progressDialog, iFlag);
 
                                 } else {
                                     /*if (progressDialog.isShowing())
@@ -2549,7 +2564,8 @@ public class Utils {
 
                                 //toast(2, 2, strMess);
 
-                                fetchLatestActivities(progressDialog, iFlag);
+                                //fetchLatestActivities(progressDialog, iFlag);
+                                fetchProviders(progressDialog, iFlag);
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
@@ -2871,6 +2887,9 @@ public class Utils {
         progressDialog.setCancelable(false);
         progressDialog.show();
 */
+        if (Config.intSelectedMenu == Config.intNotificationScreen)
+            refreshNotifications();
+
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
@@ -2906,6 +2925,11 @@ public class Utils {
         progressDialog.setCancelable(false);
         progressDialog.show();*/
         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
+        if (Config.intSelectedMenu == Config.intActivityScreen
+                || Config.intSelectedMenu == Config.intListActivityScreen) {
+            //ActivityFragment.reload();
+        }
 
         threadHandler = new ThreadHandler();
         Thread backgroundThread = new BackgroundThread();
@@ -3271,19 +3295,14 @@ public class Utils {
 
             /*if (progressDialog != null && progressDialog.isShowing())
                 progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-
-            if (Config.intSelectedMenu == Config.intNotificationScreen)
-                refreshNotifications();
 
             if (Config.intSelectedMenu == Config.intDashboardScreen) {
                 DashboardActivity.goToDashboard();
             }
 
-            if (Config.intSelectedMenu == Config.intActivityScreen
-                    || Config.intSelectedMenu == Config.intListActivityScreen) {
-                ActivityFragment.reload();
-            }
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+
         }
     }
 

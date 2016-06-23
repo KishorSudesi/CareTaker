@@ -1,7 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -37,16 +36,14 @@ import java.util.Locale;
 public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     private static final String dateTemplate = "MMMM yyyy";
-    public static int month, year;
     public static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
+    static int month, year;
     private static TextView currentMonth;
-    private static Context _context;
     private static Calendar calendar;
     private static Button buttonActivity;
     private static Utils utils;
     private static ProgressDialog progressDialog;
     private static AppCompatActivity appCompatActivity;
-    private LinearLayout dynamicUserTab;
     //public static int iSelectedDependent=0;
     private ImageView prevMonth;
     private ImageView nextMonth;
@@ -121,9 +118,9 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
 
-        dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
+        LinearLayout dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
 
-        _context = getActivity();
+        //Context _context = getActivity();
 
         try {
             appCompatActivity = (AppCompatActivity) getActivity();
@@ -151,7 +148,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         buttonActivity = (Button) view.findViewById(R.id.buttonActivity);
 
-        buttonActivity.setText(getActivity().getResources().getString(R.string.activity_month));
+        buttonActivity.setText(getActivity().getResources().getString(R.string.activity_list));
 
         buttonActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +172,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         try {
 
             if (Config.intSelectedMenu == Config.intListActivityScreen) {
-                buttonActivity.setText(_context.getResources().getString(R.string.activity_month));
+                buttonActivity.setText(getActivity().getResources().getString(R.string.activity_month));
                 ActivityListFragment fragment1 = ActivityListFragment.newInstance();
                 FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
                         beginTransaction();
@@ -183,7 +180,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else {
-                buttonActivity.setText(_context.getResources().getString(R.string.activity_list));
+                buttonActivity.setText(getActivity().getResources().getString(R.string.activity_list));
                 ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
                 FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
                         beginTransaction();
@@ -206,7 +203,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
 
-        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
         boolean bReload = false;
 
@@ -224,6 +220,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
             }*/
         }
+
+        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
         return view;
     }

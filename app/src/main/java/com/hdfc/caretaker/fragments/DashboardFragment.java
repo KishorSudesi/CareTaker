@@ -44,8 +44,10 @@ public class DashboardFragment extends Fragment {
     public static ArrayList<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     public static RoundedImageView roundedImageView;
     private static ListView listViewActivities;
-    private static ActivitiesAdapter activitiesAdapter;
-    private static TextView textView1, textView2, textView3, textView4, emptyTextView;
+    private static TextView textView1;
+    private static TextView textView2;
+    private static TextView textView3;
+    private static TextView textView4;
     private static Bitmap bitmap;
     private static Handler threadHandler;
     private static int iPosition;
@@ -73,7 +75,7 @@ public class DashboardFragment extends Fragment {
             //activitiesModelArrayList.clear();
             activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
 
-            activitiesAdapter = new ActivitiesAdapter(context, activitiesModelArrayList);
+            ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(context, activitiesModelArrayList);
             listViewActivities.setAdapter(activitiesAdapter);
 
             //activitiesAdapter.notifyDataSetChanged();
@@ -142,7 +144,7 @@ public class DashboardFragment extends Fragment {
             e.printStackTrace();
         }
 
-        emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
+        TextView emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
 
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +192,7 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        listViewActivities.setEmptyView(emptyTextView);
+        //listViewActivities.setEmptyView(emptyTextView);
         loadData(0);
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());

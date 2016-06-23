@@ -50,6 +50,7 @@
     <string name="hyphen">&#160;-&#160;</string>
     <string name="submit_feedback">Submit your Feedback</string>
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
+    <string name="list">List</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Welcome to care services of New Zeal (an HDFC Life initiative). View Dashboard to view your account.</string>

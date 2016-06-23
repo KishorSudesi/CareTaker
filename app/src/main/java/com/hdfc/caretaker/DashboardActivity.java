@@ -141,7 +141,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             txtViewActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Config.intSelectedMenu = Config.intActivityScreen;
+                    Config.intSelectedMenu = Config.intListActivityScreen;
                     goToActivity(true);
                 }
             });
@@ -151,7 +151,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             buttonActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Config.intSelectedMenu = Config.intActivityScreen;
+                    Config.intSelectedMenu = Config.intListActivityScreen;
                     goToActivity(true);
                 }
             });

@@ -40,23 +40,7 @@
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan">
-
-            <!--
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN" />
-
-                 <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
-            -->
-
-
-            <!--
-                 <meta-data
-                 android:name="android.app.default_searchable"
-                 android:value=".DependantDetailPersonalActivity" />
-            -->
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait"

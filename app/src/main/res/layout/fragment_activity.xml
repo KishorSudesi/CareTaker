@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/app_header_blue"
-    android:orientation="vertical"
-    >
+    android:background="@drawable/app_header_blue">
 
     <ImageView
         android:id="@+id/imageline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/toplayout"
         android:background="@color/colorWhite"/>
 
     <RelativeLayout
@@ -19,33 +16,45 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageline">
 
-    <include
-        android:id="@+id/includeDashboardList"
-        layout="@layout/header_activities"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
 
-        </RelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/relativeLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/namelayout">
 
-    <include
-        android:id="@+id/includeDashboardList"
-        layout="@layout/sub_header_activities"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <include
+            android:id="@+id/includeDashboardList"
+            layout="@layout/sub_header_activities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/frameLayoutActivity"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout3">
+
+        <FrameLayout
+            android:id="@+id/frameLayoutActivity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 
-</LinearLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/addActivity"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:src="@mipmap/plus" />
+
+
+</RelativeLayout>

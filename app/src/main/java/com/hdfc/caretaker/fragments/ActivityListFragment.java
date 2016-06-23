@@ -32,8 +32,14 @@ public class ActivityListFragment extends Fragment {
     }
 
     public static void reload() {
-        activityListAdapter = new ActivityListAdapter(context, ActivityFragment.activitiesModelArrayList);
-        listView.setAdapter(activityListAdapter);
+        try {
+            if (listView != null && context != null) {
+                activityListAdapter = new ActivityListAdapter(context, ActivityFragment.activitiesModelArrayList);
+                listView.setAdapter(activityListAdapter);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -52,7 +58,7 @@ public class ActivityListFragment extends Fragment {
 
         context = getActivity();
 
-        reload();
+        //reload();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
