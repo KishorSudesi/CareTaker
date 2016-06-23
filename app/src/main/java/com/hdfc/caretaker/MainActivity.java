@@ -20,8 +20,12 @@ public class MainActivity extends AppCompatActivity {
         utils.setStatusBarColor("#2196f3");
 
         //CrashLogger.getInstance().init(MainActivity.this);
+        try {
+            CareTaker.dbCon = DbCon.getInstance(getApplicationContext());
+        } catch (Exception e) {
+            e.getMessage();
+        }
 
-        CareTaker.dbCon = DbCon.getInstance(getApplicationContext());
 
        /* try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);

@@ -47,6 +47,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
     private ExpandableListView listView;
     private ActivityServicesAdapter activityServicesAdapter;
+    private int previousChildPosition = -1, previouGroupPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,15 +86,23 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     View v1;
 
                     View v2 = parent.getChildAt(groupPosition);*/
+                    if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected()) {
+                        listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(false);
+                    } else {
+                        listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(true);
+                    }
 
+                    if (previousChildPosition < 0 && previouGroupPosition < 0) {
+
+                    } else if (previousChildPosition != childPosition || previouGroupPosition != groupPosition) {
+                        listDataChild.get(listDataHeader.get(previouGroupPosition)).get(previousChildPosition).setSelected(false);
+                    }
+                    activityServicesAdapter.notifyDataSetChanged();
                     RadioButton checkBox = (RadioButton) v.findViewById(R.id.checkBoxService);
                     ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
 
-                    if (checkBox.isChecked()) {
-                        checkBox.setChecked(false);
-                        checkBox.setButtonDrawable(getResources().
-                                getDrawable(R.mipmap.tick_disable));
-                        selectedServiceModel = null;
+                    if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected() || listDataChild.get(listDataHeader.get(previouGroupPosition)).get(previousChildPosition).isSelected()) {
+                        selectedServiceModel = serviceModel;
                     } else {
 
                        /* //
@@ -104,11 +113,13 @@ public class AddNewActivityActivity extends AppCompatActivity {
                         }
                         //
 */
-                        checkBox.setChecked(true);
-                        checkBox.setButtonDrawable(getResources().
-                                getDrawable(R.mipmap.tick));
-                        selectedServiceModel = serviceModel;
+
+
+                        selectedServiceModel = null;
                     }
+
+                    previouGroupPosition = groupPosition;
+                    previousChildPosition = childPosition;
 
                     if (selectedServiceModel == null)
                         buttonContinue.setVisibility(View.INVISIBLE);
@@ -337,7 +348,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
             serviceModel.setStrCategoryName(jsonObject.getString("category_name"));
             serviceModel.setiUnit(jsonObject.getInt("unit"));
             serviceModel.setiUnitUsed(jsonObject.getInt("unit_consumed"));
-          //  serviceModel.setStrServiceType(jsonObject.getString("service_type"));
+            //  serviceModel.setStrServiceType(jsonObject.getString("service_type"));
             serviceModel.setiUnitValue(jsonObject.getInt("unit_value"));
 
             if (jsonObject.has("milestones")) {

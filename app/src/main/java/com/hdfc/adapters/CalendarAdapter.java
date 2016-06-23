@@ -1,8 +1,10 @@
 package com.hdfc.adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ public class CalendarAdapter extends BaseAdapter {
     public List<ActivityModel> activityModels = new ArrayList<>();
     private int currentDayOfMonth;
     private int currentWeekDay;
+    private int mCurrentPosition = -1;
 
     // Days in Current Month
     public CalendarAdapter(Context context, int month, int year, List<ActivityModel> _activityModels) {
@@ -43,13 +46,13 @@ public class CalendarAdapter extends BaseAdapter {
         Calendar calendar = Calendar.getInstance();
         setCurrentDayOfMonth(calendar.get(Calendar.DAY_OF_MONTH));
         setCurrentWeekDay(calendar.get(Calendar.DAY_OF_WEEK));
-        activityModels = _activityModels;
+        activityModels.addAll(_activityModels);
 
         // Print Month
         printMonth(month, year);
 
         // Find Number of Events
-       // eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
+        // eventsPerMonthMap = findNumberOfEventsPerMonth(year, month);
     }
 
     private String getMonthAsString(int i) {
@@ -143,17 +146,23 @@ public class CalendarAdapter extends BaseAdapter {
         return position;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
+        ViewHolder holder = null;
         if (row == null) {
             LayoutInflater inflater = (LayoutInflater) _context.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(R.layout.calendar_cell_view, parent, false);
+            holder = new ViewHolder();
+            holder.gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
+            row.setTag(holder);
+        } else {
+            holder = (ViewHolder) row.getTag();
         }
 
-        // Get a reference to the Day gridcell
-        Button gridcell = (Button) row.findViewById(R.id.calendar_day_gridcell);
+
         String[] day_color = list.get(position).split("-");
 
         String theday = day_color[0];
@@ -161,27 +170,32 @@ public class CalendarAdapter extends BaseAdapter {
         String theyear = day_color[3];
 
         // Set the Day GridCell
-        gridcell.setText(theday);
-        gridcell.setTag(theday + "-" + themonth + "-" + theyear);
+        holder.gridcell.setText(theday);
+        holder.gridcell.setTag(theday + "-" + themonth + "-" + theyear);
 
-        if (day_color[1].equals("GREY")) {
-            gridcell.setTextColor(Color.LTGRAY);
+        if (mCurrentPosition == position) {
+            holder.gridcell.setTextColor(_context.getResources().getColor(
+                    R.color.colorPrimaryDark));
+        } else {
+
+            if (day_color[1].equals("GREY")) {
+                holder.gridcell.setTextColor(Color.LTGRAY);
+            }
+
+            if (day_color[1].equals("WHITE")) {
+                holder.gridcell.setTextColor(Color.WHITE);
+            }
+
+            if (day_color[1].equals("BLUE")) {
+                holder.gridcell.setTextColor(Color.BLUE);
+            }
+
+            if (day_color[1].equals("GREEN")) {
+                holder.gridcell.setTextColor(Color.RED);
+                //gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimary));
+            }
         }
-
-        if (day_color[1].equals("WHITE")) {
-            gridcell.setTextColor(Color.WHITE);
-        }
-
-        if (day_color[1].equals("BLUE")) {
-            gridcell.setTextColor(Color.BLUE);
-        }
-
-        if (day_color[1].equals("GREEN")) {
-            gridcell.setTextColor(Color.RED);
-            //gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimary));
-        }
-
-        if(position>6) {
+        if (position > 6) {
 
             int iDay = Integer.parseInt(day_color[0]);
             int iYear = Integer.parseInt(day_color[3]);
@@ -202,16 +216,16 @@ public class CalendarAdapter extends BaseAdapter {
                             iActivityDate == iDay) {
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            gridcell.setBackground(_context.getResources().
+                            holder.gridcell.setBackground(_context.getResources().
                                     getDrawable(R.drawable.bottom_border_green));
                         }
 
                         //gridcell.setBackground(_context.getResources().getDrawable(R.drawable.bottom_border_green));
-                        gridcell.setTextColor(Color.WHITE);
+                        holder.gridcell.setTextColor(Color.WHITE);
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.i("TAG", "EXception :" + e.getMessage());
             }
         }
 
@@ -232,5 +246,17 @@ public class CalendarAdapter extends BaseAdapter {
 
     public void setCurrentWeekDay(int currentWeekDay) {
         this.currentWeekDay = currentWeekDay;
+    }
+
+    public int getmCurrentPosition() {
+        return mCurrentPosition;
+    }
+
+    public void setmCurrentPosition(int mCurrentPosition) {
+        this.mCurrentPosition = mCurrentPosition;
+    }
+
+    public class ViewHolder {
+        public Button gridcell;
     }
 }

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.hdfc.app42service.App42GCMController;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
+import com.hdfc.caretaker.fragments.MyAccountEditFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.CareTaker;
@@ -228,7 +230,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         if (Config.intSelectedMenu == Config.intActivityScreen ||
                 Config.intSelectedMenu == Config.intListActivityScreen) {
-           // Config.intSelectedMenu = 0;
+            // Config.intSelectedMenu = 0;
             goToActivity(bReloadActivity);
         }
 
@@ -302,7 +304,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                     Config.strAppId, this);//prod. - 272065924531
         } else {
             /*Log.i("App42PushNotification",
-					"No valid Google Play Services APK found.");*/
+                    "No valid Google Play Services APK found.");*/
         }
     }
 
@@ -313,12 +315,12 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     public void goToNotifications() {
         //if (Config.intSelectedMenu != Config.intNotificationScreen) {
-            Config.intSelectedMenu = Config.intNotificationScreen;
-            NotificationFragment fragment = NotificationFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_dashboard, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        Config.intSelectedMenu = Config.intNotificationScreen;
+        NotificationFragment fragment = NotificationFragment.newInstance();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_dashboard, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
         setMenu();
         buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
@@ -329,12 +331,12 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     public void goToAccount() {
         //if (Config.intSelectedMenu != Config.intAccountScreen) {
-            Config.intSelectedMenu = Config.intAccountScreen;
-            MyAccountFragment fragment = MyAccountFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_dashboard, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        Config.intSelectedMenu = Config.intAccountScreen;
+        MyAccountFragment fragment = MyAccountFragment.newInstance();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_dashboard, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
         setMenu();
         buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
@@ -349,10 +351,10 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         //Config.intSelectedMenu == Config.intActivityScreen) {
         // Config.intSelectedMenu = Config.intActivityScreen;
         ActivityFragment fragment = ActivityFragment.newInstance(bReload);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_dashboard, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_dashboard, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
         setMenu();
         buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
@@ -386,26 +388,39 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         //super.onBackPressed();
         //moveTaskToBack(true);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
-        builder.setTitle(getString(R.string.confirm_logout));
-        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ///
-                if (CareTaker.dbCon != null) {
-                    CareTaker.dbCon.close();
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_dashboard);
+
+        if (f instanceof MyAccountEditFragment) {
+            Config.intSelectedMenu = Config.intAccountScreen;
+            MyAccountFragment fragment = MyAccountFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+            builder.setTitle(getString(R.string.confirm_logout));
+            builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ///
+                    if (CareTaker.dbCon != null) {
+                        CareTaker.dbCon.close();
+                    }
+                    //
+                    Utils.logout();
                 }
-                //
-                Utils.logout();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+            });
+            builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
+
+
     }
 
     /*public void setRating(View v) {

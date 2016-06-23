@@ -23,10 +23,18 @@ public class ServiceModel {
     private String strServiceId;
     private String strServiceHistoryId;
     private String strCustomerId;
-
+    private boolean isSelected = false;
     private ArrayList<MilestoneModel> milestoneModels = new ArrayList<>();
 
     public ServiceModel() {
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public int getiUnitValue() {

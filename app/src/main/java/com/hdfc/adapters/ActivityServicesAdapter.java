@@ -126,22 +126,31 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
         viewHolder.activityDetails.setText(serviceModel.getStrServiceName());
 
         viewHolder.checkBoxService.setTag(serviceModel);
+        if (serviceModel.isSelected()) {
+            viewHolder.checkBoxService.setChecked(true);
+            viewHolder.checkBoxService.setButtonDrawable(_context.getResources().
+                    getDrawable(R.mipmap.tick));
+        } else {
+            viewHolder.checkBoxService.setChecked(false);
+            viewHolder.checkBoxService.setButtonDrawable(_context.getResources().
+                    getDrawable(R.mipmap.tick_disable));
+        }
 
-        viewHolder.checkBoxService.setOnClickListener(new View.OnClickListener() {
+        /*viewHolder.checkBoxService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //
 
-                /*parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
+                *//*parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
 
                     View v1 = viewGroup.getChildAt(groupPosition);
                     RadioButton checkBoxAll = (RadioButton) v1.findViewById(R.id.checkBoxService);
-                    checkBoxAll.setChecked(false);*/
+                    checkBoxAll.setChecked(false);*//*
 
                 //
 
             }
-        });
+        });*/
 
 
         return convertView;

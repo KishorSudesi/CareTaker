@@ -6,7 +6,8 @@ import android.os.Message;
 
 import net.sqlcipher.Cursor;
 
-public class DbCon {
+public class
+DbCon {
 
     public static boolean isDbOpened = false;
     private static DbHelper dbHelper;

@@ -191,6 +191,7 @@ public class MyAccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(getActivity().getString(R.string.confirm_logout));
                 builder.setPositiveButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
