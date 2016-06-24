@@ -35,6 +35,7 @@
     <string name="activity_month">Monthly</string>
     <string name="activity_list">List</string>
     <string name="logout">Logout</string>
+    <string name="add_recipient">Add a Care Recipient </string>
     <string name="attachments">Attachments</string>
     <string name="close">Close</string>
     <string name="at">&#160;at&#160;</string>

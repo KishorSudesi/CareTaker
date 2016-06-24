@@ -51,7 +51,7 @@ public class MyAccountFragment extends Fragment {
     private static int iPosition;
     public DependAdapter adapter;
     TextView txtviewBuyServices;
-    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout;
+    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout,textViewRecipient;
     private Utils utils;
 
     public static MyAccountFragment newInstance() {
@@ -112,6 +112,7 @@ public class MyAccountFragment extends Fragment {
 
         textViewName = (TextView) view.findViewById(R.id.textViewName);
         textViewEmail = (TextView) view.findViewById(R.id.textViewEmail);
+        textViewRecipient = (TextView) view.findViewById(R.id.addreceiption);
         textViewLogout = (TextView) view.findViewById(R.id.logout);
 
         txtAddress = (TextView) view.findViewById(R.id.editText31);
@@ -135,12 +136,21 @@ public class MyAccountFragment extends Fragment {
             }
         });
 
+        textViewRecipient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToAddRecipient();
+            }
+        });
+
+
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToAccountEdit();
             }
         });
+
 
        /* roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,6 +239,14 @@ public class MyAccountFragment extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.fragment_dashboard, myAccountEditFragment);
+        ft.commit();
+    }
+
+    public void goToAddRecipient() {
+        AddCareRecipientsFragment addRecipientFragment = AddCareRecipientsFragment.newInstance();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_dashboard, addRecipientFragment);
         ft.commit();
     }
 

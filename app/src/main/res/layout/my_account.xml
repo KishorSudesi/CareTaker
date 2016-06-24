@@ -131,6 +131,22 @@
                           android:src="@drawable/paytm" />
 
                   </LinearLayout>-->
+                <TextView
+                    android:id="@+id/addreceiption"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bottom_border_blue"
+                    android:drawableLeft="@drawable/person_icon"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="@string/add_recipient"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
 
                 <TextView
                     android:id="@+id/logout"

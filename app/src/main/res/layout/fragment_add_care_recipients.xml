@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/includerecipient"
+        layout="@layout/header_recipients"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center" />
+
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue"
+        android:layout_below="@+id/includerecipient"/>
+
+    <ListView
+        android:id="@+id/addrecipientlistview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/background">
+
+    </ListView>
+
+
+
+    <Button
+        android:id="@+id/btnaddrecipient"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_success"
+        android:text="@string/add_recipient"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorWhite" />
+</RelativeLayout>

@@ -101,6 +101,19 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
         <activity
+            android:name=".DependentDetailPersonal"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
+
+        <activity
+            android:name=".DependentDetailsMedical"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
+
+
+        <activity
             android:name=".AddNewActivityActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
