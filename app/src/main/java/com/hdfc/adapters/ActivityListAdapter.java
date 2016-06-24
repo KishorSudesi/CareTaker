@@ -101,7 +101,11 @@ public class ActivityListAdapter extends BaseAdapter {
 
 
             int iPosition = Config.strProviderIds.indexOf(activityListModel.getStrProviderID());
-            String strCarlaName = Config.providerModels.get(iPosition).getStrName();
+
+            String strCarlaName = "";
+
+            if (iPosition > -1 && iPosition < Config.providerModels.size())
+                strCarlaName = Config.providerModels.get(iPosition).getStrName();
 
             Date date = new Date();
 

@@ -75,6 +75,7 @@ public class ImagesFragment extends Fragment {
             backgroundThread.start();*/
 
         } catch (Exception e) {
+            loadingPanel.setVisibility(View.GONE);
             e.printStackTrace();
         }
 

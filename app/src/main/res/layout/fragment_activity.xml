@@ -16,6 +16,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageline">
 
+        <include
+            android:id="@+id/includeDashboardList"
+            layout="@layout/header_activities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
     </RelativeLayout>
 
