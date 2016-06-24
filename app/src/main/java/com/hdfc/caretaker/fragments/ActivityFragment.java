@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +42,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     private static Button buttonActivity;
     private static Utils utils;
     private static ProgressDialog progressDialog;
-    private static AppCompatActivity appCompatActivity;
+    //private static AppCompatActivity appCompatActivity;
     //public static int iSelectedDependent=0;
     private ImageView prevMonth;
     private ImageView nextMonth;
@@ -123,7 +122,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         //Context _context = getActivity();
 
         try {
-            appCompatActivity = (AppCompatActivity) getActivity();
+            //appCompatActivity = (AppCompatActivity) getActivity();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -174,7 +173,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             if (Config.intSelectedMenu == Config.intListActivityScreen) {
                 buttonActivity.setText(getActivity().getResources().getString(R.string.activity_month));
                 ActivityListFragment fragment1 = ActivityListFragment.newInstance();
-                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().
                         beginTransaction();
                 transaction.replace(R.id.frameLayoutActivity, fragment1);
                 transaction.addToBackStack(null);
@@ -182,7 +181,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             } else {
                 buttonActivity.setText(getActivity().getResources().getString(R.string.activity_list));
                 ActivityMonthFragment fragment1 = ActivityMonthFragment.newInstance();
-                FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().
                         beginTransaction();
                 transaction.replace(R.id.frameLayoutActivity, fragment1);
                 transaction.addToBackStack(null);

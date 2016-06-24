@@ -1376,7 +1376,8 @@ public class Utils {
                 tabWidth = 100;
         }
 
-        dynamicUserTab.removeAllViews();
+        if (dynamicUserTab != null)
+            dynamicUserTab.removeAllViews();
 
         Config.intSelectedDependent = 0;
 
@@ -1422,7 +1423,8 @@ public class Utils {
 
             bt.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
 
-            dynamicUserTab.addView(bt);
+            if (dynamicUserTab != null)
+                dynamicUserTab.addView(bt);
         }
     }
 
@@ -2531,7 +2533,7 @@ public class Utils {
 
                                     //if (iFlag == 1)
                                     //fetchLatestActivities(progressDialog, iFlag);
-                                    fetchProviders(progressDialog, iFlag);
+
 
                                 } else {
                                     /*if (progressDialog.isShowing())
@@ -2539,6 +2541,7 @@ public class Utils {
                                     DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                     toast(2, 2, _ctxt.getString(R.string.error));
                                 }
+                                fetchProviders(progressDialog, iFlag);
                             } else {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
@@ -2701,6 +2704,10 @@ public class Utils {
     //
 
     public void fetchProviders(final ProgressDialog progressDialog, final int iFlag) {
+
+        //todo remove this after offline sync enabled
+        Config.strProviderIds.clear();
+        Config.strProviderIds.add("5715c39ee4b0d2aca6fe5d17");
 
         if (Config.strProviderIds.size() > 0) {
 
@@ -3188,11 +3195,13 @@ public class Utils {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
                                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                ActivityFragment.activitiesModelArrayList.clear();
+                                //ActivityFragment.activitiesModelArrayList.clear();
                                 //toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
                             //ActivityFragment.reload();
-                            fetchProviders(progressDialog, 2);
+                            //todo uncomment for multiple carlas
+                            //fetchProviders(progressDialog, 2);
+                            loadImagesActivityMonth();
                         }
 
                         @Override
@@ -3220,8 +3229,10 @@ public class Utils {
                             } catch (Exception e1) {
                                 e1.printStackTrace();
                             }
+                            //todo uncomment for multiple carlas
                             //ActivityFragment.reload();
-                            fetchProviders(progressDialog, 2);
+                            //fetchProviders(progressDialog, 2);
+                            loadImagesActivityMonth();
                         }
                     }
             );
@@ -3230,7 +3241,7 @@ public class Utils {
                 progressDialog.dismiss();*/
             DashboardActivity.loadingPanel.setVisibility(View.GONE);
             //ActivityFragment.reload();
-            fetchProviders(progressDialog, 2);
+            //fetchProviders(progressDialog, 2);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
     }

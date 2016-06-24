@@ -17,7 +17,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.hdfc.adapters.ActivitiesAdapter;
 import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
@@ -73,19 +72,19 @@ public class DashboardFragment extends Fragment {
         try {
 
             //activitiesModelArrayList.clear();
-            activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
+            /*activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
 
             ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(context, activitiesModelArrayList);
-            listViewActivities.setAdapter(activitiesAdapter);
+            listViewActivities.setAdapter(activitiesAdapter);*/
 
             //activitiesAdapter.notifyDataSetChanged();
 
             //Utils.log(String.valueOf(Config.dependentModels.get(intIndex).getActivityModels().size()), " INDEX 0 ");
 
-            textView1.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
+           /* textView1.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
             textView2.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));
             textView3.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
-            textView4.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));
+            textView4.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));*/
 
         } catch (Exception e) {
             e.printStackTrace();
