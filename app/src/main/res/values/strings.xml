@@ -52,6 +52,7 @@
     <string name="submit_feedback">Submit your Feedback</string>
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
     <string name="list">List</string>
+    <string name="read_more">read more...</string>
 
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Welcome to care services of New Zeal (an HDFC Life initiative). View Dashboard to view your account.</string>
@@ -180,7 +181,7 @@
     <string name="menu_activities">Activities</string>
     <string name="menu_reports">Reports</string>
     <string name="menu_seniors">Care Recipients</string>
-    <string name="menu_notification">Notifications</string>
+    <string name="menu_notification">Status</string>
     <string name="menu_account">My Account</string>
 
     <!--Warning Strings-->

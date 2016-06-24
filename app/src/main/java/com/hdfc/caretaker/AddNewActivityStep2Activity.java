@@ -342,6 +342,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             jsonObjectServices.put("customer_id", Config.customerModel.getStrCustomerID());
             jsonObjectServices.put("dependent_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
             jsonObjectServices.put("provider_id", strProviderId);
+            jsonObjectServices.put("created_by", "customer");
 
             //todo check for unit_value update
 

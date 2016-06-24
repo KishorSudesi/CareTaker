@@ -35,7 +35,7 @@ import java.util.Locale;
 public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     private static final String dateTemplate = "MMMM yyyy";
-    public static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
+    static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     static int month, year;
     private static TextView currentMonth;
     private static Calendar calendar;
@@ -202,6 +202,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
 
+        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
         boolean bReload = false;
 
@@ -220,7 +221,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             }*/
         }
 
-        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
 
         return view;
     }

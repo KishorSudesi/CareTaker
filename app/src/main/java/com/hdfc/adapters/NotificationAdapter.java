@@ -1,6 +1,8 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +73,7 @@ public class NotificationAdapter extends BaseAdapter {
             viewHolder.textViewName = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.textViewText = (TextView) convertView.findViewById(R.id.textViewText);
             viewHolder.textViewTime = (TextView) convertView.findViewById(R.id.textViewTime);
+            viewHolder.textReadMore = (TextView) convertView.findViewById(R.id.textReadMore);
             viewHolder.roundedImageView = (ImageView) convertView.findViewById(R.id.roundedImageView);
             viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.activityList);
 
@@ -81,17 +84,49 @@ public class NotificationAdapter extends BaseAdapter {
 
         if (adapterNotificationModels.size() > 0) {
 
-            mNotifyPosition = -1;
+            //mNotifyPosition = -1;
 
-            NotificationModel notificationModel = adapterNotificationModels.get(position);
+            //NotificationModel notificationModel = adapterNotificationModels.get(position);
 
-            String strId = notificationModel.getStrCreatedByID();
+            String strId = adapterNotificationModels.get(position).getStrCreatedByID();
 
-            String strName = "";
+            String strName = "", strMess = "";
 
-            viewHolder.textViewText.setText(notificationModel.getStrMessage());
+            //
+            strMess = adapterNotificationModels.get(position).getStrMessage();
 
-            if (notificationModel.getStrCreatedByType().equalsIgnoreCase("provider")) {
+            String strMessage = strMess;
+
+            if (strMess.length() > 70) {
+                strMess = strMess.substring(0, 68);
+                viewHolder.textReadMore.setVisibility(View.VISIBLE);
+                viewHolder.textReadMore.setTag(strMessage);
+            } else {
+                viewHolder.textReadMore.setVisibility(View.GONE);
+                viewHolder.textReadMore.setEnabled(false);
+            }
+            //
+
+            viewHolder.textViewText.setText(strMess);
+
+            viewHolder.textReadMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String strMessage = (String) v.getTag();
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+                    builder.setTitle("Notification");
+                    builder.setMessage(strMessage);
+                    builder.setPositiveButton(_context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+            });
+
+            if (adapterNotificationModels.get(position).getStrCreatedByType().equalsIgnoreCase("provider")) {
                 if (Config.strProviderIds.contains(strId)) {
                     mNotifyPosition = Config.strProviderIds.indexOf(strId);
 
@@ -100,7 +135,7 @@ public class NotificationAdapter extends BaseAdapter {
                 }
             }
 
-            if (notificationModel.getStrCreatedByType().equalsIgnoreCase("dependent")) {
+            if (adapterNotificationModels.get(position).getStrCreatedByType().equalsIgnoreCase("dependent")) {
                 if (Config.strDependentIds.contains(strId)) {
                     mNotifyPosition = Config.strDependentIds.indexOf(strId);
 
@@ -109,12 +144,12 @@ public class NotificationAdapter extends BaseAdapter {
                 }
             }
 
-            if (notificationModel.getStrCreatedByType().equalsIgnoreCase("customer")) {
+            if (adapterNotificationModels.get(position).getStrCreatedByType().equalsIgnoreCase("customer")) {
                 strName = Config.customerModel.getStrName();
             }
 
             try {
-                String strDate = notificationModel.getStrDateTime();
+                String strDate = adapterNotificationModels.get(position).getStrDateTime();
                 String strDisplayDate = _context.getResources().getString(R.string.space) +
                         _context.getResources().getString(R.string.at) +
                         _context.getResources().getString(R.string.space) + utils.formatDate(strDate);
@@ -146,6 +181,7 @@ public class NotificationAdapter extends BaseAdapter {
         TextView textViewName;
         TextView textViewText;
         TextView textViewTime;
+        TextView textReadMore;
         ImageView roundedImageView;
         LinearLayout linearLayout;
     }

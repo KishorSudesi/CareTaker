@@ -14,6 +14,8 @@ public class ActivityModel implements Serializable {
     private String strProviderID;
     private String strServcieID;
 
+    private String strCreatedBy;
+
     private String strActivityName;
     private String strActivityDesc;
     private String strActivityStatus;
@@ -78,6 +80,14 @@ public class ActivityModel implements Serializable {
         }
 
         return false;
+    }
+
+    public String getStrCreatedBy() {
+        return strCreatedBy;
+    }
+
+    public void setStrCreatedBy(String strCreatedBy) {
+        this.strCreatedBy = strCreatedBy;
     }
 
     public int hashCode() {

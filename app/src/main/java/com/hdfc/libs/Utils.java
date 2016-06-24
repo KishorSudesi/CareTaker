@@ -1381,7 +1381,8 @@ public class Utils {
 
         Config.intSelectedDependent = 0;
 
-        loadDependentData(intWhichScreen);
+        if (intWhichScreen == Config.intNotificationScreen)
+            loadDependentData(intWhichScreen);
 
         for (int i = 0; i < Config.dependentModels.size(); i++) {
 
@@ -1547,6 +1548,8 @@ public class Utils {
                         jsonObjectProvider.getString("created_by_type"),
                         jsonObjectProvider.getString("user_id"),
                         jsonObjectProvider.getString("created_by"), strDocumentId);
+
+                notificationModel.setStrActivityId(jsonObjectProvider.optString("activity_id"));
 
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
                     if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by")))
@@ -2179,6 +2182,8 @@ public class Utils {
                 activityModel.setStrustomerID(jsonObjectActivity.getString("customer_id"));
                 activityModel.setStrActivityStatus(jsonObjectActivity.getString("status"));
                 activityModel.setStrActivityDesc(jsonObjectActivity.getString("activity_desc"));
+
+                activityModel.setStrCreatedBy(jsonObjectActivity.optString("created_by"));
               /*  activityModel.setStrActivityMessage(jsonObjectActivity.
                         getString("activity_message"));*/
 
@@ -2232,7 +2237,8 @@ public class Utils {
 
                             feedBackModels.add(feedBackModel);
 
-                            if (feedBackModel.getStrFeedBackByType().equalsIgnoreCase("customer") && feedBackModel.getStrFeedBackBy().equalsIgnoreCase(activityModel.getStrustomerID())) {
+                            if (feedBackModel.getStrFeedBackByType().equalsIgnoreCase("customer") &&
+                                    feedBackModel.getStrFeedBackBy().equalsIgnoreCase(activityModel.getStrustomerID())) {
                                 activityModel.setRatingAddedByCutsm(true);
                             }
                         }
@@ -2935,7 +2941,7 @@ public class Utils {
 
         if (Config.intSelectedMenu == Config.intActivityScreen
                 || Config.intSelectedMenu == Config.intListActivityScreen) {
-            //ActivityFragment.reload();
+            ActivityFragment.reload();
         }
 
         threadHandler = new ThreadHandler();

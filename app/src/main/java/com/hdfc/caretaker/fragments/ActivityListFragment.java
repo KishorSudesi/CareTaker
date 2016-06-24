@@ -31,7 +31,7 @@ public class ActivityListFragment extends Fragment {
         return fragment;
     }
 
-    public static void reload() {
+    static void reload() {
         try {
             if (listView != null && context != null) {
                 activityListAdapter = new ActivityListAdapter(context, ActivityFragment.activitiesModelArrayList);
@@ -58,7 +58,7 @@ public class ActivityListFragment extends Fragment {
 
         context = getActivity();
 
-        //reload();
+        reload();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

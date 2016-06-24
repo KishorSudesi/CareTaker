@@ -9,69 +9,69 @@
         android:id="@+id/activityList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_horizontal"
         android:background="@color/colorWhite"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-
+            android:layout_height="match_parent"
+            android:background="@drawable/border_right_blue"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/roundedImageView"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_general"
-                android:background="@drawable/bullet_1" />
+                android:padding="@dimen/padding_general" />
 
         </LinearLayout>
 
-
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/border_left_blue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textViewText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:paddingLeft="5dip"
-                android:paddingRight="5dip"
+                android:paddingLeft="13dp"
+                android:textColor="#333333" />
 
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="#000000"
+            <TextView
+                android:id="@+id/textReadMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="13dp"
+                android:text="@string/read_more"
+                android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="5dip"
-                android:layout_marginTop="5dip"
-                android:orientation="horizontal"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dip">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textViewName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/blue" />
+                    android:layout_marginLeft="13dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textViewTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/blue" />
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -79,4 +79,9 @@
 
     </LinearLayout>
 
+    <!-- <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="0.75dp"
+         android:background="@color/blue">
+     </RelativeLayout>-->
 </LinearLayout>

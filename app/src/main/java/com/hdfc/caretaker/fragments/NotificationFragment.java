@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,9 +27,6 @@ import com.hdfc.libs.Utils;
 public class NotificationFragment extends Fragment {
     public static ListView listViewActivities;
     public static NotificationAdapter notificationAdapter;
-    public static LinearLayout dynamicUserTab;
-    private static TextView emptyTextView;
-    private Utils utils;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -54,13 +52,34 @@ public class NotificationFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_notification, container, false);
 
         listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivity);
-        emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
-        dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
+        TextView emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
+        LinearLayout dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
 
-        utils = new Utils(getActivity());
+        Utils utils = new Utils(getActivity());
 
         listViewActivities.setEmptyView(emptyTextView);
         utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+
+        listViewActivities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                /*String strActivityId = Config.dependentModels.get(Config.intSelectedDependent).
+                        getNotificationModels().get(position).getStrActivityId();
+
+                if(strActivityId!=null && !strActivityId.equalsIgnoreCase("")) {
+
+                    //Utils.log(String.valueOf(Config.dependentModels.get(Config.intSelectedDependent).getActivityModels().indexOf()), " NOTIFICATION ");
+                   *//* Bundle args = new Bundle();
+                    //
+                    Intent intent = new Intent(getActivity(), FeatureActivity.class);
+                    args.putSerializable("ACTIVITY", activityModel);
+                    args.putBoolean("WHICH_SCREEN", true);
+                    intent.putExtras(args);
+                    startActivity(intent);*//*
+                }*/
+            }
+        });
 
         return rootView;
     }
