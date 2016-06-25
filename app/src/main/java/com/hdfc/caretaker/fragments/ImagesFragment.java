@@ -3,13 +3,11 @@ package com.hdfc.caretaker.fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
@@ -19,12 +17,7 @@ import com.hdfc.views.RoundedImageView;
 
 public class ImagesFragment extends Fragment {
 
-    private static Utils utils;
-    private static Handler threadHandler;
-    private Bitmap bitmap;
-    private int intPosition;
-    private RoundedImageView imageView;
-    private RelativeLayout loadingPanel;
+    //private static Handler threadHandler;
 
     public static Fragment newInstance(Context context, int pos,
                                        float scale) {
@@ -45,21 +38,21 @@ public class ImagesFragment extends Fragment {
         LinearLayout l = (LinearLayout)
                 inflater.inflate(R.layout.fragment_images, container, false);
 
-        loadingPanel = (RelativeLayout) l.findViewById(R.id.loadingPanel);
+        //RelativeLayout loadingPanel = (RelativeLayout) l.findViewById(R.id.loadingPanel);
 
-        imageView = (RoundedImageView) l.findViewById(R.id.content);
+        RoundedImageView imageView = (RoundedImageView) l.findViewById(R.id.content);
 
-        utils = new Utils(getActivity());
+        Utils utils = new Utils(getActivity());
 
-        intPosition = this.getArguments().getInt("pos");
+        int intPosition = this.getArguments().getInt("pos");
 
         try {
 
             Utils.log(" 3 ", " IN ");
 
-            loadingPanel.setVisibility(View.VISIBLE);
+            //loadingPanel.setVisibility(View.VISIBLE);
 
-            bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+            Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                     utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
                     Config.intWidth, Config.intHeight);
 
@@ -68,14 +61,14 @@ public class ImagesFragment extends Fragment {
             else
                 imageView.setImageBitmap(Utils.noBitmap);
 
-            loadingPanel.setVisibility(View.GONE);
+            //loadingPanel.setVisibility(View.GONE);
 
           /*  threadHandler = new ThreadHandler();
             Thread backgroundThread = new BackgroundThread();
             backgroundThread.start();*/
 
         } catch (Exception e) {
-            loadingPanel.setVisibility(View.GONE);
+            //loadingPanel.setVisibility(View.GONE);
             e.printStackTrace();
         }
 

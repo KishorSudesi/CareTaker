@@ -160,9 +160,20 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         ImageView addActivity = (ImageView) view.findViewById(R.id.addActivity);
 
+       /* final SimpleTooltip simpleTooltip = new SimpleTooltip.Builder(getActivity())
+                .anchorView(addActivity)
+                .text(getString(R.string.create_activity))
+                .gravity(Gravity.TOP)
+                .build();
+        simpleTooltip.show();
+*/
         addActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                /*if(simpleTooltip!=null&&simpleTooltip.isShowing())
+                    simpleTooltip.dismiss();*/
+
                 Intent newIntent = new Intent(getActivity(), AddNewActivityActivity.class);
                 startActivity(newIntent);
             }

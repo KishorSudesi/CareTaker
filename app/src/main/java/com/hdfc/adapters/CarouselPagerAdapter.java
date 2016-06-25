@@ -14,11 +14,8 @@ import com.hdfc.views.MyLinearView;
 public class CarouselPagerAdapter extends FragmentPagerAdapter implements
         ViewPager.OnPageChangeListener {
 
-    private MyLinearView cur = null;
-    private MyLinearView next = null;
     private Context context;
     private FragmentManager fm;
-    private float scale;
 
     public CarouselPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
@@ -29,11 +26,11 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
     @Override
     public Fragment getItem(int position) {
         // make the first pager bigger than others
-        /*if (position == DashboardFragment.FIRST_PAGE)*/
-            scale = DashboardFragment.BIG_SCALE;
-       /* else
-            scale = DashboardFragment.SMALL_SCALE;
-*/
+        //if (position == DashboardFragment.FIRST_PAGE)
+        float scale = DashboardFragment.BIG_SCALE;
+        /*else
+            scale = DashboardFragment.SMALL_SCALE;*/
+
         //position = position % DashboardFragment.PAGES;
 
         //Log.e("CarouselPagerAdapter", String.valueOf(position));
@@ -49,18 +46,18 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
     public void onPageScrolled(int position, float positionOffset,
                                int positionOffsetPixels) {
         if (positionOffset >= 0f && positionOffset <= 1f) {
-            cur = getRootView(position);
+            MyLinearView cur = getRootView(position);
             cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE *
                     positionOffset);
 
             /*if(Config.intDependentsCount<=position)*/
             //Utils.log(String.valueOf(position), " position ");
-            DashboardFragment.loadData(position);
+            //DashboardFragment.loadData(position);
            /* else
                 DashboardFragment.loadData(0);*/
 
             if (position < DashboardFragment.PAGES - 1) {
-                next = getRootView(position + 1);
+                MyLinearView next = getRootView(position + 1);
                 next.setScaleBoth(DashboardFragment.SMALL_SCALE + DashboardFragment.DIFF_SCALE *
                         positionOffset);
             }

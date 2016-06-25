@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
@@ -64,6 +65,8 @@ public class ActivityMonthListAdapter extends BaseAdapter {
             viewHolder.textViewDescription = (TextView) convertView.findViewById(R.id.textViewDescription);
             viewHolder.imageViewPerson = (ImageView) convertView.findViewById(R.id.imageViewPerson);
 
+            viewHolder.linearLayoutDone = (LinearLayout) convertView.findViewById(R.id.linearLayoutDone);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -86,6 +89,31 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 
             //multiBitmapLoader.loadBitmap(activityModel.getStrDependentName(), viewHolder.imageViewPerson);
 
+
+            //////////////////
+            if ((data.get(position).getStrActivityStatus().equalsIgnoreCase("open"))
+                    || data.get(position).getStrActivityStatus().equalsIgnoreCase("inprocess")) {
+                /*viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.orange));*/
+                viewHolder.linearLayoutDone.setVisibility(View.GONE);
+
+            }
+
+            if (data.get(position).getStrActivityStatus().equalsIgnoreCase("completed")) {
+                /*viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.colorPrimary));*/
+                viewHolder.linearLayoutDone.setVisibility(View.VISIBLE);
+            }
+
+            if (data.get(position).getStrActivityStatus().equalsIgnoreCase("new")) {
+               /* viewHolder.linearLayout.setBackgroundColor(_context.getResources().
+                        getColor(R.color.colorWhite));*/
+                viewHolder.linearLayoutDone.setVisibility(View.GONE);
+
+            }
+
+            //////////////////
+
             try {
 
                 File f = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrDependentID().trim()));
@@ -107,6 +135,7 @@ public class ActivityMonthListAdapter extends BaseAdapter {
         TextView textViewActivity;
         TextView textViewDescription;
         ImageView imageViewPerson;
+        LinearLayout linearLayoutDone;
     }
 
 }

@@ -82,7 +82,7 @@
     <string name="address">Address</string>
     <string name="relation">Relationship</string>
     <string name="illness">Any Major Illness</string>
-    <string name="notes">Notes for Caregivers</string>
+    <string name="notes">Notes for Caregiver</string>
     <string name="confirm_details">Confirm Details</string>
     <string name="view_dashboard">View Dashboard</string>
     <string name="info_discard">All your Information will be Deleted, OK to Proceed?</string>
@@ -129,6 +129,7 @@
     <string name="proceedsubmit">Cannot go Back. Please Complete Registration</string>
     <string name="validation_feedback">Please provide feedback.</string>
     <string name="validation_rating">Rating Already Added.</string>
+    <string name="create_activity">Create a Acitvity</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>

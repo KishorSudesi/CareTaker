@@ -1,30 +1,18 @@
 package com.hdfc.caretaker.fragments;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.hdfc.adapters.CarouselPagerAdapter;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Utils;
-import com.hdfc.models.ActivityModel;
-import com.hdfc.views.RoundedImageView;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,18 +28,19 @@ public class DashboardFragment extends Fragment {
     public final static float SMALL_SCALE = 0.7f; //0.7f
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
     public static ViewPager pager;
-    public static ArrayList<ActivityModel> activitiesModelArrayList = new ArrayList<>();
-    public static RoundedImageView roundedImageView;
-    private static ListView listViewActivities;
+    //public static ViewPager pager;
+    //public static ArrayList<ActivityModel> activitiesModelArrayList = new ArrayList<>();
+    //public static RoundedImageView roundedImageView;
+    /*private static ListView listViewActivities;
     private static TextView textView1;
     private static TextView textView2;
     private static TextView textView3;
-    private static TextView textView4;
-    private static Bitmap bitmap;
+    private static TextView textView4;*/
+   /* private static Bitmap bitmap;
     private static Handler threadHandler;
-    private static int iPosition;
-    private static Context context;
-    private static Utils utils;
+    private static int iPosition;*/
+    //private static Context context;
+    //private static Utils utils;
     public CarouselPagerAdapter adapter;
 
     public DashboardFragment() {
@@ -65,31 +54,31 @@ public class DashboardFragment extends Fragment {
         return fragment;
     }
 
-    public static void loadData(int intIndex) {
+  /*  public static void loadData(int intIndex) {
 
         //Utils.log(String.valueOf(intIndex), " INDEX ");
 
         try {
 
             //activitiesModelArrayList.clear();
-            /*activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
+            *//*activitiesModelArrayList = Config.dependentModels.get(intIndex).getActivityModels();
 
             ActivitiesAdapter activitiesAdapter = new ActivitiesAdapter(context, activitiesModelArrayList);
-            listViewActivities.setAdapter(activitiesAdapter);*/
+            listViewActivities.setAdapter(activitiesAdapter);*//*
 
             //activitiesAdapter.notifyDataSetChanged();
 
             //Utils.log(String.valueOf(Config.dependentModels.get(intIndex).getActivityModels().size()), " INDEX 0 ");
 
-           /* textView1.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
+           *//* textView1.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
             textView2.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));
             textView3.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthBp()));
-            textView4.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));*/
+            textView4.setText(String.valueOf(Config.dependentModels.get(intIndex).getIntHealthHeartRate()));*//*
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Override
     public void onDestroy() {
@@ -100,8 +89,8 @@ public class DashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        utils = new Utils(getActivity());
-        context = getContext();
+        //utils = new Utils(getActivity());
+        //context = getContext();
     }
 
     @Override
@@ -110,17 +99,48 @@ public class DashboardFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivities);
+        //listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivities);
 
         pager = (ViewPager) rootView.findViewById(R.id.dpndntCarousel);
 
+        ImageView leftNav = (ImageView) rootView.findViewById(R.id.left_nav);
+        ImageView rightNav = (ImageView) rootView.findViewById(R.id.right_nav);
 
-        textView1 = (TextView) rootView.findViewById(R.id.textView1);
+        adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
+
+        // Images left navigation
+        leftNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int tab = pager.getCurrentItem();
+                if (tab > 0) {
+                    tab--;
+                    pager.setCurrentItem(tab);
+                } else if (tab == 0) {
+                    pager.setCurrentItem(tab);
+                }
+            }
+        });
+
+        // Images right navigatin
+        rightNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int tab = pager.getCurrentItem();
+                tab++;
+                pager.setCurrentItem(tab);
+            }
+        });
+
+        new setAdapterTask().execute();
+
+
+      /*  textView1 = (TextView) rootView.findViewById(R.id.textView1);
         textView2 = (TextView) rootView.findViewById(R.id.textView2);
         textView3 = (TextView) rootView.findViewById(R.id.textView3);
-        textView4 = (TextView) rootView.findViewById(R.id.textView4);
+        textView4 = (TextView) rootView.findViewById(R.id.textView4);*/
 
-        roundedImageView = (RoundedImageView) rootView.findViewById(R.id.roundedImageView);
+       /* roundedImageView = (RoundedImageView) rootView.findViewById(R.id.roundedImageView);
 
         if(Config.dependentNames.size()<=1)
             roundedImageView.setVisibility(View.INVISIBLE);
@@ -141,9 +161,9 @@ public class DashboardFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
-        TextView emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
+      /*  TextView emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
 
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,7 +201,7 @@ public class DashboardFragment extends Fragment {
 
                 pager.setCurrentItem(intPosition, true);
             }
-        });
+        });*/
         //
 
         return rootView;
@@ -192,24 +212,22 @@ public class DashboardFragment extends Fragment {
         super.onResume();
 
         //listViewActivities.setEmptyView(emptyTextView);
-        loadData(0);
+        //loadData(0);
 
-        adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 
-        new setAdapterTask().execute();
     }
 
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
+    /*  public static class ThreadHandler extends Handler {
+          @Override
+          public void handleMessage(Message msg) {
 
-            if (bitmap != null)
+            *//*  if (bitmap != null)
                 roundedImageView.setImageBitmap(bitmap);
             else
-                roundedImageView.setImageBitmap(Utils.noBitmap);
+                roundedImageView.setImageBitmap(Utils.noBitmap);*//*
         }
     }
-
+*/
     private class setAdapterTask extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
             return null;
@@ -223,7 +241,11 @@ public class DashboardFragment extends Fragment {
 
             // Set current item to the middle page so we can fling to both
             // directions left and right
-            pager.setCurrentItem(0);
+
+            int i = Config.dependentModels.size();
+
+            if (i > 0)
+                pager.setCurrentItem(0);
 
             // Necessary or the pager will only have one extra page to show
             // make this at least however many pages you can see
@@ -232,23 +254,24 @@ public class DashboardFragment extends Fragment {
 
             // Set margin for pages as a negative number, so a part of next and
             // previous pages will be showed
-            //pager.setPageMargin(-200); //-200
+            // pager.setPageMargin(-110); //-200
+
         }
     }
 
-    public class BackgroundThread extends Thread {
+    /*public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {
 
-                bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+               *//* bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                         utils.replaceSpace(Config.dependentModels.get(iPosition).getStrDependentID())).getAbsolutePath(),
-                        Config.intWidth, Config.intHeight);
+                        Config.intWidth, Config.intHeight);*//*
 
-                threadHandler.sendEmptyMessage(0);
+                //threadHandler.sendEmptyMessage(0);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }

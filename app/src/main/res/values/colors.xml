@@ -18,4 +18,11 @@
     <color name="colorDarkBlue">#046abc</color>
     <color name="colorHightlight">#ff2c55</color>
     <color name="colorBlackDark">#222222</color>
+
+    <!--for tooltip only-->
+    <color name="colorAccentTooltip">#ffb20d</color>
+
+    <color name="simpletooltip_background">@color/colorAccent</color>
+    <color name="simpletooltip_text">@android:color/primary_text_light</color>
+    <color name="simpletooltip_arrow">@color/colorAccent</color>
 </resources>
