@@ -12,15 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_weight="2"
         android:padding="@dimen/text_padding"
-        android:text="@string/add_recipient"
+        android:text="@string/dependents"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/blue"
         android:textSize="25sp" />
 
     <ImageButton
-        android:id="@+id/buttonBack"
+        android:id="@+id/buttonback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -28,7 +27,6 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="27dp"
         android:layout_marginStart="27dp"
-        android:layout_weight="1"
         android:background="@color/colorWhite"
         android:src="@drawable/left_arrow_active"
         android:textAllCaps="false" />

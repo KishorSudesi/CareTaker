@@ -194,6 +194,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 utils.selectImage(dependantImgName, null, DependentDetailPersonalActivity.this);
                 isCamera = true;
             }

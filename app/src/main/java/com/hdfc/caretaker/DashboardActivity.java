@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.hdfc.app42service.App42GCMController;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.caretaker.fragments.ActivityFragment;
+import com.hdfc.caretaker.fragments.AddCareRecipientsFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountEditFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
@@ -390,7 +391,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_dashboard);
 
-        if (f instanceof MyAccountEditFragment) {
+        if (f instanceof MyAccountEditFragment||f instanceof AddCareRecipientsFragment) {
             Config.intSelectedMenu = Config.intAccountScreen;
             MyAccountFragment fragment = MyAccountFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

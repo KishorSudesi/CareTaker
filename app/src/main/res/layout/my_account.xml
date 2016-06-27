@@ -140,11 +140,11 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bottom_border_blue"
-                    android:drawableLeft="@drawable/person_icon"
+                    android:drawableLeft="@drawable/seniors_icon"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="@string/add_recipient"
+                    android:text="@string/dependents"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
