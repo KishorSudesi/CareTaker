@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -1392,17 +1393,17 @@ public class Utils {
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
-            //params.setMargins(5, 5, 5, 5);
+            params.setMargins(7, 0, 0, 0);
             bt.setLayoutParams(params);
             bt.setAllCaps(false);
-            bt.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
+            bt.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
             // bt.setTextColor(Color.parseColor("white"));
             bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
 
             if (i == 0)
-                bt.setBackgroundResource(R.color.colorBlackDark);
+                bt.setBackgroundResource(R.drawable.tab_selected);
             else
-                bt.setBackgroundResource(R.color.blue);
+                bt.setBackgroundResource(R.drawable.tab_normal);
 
 
             bt.setOnClickListener(new View.OnClickListener() {
@@ -1413,7 +1414,6 @@ public class Utils {
                     try {
                         Config.intSelectedDependent = v.getId();
                         updateTabColor(v.getId(), dynamicUserTab);
-
                         loadDependentData(intWhichScreen);
 
                     } catch (Exception e) {
@@ -1422,7 +1422,7 @@ public class Utils {
                 }
             });
 
-            bt.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
+            bt.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
 
             if (dynamicUserTab != null)
                 dynamicUserTab.addView(bt);
@@ -1572,15 +1572,16 @@ public class Utils {
 
         for (int i = 0; i < Config.dependentModels.size(); i++) {
             Button tab = (Button) v.findViewById(i);
-            tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
+            tab.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
             if (i == id) {
-                tab.setBackgroundResource(R.color.colorBlackDark);
+                tab.setBackgroundResource(R.drawable.tab_selected);
+                tab.setTypeface(null,Typeface.BOLD);
                 //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             } else {
-                tab.setBackgroundResource(R.color.blue);
+                tab.setBackgroundResource(R.drawable.tab_normal);
+                tab.setTypeface(null,Typeface.NORMAL);
                 //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             }
-
         }
     }
 

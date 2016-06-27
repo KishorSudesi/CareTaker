@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:layout_weight="1"
-        android:background="@color/colorBlackDark"
+        android:background="@color/colorWhite"
         android:clickable="true"
         android:descendantFocusability="beforeDescendants"
         android:numColumns="7" />

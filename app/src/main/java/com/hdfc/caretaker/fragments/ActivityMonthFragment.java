@@ -52,17 +52,11 @@ public class ActivityMonthFragment extends Fragment {
     }
 
     public static void reload() {
-
         try {
-
             adapter = new CalendarAdapter(context, ActivityFragment.month, ActivityFragment.year, ActivityFragment.activitiesModelArrayList);
 
             if (calendarView != null)
                 calendarView.setAdapter(adapter);
-            //adapter.notifyDataSetChanged();
-
-            /*activityListAdapter = new ActivityMonthListAdapter(context, ActivityFragment.activitiesModelArrayList);
-            listView.setAdapter(activityListAdapter);*/
 
             if (activitiesModelSelected != null)
                 activitiesModelSelected.clear();
@@ -73,8 +67,6 @@ public class ActivityMonthFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override

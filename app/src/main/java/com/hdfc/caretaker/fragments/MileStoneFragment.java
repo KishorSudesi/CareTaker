@@ -30,7 +30,6 @@ public class MileStoneFragment extends Fragment {
     }
 
     public static MileStoneFragment newInstance() {
-
         return new MileStoneFragment();
     }
 

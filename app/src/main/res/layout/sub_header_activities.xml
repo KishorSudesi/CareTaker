@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@color/colorBlackDark"
+    android:background="@color/colorWhite"
     android:orientation="horizontal"
     android:padding="@dimen/padding_general"
     android:weightSum="3">
@@ -13,11 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_weight="1"
-        android:background="@color/colorBlackDark"
+        android:background="@color/colorWhite"
         android:text="@string/list"
         android:textAllCaps="false"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/blue"
         android:textSize="20sp" />
 
 
@@ -26,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_weight="2"
-        android:background="@drawable/transprant_btn"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -36,7 +35,7 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_general"
             android:padding="@dimen/padding_general"
-            android:src="@drawable/calendar_left_arrow_selector"/>
+            android:src="@drawable/left_arrow_active"/>
 
         <TextView android:id="@+id/currentMonth"
             android:layout_width="wrap_content"
@@ -45,7 +44,7 @@
             android:gravity="center"
             android:padding="@dimen/padding_general"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/blue" />
 
         <ImageView android:id="@+id/nextMonth"
             android:layout_width="wrap_content"
@@ -53,7 +52,7 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_general"
             android:padding="@dimen/padding_general"
-            android:src="@drawable/calendar_right_arrow_selector"/>
+            android:src="@drawable/right_arrow_active"/>
     </LinearLayout>
 
 

@@ -103,7 +103,6 @@ public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
 
         final ServiceModel serviceModel = (ServiceModel) getChild(groupPosition, childPosition);
 
-
         final ViewHolder viewHolder;
         if (inflater == null) {
             inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

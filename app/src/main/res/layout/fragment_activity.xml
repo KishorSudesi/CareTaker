@@ -14,7 +14,8 @@
         android:id="@+id/namelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageline">
+        android:layout_below="@+id/imageline"
+        android:background="@color/colorBlackDark">
 
         <include
             android:id="@+id/includeDashboardList"

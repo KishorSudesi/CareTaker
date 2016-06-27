@@ -174,16 +174,17 @@ public class CalendarAdapter extends BaseAdapter {
         holder.gridcell.setTag(theday + "-" + themonth + "-" + theyear);
 
         if (mCurrentPosition == position) {
-            holder.gridcell.setTextColor(_context.getResources().getColor(
-                    R.color.colorPrimaryDark));
+            holder.gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimaryDark));
         } else {
 
             if (day_color[1].equals("GREY")) {
                 holder.gridcell.setTextColor(Color.LTGRAY);
+
             }
 
             if (day_color[1].equals("WHITE")) {
-                holder.gridcell.setTextColor(Color.WHITE);
+//                holder.gridcell.setTextColor(Color.WHITE);
+                holder.gridcell.setTextColor(Color.BLACK);
             }
 
             if (day_color[1].equals("BLUE")) {
@@ -192,7 +193,6 @@ public class CalendarAdapter extends BaseAdapter {
 
             if (day_color[1].equals("GREEN")) {
                 holder.gridcell.setTextColor(Color.RED);
-                //gridcell.setTextColor(_context.getResources().getColor(R.color.colorPrimary));
             }
         }
         if (position > 6) {

@@ -20,7 +20,6 @@ public class BasePackageFragment extends Fragment {
 
     public static BasePackageFragment newInstance() {
         BasePackageFragment fragment = new BasePackageFragment();
-
         return fragment;
     }
 
