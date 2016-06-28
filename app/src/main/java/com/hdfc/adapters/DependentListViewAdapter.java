@@ -103,7 +103,6 @@ public class DependentListViewAdapter extends BaseAdapter {
         }
 
 
-/*
         holder.linearlayoutview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +115,6 @@ public class DependentListViewAdapter extends BaseAdapter {
                 contxt.startActivity(intent);
             }
         });
-*/
 
         return vi;
     }

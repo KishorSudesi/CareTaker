@@ -2106,6 +2106,8 @@ public class Utils {
                             getString("dependent_contact_no"));
                     dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
 
+                    dependentModel.setStrDob(jsonObjectDependent.getString("dependent_dob"));
+
                     if (jsonObjectDependent.has("dependent_profile_url")) {
                         dependentModel.setStrImageUrl(jsonObjectDependent.
                                 getString("dependent_profile_url"));

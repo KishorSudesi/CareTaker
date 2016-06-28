@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
+import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
@@ -28,6 +30,7 @@ import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -37,7 +40,7 @@ import java.util.Date;
 public class DependentDetailsMedical extends AppCompatActivity {
 
     private Utils utils;
-    public static Date date = null;
+    public static Date date;
     private EditText editAge, editDiseases, editNotes;
     private String strAge, strDiseases, strNotes;
     private ProgressDialog progressDialog;
@@ -97,7 +100,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
             }
         });
 
-        buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        buttonContinue = (Button) findViewById(R.id.btnContinuedepend);
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
 
         if (buttonBack != null) {
@@ -108,7 +111,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                 }
             });
         }
-      /*  if (buttonContinue != null) {
+        if (buttonContinue != null) {
             buttonContinue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -120,7 +123,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                         skip();
                 }
             });
-        }*/
+        }
 
         utils.setStatusBarColor("#cccccc");
 
@@ -142,10 +145,12 @@ public class DependentDetailsMedical extends AppCompatActivity {
     }
     public void setButtonText() {
 
-        if (editDiseases.getText().toString().trim().length() <= 0 && editNotes.getText().toString().trim().length() <= 0)
-            buttonContinue.setText(getString(R.string.skip));
-        else
-            buttonContinue.setText(getString(R.string.submit));
+
+            if (editDiseases.getText().toString().trim().length() <= 0 && editNotes.getText().toString().trim().length() <= 0)
+                buttonContinue.setText(getString(R.string.skip));
+            else
+                buttonContinue.setText(getString(R.string.submit));
+
     }
 
     private void validateDependantMedicalData() {
@@ -595,7 +600,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                                         String strDependentDocId = jsonDocument.getDocId();
 
-                                        DependentDetailPersonal.dependentModel.setStrDependentID(strDependentDocId);
+                                        //DependentDetailPersonal.dependentModel.setStrDependentID(strDependentDocId);
 
 
                                         if (!Config.strDependentIds.contains(strDependentDocId))
@@ -975,7 +980,8 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
 //                                        SignupActivity._mViewPager.setCurrentItem(1);
                                     editregisterflag=3;
-                                    Intent next = new Intent(DependentDetailsMedical.this,SignupActivity.class);
+                                    Intent next = new Intent(DependentDetailsMedical.this,DashboardActivity.class);
+                                    Config.intSelectedMenu=Config.intRecipientScreen;
                                     startActivity(next);
                                     finish();
 
@@ -1016,9 +1022,15 @@ public class DependentDetailsMedical extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // strAge = utils.getAge(DependentDetailPersonalActivity.iDate, DependentDetailPersonalActivity.iMonth,DependentDetailPersonalActivity.iYear);
+            //strAge = utils.getAge(DependentDetailPersonal.iDate,DependentDetailPersonal.iMonth,DependentDetailPersonal.iYear);
+           String strage = DependentDetailPersonal.dependentModel.getStrDob();
+        try {
+            date = Utils.writeFormatActivityYear.parse(strage);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         strAge = utils.getAge(date);
-        editAge.setText(strAge);
+            editAge.setText(strAge);
 
         if (DependentDetailPersonal.editflag && DependentDetailPersonal.mPosition > -1) {
 
