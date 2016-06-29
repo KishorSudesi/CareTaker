@@ -87,6 +87,8 @@ public class AddCareRecipientsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        setListView();
     }
 
     @Override

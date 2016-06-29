@@ -81,6 +81,7 @@ public class DependentDetailPersonal extends AppCompatActivity{
 
 
 
+
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -330,7 +331,7 @@ public class DependentDetailPersonal extends AppCompatActivity{
 
                     boolean bContinue=true;
 
-                    if (dependentModel != null && dependentNames.contains(strContactNo)) {
+                    if (editflag) {
                        // dependentModel = new DependentModel();
 
                         //strDependantName, strRelation, strImageName, "", "",
@@ -343,13 +344,16 @@ public class DependentDetailPersonal extends AppCompatActivity{
                         dependentModel.setStrContacts(strContactNo);
                         dependentModel.setStrEmail(strEmail);
                         dependentModel.setStrDob(strDob);
-                        //dependentModel.setStrImagePath(strImageName);
-                        dependentNames.add(strContactNo);
+
+                        //
+                        dependentModel.setStrImagePath(strImageName);
+
+
 
                     } else {
-                        if (dependentModel != null
-                               /* SignupActivity.dependentNames.contains(strContactNo)
-                                && dependentModel.getStrContacts().equalsIgnoreCase(strContactNo)*/) {
+
+                        if (!Config.dependentNames.contains(strContactNo)) {
+                            dependentModel= new DependentModel();
 
                             dependentModel.setStrName(strDependantName);
                             dependentModel.setStrRelation(relation);
@@ -358,10 +362,24 @@ public class DependentDetailPersonal extends AppCompatActivity{
                             dependentModel.setStrContacts(strContactNo);
                             dependentModel.setStrEmail(strEmail);
                             dependentModel.setStrDob(strDob);
+
+                            Config.dependentNames.add(strContactNo);
+
                         } else {
                             utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                             bContinue=false;
                         }
+
+
+                       /* if (dependentModel != null &&
+                                Config.dependentNames.contains(strContactNo)
+                                && dependentModel.getStrContacts().equalsIgnoreCase(strContactNo)) {*/
+
+
+                        /*} else {
+                            utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                            bContinue=false;
+                        }*/
                     }
 
                     mProgress.dismiss();

@@ -2086,6 +2086,7 @@ public class Utils {
 
                 if (!Config.strDependentIds.contains(strDependentDocId)) {
                     Config.strDependentIds.add(strDependentDocId);
+                    Config.dependentNames.add(jsonObjectDependent.getString("dependent_contact_no"));
 
                     DependentModel dependentModel = new DependentModel();
 
@@ -2119,6 +2120,7 @@ public class Utils {
                     dependentModel.setStrDependentID(strDependentDocId);
 
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_name"));
+
 
                     //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
