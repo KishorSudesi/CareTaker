@@ -270,9 +270,6 @@ public class MyAccountFragment extends Fragment {
 
             if (bitmap != null)
                 roundedImageView.setImageBitmap(bitmap);
-            else {
-
-            }
 
             loadingPanel.setVisibility(View.GONE);
         }

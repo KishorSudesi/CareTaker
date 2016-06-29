@@ -1321,7 +1321,7 @@ public class Utils {
         if (strPath != null && !strPath.equalsIgnoreCase("")) {
             try {
                 options.inJustDecodeBounds = true;
-                original = BitmapFactory.decodeFile(strPath, options);
+              //  original = BitmapFactory.decodeFile(strPath, options);
                 options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight,
                         intWidth, intHeight);
                 options.inJustDecodeBounds = false;
@@ -1393,7 +1393,7 @@ public class Utils {
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
-            params.setMargins(7, 0, 0, 0);
+            params.setMargins(1, 10, 7, 0);
             bt.setLayoutParams(params);
             bt.setAllCaps(false);
             bt.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
@@ -1453,7 +1453,6 @@ public class Utils {
             progressDialog.show();*/
 
             StorageService storageService = new StorageService(_ctxt);
-
          /*   storageService.findDocsByKeyValue(Config.collectionNotification,
                     "user_id",
                     Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
@@ -1864,7 +1863,6 @@ public class Utils {
 
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);*/
-
             Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
             //     }
         } catch (JSONException e) {
