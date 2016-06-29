@@ -1321,7 +1321,7 @@ public class Utils {
         if (strPath != null && !strPath.equalsIgnoreCase("")) {
             try {
                 options.inJustDecodeBounds = true;
-              //  original = BitmapFactory.decodeFile(strPath, options);
+                original = BitmapFactory.decodeFile(strPath, options);
                 options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight,
                         intWidth, intHeight);
                 options.inJustDecodeBounds = false;
