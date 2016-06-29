@@ -2,6 +2,7 @@ package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,12 +17,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.CheckView;
+import com.scottyab.aescrypt.AESCrypt;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
+import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
 import com.shephertz.app42.paas.sdk.android.user.User;
 
 import org.json.JSONException;
@@ -33,6 +39,7 @@ import java.util.Date;
 public class LoginActivity extends AppCompatActivity {
 
     public static Utils utils;
+    public static AlertDialog d;
     private static ProgressDialog progressDialog;
     private static String userName;
     ArrayList<DependentModel> dependentModels = Config.dependentModels;
@@ -49,11 +56,13 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonBack;
     private char[] res = new char[4];
     private String email;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -149,7 +158,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // Create the dialog (without showing)
-        final AlertDialog d = new AlertDialog.Builder(this).setTitle("Forgot Password?")
+        d = new AlertDialog.Builder(this).setTitle("Forgot Password?")
                 .setPositiveButton("OK", null)
                 .setNegativeButton("CANCEL", null).setView(promptsView).create();
 
@@ -197,7 +206,9 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            UserService userService = new UserService(LoginActivity.this);
+            fetchCustomer(progressDialog, userEmail, 2);
+
+           /* UserService userService = new UserService(LoginActivity.this);
 
 
             userService.resetUserPassword(userEmail, new App42CallBack() {
@@ -220,10 +231,128 @@ public class LoginActivity extends AppCompatActivity {
                         e1.printStackTrace();
                     }
                 }
-            });
+            });*/
 
         } else utils.toast(2, 2, getString(R.string.warning_internet));
 
+    }
+
+    private void resetPasswordApp42(String userEmail) {
+
+        UserService userService = new UserService(LoginActivity.this);
+
+        //System.out.println("Check here 2");
+
+        userService.resetUserPassword(userEmail, new App42CallBack() {
+            @Override
+            public void onSuccess(Object o) {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                System.out.println("Check here :" + (o != null));
+                if (o != null) {
+                    // System.out.println("Check here 2");
+                    d.dismiss();
+
+                    utils.toast(1, 1, "your password send to mail id");
+                } else {
+                    utils.toast(1, 1, getString(R.string.warning_internet));
+                }
+            }
+
+            @Override
+            public void onException(Exception e) {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                if (e != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(e.getMessage());
+                        JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                        String strMess = jsonObjectError.getString("details");
+                        utils.toast(2, 2, strMess);
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    utils.toast(1, 1, getString(R.string.warning_internet));
+                }
+            }
+        });
+    }
+
+
+    private void fetchCustomer(final ProgressDialog progressDialog, final String strUserName, final int iFlag) {
+
+        if (utils.isConnectingToInternet()) {
+
+            StorageService storageService = new StorageService(LoginActivity.this);
+
+            Query q1 = QueryBuilder.build("customer_email", strUserName.toLowerCase(), QueryBuilder.
+                    Operator.EQUALS);
+
+            storageService.findDocsByQueryOrderBy(Config.collectionCustomer, q1, 1, 0, "updated_date", 1, new App42CallBack() {
+                @Override
+                public void onSuccess(Object o) {
+                    try {
+
+                        Storage storage = (Storage) o;
+
+                        if (storage.isResponseSuccess() && storage.getJsonDocList().size() > 0) {
+
+                            if (iFlag == 1) {
+
+                                Storage.JSONDocument jsonDocument = storage.getJsonDocList().
+                                        get(0);
+                                String strDocument = jsonDocument.getJsonDoc();
+                                String _strCustomerId = jsonDocument.getDocId();
+
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("CUSTOMER_ID", AESCrypt.encrypt(
+                                        Config.string, _strCustomerId));
+                                editor.apply();
+                                utils.createCustomerModel(strDocument, _strCustomerId);
+                                //Config.providerModel.setStrProviderId(_strProviderId);
+                                goBack();
+                            } else {
+                                resetPasswordApp42(strUserName);
+                            }
+
+                        } else {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            if (iFlag == 1)
+                                utils.toast(2, 2, getString(R.string.invalid_credentials));
+                            else
+                                utils.toast(2, 2, getString(R.string.error_invalid_email));
+                        }
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        utils.toast(2, 2, getString(R.string.warning_internet));
+                    }
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    try {
+                        if (e != null) {
+                            Utils.log(e.getMessage(), " Failure ");
+                            if (iFlag == 1)
+                                utils.toast(2, 2, getString(R.string.invalid_credentials));
+                            else
+                                utils.toast(2, 2, getString(R.string.error_invalid_email));
+                        } else {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 
 

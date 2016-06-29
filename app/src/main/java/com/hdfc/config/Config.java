@@ -187,8 +187,10 @@ public class Config {
     public static String strUserName = "";
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
     public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
+    public static ArrayList<String> customerEmail = new ArrayList<>();
 
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
+
 }

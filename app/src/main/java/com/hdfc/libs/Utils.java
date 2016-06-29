@@ -1864,6 +1864,8 @@ public class Utils {
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);*/
             Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
+
+
             //     }
         } catch (JSONException e) {
             e.printStackTrace();

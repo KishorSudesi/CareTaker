@@ -129,6 +129,7 @@ public class DashboardFragment extends Fragment {
                 int tab = pager.getCurrentItem();
                 tab++;
                 pager.setCurrentItem(tab);
+
             }
         });
 
