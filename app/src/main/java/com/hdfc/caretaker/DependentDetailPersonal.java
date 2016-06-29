@@ -44,6 +44,7 @@ import com.hdfc.views.RoundedImageView;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -76,6 +77,8 @@ public class DependentDetailPersonal extends AppCompatActivity{
     public static String strContactNo, strAddress, strEmail, strDob, relation;
     public static String strDependantName = "";
     public static String dependantImgName = "";
+    public static ArrayList<String> dependentNames = new ArrayList<>();
+
 
 
 
@@ -90,10 +93,10 @@ public class DependentDetailPersonal extends AppCompatActivity{
 
             String strDate = Utils.writeFormatActivityYear.format(date);
             //String _strDate = Utils.readFormat.format(date);
-            DependentDetailsMedical.date = date;
+           // DependentDetailsMedical.date = date;
             editTextDate.setText(strDate);
 
-            /*iDate = date.getDate();
+           /* iDate = date.getDate();
             iMonth = date.getMonth();
             iYear = date.getYear();*/
         }
@@ -328,8 +331,8 @@ public class DependentDetailPersonal extends AppCompatActivity{
 
                     boolean bContinue=true;
 
-                    if (!SignupActivity.dependentNames.contains(strContactNo)) {
-                        dependentModel = new DependentModel();
+                    if (editflag) {
+                       // dependentModel = new DependentModel();
 
                         //strDependantName, strRelation, strImageName, "", "",
                         // strAddress, strContactNo, strEmail, "", 0
@@ -341,13 +344,16 @@ public class DependentDetailPersonal extends AppCompatActivity{
                         dependentModel.setStrContacts(strContactNo);
                         dependentModel.setStrEmail(strEmail);
                         dependentModel.setStrDob(strDob);
-                        //dependentModel.setStrImagePath(strImageName);
-                        SignupActivity.dependentNames.add(strContactNo);
+
+                        //
+                        dependentModel.setStrImagePath(strImageName);
+
+
 
                     } else {
-                        if (dependentModel != null &&
-                                SignupActivity.dependentNames.contains(strContactNo)
-                                && dependentModel.getStrContacts().equalsIgnoreCase(strContactNo)) {
+
+                        if (!Config.dependentNames.contains(strContactNo)) {
+                            dependentModel= new DependentModel();
 
                             dependentModel.setStrName(strDependantName);
                             dependentModel.setStrRelation(relation);
@@ -356,10 +362,24 @@ public class DependentDetailPersonal extends AppCompatActivity{
                             dependentModel.setStrContacts(strContactNo);
                             dependentModel.setStrEmail(strEmail);
                             dependentModel.setStrDob(strDob);
+
+                            Config.dependentNames.add(strContactNo);
+
                         } else {
                             utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
                             bContinue=false;
                         }
+
+
+                       /* if (dependentModel != null &&
+                                Config.dependentNames.contains(strContactNo)
+                                && dependentModel.getStrContacts().equalsIgnoreCase(strContactNo)) {*/
+
+
+                        /*} else {
+                            utils.toast(1, 1, getString(R.string.dpndnt_details_not_saved));
+                            bContinue=false;
+                        }*/
                     }
 
                     mProgress.dismiss();

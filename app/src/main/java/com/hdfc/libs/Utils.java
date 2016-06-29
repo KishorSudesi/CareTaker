@@ -2088,6 +2088,7 @@ public class Utils {
 
                 if (!Config.strDependentIds.contains(strDependentDocId)) {
                     Config.strDependentIds.add(strDependentDocId);
+                    Config.dependentNames.add(jsonObjectDependent.getString("dependent_contact_no"));
 
                     DependentModel dependentModel = new DependentModel();
 
@@ -2106,6 +2107,8 @@ public class Utils {
                             getString("dependent_contact_no"));
                     dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
 
+                    dependentModel.setStrDob(jsonObjectDependent.getString("dependent_dob"));
+
                     if (jsonObjectDependent.has("dependent_profile_url")) {
                         dependentModel.setStrImageUrl(jsonObjectDependent.
                                 getString("dependent_profile_url"));
@@ -2119,6 +2122,7 @@ public class Utils {
                     dependentModel.setStrDependentID(strDependentDocId);
 
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_name"));
+
 
                     //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 

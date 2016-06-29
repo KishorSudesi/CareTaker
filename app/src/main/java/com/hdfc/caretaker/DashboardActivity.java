@@ -229,6 +229,10 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             goToAccount();
         }
 
+        if (Config.intSelectedMenu == Config.intRecipientScreen) {
+            //Config.intSelectedMenu = 0;
+            goToRecipints();
+        }
         if (Config.intSelectedMenu == Config.intActivityScreen ||
                 Config.intSelectedMenu == Config.intListActivityScreen) {
             // Config.intSelectedMenu = 0;
@@ -346,6 +350,21 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         //}
     }
 
+    public void goToRecipints() {
+        //if (Config.intSelectedMenu != Config.intAccountScreen) {
+        Config.intSelectedMenu = Config.intRecipientScreen;
+        AddCareRecipientsFragment fragment = AddCareRecipientsFragment.newInstance();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_dashboard, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        setMenu();
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+        buttonAccount.setImageDrawable(getResources().getDrawable(R.mipmap.my_account_active));
+        textViewAccount.setTextColor(getResources().getColor(R.color.blue));
+        //}
+    }
     private void goToActivity(boolean bReload) {
 
         //if (Config.intSelectedMenu == Config.intListActivityScreen ||

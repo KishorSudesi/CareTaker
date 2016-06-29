@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
+import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
@@ -28,16 +30,19 @@ import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by Admin on 24-06-2016.
  */
-public class DependentDetailsMedical extends AppCompatActivity {
+public class
+DependentDetailsMedical extends AppCompatActivity {
 
     private Utils utils;
-    public static Date date = null;
+    public static Date date;
     private EditText editAge, editDiseases, editNotes;
     private String strAge, strDiseases, strNotes;
     private ProgressDialog progressDialog;
@@ -97,7 +102,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
             }
         });
 
-        buttonContinue = (Button) findViewById(R.id.buttonContinue);
+        buttonContinue = (Button) findViewById(R.id.btnContinuedepend);
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
 
         if (buttonBack != null) {
@@ -108,7 +113,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                 }
             });
         }
-      /*  if (buttonContinue != null) {
+        if (buttonContinue != null) {
             buttonContinue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -120,7 +125,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                         skip();
                 }
             });
-        }*/
+        }
 
         utils.setStatusBarColor("#cccccc");
 
@@ -142,10 +147,12 @@ public class DependentDetailsMedical extends AppCompatActivity {
     }
     public void setButtonText() {
 
-        if (editDiseases.getText().toString().trim().length() <= 0 && editNotes.getText().toString().trim().length() <= 0)
-            buttonContinue.setText(getString(R.string.skip));
-        else
-            buttonContinue.setText(getString(R.string.submit));
+
+            if (editDiseases.getText().toString().trim().length() <= 0 && editNotes.getText().toString().trim().length() <= 0)
+                buttonContinue.setText(getString(R.string.skip));
+            else
+                buttonContinue.setText(getString(R.string.submit));
+
     }
 
     private void validateDependantMedicalData() {
@@ -379,7 +386,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                 //Utils.log(" 2 ", " IN 0");
 
                 userService.onCreateUser(DependentDetailPersonal.dependentModel.getStrContacts(),
-                        ActivityGuruPersonalInfo.strPass, DependentDetailPersonal.dependentModel.getStrEmail(),
+                        "123", DependentDetailPersonal.dependentModel.getStrEmail(),
                         new App42CallBack() {
                             @Override
                             public void onSuccess(Object o) {
@@ -477,6 +484,18 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                     Utils.log(response.toString()," TAG ");
 
                                     if (response != null) {
+
+                                        try {
+
+                                            File newFile = new File(DependentDetailPersonal.dependentModel.getStrImagePath());
+                                            File renameFile= utils.getInternalFileImages(
+                                                    DependentDetailPersonal.dependentModel.getStrDependentID());
+
+                                            utils.moveFile(newFile, renameFile);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
                                         Upload upload = (Upload) response;
                                         ArrayList<Upload.File> fileList = upload.getFileList();
@@ -595,7 +614,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                                         String strDependentDocId = jsonDocument.getDocId();
 
-                                        DependentDetailPersonal.dependentModel.setStrDependentID(strDependentDocId);
+                                        //DependentDetailPersonal.dependentModel.setStrDependentID(strDependentDocId);
 
 
                                         if (!Config.strDependentIds.contains(strDependentDocId))
@@ -603,26 +622,32 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                                         idregisterflag = 3;
 
-                                        SignupActivity.dependentModels.add(DependentDetailPersonal.dependentModel);
+                                        Config.dependentModels.add(DependentDetailPersonal.dependentModel);
 
-                                        if (SignupActivity.dependentModels.size() == 2) {
+                                        DependentDetailPersonal.dependentModel = null;
+                                        Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
+                                        Config.intSelectedMenu=Config.intRecipientScreen;
+                                        startActivity(next);
+                                        finish();
+
+                                      /*  if (SignupActivity.dependentModels.size() == 2) {
                                             confirmRegister();
                                         } else {
                                             //createDependentUser();
 
 
                                             DependentDetailPersonal.dependentModel = null;
-                                            Intent next = new Intent(DependentDetailsMedical.this, SignupActivity.class);
+                                            Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
+                                            Config.intSelectedMenu=Config.intRecipientScreen;*/
 
                                             if (progressDialog.isShowing())
                                                 progressDialog.dismiss();
 
                                             utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
 
-                                            startActivity(next);
-                                            finish();
 
-                                        }
+
+                                      //  }
 
                                         //createDependentUser(strDependentEmail);
                                     } else {
@@ -682,82 +707,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
         }
     }
 
-    private void confirmRegister() {
 
-        try {
-
-
-            if (utils.isConnectingToInternet()) {
-
-                StorageService storageService = new StorageService(DependentDetailsMedical.this);
-
-                JSONObject jsonToUpdate = new JSONObject();
-
-                jsonToUpdate.put("customer_register", true);
-
-                storageService.updateDocs(jsonToUpdate,
-                        Config.customerModel.getStrCustomerID(),
-                        Config.collectionCustomer, new App42CallBack() {
-                            @Override
-                            public void onSuccess(Object o) {
-                                try {
-                                    if (o != null) {
-                                        Utils.log(o.toString(), "LOG");
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-
-
-                                        DependentDetailPersonalActivity.dependentModel = null;
-                                        Intent next = new Intent(DependentDetailsMedical.this, SignupActivity.class);
-
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-
-                                        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
-
-                                        startActivity(next);
-                                        finish();
-                                    } else {
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                } catch (Exception e1) {
-                                    utils.toast(2, 2, getString(R.string.error));
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    e1.printStackTrace();
-                                }
-
-                            }
-
-                            @Override
-                            public void onException(Exception e) {
-
-                                try {
-
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-
-                                    if (e != null) {
-                                        Utils.log(e.toString(),"TAG");
-                                        utils.toast(2, 2, getString(R.string.error));
-                                    }else {
-                                        utils.toast(2, 2, getString(R.string.warning_internet));
-                                    }
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
-                                }
-
-
-                            }
-                        });
-
-            }
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void deleteImage() {
 
@@ -858,6 +808,18 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                         Utils.log(response.toString()," Error ");
 
                                         if (response != null) {
+
+                                            try {
+
+                                                File newFile = new File(DependentDetailPersonal.dependentModel.getStrImagePath());
+                                                File renameFile = utils.getInternalFileImages(
+                                                        DependentDetailPersonal.dependentModel.getStrDependentID());
+
+                                                utils.moveFile(newFile, renameFile);
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
 
                                             Upload upload = (Upload) response;
                                             ArrayList<Upload.File> fileList = upload.getFileList();
@@ -967,6 +929,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                     progressDialog.dismiss();
 
                                 if (o != null) {
+
                                     Utils.log(o.toString(), "LOG");
 
                                     utils.toast(1, 1, getString(R.string.your_details_saved));
@@ -975,7 +938,8 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
 //                                        SignupActivity._mViewPager.setCurrentItem(1);
                                     editregisterflag=3;
-                                    Intent next = new Intent(DependentDetailsMedical.this,SignupActivity.class);
+                                    Intent next = new Intent(DependentDetailsMedical.this,DashboardActivity.class);
+                                    Config.intSelectedMenu=Config.intRecipientScreen;
                                     startActivity(next);
                                     finish();
 
@@ -1016,9 +980,15 @@ public class DependentDetailsMedical extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // strAge = utils.getAge(DependentDetailPersonalActivity.iDate, DependentDetailPersonalActivity.iMonth,DependentDetailPersonalActivity.iYear);
+            //strAge = utils.getAge(DependentDetailPersonal.iDate,DependentDetailPersonal.iMonth,DependentDetailPersonal.iYear);
+           String strage = DependentDetailPersonal.dependentModel.getStrDob();
+        try {
+            date = Utils.writeFormatActivityYear.parse(strage);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         strAge = utils.getAge(date);
-        editAge.setText(strAge);
+            editAge.setText(strAge);
 
         if (DependentDetailPersonal.editflag && DependentDetailPersonal.mPosition > -1) {
 

@@ -153,6 +153,7 @@ public class Config {
     public static int intActivityScreen = 5;
     public static int intListActivityScreen = 6;
     public static int intAccountScreen = 3;
+    public static int intRecipientScreen = 8;
     public static int intDashboardScreen = 1;
     public static int intReportsScreen = 4;
     public static int intScreenWidth = 0;

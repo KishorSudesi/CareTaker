@@ -22,7 +22,9 @@
         android:id="@+id/addrecipientlistview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/background">
+        android:layout_below="@+id/background"
+        android:layout_marginBottom="60dp"
+       >
 
     </ListView>
 
@@ -41,7 +43,6 @@
         android:text="@string/add_recipient"
         android:textAllCaps="false"
         android:textSize="20sp"
-        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:textColor="@color/colorWhite" />
 </RelativeLayout>
