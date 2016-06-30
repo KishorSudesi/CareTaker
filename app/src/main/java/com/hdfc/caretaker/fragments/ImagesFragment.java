@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.hdfc.caretaker.DependentDetailPersonal;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -51,6 +52,9 @@ public class ImagesFragment extends Fragment {
             Utils.log(" 3 ", " IN ");
 
             //loadingPanel.setVisibility(View.VISIBLE);
+
+
+         //   Config.dependentModels.add(DependentDetailPersonal.dependentModel);
 
             Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                     utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),

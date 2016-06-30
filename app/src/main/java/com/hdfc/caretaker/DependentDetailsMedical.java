@@ -485,17 +485,7 @@ DependentDetailsMedical extends AppCompatActivity {
 
                                     if (response != null) {
 
-                                        try {
 
-                                            File newFile = new File(DependentDetailPersonal.dependentModel.getStrImagePath());
-                                            File renameFile= utils.getInternalFileImages(
-                                                    DependentDetailPersonal.dependentModel.getStrDependentID());
-
-                                            utils.moveFile(newFile, renameFile);
-
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
 
                                         Upload upload = (Upload) response;
                                         ArrayList<Upload.File> fileList = upload.getFileList();
@@ -614,7 +604,19 @@ DependentDetailsMedical extends AppCompatActivity {
 
                                         String strDependentDocId = jsonDocument.getDocId();
 
-                                        //DependentDetailPersonal.dependentModel.setStrDependentID(strDependentDocId);
+                                        DependentDetailPersonal.dependentModel.setStrDependentID(strDependentDocId);
+
+                                        try {
+
+                                            File newFile = new File(DependentDetailPersonal.dependentModel.getStrImagePath());
+                                            File renameFile= utils.getInternalFileImages(
+                                                    DependentDetailPersonal.dependentModel.getStrDependentID());
+
+                                            utils.moveFile(newFile, renameFile);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
 
                                         if (!Config.strDependentIds.contains(strDependentDocId))
