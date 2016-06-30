@@ -5,10 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.ImagesFragment;
+import com.hdfc.config.Config;
 import com.hdfc.views.MyLinearView;
 
 public class CarouselPagerAdapter extends FragmentPagerAdapter implements
@@ -66,6 +68,17 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
 
     @Override
     public void onPageSelected(int position) {
+        if (position == 0) {
+            DashboardFragment.leftNav.setVisibility(View.GONE);
+        } else {
+            DashboardFragment.leftNav.setVisibility(View.VISIBLE);
+        }
+
+        if (position == Config.dependentModels.size() - 1) {
+            DashboardFragment.rightNav.setVisibility(View.GONE);
+        } else {
+            DashboardFragment.rightNav.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

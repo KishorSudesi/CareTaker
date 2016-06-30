@@ -27,6 +27,7 @@ public class DashboardFragment extends Fragment {
     public final static float BIG_SCALE = 1.0f; //1.0f
     public final static float SMALL_SCALE = 0.7f; //0.7f
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
+    public static ImageView leftNav, rightNav;
     public static ViewPager pager;
     //public static ViewPager pager;
     //public static ArrayList<ActivityModel> activitiesModelArrayList = new ArrayList<>();
@@ -103,8 +104,8 @@ public class DashboardFragment extends Fragment {
 
         pager = (ViewPager) rootView.findViewById(R.id.dpndntCarousel);
 
-        ImageView leftNav = (ImageView) rootView.findViewById(R.id.left_nav);
-        ImageView rightNav = (ImageView) rootView.findViewById(R.id.right_nav);
+        leftNav = (ImageView) rootView.findViewById(R.id.left_nav);
+        rightNav = (ImageView) rootView.findViewById(R.id.right_nav);
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 
