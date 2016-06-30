@@ -35,6 +35,7 @@ import com.hdfc.models.FieldModel;
 import com.hdfc.views.TouchImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.imageProcessor.Image;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
@@ -78,6 +79,8 @@ public class CompletedActivity extends AppCompatActivity {
     private int[] locationOnScreen = new int[2];
     private ScrollView sv;
     private TextView tvTasks;
+    private TextView smileyMessage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +137,14 @@ public class CompletedActivity extends AppCompatActivity {
 
             sv = (ScrollView) findViewById(R.id.scrollView);
 
+            smileyMessage = (TextView)findViewById(R.id.smileyMessage);
+
             if (textViewAddRating != null) {
+
+                if (activityModel.getFeedBackModels() != null && activityModel.getFeedBackModels().size() > 0 && activityModel.isRatingAddedByCutsm()) {
+                    textViewAddRating.setVisibility(View.GONE);
+                }
+
                 textViewAddRating.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -638,6 +648,22 @@ public class CompletedActivity extends AppCompatActivity {
     public void setRating(View v) {
 
         iRating = Integer.parseInt((String) v.getTag());
+
+        if(iRating == 1){
+            smileyMessage.setText("Sorry to Hear that, New Zeal Team will contact you shortly");
+        }
+        if(iRating == 2){
+            smileyMessage.setText("Not Happy with us, Your Feedback will Help us Improve.");
+        }
+        if(iRating == 3){
+            smileyMessage.setText("Something went wrong-Tell us more.");
+        }
+        if(iRating == 4){
+            smileyMessage.setVisibility(View.INVISIBLE);
+        }
+        if(iRating == 5){
+            smileyMessage.setVisibility(View.INVISIBLE);
+        }
 
         if (previousViewButton != null)
             previousViewButton.setBackgroundDrawable(null);

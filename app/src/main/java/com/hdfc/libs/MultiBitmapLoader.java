@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import com.hdfc.config.Config;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by balamurugan@adstringo.in on 3/5/2016.

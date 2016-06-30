@@ -207,6 +207,14 @@
                     android:padding="10dp"
                     android:text="@string/rating_add" />
 
+                <TextView
+                    android:id="@+id/smileyMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red"
+                    android:textAlignment="center"
+                    />
+
                 <LinearLayout
                     android:id="@+id/linearLayoutRatingAdd"
                     android:layout_width="match_parent"

@@ -677,6 +677,15 @@ public class Utils {
 
             //Config.serviceModels.clear();
             Config.dependentNames.clear();
+            Config.dependentModels.clear();
+            Config.strDependentIds.clear();
+
+            Config.categoryServiceModels.clear();
+            Config.strNotificationIds.clear();
+            Config.strServcieIds.clear();
+            Config.strActivityIds.clear();
+            Config.strProviderIds.clear();
+            Config.strProviderIdsAdded.clear();
 
             Config.intSelectedDependent = 0;
 
@@ -2489,7 +2498,7 @@ public class Utils {
 
                     int iPosition = Config.strDependentIds.indexOf(jsonObjectActivity.getString("dependent_id"));
 
-                    if (iPosition > -1)
+                    if (iPosition > -1 && iPosition<Config.dependentModels.size())
                         Config.dependentModels.get(iPosition).setMonthActivityModel(activityModel);
 
                     if (!Config.strActivityIds.contains(strActivityId))

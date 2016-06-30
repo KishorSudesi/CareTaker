@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -29,6 +31,7 @@ import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.RoundedImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 
@@ -268,20 +271,28 @@ public class MyAccountFragment extends Fragment {
 //            progressDialog.dismiss();
             DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-            if (bitmap != null)
+            if (bitmap != null) {
                 roundedImageView.setImageBitmap(bitmap);
+            }
 
             loadingPanel.setVisibility(View.GONE);
         }
+    }
+
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {
-
                 //if(Config.customerModel!=null) {
                     File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+                    System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
                     bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 //}
 
