@@ -650,12 +650,15 @@ public class CompletedActivity extends AppCompatActivity {
         iRating = Integer.parseInt((String) v.getTag());
 
         if(iRating == 1){
+            smileyMessage.setVisibility(View.VISIBLE);
             smileyMessage.setText("Sorry to Hear that, New Zeal Team will contact you shortly");
         }
         if(iRating == 2){
+            smileyMessage.setVisibility(View.VISIBLE);
             smileyMessage.setText("Not Happy with us, Your Feedback will Help us Improve.");
         }
         if(iRating == 3){
+            smileyMessage.setVisibility(View.VISIBLE);
             smileyMessage.setText("Something went wrong-Tell us more.");
         }
         if(iRating == 4){
