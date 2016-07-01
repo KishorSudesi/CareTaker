@@ -687,6 +687,8 @@ public class Utils {
             Config.strProviderIds.clear();
             Config.strProviderIdsAdded.clear();
 
+
+
             Config.intSelectedDependent = 0;
 
             Config.boolIsLoggedIn = false;

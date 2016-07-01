@@ -74,7 +74,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
             DashboardFragment.leftNav.setVisibility(View.VISIBLE);
         }
 
-        if (position == Config.dependentModels.size() - 1) {
+        if (position == (Config.dependentModels.size() - 1)) {
             DashboardFragment.rightNav.setVisibility(View.GONE);
         } else {
             DashboardFragment.rightNav.setVisibility(View.VISIBLE);
@@ -90,9 +90,7 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
         //Utils.log(String.valueOf(fm.findFragmentByTag(this.getFragmentTag(position))+ " : " + position), " NPE ");
 
     return (MyLinearView)
-            fm.findFragmentByTag(this.getFragmentTag(position))
-                    .getView().findViewById(R.id.root);
-
+            fm.findFragmentByTag(this.getFragmentTag(position)).getView().findViewById(R.id.root);
     }
 
     private String getFragmentTag(int position) {
