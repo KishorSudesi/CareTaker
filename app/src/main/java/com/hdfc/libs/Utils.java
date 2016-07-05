@@ -1120,7 +1120,6 @@ public class Utils {
         customerImageUri = Uri.fromFile(file);
         if (file != null) {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, customerImageUri);
-
             if (fragment != null)
                 fragment.startActivityForResult(cameraIntent, Config.START_CAMERA_REQUEST_CODE);
             else
@@ -1350,7 +1349,6 @@ public class Utils {
         int intSampleHeight = 0;
         if (strPath != null && !strPath.equalsIgnoreCase("")) {
             try {
-                //
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(strPath, options);
                 options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight,

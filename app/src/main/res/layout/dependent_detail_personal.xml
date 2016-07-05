@@ -143,6 +143,7 @@
                     android:background="@drawable/button_blue_white_border"
                     android:text="@string/string_continue"
                     android:textAllCaps="false"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/colorWhite" />
 
             </LinearLayout>

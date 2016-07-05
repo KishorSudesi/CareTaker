@@ -11,6 +11,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/no_ratings"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="gone" />
 
     <ListView

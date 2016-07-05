@@ -52,8 +52,6 @@ public class ImagesFragment extends Fragment {
             Utils.log(" 3 ", " IN ");
 
             //loadingPanel.setVisibility(View.VISIBLE);
-
-
          //   Config.dependentModels.add(DependentDetailPersonal.dependentModel);
 
             Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(

@@ -18,6 +18,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
                 android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:padding="@dimen/padding_general"
                 android:text="Currently Active" />
 
@@ -28,13 +29,14 @@
                 android:gravity="center"
                 android:padding="@dimen/padding_general"
                 android:text="Base Package"
-                android:textSize="28sp" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/padding_general"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="10 of 25 Services Available" />
 
             <Button
@@ -46,6 +48,8 @@
                 android:layout_marginTop="25dp"
                 android:background="@drawable/button_success"
                 android:text="Add New Services"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
                 android:textAllCaps="false" />
 
         </LinearLayout>

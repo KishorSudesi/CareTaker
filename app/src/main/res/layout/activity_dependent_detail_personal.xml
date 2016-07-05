@@ -87,7 +87,6 @@
                 android:inputType="textPersonName"
                 android:padding="10dp" />
 
-
             <EditText
                 android:id="@+id/editContactNo"
                 android:layout_width="match_parent"
@@ -143,6 +142,7 @@
                 android:background="@drawable/button_blue_white_border"
                 android:text="@string/string_continue"
                 android:textAllCaps="false"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/colorWhite" />
 
         </LinearLayout>

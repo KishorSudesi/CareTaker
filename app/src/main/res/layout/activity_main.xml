@@ -33,7 +33,7 @@
         android:layout_marginTop="110dp"
         android:text="@string/express_care"
         android:textColor="@color/colorWhite"
-        android:textSize="18sp" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/buttonLovedOne"
@@ -48,6 +48,7 @@
         android:onClick="goToLogin"
         android:text="@string/take_me_in"
         android:textAllCaps="false"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/blue" />
 
     <Button
@@ -62,6 +63,7 @@
         android:onClick="goToWho"
         android:text="@string/im_new_here"
         android:textAllCaps="false"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorWhite" />
 
 

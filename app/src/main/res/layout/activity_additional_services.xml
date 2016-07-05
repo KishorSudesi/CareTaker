@@ -89,6 +89,7 @@
         android:enabled="false"
         android:text="@string/get_services"
         android:textAllCaps="false"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorWhite" />
 
 </RelativeLayout>

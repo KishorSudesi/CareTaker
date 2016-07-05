@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/header_back"></include>
+    <include layout="@layout/header_back">
+    </include>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -60,6 +61,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Senior assistance with daily task" />
 
                     <TextView
@@ -67,6 +69,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Medical Checkups" />
 
                     <TextView
@@ -74,6 +77,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Senior assistance with daily task" />
                 </LinearLayout>
 
@@ -124,6 +128,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="All services of base package" />
 
                     <TextView
@@ -131,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Financial services" />
 
                     <TextView
@@ -138,6 +144,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@mipmap/tick"
                         android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Will creation and more" />
                 </LinearLayout>
 

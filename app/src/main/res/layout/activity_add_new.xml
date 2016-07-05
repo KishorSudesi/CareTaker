@@ -69,14 +69,14 @@
             android:background="@color/blue" />
 
         <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_above="@+id/buttonContinue"
             android:layout_below="@+id/textViewColor"
-        android:gravity="center"
-        android:text="@string/no_services"
-        android:visibility="gone" />
+            android:gravity="center"
+            android:text="@string/no_services"
+            android:visibility="gone" />
 
     <ExpandableListView
         android:id="@+id/listView1"
@@ -100,7 +100,7 @@
         android:text="Continue"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite"
-        android:textSize="20sp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="gone" />
     </RelativeLayout>
 
