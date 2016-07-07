@@ -2,7 +2,6 @@ package com.hdfc.dbconfig;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
 
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -22,20 +21,19 @@ import java.util.Date;
 public class DbHelper extends SQLiteOpenHelper {
 
     public static final String strTableNameCollection = "collections";
-    public static final String strTableNameFiles = "files";
-    private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "caretaker";
-    private static String dbPass = ""; //"hdfc@12#$";//
-    private static DbHelper dbInstance = null;
-    private static SQLiteDatabase db;
     public static final String COLUMN_OBJECT_ID = "object_id";
     public static final String COLUMN_UPDATE_DATE = "updated_date";
     public static final String COLUMN_DOCUMENT = "document";
     public static final String COLUMN_COLLECTION_NAME = "collection_name";
     public static final String COLUMN_DOC_DATE = "doc_date";
     public static final String COLUMN_STATUS = "status";
-
     public static final String COLUMN_DEPENDENT_ID = "dependent_id";
+    static final String strTableNameFiles = "files";
+    private static final int DATABASE_VERSION = 1;
+    private static String dbPass = ""; //"hdfc@12#$";//
+    private static DbHelper dbInstance = null;
+    private static SQLiteDatabase db;
     //private Utils utils;
     private String strCollectionsQuery = "CREATE TABLE " + strTableNameCollection + " ( id integer primary key autoincrement," +
             " object_id VARCHAR(50), updated_date integer, document text, collection_name VARCHAR(50),dependent_id VARCHAR(50),status integer,doc_date date)";
@@ -161,14 +159,12 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    Cursor fetchFromSelect(String tbl, String where) {
+    Cursor rawQuery(String query) {
 
         if (db != null && !db.isOpen())
             open();
         //Cursor cur = null;
         //try {
-        String query = "select * from " + strTableNameCollection + where;
-        Log.i("TAG","query :"+query);
         return db.rawQuery(query, null);
         /*} catch (Exception e) {
             return null;
@@ -299,16 +295,16 @@ public class DbHelper extends SQLiteOpenHelper {
         db.setTransactionSuccessful();
     }
 
-    public android.database.Cursor getMaxDate(String collectionName) {
+   /* public android.database.Cursor getMaxDate(String collectionName) {
         if (db != null && !db.isOpen())
             open();
-        String query = "Select MAX(" + COLUMN_UPDATE_DATE + ") from " + strTableNameCollection + " where " + COLUMN_COLLECTION_NAME + " = '" + collectionName + "'";
+
         android.database.Cursor cursor = db.rawQuery(query, null);
 
 
         return cursor;
-    }
-    public android.database.Cursor getMaxDate(String collectionName,String strDependentsId) {
+    }*/
+   /* public android.database.Cursor getMaxDate(String collectionName,String strDependentsId) {
         if (db != null && !db.isOpen())
             open();
         String query = "Select MAX(" + COLUMN_UPDATE_DATE + ") from " + strTableNameCollection + " where " + COLUMN_COLLECTION_NAME + " = '" + collectionName + "' AND "+ COLUMN_DEPENDENT_ID + " = '" + strDependentsId + "'";
@@ -316,5 +312,5 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
         return cursor;
-    }
+    }*/
 }

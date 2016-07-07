@@ -49,9 +49,7 @@ public class App42GCMService extends IntentService {
     private static final String Alert = "alert";
     public static GoogleCloudMessaging gcm = null;
     // public static final String ExtraMessage = "message";
-    static int msgCount = 0;
-    private final String title = "NewZeal";
-    private NotificationManager mNotificationManager = null;
+    private static int msgCount = 0;
     private Utils utils;
     private SessionManager sessionManager;
 
@@ -119,10 +117,10 @@ public class App42GCMService extends IntentService {
                     e.printStackTrace();
                 }
 
-                Intent in=new Intent(App42GCMService.this,UpdateService.class);
+               /* Intent in=new Intent(App42GCMService.this,UpdateService.class);
                 in.putExtra("message",message);
                 startService(in);
-                showNotification(strMessage, intent);
+                showNotification(strMessage, intent);*/
 
             } else {
 
@@ -150,7 +148,7 @@ public class App42GCMService extends IntentService {
         //check wth vinay
         try {
             long when = System.currentTimeMillis();
-            this.mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
             Intent notificationIntent;
             notificationIntent = new Intent(this, DashboardActivity.class);
@@ -163,6 +161,7 @@ public class App42GCMService extends IntentService {
             //
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
+            String title = "NewZeal";
             mBuilder.setSmallIcon(R.mipmap.ic_launcher).setContentTitle(title).setContentText(msg).setWhen(when).setNumber(++msgCount).setAutoCancel(true)
                     .setDefaults(1).setDefaults(2)
                     .setLights(Notification.DEFAULT_LIGHTS, 5000, 5000)
@@ -171,7 +170,7 @@ public class App42GCMService extends IntentService {
 
             mBuilder.setContentIntent(contentIntent);
 
-            this.mNotificationManager.notify(1, mBuilder.build());
+            mNotificationManager.notify(1, mBuilder.build());
         } catch (Exception e) {
             e.printStackTrace();
         }

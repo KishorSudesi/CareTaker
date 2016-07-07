@@ -1,18 +1,21 @@
 package com.hdfc.dbconfig;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
+import android.util.Log;
 
 import net.sqlcipher.Cursor;
 
-public class
-DbCon {
+import static com.hdfc.dbconfig.DbHelper.COLUMN_COLLECTION_NAME;
+import static com.hdfc.dbconfig.DbHelper.COLUMN_DEPENDENT_ID;
+import static com.hdfc.dbconfig.DbHelper.COLUMN_UPDATE_DATE;
+import static com.hdfc.dbconfig.DbHelper.strTableNameCollection;
 
-    public static boolean isDbOpened = false;
+public class DbCon {
+
+    //public static boolean isDbOpened = false;
     private static DbHelper dbHelper;
     private static DbCon dbConInstance = null;
-    private static Handler dbOpenHandler;
+    //private static Handler dbOpenHandler;
     private Context context;
 
     private DbCon(Context context) {
@@ -52,13 +55,20 @@ DbCon {
 
     public android.database.Cursor getMaxDate(String collectionName) {
 
+        String query = "Select MAX(" + COLUMN_UPDATE_DATE + ") from " + strTableNameCollection +
+                " where " + COLUMN_COLLECTION_NAME + " = '" + collectionName + "'";
 
-        return dbHelper.getMaxDate(collectionName);
+        return dbHelper.rawQuery(query);
+        //return dbHelper.getMaxDate(collectionName);
     }
     public android.database.Cursor getMaxDate(String collectionName,String strDependentsId) {
 
+        String query = "Select MAX(" + COLUMN_UPDATE_DATE + ") from " + strTableNameCollection
+                + " where " + COLUMN_COLLECTION_NAME + " = '" + collectionName + "' AND "
+                + COLUMN_DEPENDENT_ID + " = '" + strDependentsId + "'";
+        return dbHelper.rawQuery(query);
 
-        return dbHelper.getMaxDate(collectionName,strDependentsId);
+        //return dbHelper.getMaxDate(collectionName,strDependentsId);
     }
 
     public long insert(String tbl, String values[], String names[]) {
@@ -72,7 +82,9 @@ DbCon {
     }
 
     public  Cursor fetchFromSelect(String tbl, String where) {
-        return dbHelper.fetchFromSelect(tbl,where);
+        String query = "select * from " + tbl + where;
+        Log.i("TAG", "query :" + query);
+        return dbHelper.rawQuery(query);
     }
 
     public boolean delete(String tbl, String where, String args[]) {
@@ -155,7 +167,7 @@ DbCon {
     }*/
 
 
-    private static class DbOpenHandler extends Handler {
+    /*private static class DbOpenHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             //
@@ -174,7 +186,7 @@ DbCon {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     public void beginDBTransaction() {
         dbHelper.beginDBTransaction();

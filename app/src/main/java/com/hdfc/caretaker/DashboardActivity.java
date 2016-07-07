@@ -24,7 +24,6 @@ import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountEditFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
-import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
@@ -43,8 +42,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     private static TextView txtViewActivity, textViewNotifications, textViewAccount, textViewSeniors;
 
     private static Context context;
-    private SessionManager sessionManager;
-
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -75,7 +72,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         }
     };
-
+    private SessionManager sessionManager;
     private Utils utils;
 
     public static void goToDashboard() {
@@ -438,9 +435,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     ///
-                    if (CareTaker.dbCon != null) {
+                   /* if (CareTaker.dbCon != null) {
                         CareTaker.dbCon.close();
-                    }
+                    }*/
                     //
                     Utils.logout();
                 }

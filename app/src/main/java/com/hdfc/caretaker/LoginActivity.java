@@ -22,7 +22,6 @@ import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
-import com.hdfc.models.DependentModel;
 import com.hdfc.views.CheckView;
 import com.scottyab.aescrypt.AESCrypt;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -40,21 +39,17 @@ import java.util.Date;
 public class LoginActivity extends AppCompatActivity {
 
     public static Utils utils;
-    public static AlertDialog d;
+    private static AlertDialog d;
     private static ProgressDialog progressDialog;
     private static String userName;
-    ArrayList<DependentModel> dependentModels = Config.dependentModels;
+    //ArrayList<DependentModel> dependentModels = Config.dependentModels;
     /* private static Thread backgroundThread;
      private static Handler threadHandler;*/
     // private RelativeLayout relLayout;
     private EditText editEmail, editPassword;
-    private RelativeLayout layoutLogin;
-    private TextView txtForgotPassword;
     private CheckView checkView;
     private EditText editTextCaptcha;
     private EditText forgotpasswordUserName;
-    private ImageButton reloadCaptcha;
-    private Button buttonBack;
     private char[] res = new char[4];
     private String email;
     private SharedPreferences sharedPreferences;
@@ -68,11 +63,11 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         //  relLayout = (RelativeLayout) findViewById(R.id.relativePass);
-        layoutLogin = (RelativeLayout) findViewById(R.id.layoutLogin);
+        RelativeLayout layoutLogin = (RelativeLayout) findViewById(R.id.layoutLogin);
         editEmail = (EditText) findViewById(R.id.editEmail);
         editPassword = (EditText) findViewById(R.id.editPassword);
-        txtForgotPassword = (TextView) findViewById(R.id.txtForgotPassword);
-        buttonBack = (Button) findViewById(R.id.buttonBack);
+        TextView txtForgotPassword = (TextView) findViewById(R.id.txtForgotPassword);
+        Button buttonBack = (Button) findViewById(R.id.buttonBack);
 
         utils = new Utils(LoginActivity.this);
         progressDialog = new ProgressDialog(LoginActivity.this);
@@ -100,19 +95,23 @@ public class LoginActivity extends AppCompatActivity {
             }
         });*/
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goBack();
-            }
-        });
+        if (buttonBack != null) {
+            buttonBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goBack();
+                }
+            });
+        }
 
-        txtForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showForgotPasswordDialog();
-            }
-        });
+        if (txtForgotPassword != null) {
+            txtForgotPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showForgotPasswordDialog();
+                }
+            });
+        }
 
        /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -147,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextCaptcha = (EditText) promptsView.findViewById(R.id.editTextCaptcha);
         checkView = (CheckView) promptsView.findViewById(R.id.checkview2);
         forgotpasswordUserName = (EditText) promptsView.findViewById(R.id.editTextUserName);
-        reloadCaptcha = (ImageButton) promptsView.findViewById(R.id.reloadCaptcha);
+        ImageButton reloadCaptcha = (ImageButton) promptsView.findViewById(R.id.reloadCaptcha);
 
         res = checkView.getValidataAndSetImage();
 
@@ -462,7 +461,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Object o) {
 
-                            dependentModels.clear();
+                            //dependentModels.clear();
 
 
                             if (o != null) {

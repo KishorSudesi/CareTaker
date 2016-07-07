@@ -705,10 +705,12 @@ public class Utils {
 
             Config.fileModels.clear();
 
-
-
             //todo clear shared pref.
             sessionManager.logoutUser();
+
+            if (CareTaker.dbCon != null) {
+                //CareTaker.dbCon.close();
+            }
             unregisterGcm();
 
             File fileImage = createFileInternal("images/");
