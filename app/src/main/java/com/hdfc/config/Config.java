@@ -31,6 +31,7 @@ public class Config {
     public static final String collectionDependent = "dependent";
     public static final String collectionActivity = "activity";
     public static final String collectionNotification = "notification";
+    public static final String collectionMilestones = "milestones";
 
     public static final int iSdkVersion = Build.VERSION.SDK_INT;
     public static final int iAppVersion = BuildConfig.VERSION_CODE;
@@ -174,7 +175,7 @@ public class Config {
     public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
-    public static CustomerModel customerModel =null;
+    public static CustomerModel customerModel = null;
     public static DependentModel dependentModel = null;
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
 
@@ -193,5 +194,9 @@ public class Config {
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
+
+    public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status","doc_date"};
+
+    public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
 
 }

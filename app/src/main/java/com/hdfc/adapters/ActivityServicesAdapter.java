@@ -126,6 +126,12 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
         viewHolder.activityDetails.setText(serviceModel.getStrServiceName());
 
         viewHolder.checkBoxService.setTag(serviceModel);
+        if (serviceModel.getStrServiceName().equalsIgnoreCase("All Services are Scheduled")) {
+            viewHolder.checkBoxService.setEnabled(false);
+            serviceModel.setSelected(false);
+        } else {
+            viewHolder.checkBoxService.setEnabled(true);
+        }
         if (serviceModel.isSelected()) {
             viewHolder.checkBoxService.setChecked(true);
             viewHolder.checkBoxService.setButtonDrawable(_context.getResources().

@@ -35,7 +35,6 @@ import com.hdfc.models.FieldModel;
 import com.hdfc.views.TouchImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
-import com.shephertz.app42.paas.sdk.android.imageProcessor.Image;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
@@ -80,7 +79,7 @@ public class CompletedActivity extends AppCompatActivity {
     private ScrollView sv;
     private TextView tvTasks;
     private TextView smileyMessage;
-
+private  LinearLayout linearLayoutRatingAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +131,7 @@ public class CompletedActivity extends AppCompatActivity {
             loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
             tvTasks = (TextView) findViewById(R.id.tvTasks);
 
-            final LinearLayout linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
+              linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
             final TextView textViewAddRating = (TextView) findViewById(R.id.textViewAddRating);
 
             sv = (ScrollView) findViewById(R.id.scrollView);
@@ -308,8 +307,12 @@ public class CompletedActivity extends AppCompatActivity {
                             }
 
 
-                            if (b)
+                            if (b) {
+                                textViewAddRating.setVisibility(View.GONE);
+                                linearLayoutRatingAdd.setVisibility(View.GONE);
+                                smileyMessage.setVisibility(View.GONE);
                                 uploadCheckBox();
+                            }
 
                         }
                     });
@@ -448,6 +451,10 @@ public class CompletedActivity extends AppCompatActivity {
                                                             jsonObjectFeedback.getString("feedback_by_type"));
 
                                                     activityModel.setFeedBackModel(feedBackModel);
+                                                    if (feedBackModel.getStrFeedBackByType().equalsIgnoreCase("customer") &&
+                                                            feedBackModel.getStrFeedBackBy().equalsIgnoreCase(activityModel.getStrustomerID())) {
+                                                        activityModel.setRatingAddedByCutsm(true);
+                                                    }
 
                                                    /* Config.dependentModels.get(Config.intSelectedDependent).
                                                             getActivityModels().get(iActivityPosition).setFeedBackModel(feedBackModel);*/

@@ -31,10 +31,10 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="230dp"
-            android:layout_height="150dp"
+            android:layout_width="176dp"
+            android:layout_height="80dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/logo" />
+            android:background="@drawable/logo_final" />
 
         <TextView
             android:id="@+id/textView2"

@@ -20,6 +20,7 @@ DbCon {
         open();
     }
 
+
     public static synchronized DbCon getInstance(Context ctx) {
 
         if (dbConInstance == null) {
@@ -30,9 +31,11 @@ DbCon {
 
     public DbCon open() {
         try {
-            dbOpenHandler = new DbOpenHandler();
-            Thread dbOpenThread = new DbOpenThread();
-            dbOpenThread.start();
+            dbHelper = DbHelper.getInstance(context);
+            dbHelper.open();
+//            dbOpenHandler = new DbOpenHandler();
+//            Thread dbOpenThread = new DbOpenThread();
+//            dbOpenThread.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,13 +50,29 @@ DbCon {
         dbHelper.closeCursor(cursor);
     }
 
+    public android.database.Cursor getMaxDate(String collectionName) {
+
+
+        return dbHelper.getMaxDate(collectionName);
+    }
+    public android.database.Cursor getMaxDate(String collectionName,String strDependentsId) {
+
+
+        return dbHelper.getMaxDate(collectionName,strDependentsId);
+    }
+
     public long insert(String tbl, String values[], String names[]) {
         return dbHelper.insert(values, names, tbl);
     }
 
     public Cursor fetch(String tbl, String names[], String where, String args[], String order,
                         String limit, boolean isDistinct, String groupBy, String having) {
+
         return dbHelper.fetch(tbl, names, where, args, order, limit, isDistinct, groupBy, having);
+    }
+
+    public  Cursor fetchFromSelect(String tbl, String where) {
+        return dbHelper.fetchFromSelect(tbl,where);
     }
 
     public boolean delete(String tbl, String where, String args[]) {
@@ -155,5 +174,17 @@ DbCon {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void beginDBTransaction() {
+        dbHelper.beginDBTransaction();
+    }
+
+    public void endDBTransaction() {
+        dbHelper.endDBTransaction();
+    }
+
+    public void dbTransactionSucessFull() {
+        dbHelper.dbTransactionSucessFull();
     }
 }

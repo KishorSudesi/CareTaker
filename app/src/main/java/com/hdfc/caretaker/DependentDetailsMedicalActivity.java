@@ -20,6 +20,7 @@ import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.AsyncApp42ServiceApi;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -49,6 +50,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private Button buttonContinue;
     private int iDependentCount = 0;
+    private SessionManager sessionManager;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -58,7 +60,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
         utils = new Utils(DependentDetailsMedicalActivity.this);
         utils.setStatusBarColor("#2196f3");
-
+        sessionManager = new SessionManager(DependentDetailsMedicalActivity.this);
         progressDialog = new ProgressDialog(DependentDetailsMedicalActivity.this);
 
         editAge = (EditText) findViewById(R.id.editAge);
@@ -203,19 +205,19 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             //
 
 
-                storeData();
+            storeData();
 
 
         }
     }
 
-    private void createJson(){
+    private void createJson() {
         DependentModel dependentModel = DependentDetailPersonalActivity.dependentModel;
         //
         jsonDependant = new JSONObject();
         try {
 
-                jsonDependant.put("dependent_name", dependentModel.getStrName());
+            jsonDependant.put("dependent_name", dependentModel.getStrName());
 
             if (dependentModel.getStrIllness() == null || dependentModel.getStrIllness().equalsIgnoreCase(""))
                 dependentModel.setStrIllness("NA");
@@ -263,16 +265,15 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             DependentDetailPersonalActivity.dependentModel.setStrAge(strAge);
 
 
-
             //createJson();
 
-            if(DependentDetailPersonalActivity.editflag) {
+            if (DependentDetailPersonalActivity.editflag) {
 
                 if (DependentDetailPersonalActivity.dependentModel.getStrImagePath() != null &&
                         !DependentDetailPersonalActivity.dependentModel.getStrImagePath().equalsIgnoreCase("")
-                        &&!SignupActivity.dependentModels.get(DependentDetailPersonalActivity.mPosition+1).getStrImagePath().equalsIgnoreCase(DependentDetailPersonalActivity.dependentModel.getStrImagePath())) {
+                        && !SignupActivity.dependentModels.get(DependentDetailPersonalActivity.mPosition + 1).getStrImagePath().equalsIgnoreCase(DependentDetailPersonalActivity.dependentModel.getStrImagePath())) {
 
-                    if(editregisterflag==0)
+                    if (editregisterflag == 0)
                         deleteImage();
 
                     if (editregisterflag == 1)
@@ -291,10 +292,9 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 //
 
 
+                //}
 
-                    //}
-
-            }else {
+            } else {
                 if (idregisterflag == 0)
                     createDependentUser();
 
@@ -323,17 +323,17 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
     public void gotoDependnetList() {
 
-                Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
-                selection.putExtra("LIST_DEPENDANT", true);
-                DependentDetailPersonalActivity.strDependantName = "";
-                DependentDetailPersonalActivity.strImageName = "";
-                DependentDetailPersonalActivity.dependentModel = null;
+        Intent selection = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
+        selection.putExtra("LIST_DEPENDANT", true);
+        DependentDetailPersonalActivity.strDependantName = "";
+        DependentDetailPersonalActivity.strImageName = "";
+        DependentDetailPersonalActivity.dependentModel = null;
 
-                //chk this
-                utils.retrieveDependants();
+        //chk this
+        utils.retrieveDependants();
 
-                if (AddDependentFragment.adapter != null)
-                    AddDependentFragment.adapter.notifyDataSetChanged();
+        if (AddDependentFragment.adapter != null)
+            AddDependentFragment.adapter.notifyDataSetChanged();
 
         //CustomViewPager.setPagingEnabled(true);
 
@@ -344,15 +344,15 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
         if (ConfirmFragment.adapter != null) {
             ConfirmFragment.prepareListData();
-                    ConfirmFragment.adapter.notifyDataSetChanged();
+            ConfirmFragment.adapter.notifyDataSetChanged();
         }
-                //
+        //
 
-                progressDialog.dismiss();
-                utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+        progressDialog.dismiss();
+        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
 
-                startActivity(selection);
-                finish();
+        startActivity(selection);
+        finish();
 
     }
 
@@ -378,13 +378,13 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
             SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);*/
 
-            if(DependentDetailPersonalActivity.editflag) {
+            if (DependentDetailPersonalActivity.editflag) {
 
                 if (DependentDetailPersonalActivity.dependentModel.getStrImagePath() != null &&
                         !DependentDetailPersonalActivity.dependentModel.getStrImagePath().equalsIgnoreCase("")
-                        &&!SignupActivity.dependentModels.get(0).getStrImagePath().equalsIgnoreCase(DependentDetailPersonalActivity.dependentModel.getStrImagePath())) {
+                        && !SignupActivity.dependentModels.get(0).getStrImagePath().equalsIgnoreCase(DependentDetailPersonalActivity.dependentModel.getStrImagePath())) {
 
-                    if(editregisterflag==0)
+                    if (editregisterflag == 0)
                         deleteImage();
 
                     if (editregisterflag == 1)
@@ -399,7 +399,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 }
 
 
-            }else {
+            } else {
 
                /* if (idregisterflag == 0)
                     uploadDependentImages();
@@ -453,231 +453,232 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     }
 
 
-    public void edituploadDependentImages(){
+    public void edituploadDependentImages() {
 
 
-            try {
+        try {
 
 
-                if (utils.isConnectingToInternet()) {
+            if (utils.isConnectingToInternet()) {
 
-                    final DependentModel dependentModel =  DependentDetailPersonalActivity.dependentModel;
+                final DependentModel dependentModel = DependentDetailPersonalActivity.dependentModel;
 
-                    final int progress = uploadingCount;
+                final int progress = uploadingCount;
 
-                    if (progressDialog.isShowing())
-                        progressDialog.setProgress(uploadingCount);
+                if (progressDialog.isShowing())
+                    progressDialog.setProgress(uploadingCount);
 
-                    UploadService uploadService = new UploadService(DependentDetailsMedicalActivity.this);
+                UploadService uploadService = new UploadService(DependentDetailsMedicalActivity.this);
 
-                    if (!dependentModel.getStrName().equalsIgnoreCase(
-                            DependentDetailsMedicalActivity.this.getResources().getString(R.string.add_dependent))) {
+                if (!dependentModel.getStrName().equalsIgnoreCase(
+                        DependentDetailsMedicalActivity.this.getResources().getString(R.string.add_dependent))) {
 
-                        if (dependentModel.getStrImagePath() != null &&
-                                !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
+                    if (dependentModel.getStrImagePath() != null &&
+                            !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
-                            uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                    utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                                    dependentModel.getStrContacts(),
-                                    UploadFileType.IMAGE, new App42CallBack() {
+                        uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
+                                utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
+                                dependentModel.getStrContacts(),
+                                UploadFileType.IMAGE, new App42CallBack() {
 
-                                        public void onSuccess(Object response) {
-                                            Utils.log(response.toString()," Error ");
+                                    public void onSuccess(Object response) {
+                                        Utils.log(response.toString(), " Error ");
 
-                                            if (response != null) {
+                                        if (response != null) {
 
-                                                Upload upload = (Upload) response;
-                                                ArrayList<Upload.File> fileList = upload.getFileList();
+                                            Upload upload = (Upload) response;
+                                            ArrayList<Upload.File> fileList = upload.getFileList();
 
-                                                if (fileList.size() > 0) {
-                                                    if (progressDialog.isShowing())
-                                                        progressDialog.dismiss();
-                                                    String strImagePath = fileList.get(0).getUrl();
+                                            if (fileList.size() > 0) {
+                                                if (progressDialog.isShowing())
+                                                    progressDialog.dismiss();
+                                                String strImagePath = fileList.get(0).getUrl();
                                                    /* SignupActivity.dependentModels.get(progress)
                                                             .setStrImageUrl(strImagePath);*/
 
-                                                    DependentDetailPersonalActivity.dependentModel.setStrImageUrl(strImagePath);
-                                                    //uploadingCount++;
+                                                DependentDetailPersonalActivity.dependentModel.setStrImageUrl(strImagePath);
+                                                //uploadingCount++;
 
-                                                    editregisterflag=2;
-                                                    updateDependentData();
+                                                editregisterflag = 2;
+                                                updateDependentData();
                                                     /*  if (uploadingCount == uploadSize) {
                                                     uploadImage();*/
-                                                }/* else {
+                                            }/* else {
                                                 uploadDependentImages();
                                             }*/
-                                            } else {
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-                                                utils.toast(2, 2, getString(R.string.warning_internet));
-                                            }
+                                        } else {
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            utils.toast(2, 2, getString(R.string.warning_internet));
                                         }
+                                    }
 
-                                        public void onException(Exception ex) {
+                                    public void onException(Exception ex) {
 
-                                            if (ex != null) {
-                                                Utils.log(ex.toString()," TAG ");
-                                                App42Exception exception = (App42Exception) ex;
-                                                int appErrorCode = exception.getAppErrorCode();
+                                        if (ex != null) {
+                                            Utils.log(ex.toString(), " TAG ");
+                                            App42Exception exception = (App42Exception) ex;
+                                            int appErrorCode = exception.getAppErrorCode();
 
-                                                if (appErrorCode == 2100) {
+                                            if (appErrorCode == 2100) {
                                                    /* if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
-                                                    //uploadingCount++;
-                                                    editregisterflag=2;
-                                                    updateDependentData();
+                                                //uploadingCount++;
+                                                editregisterflag = 2;
+                                                updateDependentData();
 
-                                                }else {
+                                            } else {
 
                                                /* if (uploadingCount == uploadSize) {
                                                     uploadImage();
                                                 } else*/
 //                                                    uploadDependentImages();
-                                                }
-
-                                            } else {
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-                                                utils.toast(2, 2, getString(R.string.warning_internet));
                                             }
-                                        }
-                                    });
 
-                        } else {
-                            uploadingCount++;
-                            edituploadDependentImages();
-                        }
+                                        } else {
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            utils.toast(2, 2, getString(R.string.warning_internet));
+                                        }
+                                    }
+                                });
+
                     } else {
                         uploadingCount++;
                         edituploadDependentImages();
                     }
-
                 } else {
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    uploadSize = uploadingCount;
-                    uploadingCount=0;
-                    utils.toast(2, 2, getString(R.string.warning_internet));
+                    uploadingCount++;
+                    edituploadDependentImages();
                 }
+
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                uploadSize = uploadingCount;
+                uploadingCount = 0;
+                utils.toast(2, 2, getString(R.string.warning_internet));
+            }
            /* } else {
                *//* if (uploadingCount == uploadSize)
                     uploadImage();*//*
             }*/
 
-            } catch (Exception e) {
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-                utils.toast(2, 2, getString(R.string.error));
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.error));
+            e.printStackTrace();
+        }
 
     }
+
     public void uploadDependentImages() {
 
         try {
 
 
-                if (utils.isConnectingToInternet()) {
+            if (utils.isConnectingToInternet()) {
 
-                    final DependentModel dependentModel =  DependentDetailPersonalActivity.dependentModel;
+                final DependentModel dependentModel = DependentDetailPersonalActivity.dependentModel;
 
-                    //final int progress = uploadingCount;
+                //final int progress = uploadingCount;
 
                    /* if (progressDialog.isShowing())
                         progressDialog.setProgress(uploadingCount);*/
 
-                    UploadService uploadService = new UploadService(DependentDetailsMedicalActivity.this);
+                UploadService uploadService = new UploadService(DependentDetailsMedicalActivity.this);
 
                    /* if (!dependentModel.getStrName().equalsIgnoreCase(
                             DependentDetailsMedicalActivity.this.getResources().getString(R.string.add_dependent))) {
 */
-                        if (dependentModel.getStrImagePath() != null &&
-                                !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
+                if (dependentModel.getStrImagePath() != null &&
+                        !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
-                            uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                    utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                                    dependentModel.getStrContacts(),
-                                    UploadFileType.IMAGE, new App42CallBack() {
+                    uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
+                            utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
+                            dependentModel.getStrContacts(),
+                            UploadFileType.IMAGE, new App42CallBack() {
 
-                                        public void onSuccess(Object response) {
-                                            Utils.log(response.toString()," TAG ");
+                                public void onSuccess(Object response) {
+                                    Utils.log(response.toString(), " TAG ");
 
-                                            if (response != null) {
+                                    if (response != null) {
 
-                                                Upload upload = (Upload) response;
-                                                ArrayList<Upload.File> fileList = upload.getFileList();
+                                        Upload upload = (Upload) response;
+                                        ArrayList<Upload.File> fileList = upload.getFileList();
 
-                                                if (fileList.size() > 0) {
+                                        if (fileList.size() > 0) {
                                                    /* if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
-                                                    String strImagePath = fileList.get(0).getUrl();
+                                            String strImagePath = fileList.get(0).getUrl();
                                                    /* SignupActivity.dependentModels.get(progress)
                                                             .setStrImageUrl(strImagePath);*/
 
-                                                    DependentDetailPersonalActivity.dependentModel.setStrImageUrl(strImagePath);
-                                                    //uploadingCount++;
-                                                    idregisterflag = 2;
-                                                    insertDependent();
+                                            DependentDetailPersonalActivity.dependentModel.setStrImageUrl(strImagePath);
+                                            //uploadingCount++;
+                                            idregisterflag = 2;
+                                            insertDependent();
                                               /*  if (uploadingCount == uploadSize) {
                                                     uploadImage();*/
-                                                }/* else {
+                                        }/* else {
                                                 uploadDependentImages();
                                             }*/
-                                            } else {
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-                                                utils.toast(2, 2, getString(R.string.warning_internet));
-                                            }
-                                        }
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+                                }
 
-                                        public void onException(Exception ex) {
+                                public void onException(Exception ex) {
 
-                                            if (ex != null) {
+                                    if (ex != null) {
 
-                                                App42Exception exception = (App42Exception) ex;
-                                                int appErrorCode = exception.getAppErrorCode();
+                                        App42Exception exception = (App42Exception) ex;
+                                        int appErrorCode = exception.getAppErrorCode();
 
-                                                if (appErrorCode == 2100) {
+                                        if (appErrorCode == 2100) {
                                                    /* if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
-                                                    //uploadingCount++;
-                                                    idregisterflag = 2;
-                                                    insertDependent();
-                                                }else {
+                                            //uploadingCount++;
+                                            idregisterflag = 2;
+                                            insertDependent();
+                                        } else {
 
                                                /* if (uploadingCount == uploadSize) {
                                                     uploadImage();
                                                 } else*/
 //                                                    uploadDependentImages();
-                                                    if (progressDialog.isShowing())
-                                                        progressDialog.dismiss();
-                                                    utils.toast(2, 2, getString(R.string.error));
-                                                }
-
-                                            } else {
-                                                if (progressDialog.isShowing())
-                                                    progressDialog.dismiss();
-                                                utils.toast(2, 2, getString(R.string.warning_internet));
-                                            }
+                                            if (progressDialog.isShowing())
+                                                progressDialog.dismiss();
+                                            utils.toast(2, 2, getString(R.string.error));
                                         }
-                                    });
 
-                        } else {
-                            idregisterflag = 2;
-                            insertDependent();
-                        }
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+                                }
+                            });
+
+                } else {
+                    idregisterflag = 2;
+                    insertDependent();
+                }
                     /*} else {
                         uploadingCount++;
                         uploadDependentImages();
                     }*/
 
-                } else {
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    uploadSize = uploadingCount;
-                    uploadingCount=0;
-                    utils.toast(2, 2, getString(R.string.warning_internet));
-                }
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                uploadSize = uploadingCount;
+                uploadingCount = 0;
+                utils.toast(2, 2, getString(R.string.warning_internet));
+            }
            /* } else {
                *//* if (uploadingCount == uploadSize)
                     uploadImage();*//*
@@ -734,8 +735,10 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                                 get(iSelectedDependent).
                                                 setStrDependentID(strDependentDocId);*/
 
-                                        if (!Config.strDependentIds.contains(strDependentDocId))
+                                        if (!Config.strDependentIds.contains(strDependentDocId)) {
                                             Config.strDependentIds.add(strDependentDocId);
+                                            sessionManager.saveDependentsIds(Config.strDependentIds);
+                                        }
                                         //
 
                                         //iDependentCount++;
@@ -893,9 +896,9 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                         progressDialog.dismiss();
 
                                     if (e != null) {
-                                        Utils.log(e.toString(),"TAG");
+                                        Utils.log(e.toString(), "TAG");
                                         utils.toast(2, 2, getString(R.string.error));
-                                    }else {
+                                    } else {
                                         utils.toast(2, 2, getString(R.string.warning_internet));
                                     }
                                 } catch (Exception e1) {
@@ -907,7 +910,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                         });
 
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -942,7 +945,6 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                 } else {*/
 
 
-
                                     //Config.clientModels.setCustomerModel(Config.customerModel);
 
 //                                        SignupActivity._mViewPager.setCurrentItem(1);
@@ -971,7 +973,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                                         utils.toast(2, 2, getString(R.string.mobile_exists));
 
-                                        Intent previos = new Intent(DependentDetailsMedicalActivity.this,DependentDetailPersonalActivity.class);
+                                        Intent previos = new Intent(DependentDetailsMedicalActivity.this, DependentDetailPersonalActivity.class);
                                         startActivity(previos);
 
                                        /* iDependentCount++;
@@ -1025,35 +1027,36 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                         new App42CallBack() {
                             public void onSuccess(Object response) {
 
-                                if(response!=null){
+                                if (response != null) {
 
-                                    editregisterflag=1;
+                                    editregisterflag = 1;
                                     edituploadDependentImages();
-                                }else{
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             }
+
                             @Override
                             public void onException(Exception e) {
 
-                                if(e!=null) {
+                                if (e != null) {
                                     Utils.log(e.toString(), "Message");
 
                                     App42Exception exception = (App42Exception) e;
                                     int appErrorCode = exception.getAppErrorCode();
                                     //1401
                                     if (appErrorCode == 2103 || appErrorCode == 2102) {
-                                        editregisterflag=1;
+                                        editregisterflag = 1;
                                         edituploadDependentImages();
                                     } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
                                         utils.toast(2, 2, getString(R.string.error));
                                     }
 
-                                }else{
+                                } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
                                     utils.toast(2, 2, getString(R.string.warning_internet));
@@ -1064,14 +1067,15 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             } else {
                 utils.toast(2, 2, getString(R.string.warning_internet));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             if (progressDialog.isShowing())
                 progressDialog.dismiss();
             utils.toast(2, 2, getString(R.string.error));
         }
     }
-    public void updateDependentData(){
+
+    public void updateDependentData() {
 
         if (DependentDetailPersonalActivity.dependentModel != null) {
             createJson();
@@ -1099,8 +1103,8 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                     //Config.clientModels.setCustomerModel(Config.customerModel);
 
 //                                        SignupActivity._mViewPager.setCurrentItem(1);
-                                    editregisterflag=3;
-                                    Intent next = new Intent(DependentDetailsMedicalActivity.this,SignupActivity.class);
+                                    editregisterflag = 3;
+                                    Intent next = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);
                                     startActivity(next);
                                     finish();
 
@@ -1137,6 +1141,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
+
     public void backToSelection() {
         Intent selection = new Intent(DependentDetailsMedicalActivity.this,
                 DependentDetailPersonalActivity.class);
@@ -1147,7 +1152,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-       // strAge = utils.getAge(DependentDetailPersonalActivity.iDate, DependentDetailPersonalActivity.iMonth,DependentDetailPersonalActivity.iYear);
+        // strAge = utils.getAge(DependentDetailPersonalActivity.iDate, DependentDetailPersonalActivity.iMonth,DependentDetailPersonalActivity.iYear);
         strAge = utils.getAge(date);
         editAge.setText(strAge);
 

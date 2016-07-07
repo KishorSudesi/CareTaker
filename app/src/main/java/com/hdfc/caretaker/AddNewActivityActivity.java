@@ -2,6 +2,7 @@ package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,14 +14,18 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.ActivityServicesAdapter;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
-import com.hdfc.libs.AsyncApp42ServiceApi;
+import com.hdfc.dbconfig.DbHelper;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CategoryServiceModel;
 import com.hdfc.models.FieldModel;
 import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.ServiceModel;
-import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
+import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
@@ -48,6 +53,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
     private ExpandableListView listView;
     private ActivityServicesAdapter activityServicesAdapter;
     private int previousChildPosition = -1, previouGroupPosition = -1;
+    private SessionManager sessionManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +68,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
         //ImageButton buttonBack = (ImageButton) findViewById(R.id.buttonBack);
 
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
-
+        sessionManager = new SessionManager(this);
         strServcieIds.clear();
         categoryServiceModels.clear();
         strServiceCategoryNames.clear();
@@ -86,24 +92,25 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     View v1;
 
                     View v2 = parent.getChildAt(groupPosition);*/
-                    if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected()) {
-                        listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(false);
-                    } else {
-                        listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(true);
-                    }
+                    if (!(listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getStrServiceName().equalsIgnoreCase("All Check-In Services are Scheduled"))) {
+                        if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected()) {
+                            listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(false);
+                        } else {
+                            listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(true);
+                        }
 
-                    if (previousChildPosition < 0 && previouGroupPosition < 0) {
+                        if (previousChildPosition < 0 && previouGroupPosition < 0) {
 
-                    } else if (previousChildPosition != childPosition || previouGroupPosition != groupPosition) {
-                        listDataChild.get(listDataHeader.get(previouGroupPosition)).get(previousChildPosition).setSelected(false);
-                    }
-                    activityServicesAdapter.notifyDataSetChanged();
-                    RadioButton checkBox = (RadioButton) v.findViewById(R.id.checkBoxService);
-                    ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
+                        } else if (previousChildPosition != childPosition || previouGroupPosition != groupPosition) {
+                            listDataChild.get(listDataHeader.get(previouGroupPosition)).get(previousChildPosition).setSelected(false);
+                        }
+                        activityServicesAdapter.notifyDataSetChanged();
+                        RadioButton checkBox = (RadioButton) v.findViewById(R.id.checkBoxService);
+                        ServiceModel serviceModel = (ServiceModel) checkBox.getTag();
 
-                    if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected() || listDataChild.get(listDataHeader.get(previouGroupPosition)).get(previousChildPosition).isSelected()) {
-                        selectedServiceModel = serviceModel;
-                    } else {
+                        if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected() || listDataChild.get(listDataHeader.get(previouGroupPosition)).get(previousChildPosition).isSelected()) {
+                            selectedServiceModel = serviceModel;
+                        } else {
 
                        /* //
                         for (int i = 0; i < count; i++) {
@@ -115,17 +122,22 @@ public class AddNewActivityActivity extends AppCompatActivity {
 */
 
 
-                        selectedServiceModel = null;
+                            selectedServiceModel = null;
+                        }
+
+                        previouGroupPosition = groupPosition;
+                        previousChildPosition = childPosition;
+
+                        if (selectedServiceModel == null)
+                            buttonContinue.setVisibility(View.INVISIBLE);
+                        else
+                            buttonContinue.setVisibility(View.VISIBLE);
+
+
+
+                    } else {
+                        utils.toast(2, 2, "In Progress");
                     }
-
-                    previouGroupPosition = groupPosition;
-                    previousChildPosition = childPosition;
-
-                    if (selectedServiceModel == null)
-                        buttonContinue.setVisibility(View.INVISIBLE);
-                    else
-                        buttonContinue.setVisibility(View.VISIBLE);
-
                     return false;
                 }
             });
@@ -192,82 +204,178 @@ public class AddNewActivityActivity extends AppCompatActivity {
         progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
+        if (sessionManager.getServiceCustomer()) {
+            try {
 
-        StorageService storageService = new StorageService(AddNewActivityActivity.this);
+                // WHERE clause
+                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
 
-        storageService.findDocsByKeyValue(Config.collectionServiceCustomer, "customer_id",
-                Config.customerModel.getStrCustomerID(),
-                new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                // WHERE clause arguments
+                String[] selectionArgs = {Config.collectionServiceCustomer};
+                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
 
-                    @Override
-                    public void onDocumentInserted(Storage response) {
-                    }
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    do {
+                        JSONObject jsonObjectServcies = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
 
-                    @Override
-                    public void onUpdateDocSuccess(Storage response) {
-                    }
+                        if (jsonObjectServcies.has("unit")) {
+                            createActivityServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
+                        }
+                    } while (cursor.moveToNext());
+                    refreshAdapter();
+                    cursor.close();
+                }
 
-                    @Override
-                    public void onFindDocSuccess(Storage storage) {
 
-                        try {
-                            if (storage != null) {
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (!utils.isConnectingToInternet()) {
+            progressDialog.dismiss();
+        }
 
-                                ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
+        if (utils.isConnectingToInternet()) {
+            String defaultDate = null;
+            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionServiceCustomer);
+            if (cursorData != null && cursorData.getCount() > 0) {
+                cursorData.moveToFirst();
+                defaultDate = cursorData.getString(0);
+                cursorData.close();
+            } else {
+                defaultDate = Utils.defaultDate;
+            }
+            StorageService storageService = new StorageService(AddNewActivityActivity.this);
+            Query finalQuery;
+            Query q1 = QueryBuilder.build("customer_id", Config.customerModel.getStrCustomerID(), QueryBuilder.Operator.EQUALS);
+            if (sessionManager.getServiceCustomer()) {
+                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
 
-                                for (int i = 0; i < jsonDocList.size(); i++) {
+                finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+            } else {
+                finalQuery = q1;
+            }
 
-                                    Storage.JSONDocument jsonDocument = jsonDocList.get(i);
-                                    String strDocumentId = jsonDocument.getDocId();
-                                    String strServices = jsonDocument.getJsonDoc();
 
-                                    try {
-                                        JSONObject jsonObjectServcies = new JSONObject(strServices);
-                                        if (jsonObjectServcies.has("unit"))
+            storageService.findDocsByQuery(Config.collectionServiceCustomer, finalQuery, new App42CallBack() {
+                @Override
+                public void onSuccess(Object o) {
+                    try {
+
+                        Storage storage = (Storage) o;
+                        if (storage != null) {
+
+                            ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
+
+                            CareTaker.dbCon.beginDBTransaction();
+                            for (int i = 0; i < jsonDocList.size(); i++) {
+
+                                Storage.JSONDocument jsonDocument = jsonDocList.get(i);
+                                String strDocumentId = jsonDocument.getDocId();
+                                String strServices = jsonDocument.getJsonDoc();
+
+                                try {
+                                    JSONObject jsonObjectServcies = new JSONObject(strServices);
+                                    if (jsonObjectServcies.has("unit")) {
+                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", ""};
+                                        if (sessionManager.getServiceCustomer()) {
+                                            String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                            // WHERE clause arguments
+                                            String[] selectionArgs = {strDocumentId};
+                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                        } else {
                                             createActivityServiceModel(strDocumentId,
                                                     jsonObjectServcies);
+                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                        }
+
+
                                     }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
 
-                            } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
+                            CareTaker.dbCon.dbTransactionSucessFull();
+                        } else {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
+
+                        if (!sessionManager.getServiceCustomer()) {
+                            sessionManager.saveServiceCustomer(true);
 
                             refreshAdapter();
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-                    }
 
-                    @Override
-                    public void onInsertionFailed(App42Exception ex) {
-                    }
 
-                    @Override
-                    public void onFindDocFailed(App42Exception ex) {
-                        try {
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        CareTaker.dbCon.endDBTransaction();
+
+                    }
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    try {
+                        if (!sessionManager.getServiceCustomer()) {
                             refreshAdapter();
-                            if (ex != null) {
-                                JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
-                                String strMess = jsonObjectError.getString("details");
-                                //Utils.toast(2, 2, strMess);
-                            } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
-
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
                         }
-                    }
+                        if (e != null) {
+                            JSONObject jsonObject = new JSONObject(e.getMessage());
+                            JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                            String strMess = jsonObjectError.getString("details");
+                            //Utils.toast(2, 2, strMess);
+                        } else {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
 
-                    @Override
-                    public void onUpdateDocFailed(App42Exception ex) {
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
                     }
-                });
+                }
+            });
+
+
+//            storageService.findDocsByKeyValue(Config.collectionServiceCustomer, "customer_id",
+//                    Config.customerModel.getStrCustomerID(),
+//                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+//
+//                        @Override
+//                        public void onDocumentInserted(Storage response) {
+//                        }
+//
+//                        @Override
+//                        public void onUpdateDocSuccess(Storage response) {
+//                        }
+//
+//                        @Override
+//                        public void onFindDocSuccess(Storage storage) {
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onInsertionFailed(App42Exception ex) {
+//                        }
+//
+//                        @Override
+//                        public void onFindDocFailed(App42Exception ex) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onUpdateDocFailed(App42Exception ex) {
+//                        }
+//                    });
+
+        }
+
+
         //
     }
 
@@ -316,8 +424,13 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
             if ((selectedServiceModel.getiUnit() - selectedServiceModel.getiUnitUsed()) > 0) {
 
-                Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
-                startActivity(newIntent);
+                if (!utils.isConnectingToInternet()) {
+                    utils.toast(2, 2, getString(R.string.warning_internet));
+                } else {
+                    Intent newIntent = new Intent(AddNewActivityActivity.this, AddNewActivityStep2Activity.class);
+                    startActivity(newIntent);
+                }
+
                 //finish();
 
             } else utils.toast(2, 2, getResources().getString(R.string.error_service_zero));

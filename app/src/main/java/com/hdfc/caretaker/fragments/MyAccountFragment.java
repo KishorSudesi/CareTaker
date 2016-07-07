@@ -28,6 +28,7 @@ import com.hdfc.caretaker.AdditionalServicesActivity;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.RoundedImageView;
 
@@ -54,8 +55,9 @@ public class MyAccountFragment extends Fragment {
     private static int iPosition;
     public DependAdapter adapter;
     TextView txtviewBuyServices;
-    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout,textViewRecipient;
+    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout, textViewRecipient;
     private Utils utils;
+    private SessionManager sessionManager;
 
     public static MyAccountFragment newInstance() {
         MyAccountFragment fragment = new MyAccountFragment();
@@ -81,6 +83,7 @@ public class MyAccountFragment extends Fragment {
         buttonBack.setVisibility(View.GONE);
 
         utils = new Utils(getActivity());
+        sessionManager = new SessionManager(getActivity());
 
         loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
@@ -104,9 +107,9 @@ public class MyAccountFragment extends Fragment {
 
                 iPosition = intPosition;*/
 
-                threadHandler = new ThreadHandler();
-                Thread backgroundThread = new BackgroundThread();
-                backgroundThread.start();
+            threadHandler = new ThreadHandler();
+            Thread backgroundThread = new BackgroundThread();
+            backgroundThread.start();
 
             //}
         } catch (Exception e) {
@@ -134,8 +137,10 @@ public class MyAccountFragment extends Fragment {
         txtviewBuyServices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AdditionalServicesActivity.class);
-                startActivity(intent);
+
+                    Intent intent = new Intent(getActivity(), AdditionalServicesActivity.class);
+                    startActivity(intent);
+
             }
         });
 

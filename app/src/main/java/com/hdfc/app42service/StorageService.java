@@ -26,6 +26,11 @@ public class StorageService {
         asyncService.insertJSONDoc(Config.dbName, collectionCustomer, jsonToSave, app42CallBack);
     }
 
+    public void deleteAllDocs(String strCollectionName,
+                              App42CallBack app42CallBack) {
+        asyncService.deleteAllDocs(Config.dbName, strCollectionName, app42CallBack);
+    }
+
     public void findDocsById(String strDocId, String strCollectionName, AsyncApp42ServiceApi.
             App42StorageServiceListener app42CallBack) {
         asyncService.findDocByDocId(Config.dbName, strCollectionName, strDocId, app42CallBack);
@@ -53,6 +58,7 @@ public class StorageService {
         asyncService.findDocumentByQueryPagingOrderBy(Config.dbName, strCollectionName, query, max,
                 offset, strKey, iOrderFlag, app42CallBack);
     }
+
     public void findAllDocs(String strCollectionName, App42CallBack app42CallBack) {
         asyncService.findAllDocuments(Config.dbName, strCollectionName, app42CallBack);
     }

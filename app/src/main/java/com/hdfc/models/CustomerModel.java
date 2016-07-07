@@ -20,7 +20,7 @@ public class CustomerModel {
     private String strCountryAreaCode = "";
     private String strLandLine = "";
 
-    private String strCustomerID;
+    private String strCustomerID="";
 
     public CustomerModel() {
     }

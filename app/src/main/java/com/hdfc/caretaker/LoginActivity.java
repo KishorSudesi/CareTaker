@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 import com.hdfc.views.CheckView;
@@ -404,7 +405,7 @@ public class LoginActivity extends AppCompatActivity {
             editPassword.setError(null);
 
             userName = editEmail.getText().toString();
-            String password = editPassword.getText().toString();
+            final String password = editPassword.getText().toString();
 
             boolean cancel = false;
             View focusView = null;
@@ -474,8 +475,9 @@ public class LoginActivity extends AppCompatActivity {
                                 //todo check rolelist
                                 //Utils.log(String.valueOf(roleList.size()), " ROLE ");
                                 //roleList.size()>0 && roleList.get(0).equalsIgnoreCase("provider");
-
+                                SessionManager sessionManager=new SessionManager(LoginActivity.this);
                                 utils.fetchCustomer(progressDialog, 1);
+                                sessionManager.createLoginSession(password,userName);
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();

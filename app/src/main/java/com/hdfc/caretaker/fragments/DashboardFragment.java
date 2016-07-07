@@ -134,6 +134,7 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        leftNav.setVisibility(View.GONE);
         new setAdapterTask().execute();
 
 

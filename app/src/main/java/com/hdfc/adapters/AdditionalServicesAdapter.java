@@ -2,7 +2,6 @@ package com.hdfc.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,7 @@ import com.hdfc.caretaker.R;
 import com.hdfc.models.ServiceModel;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Admin on 2/23/2016.
@@ -128,7 +125,9 @@ public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
             viewHolder.checkBoxService.setButtonDrawable(convertView.getResources().getDrawable(R.mipmap.tick_disable));
         }
 
+
         String strTemp = serviceModel.getStrServiceName();
+
 
         viewHolder.activityTitle.setText(strTemp);
         viewHolder.activityDetails.setText(serviceModel.getStrServiceName());
