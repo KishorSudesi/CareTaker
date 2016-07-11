@@ -170,6 +170,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <service android:name="com.hdfc.app42service.UpdateService"></service>
 
     </application>
 

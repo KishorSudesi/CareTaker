@@ -1340,6 +1340,7 @@ public class Utils {
         return output;
     }
 
+
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
@@ -1479,7 +1480,7 @@ public class Utils {
 
                 // WHERE clause arguments
                 String[] selectionArgs = {Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
-                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, "datetime("+DbHelper.COLUMN_UPDATE_DATE+") DESC", null, false, null, null);
+                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, "datetime(" + DbHelper.COLUMN_UPDATE_DATE + ") DESC", null, false, null, null);
                 Log.i("TAG", "Cursor count:" + cursor.getCount());
                 if (cursor != null) {
                     cursor.moveToFirst();
@@ -1579,6 +1580,17 @@ public class Utils {
                                     CareTaker.dbCon.endDBTransaction();
 
                                 }
+                                if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                    List<String> idsList = new ArrayList<String>();
+
+                                    if (sessionManager.getNotificationIds().size() > 0) {
+                                        idsList.addAll(sessionManager.getNotificationIds());
+                                    }
+                                    idsList.add(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+                                    sessionManager.saveNotificationIds(idsList);
+
+                                    refreshNotifications();
+                                }
 
                             } else {
                                 /*if (progressDialog.isShowing())
@@ -1587,17 +1599,7 @@ public class Utils {
                                     toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
                             DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                            if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                List<String> idsList = new ArrayList<String>();
 
-                                if (sessionManager.getNotificationIds().size() > 0) {
-                                    idsList.addAll(sessionManager.getNotificationIds());
-                                }
-                                idsList.add(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
-                                sessionManager.saveNotificationIds(idsList);
-
-                                refreshNotifications();
-                            }
                         }
 
                         @Override
@@ -3339,6 +3341,7 @@ public class Utils {
         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
         threadHandler = new ThreadHandler();
+
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
     }
@@ -3576,6 +3579,8 @@ public class Utils {
                 String mnth = "";
                 if (month <= 9) {
                     mnth = "0" + month;
+                } else {
+                    mnth = "" + month;
                 }
                 String lastDayOfMonth = year + "-" + mnth + "-01";
 
@@ -3634,13 +3639,13 @@ public class Utils {
                     //ActivityFragment.reload();
                     //todo uncomment for multiple carlas
                     //fetchProviders(progressDialog, 2);
-                    loadImagesActivityMonth();
+
                 } else {
-                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
 
                 }
-
-
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                loadImagesActivityMonth();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -3687,6 +3692,26 @@ public class Utils {
             Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
 
             Query q5 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+
+            if (sessionManager.getActivityStatus()) {
+                String defaultDate = null;
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    if (defaultDate == null || defaultDate.length() == 0) {
+                        defaultDate = Utils.defaultDate;
+                    }
+                    cursorData.close();
+                } else {
+                    defaultDate = Utils.defaultDate;
+                }
+
+                Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
+                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+            } else {
+
+            }
 
            /* int max = 1;
             int offset = 0;

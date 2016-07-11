@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.NotificationAdapter;
+import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.CompletedActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.CareTaker;
@@ -30,6 +31,10 @@ import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
 import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.VideoModel;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
+import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +45,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * <p>
+ * <p/>
  * to handle interaction events.
  * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -50,6 +55,7 @@ public class NotificationFragment extends Fragment {
     public static NotificationAdapter notificationAdapter;
     private Utils utils;
     private SessionManager sessionManager;
+    private ActivityModel activityModel = null;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -79,7 +85,7 @@ public class NotificationFragment extends Fragment {
         LinearLayout dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
 
         utils = new Utils(getActivity());
-        sessionManager=new SessionManager(getActivity());
+        sessionManager = new SessionManager(getActivity());
 
         listViewActivities.setEmptyView(emptyTextView);
         utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
@@ -144,6 +150,8 @@ public class NotificationFragment extends Fragment {
 
 
                         } while (cursor.moveToNext());
+                    } else {
+                        activityModel = getActivityModel(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId());
                     }
                 }
 
@@ -170,12 +178,80 @@ public class NotificationFragment extends Fragment {
                 }
 
 
-
             }
         });
 
         return rootView;
     }
+
+
+    public ActivityModel getActivityModel(String activityId) {
+        try {
+            activityModel =null;
+            // storageService.findDocsByQuery(Config.collectionActivity, q5, //1 for descending
+            //new App42CallBack()
+            Query q3 = QueryBuilder.build("docId", activityId, QueryBuilder.Operator.EQUALS);
+            StorageService storageService = new StorageService(getActivity());
+
+            storageService.findDocsByQuery(Config.collectionActivity, q3, new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+    */
+                            Storage response = (Storage) o;
+
+                            if (response != null) {
+
+
+                                if (response.getJsonDocList().size() > 0) {
+                                    try {
+                                        for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                            Storage.JSONDocument jsonDocument = response.
+                                                    getJsonDocList().get(i);
+
+                                            String strDocument = jsonDocument.getJsonDoc();
+                                            String strActivityId = jsonDocument.getDocId();
+                                            JSONObject jsonObjectActivity =
+                                                    new JSONObject(strDocument);
+                                            JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                            jsonObjectActivity.remove("milestones");
+                                            strDocument = jsonObjectActivity.toString();
+                                            String values[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionActivity, "", "1", jsonObjectActivity.optString("activity_date")};
+                                            Log.i("TAG", "Date :" + jsonObjectActivity.optString("activity_date"));
+                                            activityModel = createActivityModel(strDocument, strActivityId, 1, jArray);
+
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+
+                            } else {
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                                /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+
+                            activityModel = null;
+                        }
+                    }
+            );
+        } catch (Exception e) {
+            activityModel=null;
+        }
+        return activityModel;
+    }
+
 
     @Override
     public void onResume() {

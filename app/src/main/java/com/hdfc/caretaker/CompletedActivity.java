@@ -79,7 +79,7 @@ public class CompletedActivity extends AppCompatActivity {
     private ScrollView sv;
     private TextView tvTasks;
     private TextView smileyMessage;
-private  LinearLayout linearLayoutRatingAdd;
+    private  LinearLayout linearLayoutRatingAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +131,7 @@ private  LinearLayout linearLayoutRatingAdd;
             loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
             tvTasks = (TextView) findViewById(R.id.tvTasks);
 
-              linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
+            linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
             final TextView textViewAddRating = (TextView) findViewById(R.id.textViewAddRating);
 
             sv = (ScrollView) findViewById(R.id.scrollView);

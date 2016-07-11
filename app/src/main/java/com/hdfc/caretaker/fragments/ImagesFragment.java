@@ -9,16 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.hdfc.caretaker.DependentDetailPersonal;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.MyLinearView;
 import com.hdfc.views.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ImagesFragment extends Fragment {
 
     //private static Handler threadHandler;
+    private ImageLoader imageLoader;
 
     public static Fragment newInstance(Context context, int pos,
                                        float scale) {
@@ -38,7 +39,7 @@ public class ImagesFragment extends Fragment {
 
         LinearLayout l = (LinearLayout)
                 inflater.inflate(R.layout.fragment_images, container, false);
-
+        imageLoader = ImageLoader.getInstance();
         //RelativeLayout loadingPanel = (RelativeLayout) l.findViewById(R.id.loadingPanel);
 
         RoundedImageView imageView = (RoundedImageView) l.findViewById(R.id.content);
@@ -52,7 +53,7 @@ public class ImagesFragment extends Fragment {
             Utils.log(" 3 ", " IN ");
 
             //loadingPanel.setVisibility(View.VISIBLE);
-         //   Config.dependentModels.add(DependentDetailPersonal.dependentModel);
+            //   Config.dependentModels.add(DependentDetailPersonal.dependentModel);
 
             Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
                     utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
@@ -62,6 +63,9 @@ public class ImagesFragment extends Fragment {
                 imageView.setImageBitmap(bitmap);
             else
                 imageView.setImageBitmap(Utils.noBitmap);
+
+
+            //imageLoader.displayImage(Config.dependentModels.get(intPosition).getStrImageUrl(), imageView, CareTaker.defaultOptions);
 
             //loadingPanel.setVisibility(View.GONE);
 

@@ -18,7 +18,7 @@ import com.hdfc.libs.Utils;
 import com.hdfc.models.NotificationModel;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Admin on 19-02-2016.
@@ -28,11 +28,11 @@ public class NotificationAdapter extends BaseAdapter {
 
     private LayoutInflater inflater = null;
     private Context _context;
-    private ArrayList<NotificationModel> adapterNotificationModels;
+    private List<NotificationModel> adapterNotificationModels;
     private Utils utils;
     private MultiBitmapLoader multiBitmapLoader;
 
-    public NotificationAdapter(Context ctxt, ArrayList d) {
+    public NotificationAdapter(Context ctxt, List<NotificationModel> d) {
         _context = ctxt;
         adapterNotificationModels = d;
         utils = new Utils(ctxt);

@@ -152,7 +152,7 @@ public class DbHelper extends SQLiteOpenHelper {
             open();
         //Cursor cur = null;
         //try {
-        return db.query(isDistinct, tbl, names, where, args, groupBy, having, order, limit);
+        return db.query(true, tbl, names, where, args, groupBy, having, order, limit);
         /*} catch (Exception e) {
             return null;
         }*/

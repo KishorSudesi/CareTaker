@@ -371,26 +371,26 @@ public class MyAccountEditFragment extends Fragment {
                         storageService.updateDocs(jsonToUpdate,
                                 Config.customerModel.getStrCustomerID(),
                                 Config.collectionCustomer, new App42CallBack() {
-                            @Override
-                            public void onSuccess(Object o) {
+                                    @Override
+                                    public void onSuccess(Object o) {
 
-                                Config.customerModel.setStrAddress(strAddress);
-                                Config.customerModel.setStrContacts(strContactNo);
-                                Config.customerModel.setStrName(strName);
+                                        Config.customerModel.setStrAddress(strAddress);
+                                        Config.customerModel.setStrContacts(strContactNo);
+                                        Config.customerModel.setStrName(strName);
 
-                                Config.customerModel.setStrDob(strDob);
-                                Config.customerModel.setStrCountryCode(strCountry);
-                                Config.customerModel.setStrAddress(strCountry);
-                                Config.customerModel.setStrCountryIsdCode(strCountryCode);
+                                        Config.customerModel.setStrDob(strDob);
+                                        Config.customerModel.setStrCountryCode(strCountry);
+                                        Config.customerModel.setStrAddress(strCountry);
+                                        Config.customerModel.setStrCountryIsdCode(strCountryCode);
 
-                                if (editAreaCode.getVisibility() == View.VISIBLE)
-                                    Config.customerModel.setStrCountryAreaCode(strAreaCode);
+                                        if (editAreaCode.getVisibility() == View.VISIBLE)
+                                            Config.customerModel.setStrCountryAreaCode(strAreaCode);
 
-                                if (strPass != null && !strPass.equalsIgnoreCase("")) {
+                                        if (strPass != null && !strPass.equalsIgnoreCase("")) {
 
-                                    if (utils.isConnectingToInternet()) {
+                                            if (utils.isConnectingToInternet()) {
 
-                                        // progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
+                                                // progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
 
                                        /* try {
                                             strOldPass = AESCrypt.encrypt(Config.string, strOldPass);
@@ -399,51 +399,51 @@ public class MyAccountEditFragment extends Fragment {
                                             e.printStackTrace();
                                         }*/
 
-                                        UserService userService = new UserService(getActivity());
+                                                UserService userService = new UserService(getActivity());
 
-                                        userService.onChangePassword(Config.strUserName, strOldPass
-                                                , strPass, new App42CallBack() {
-                                            @Override
-                                            public void onSuccess(Object o) {
-                                                // progressDialog.dismiss();
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
-                                                goToAccount();
-                                            }
+                                                userService.onChangePassword(Config.strUserName, strOldPass
+                                                        , strPass, new App42CallBack() {
+                                                            @Override
+                                                            public void onSuccess(Object o) {
+                                                                // progressDialog.dismiss();
+                                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                                                goToAccount();
+                                                            }
 
-                                            @Override
-                                            public void onException(Exception e) {
-                                                // progressDialog.dismiss();
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                                try {
-                                                    JSONObject jsonObject = new JSONObject(e.getMessage());
-                                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
-                                                    String strMess = jsonObjectError.getString("details");
+                                                            @Override
+                                                            public void onException(Exception e) {
+                                                                // progressDialog.dismiss();
+                                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                try {
+                                                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                                                    String strMess = jsonObjectError.getString("details");
 
-                                                    utils.toast(2, 2, strMess);
-                                                } catch (JSONException e1) {
-                                                    e1.printStackTrace();
-                                                }
-                                            }
-                                        });
+                                                                    utils.toast(2, 2, strMess);
+                                                                } catch (JSONException e1) {
+                                                                    e1.printStackTrace();
+                                                                }
+                                                            }
+                                                        });
 
-                                    } else utils.toast(2, 2, getString(R.string.warning_internet));
+                                            } else utils.toast(2, 2, getString(R.string.warning_internet));
 
-                                } else {
-                                    // progressDialog.dismiss();
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    utils.toast(1, 1, getActivity().getString(R.string.account_updated));
-                                    goToAccount();
-                                }
-                            }
+                                        } else {
+                                            // progressDialog.dismiss();
+                                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                            utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                                            goToAccount();
+                                        }
+                                    }
 
-                            @Override
-                            public void onException(Exception e) {
-                                //progressDialog.dismiss();
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, e.getMessage());
-                            }
-                        });
+                                    @Override
+                                    public void onException(Exception e) {
+                                        //progressDialog.dismiss();
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        utils.toast(2, 2, e.getMessage());
+                                    }
+                                });
 
                     } else utils.toast(2, 2, getString(R.string.warning_internet));
                 }
@@ -509,41 +509,41 @@ public class MyAccountEditFragment extends Fragment {
 */
                 uploadService.removeImage(Config.strCustomerImageName,
                         Config.customerModel.getStrEmail(),
-                            new App42CallBack() {
-                        public void onSuccess(Object response) {
+                        new App42CallBack() {
+                            public void onSuccess(Object response) {
 
-                            if(response!=null){
-                                uploadImage();
-                            }else{
+                                if(response!=null){
+                                    uploadImage();
+                                }else{
                                /* if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
-                        }
-                        @Override
-                        public void onException(Exception e) {
+                            @Override
+                            public void onException(Exception e) {
 
-                            if(e!=null) {
+                                if(e!=null) {
 
-                                App42Exception exception = (App42Exception) e;
-                                int appErrorCode = exception.getAppErrorCode();
+                                    App42Exception exception = (App42Exception) e;
+                                    int appErrorCode = exception.getAppErrorCode();
 
-                                if (appErrorCode != 1401 ) {
-                                    uploadImage();
-                                } else {
+                                    if (appErrorCode != 1401 ) {
+                                        uploadImage();
+                                    } else {
                                     /*if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    utils.toast(2, 2, getString(R.string.error));
-                                }
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        utils.toast(2, 2, getString(R.string.error));
+                                    }
 
-                            }else{
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                }else{
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
-                        }
-                    });
+                        });
 
             } else {
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -570,61 +570,61 @@ public class MyAccountEditFragment extends Fragment {
                         strCustomerImgName,
                         Config.strCustomerImageName, "Profile Picture",
                         Config.customerModel.getStrEmail(),
-                    UploadFileType.IMAGE, new App42CallBack() {
-                        public void onSuccess(Object response) {
+                        UploadFileType.IMAGE, new App42CallBack() {
+                            public void onSuccess(Object response) {
 
-                            if(response!=null) {
+                                if(response!=null) {
 
-                                Upload upload = (Upload) response;
-                                ArrayList<Upload.File> fileList = upload.getFileList();
+                                    Upload upload = (Upload) response;
+                                    ArrayList<Upload.File> fileList = upload.getFileList();
 
-                                if (fileList.size() > 0 && bitmap != null) {
+                                    if (fileList.size() > 0 && bitmap != null) {
 
-                                    Upload.File file = fileList.get(0);
+                                        Upload.File file = fileList.get(0);
 
-                                    final String url = file.getUrl();
+                                        final String url = file.getUrl();
 
-                                    JSONObject jsonToUpdate = new JSONObject();
+                                        JSONObject jsonToUpdate = new JSONObject();
 
-                                    try {
-                                        jsonToUpdate.put("customer_profile_url", url);
+                                        try {
+                                            jsonToUpdate.put("customer_profile_url", url);
 
-                                        StorageService storageService =
-                                                new StorageService(getActivity());
+                                            StorageService storageService =
+                                                    new StorageService(getActivity());
 
-                                        storageService.updateDocs(jsonToUpdate,
-                                                Config.customerModel.getStrCustomerID(),
-                                                Config.collectionCustomer, new App42CallBack() {
+                                            storageService.updateDocs(jsonToUpdate,
+                                                    Config.customerModel.getStrCustomerID(),
+                                                    Config.collectionCustomer, new App42CallBack() {
 
-                                            @Override
-                                            public void onSuccess(Object o) {
+                                                        @Override
+                                                        public void onSuccess(Object o) {
 
-                                                if (o != null) {
+                                                            if (o != null) {
 
-                                                    try {
-                                                        File f = utils.getInternalFileImages(
-                                                                Config.customerModel.getStrCustomerID());
+                                                                try {
+                                                                    File f = utils.getInternalFileImages(
+                                                                            Config.customerModel.getStrCustomerID());
 
-                                                        if (f.exists())
-                                                            f.delete();
+                                                                    if (f.exists())
+                                                                        f.delete();
 
-                                                        File newFile = new File(strCustomerImgName);
-                                                        File renameFile = new File(
-                                                                strCustomerImagePath);
+                                                                    File newFile = new File(strCustomerImgName);
+                                                                    File renameFile = new File(
+                                                                            strCustomerImagePath);
 
-                                                        utils.moveFile(newFile, renameFile);
+                                                                    utils.moveFile(newFile, renameFile);
 
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
+                                                                } catch (Exception e) {
+                                                                    e.printStackTrace();
+                                                                }
 
-                                                    roundedImageView.setImageBitmap(bitmap);
+                                                                roundedImageView.setImageBitmap(bitmap);
 
                                                     /*if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
-                                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                                                    utils.toast(2, 2, getString(R.string.update_profile_image));
+                                                                utils.toast(2, 2, getString(R.string.update_profile_image));
 
                                                    /* if (Config.jsonObject.has("customer_profile_url")) {
 
@@ -635,65 +635,65 @@ public class MyAccountEditFragment extends Fragment {
                                                             e.printStackTrace();
                                                         }
                                                     }*/
-                                                    isImageChanged = false;
+                                                                isImageChanged = false;
 
-                                                } else {
+                                                            } else {
                                                     /*if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
-                                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                }
-                                            }
+                                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                                            }
+                                                        }
 
-                                            @Override
-                                            public void onException(Exception e) {
+                                                        @Override
+                                                        public void onException(Exception e) {
                                                 /*if (progressDialog.isShowing())
                                                     progressDialog.dismiss();*/
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                                                if (e != null) {
-                                                    Utils.log(e.toString(), "response");
-                                                    utils.toast(2, 2, e.getMessage());
-                                                } else {
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                }
-                                            }
-                                        });
-                                        //
+                                                            if (e != null) {
+                                                                Utils.log(e.toString(), "response");
+                                                                utils.toast(2, 2, e.getMessage());
+                                                            } else {
+                                                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                                            }
+                                                        }
+                                                    });
+                                            //
 
-                                    } catch (JSONException e) {
+                                        } catch (JSONException e) {
                                             e.printStackTrace();
-                                    }
+                                        }
 
-                                } else {
+                                    } else {
                                         /*if (progressDialog.isShowing())
                                             progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    utils.toast(2, 2, getString(R.string.error));
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        utils.toast(2, 2, getString(R.string.error));
                                     }
-                            }else{
+                                }else{
                                /* if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onException(Exception e) {
+                            @Override
+                            public void onException(Exception e) {
 
                             /*if (progressDialog.isShowing())
                                 progressDialog.dismiss();*/
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                            if(e!=null) {
-                                Utils.log(e.toString(), "response");
-                                utils.toast(2, 2, e.getMessage());
-                            }else{
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                if(e!=null) {
+                                    Utils.log(e.toString(), "response");
+                                    utils.toast(2, 2, e.getMessage());
+                                }else{
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
-                        }
-                    });
+                        });
 
             } else {
                 /*if (progressDialog.isShowing())

@@ -138,8 +138,8 @@ public class MyAccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                    Intent intent = new Intent(getActivity(), AdditionalServicesActivity.class);
-                    startActivity(intent);
+                Intent intent = new Intent(getActivity(), AdditionalServicesActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -296,9 +296,9 @@ public class MyAccountFragment extends Fragment {
         public void run() {
             try {
                 //if(Config.customerModel!=null) {
-                    File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
-                    System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
-                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+                System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
+                bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 //}
 
             } catch (Exception e) {
