@@ -1,5 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,9 +9,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.hdfc.adapters.CarouselPagerAdapter;
+import com.hdfc.caretaker.CheckInCareActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 
@@ -43,6 +46,7 @@ public class DashboardFragment extends Fragment {
     //private static Context context;
     //private static Utils utils;
     public CarouselPagerAdapter adapter;
+    public Button checkInCare;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -106,6 +110,7 @@ public class DashboardFragment extends Fragment {
 
         leftNav = (ImageView) rootView.findViewById(R.id.left_nav);
         rightNav = (ImageView) rootView.findViewById(R.id.right_nav);
+        checkInCare = (Button) rootView.findViewById(R.id.buttonCheckInCare);
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 
@@ -136,6 +141,14 @@ public class DashboardFragment extends Fragment {
 
         leftNav.setVisibility(View.GONE);
         new setAdapterTask().execute();
+
+        checkInCare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
       /*  textView1 = (TextView) rootView.findViewById(R.id.textView1);
