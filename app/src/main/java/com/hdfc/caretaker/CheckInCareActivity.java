@@ -27,7 +27,10 @@ public class CheckInCareActivity extends AppCompatActivity {
         backButton = (ImageButton) findViewById(R.id.buttonBackCheck);
         activities.setVisibility(View.GONE);
 
-        String[] from = {"Check In Care Activity 1", "Check In Care Activity 2", "Check In Care Activity 3", "Check In Care Activity 4", "Check In Care Activity 5", "Check In Care Activity 5", "Check In Care Activity 5"};
+        String[] from = {"Check In Care Activity 1",
+                "Check In Care Activity 2",
+                "Check In Care Activity 3",
+                "Check In Care Activity 4"};
 
         arrayAdapter = new ArrayAdapter(this, R.layout.check_in_care_activities, R.id.tvName, from);
 
