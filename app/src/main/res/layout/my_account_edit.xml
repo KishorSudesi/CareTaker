@@ -100,47 +100,6 @@
                                         android:hint="@string/address"
                                         android:paddingLeft="10dp" />-->
 
-                    <EditText
-                        android:id="@+id/editOldPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginLeft="@dimen/edit_text_margin"
-                        android:layout_marginRight="@dimen/edit_text_margin"
-                        android:layout_marginTop="25dp"
-                        android:drawableLeft="@drawable/password"
-                        android:drawablePadding="10dp"
-                        android:drawableStart="@drawable/password"
-                        android:hint="@string/old_password"
-                        android:inputType="textPassword"
-                        android:padding="10dp" />
-
-                    <EditText
-                        android:id="@+id/editPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginLeft="@dimen/edit_text_margin"
-                        android:layout_marginRight="@dimen/edit_text_margin"
-                        android:layout_marginTop="25dp"
-                        android:drawableLeft="@drawable/password"
-                        android:drawablePadding="10dp"
-                        android:drawableStart="@drawable/password"
-                        android:hint="@string/new_password"
-                        android:inputType="textPassword"
-                        android:padding="10dp" />
-
-                    <EditText
-                        android:id="@+id/editConfirmPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginLeft="@dimen/edit_text_margin"
-                        android:layout_marginRight="@dimen/edit_text_margin"
-                        android:layout_marginTop="25dp"
-                        android:drawableLeft="@drawable/re_password"
-                        android:drawablePadding="10dp"
-                        android:drawableStart="@drawable/re_password"
-                        android:hint="@string/verify_password"
-                        android:inputType="textPassword"
-                        android:padding="10dp" />
 
                     <!-- <EditText
                          android:id="@+id/editTextNumber"
@@ -264,8 +223,8 @@
                         android:layout_weight="0.55"
                         android:background="@drawable/button_success"
                         android:text="@string/save_text"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textAllCaps="false"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorWhite" />
 
 

@@ -29,7 +29,6 @@ import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
-import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
@@ -245,9 +244,6 @@ public class MyAccountEditFragment extends Fragment {
                 name.setError(null);
                 number.setError(null);
                 //city.setError(null);
-                editTextOldPassword.setError(null);
-                editTextPassword.setError(null);
-                editTextConfirmPassword.setError(null);
 
                 editAreaCode.setError(null);
                 editDob.setError(null);
@@ -265,9 +261,7 @@ public class MyAccountEditFragment extends Fragment {
                 strName = name.getText().toString().trim();
                 strContactNo = number.getText().toString();
                 //strAddress = city.getText().toString().trim();
-                strOldPass = editTextOldPassword.getText().toString().trim();
-                strPass = editTextPassword.getText().toString().trim();
-                String strConfirmPass = editTextConfirmPassword.getText().toString().trim();
+
 
                 boolean cancel = false;
                 View focusView = null;
@@ -302,21 +296,7 @@ public class MyAccountEditFragment extends Fragment {
                     utils.toast(2, 2, getString(R.string.select_country));
                 }
 
-                if (!Utils.isEmpty(strOldPass) && !Utils.isEmpty(strPass) &&
-                        !Utils.isEmpty(strConfirmPass)) {
 
-                    if (!strPass.equalsIgnoreCase(strConfirmPass)) {
-                        editTextConfirmPassword.setError(getString(R.string.error_confirm_password));
-                        focusView = editTextConfirmPassword;
-                        cancel = true;
-                    }
-
-                    if (strOldPass.equalsIgnoreCase(strPass)) {
-                        editTextPassword.setError(getString(R.string.error_same_password));
-                        focusView = editTextPassword;
-                        cancel = true;
-                    }
-                }
 
                 /*if (TextUtils.isEmpty(strAddress)) {
                     city.setError(getString(R.string.error_field_required));
@@ -383,21 +363,21 @@ public class MyAccountEditFragment extends Fragment {
                                         Config.customerModel.setStrAddress(strCountry);
                                         Config.customerModel.setStrCountryIsdCode(strCountryCode);
 
-                                        if (editAreaCode.getVisibility() == View.VISIBLE)
+                                        if (editAreaCode.getVisibility() == View.VISIBLE) {
                                             Config.customerModel.setStrCountryAreaCode(strAreaCode);
 
-                                        if (strPass != null && !strPass.equalsIgnoreCase("")) {
+                                        /*if (strPass != null && !strPass.equalsIgnoreCase("")) {
 
                                             if (utils.isConnectingToInternet()) {
 
                                                 // progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
 
-                                       /* try {
+                                       *//* try {
                                             strOldPass = AESCrypt.encrypt(Config.string, strOldPass);
                                             strPass = AESCrypt.encrypt(Config.string, strPass);
                                         } catch (GeneralSecurityException e) {
                                             e.printStackTrace();
-                                        }*/
+                                        }*//*
 
                                                 UserService userService = new UserService(getActivity());
 
@@ -428,15 +408,15 @@ public class MyAccountEditFragment extends Fragment {
                                                         });
 
                                             } else utils.toast(2, 2, getString(R.string.warning_internet));
-
+*/
                                         } else {
                                             // progressDialog.dismiss();
                                             DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                             utils.toast(1, 1, getActivity().getString(R.string.account_updated));
                                             goToAccount();
                                         }
-                                    }
 
+                                    }
                                     @Override
                                     public void onException(Exception e) {
                                         //progressDialog.dismiss();
