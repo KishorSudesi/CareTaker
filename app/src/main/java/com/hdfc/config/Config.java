@@ -32,6 +32,7 @@ public class Config {
     public static final String collectionActivity = "activity";
     public static final String collectionNotification = "notification";
     public static final String collectionMilestones = "milestones";
+    public static final String collectionCheckInCare = "checkincare";
 
     public static final int iSdkVersion = Build.VERSION.SDK_INT;
     public static final int iAppVersion = BuildConfig.VERSION_CODE;
@@ -148,6 +149,8 @@ public class Config {
     public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
     public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
     public static final String strReload = "RELOAD";
+    public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status", "doc_date"};
+    public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
     public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;
     public static int intServiceScreen = 7;
@@ -158,7 +161,6 @@ public class Config {
     public static int intDashboardScreen = 1;
     public static int intReportsScreen = 4;
     public static int intScreenWidth = 0;
-
     //public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     //User Specific clear at logout or whenever needed
     public static int intScreenHeight = 0;
@@ -176,12 +178,11 @@ public class Config {
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
     public static CustomerModel customerModel = null;
-    public static DependentModel dependentModel = null;
-    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
 
    /* public static ConfirmDependentModel confirmDependentModel = null;
     public static ConfirmCustomerModel confirmCustomerModel = null;*/
-
+   public static DependentModel dependentModel = null;
+    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
     //public static ClientModel clientModels = new ClientModel();
     //public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
     public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
@@ -194,9 +195,5 @@ public class Config {
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
-
-    public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status","doc_date"};
-
-    public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
 
 }

@@ -91,6 +91,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         utils.clearActivityMonthModel();
 
         utils.fetchLatestActivitiesByMonth(iMonth, iYear, progressDialog);
+        utils.fetchLatestCheckInCare(iMonth, iYear);
     }
 
     public static void reload() {

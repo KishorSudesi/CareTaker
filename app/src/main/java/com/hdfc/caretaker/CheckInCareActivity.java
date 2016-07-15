@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
@@ -15,7 +18,9 @@ public class CheckInCareActivity extends AppCompatActivity {
     public static ListView checkActivities;
     public ScrollView activities;
     public ImageButton backButton;
+    public Button buttonHall, buttonKitchen, buttonWashroom, buttonBed;
     ArrayAdapter arrayAdapter;
+    LinearLayout dialogLinear, linearImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,13 @@ public class CheckInCareActivity extends AppCompatActivity {
         checkActivities = (ListView) findViewById(R.id.listCheckInCare);
         activities = (ScrollView) findViewById(R.id.scrollCheckInCare);
         backButton = (ImageButton) findViewById(R.id.buttonBackCheck);
+        buttonHall = (Button) findViewById(R.id.btnHall);
+        buttonKitchen = (Button) findViewById(R.id.btnKitchen);
+        buttonWashroom = (Button) findViewById(R.id.btnWashroom);
+        buttonBed = (Button) findViewById(R.id.btnBed);
+        dialogLinear = (LinearLayout) findViewById(R.id.dialogLinear);
+        linearImages = (LinearLayout) findViewById(R.id.LinearImages);
+        linearImages.setVisibility(View.GONE);
         activities.setVisibility(View.GONE);
 
         String[] from = {"Check In Care Activity 1",
@@ -51,5 +63,23 @@ public class CheckInCareActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        buttonHall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearImages.setVisibility(View.VISIBLE);
+                AddImages();
+            }
+        });
+    }
+
+    public void AddImages() {
+        ImageView imageView = new ImageView(CheckInCareActivity.this);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.shri1));
+
+
+        dialogLinear.addView(imageView);
+
     }
 }

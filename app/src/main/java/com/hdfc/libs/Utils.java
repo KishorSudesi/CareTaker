@@ -3855,6 +3855,117 @@ public class Utils {
 
 
     }
+
+
+    public void fetchLatestCheckInCare(int iMonth, int iYear) {
+
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+        iMonth = iMonth; // - 1
+
+        String strMonth = String.valueOf(iMonth);
+        String strMonthDate, strStartDate, strToDate, strEndDate;
+
+        if (iMonth <= 9)
+            strMonth = String.valueOf("0" + iMonth);
+        if (sessionManager.getActivityStatus()) {
+            Cursor cursor = null;
+            try {
+
+                strMonthDate = String.valueOf(iYear + "-" + strMonth + "-" + "01");
+
+                //String strFromDate = strMonthDate + "T05:30:00.000Z";
+                SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+                SimpleDateFormat queryFormat =
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+                Date strDate = (readFormat.parse(strMonthDate + " 00:00:00"));
+
+                strStartDate = queryFormat.format(strDate);
+
+                SimpleDateFormat readFormatDate =
+                        new SimpleDateFormat("yyyy-MM-dd", locale);
+                Date today = null;
+                try {
+                    today = readFormatDate.parse(strMonthDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(today);
+                calendar.add(Calendar.MONTH, 1);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                int year = calendar.get(Calendar.YEAR);
+                String mnth = "";
+                if (month <= 9) {
+                    mnth = "0" + month;
+                } else {
+                    mnth = "" + month;
+                }
+                String lastDayOfMonth = year + "-" + mnth + "-01";
+
+                log(strStartDate, " Start Date ");
+
+                today = readFormat.parse(lastDayOfMonth + " 00:00:00");
+
+                strEndDate = queryFormat.format(today);
+                log(strEndDate, "LAST DATE ");
+
+                strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
+
+                //String strFromDate = strMonthDate + "T05:30:00.000Z";
+
+                strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
+                //
+                strToDate = getMonthLastDate(strMonthDate);
+
+                log(strToDate, " EDATE ");
+
+                strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
+
+                if (isConnectingToInternet()) {
+
+
+                    StorageService storageService = new StorageService(_ctxt);
+
+                    Query q2 = QueryBuilder.build("created_date", strStartDate, QueryBuilder.
+                            Operator.GREATER_THAN_EQUALTO);
+
+                    // Build query q1 for key1 equal to name and value1 equal to Nick
+
+                    // Build query q2 for key2 equal to age and value2
+
+                    Query q3 = QueryBuilder.build("created_date", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
+
+                    Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
+
+
+                    storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q4, 3000, 0, "created_date", 1, new App42CallBack() {
+                                @Override
+                                public void onSuccess(Object o) {
+
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    Storage response = (Storage) o;
+
+                                    
+                                    if (response != null) {
+
+                                    }
+                                }
+
+                                @Override
+                                public void onException(Exception e) {
+
+                                }
+                            }
+                    );
+
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     //Application Specig=fic End
 
     public void setListViewHeight(ListView listView) {
