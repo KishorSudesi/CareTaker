@@ -105,14 +105,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
-
         <activity
             android:name=".DependentDetailsMedical"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
-
-
         <activity
             android:name=".AddNewActivityActivity"
             android:screenOrientation="portrait"
@@ -129,14 +126,22 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
-        <!--<receiver android:name="com.shephertz.app42.paas.sdk.android.App42BroadcastReceiver">
+        <activity
+            android:name=".CheckInImage"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
+        <!--
+        <receiver android:name="com.shephertz.app42.paas.sdk.android.App42BroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.shephertz.app42.paas.sdk.android.AlarmReceiver" />
 
-        <service android:name="com.shephertz.app42.paas.sdk.android.App42DataSyncService" />-->
+        <service android:name="com.shephertz.app42.paas.sdk.android.App42DataSyncService" />
+        -->
 
         <activity
             android:name=".MainActivity"
@@ -175,7 +180,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <service android:name="com.hdfc.libs.UpdateService"></service>
+
+        <service android:name="com.hdfc.libs.UpdateService" />
+
 
     </application>
 

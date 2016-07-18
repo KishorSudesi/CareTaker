@@ -16,9 +16,13 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.CheckInCareAdapter;
 import com.hdfc.config.Config;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.CheckInCareActivityModel;
+import com.hdfc.models.ImageModelCheck;
+import com.hdfc.models.PictureModel;
 import com.hdfc.models.SubActivityModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,18 +34,23 @@ public class CheckInCareActivity extends AppCompatActivity {
     private static List<SubActivityModel> subActivityModels = new ArrayList<>();
     ArrayAdapter arrayAdapter;
     LinearLayout dialogLinear, linearImages;
+    private List<PictureModel> picture = new ArrayList<>();
+    private List<ImageModelCheck> image = new ArrayList<>();
     private ScrollView activities;
     private ImageButton backButton;
     private Button buttonHall, buttonKitchen, buttonWashroom, buttonBed;
     private TextView utilityBill, water, gas, electricity, phone, kitchenItems, grocery,
             maidServices, electronics, automobiles, homeAppliances, homeStatus, domesticStatus, workingStatus;
-    private String subActivityName, status, dueStatus, dueDate, utilityName;
+    private String subActivityName, status, dueStatus, dueDate, utilityName, imageUrl, imageDescription, imageTime;
     private int homeEssCount = 0, domesticHelp = 0, equipmentStatus = 0, utilityBills = 0;
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_in_care);
+
+        utils = new Utils(CheckInCareActivity.this);
 
         checkActivities = (ListView) findViewById(R.id.listCheckInCare);
         activities = (ScrollView) findViewById(R.id.scrollCheckInCare);
@@ -77,7 +86,103 @@ public class CheckInCareActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                //picture = Config.roomtypeName.get(position).getImageModels();
+
                 activity = Config.checkInCareActivityNames.get(position).getCheckInCareActivityModels();
+
+                picture = Config.checkInCareActivityNames.get(position).getPictureModels();
+
+                if (picture != null) {
+                    for (int x = 0; x < picture.size(); x++) {
+
+                        if (picture.get(x).getStrRoomName().equalsIgnoreCase("hall")) {
+
+                            final List<ImageModelCheck> hallImageModel = picture.get(x).getImageModels();
+
+                            if (hallImageModel.size() > 0) {
+                                buttonHall.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
+                                buttonHall.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                        Bundle b = new Bundle();
+                                        b.putSerializable("Pass", (Serializable) hallImageModel);
+                                        intent.putExtras(b);
+                                        startActivity(intent);
+                                    }
+                                });
+                            } else {
+                                buttonHall.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+                            }
+
+                        }
+                        if (picture.get(x).getStrRoomName().equalsIgnoreCase("kitchen")) {
+                            final List<ImageModelCheck> kitchenImageModel = picture.get(x).getImageModels();
+
+                            if (kitchenImageModel.size() > 0) {
+                                buttonKitchen.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
+                                buttonKitchen.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                        Bundle b = new Bundle();
+                                        b.putSerializable("Pass", (Serializable) kitchenImageModel);
+                                        intent.putExtras(b);
+                                        startActivity(intent);
+                                    }
+                                });
+                            } else {
+                                buttonKitchen.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+                            }
+
+                        }
+                        if (picture.get(x).getStrRoomName().equalsIgnoreCase("washroom")) {
+                            final List<ImageModelCheck> washImageModel = picture.get(x).getImageModels();
+
+                            if (washImageModel.size() > 0) {
+                                buttonWashroom.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
+                                buttonWashroom.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                        Bundle b = new Bundle();
+                                        b.putSerializable("Pass", (Serializable) washImageModel);
+                                        intent.putExtras(b);
+                                        startActivity(intent);
+                                    }
+                                });
+                            } else {
+                                buttonWashroom.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+                            }
+
+                        }
+                        if (picture.get(x).getStrRoomName().equalsIgnoreCase("bedroom")) {
+                            final List<ImageModelCheck> bedImageModel = picture.get(x).getImageModels();
+
+
+                            if (bedImageModel.size() > 0) {
+                                buttonBed.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
+                                buttonBed.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                        Bundle b = new Bundle();
+                                        b.putSerializable("Pass", (Serializable) bedImageModel);
+                                        intent.putExtras(b);
+                                        startActivity(intent);
+                                    }
+                                });
+                            } else {
+                                buttonBed.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+                            }
+
+                        }
+
+
+                    }
+                }
+
+
                 refreshData();
                 if (activity != null) {
                     for (int i = 0; i < activity.size(); i++) {

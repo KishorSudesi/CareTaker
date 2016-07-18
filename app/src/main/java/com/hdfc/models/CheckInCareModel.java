@@ -123,8 +123,20 @@ public class CheckInCareModel {
         return pictureModels;
     }
 
+    public void setPictureModels(List<PictureModel> pictureModels) {
+        this.pictureModels = pictureModels;
+    }
+
     public void setPictureModels(ArrayList<PictureModel> pictureModels) {
         this.pictureModels = pictureModels;
+    }
+
+    public void setPictureModel(PictureModel pictureModel) {
+        this.pictureModels.add(pictureModel);
+    }
+
+    public void setImageModels(List<ImageModel> imageModels) {
+        this.imageModels = imageModels;
     }
 
     public void clearPictureModels() {

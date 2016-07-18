@@ -75,8 +75,10 @@ import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FieldModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
+import com.hdfc.models.ImageModelCheck;
 import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.NotificationModel;
+import com.hdfc.models.PictureModel;
 import com.hdfc.models.ProviderModel;
 import com.hdfc.models.ServiceModel;
 import com.hdfc.models.SubActivityModel;
@@ -158,13 +160,13 @@ public class Utils {
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
-    private boolean isUpdateServer = false;
     private static SessionManager sessionManager;
 
     static {
         System.loadLibrary("stringGen");
     }
 
+    private boolean isUpdateServer = false;
     private Date dat;
     private List<String> dependentsIdsList;
 
@@ -2599,8 +2601,52 @@ public class Utils {
 
 
             CheckInCareModel checkInCareModel = new CheckInCareModel();
+            //
             checkInCareModel.setStrName(jsonObjectCheck.optString("check_in_care_name"));
             JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
+            JSONArray picture = jsonObjectCheck.optJSONArray("picture");
+
+            try {
+                if (picture != null && picture.length() > 0) {
+
+                    for (int m = 0; m < picture.length(); m++) {
+                        JSONObject jsonObject = picture.getJSONObject(m);
+
+
+                        if (jsonObject != null && jsonObject.length() > 0) {
+
+                            PictureModel pictureModel = new PictureModel();
+
+                            pictureModel.setStrStatus(jsonObject.getString("status"));
+                            pictureModel.setStrRoomName(jsonObject.getString("room_name"));
+                            List<ImageModelCheck> imageModels = new ArrayList<>();
+
+                            JSONArray imageDetails = jsonObject.optJSONArray("pictures_details");
+                            for (int k = 0; k < imageDetails.length(); k++) {
+                                JSONObject jsonObjectImage = imageDetails.getJSONObject(k);
+
+                                ImageModelCheck imageModelCheck = new ImageModelCheck(jsonObjectImage.optString("image_url"),
+                                        jsonObjectImage.optString("description"), jsonObjectImage.optString("date_time"));
+                                imageModels.add(imageModelCheck);
+                            }
+
+                            pictureModel.setImageModels(imageModels);
+
+                            checkInCareModel.setPictureModel(pictureModel);
+
+                            Config.roomtypeName.add(pictureModel);
+
+
+                        }
+
+                    }
+
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<CheckInCareActivityModel>();
 
@@ -2630,6 +2676,7 @@ public class Utils {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
 
             }
 
@@ -4213,52 +4260,6 @@ public class Utils {
 
     /* method to set expandable lsit view's height based on children */
 
-    public class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-
-            /*if (progressDialog != null && progressDialog.isShowing())
-                progressDialog.dismiss();*/
-
-            if (Config.intSelectedMenu == Config.intDashboardScreen) {
-                DashboardActivity.goToDashboard();
-            }
-
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-
-
-        }
-    }
-
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                //loadAllFiles();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            threadHandler.sendEmptyMessage(0);
-        }
-    }
-
-//    public void deleteCollectionDoc(String collectionName) {
-//
-//        StorageService storageService = new StorageService(_ctxt);
-//
-//        storageService.deleteAllDocs(collectionName, new App42CallBack() {
-//            public void onSuccess(Object response) {
-//                App42Response app42response = (App42Response) response;
-//                System.out.println("response is " + app42response);
-//            }
-//
-//            public void onException(Exception ex) {
-//                System.out.println("Exception Message" + ex.getMessage());
-//            }
-//        });
-//    }
-
     public Bitmap rotateBitmap(String src, Bitmap bitmap) {
         try {
             int orientation = getExifOrientation(src);
@@ -4325,6 +4326,22 @@ public class Utils {
         return orientation;
     }
 
+//    public void deleteCollectionDoc(String collectionName) {
+//
+//        StorageService storageService = new StorageService(_ctxt);
+//
+//        storageService.deleteAllDocs(collectionName, new App42CallBack() {
+//            public void onSuccess(Object response) {
+//                App42Response app42response = (App42Response) response;
+//                System.out.println("response is " + app42response);
+//            }
+//
+//            public void onException(Exception ex) {
+//                System.out.println("Exception Message" + ex.getMessage());
+//            }
+//        });
+//    }
+
     public String getRealPathFromURI(Uri contentUri) {
         //Uri contentUri = Uri.parse(contentURI);
         try {
@@ -4340,5 +4357,35 @@ public class Utils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+            /*if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();*/
+
+            if (Config.intSelectedMenu == Config.intDashboardScreen) {
+                DashboardActivity.goToDashboard();
+            }
+
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                //loadAllFiles();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            threadHandler.sendEmptyMessage(0);
+        }
     }
 }
