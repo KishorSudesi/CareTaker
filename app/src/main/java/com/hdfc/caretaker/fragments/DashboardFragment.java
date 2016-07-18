@@ -287,7 +287,7 @@ public class DashboardFragment extends Fragment {
                         Storage response = (Storage) o;
 
                         if (response != null) {
-
+                            Config.checkInCareActivityNames.clear();
                             Utils.log(response.toString(), " S ");
                             Utils.log("Size : " + response.getJsonDocList().size(), " S ");
                             if (response.getJsonDocList().size() > 0) {
