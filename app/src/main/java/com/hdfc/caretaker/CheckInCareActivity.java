@@ -92,35 +92,35 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 dueStatus = subActivityModels.get(j).getStrDueStatus();
                                 dueDate = subActivityModels.get(j).getStrDueDate();
                                 utilityName = subActivityModels.get(j).getStrUtilityName();
-                                if (utilityName.equalsIgnoreCase("water ") && status != null && status.length() != 0) {
+                                if (utilityName.equalsIgnoreCase("water ") && status.equalsIgnoreCase("Yes")) {
                                     homeEssCount++;
                                     utilityBills++;
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else if (utilityName.equalsIgnoreCase("water") && status == null && status.length() == 0) {
+                                } else if (utilityName.equalsIgnoreCase("water") && status.equalsIgnoreCase("No")) {
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (utilityName.equalsIgnoreCase("gas") && status != null && status.length() != 0) {
+                                if (utilityName.equalsIgnoreCase("gas") && status.equalsIgnoreCase("Yes")) {
                                     homeEssCount++;
                                     utilityBills++;
                                     gas.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else if (utilityName.equalsIgnoreCase("gas") && status == null && status.length() == 0) {
+                                } else if (utilityName.equalsIgnoreCase("gas") && status.equalsIgnoreCase("No")) {
                                     gas.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (utilityName.equalsIgnoreCase("electricity") && status != null && status.length() != 0) {
+                                if (utilityName.equalsIgnoreCase("electricity") && status.equalsIgnoreCase("Yes")) {
                                     homeEssCount++;
                                     utilityBills++;
                                     electricity.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else if (utilityName.equalsIgnoreCase("electricity") && status == null && status.length() == 0) {
+                                } else if (utilityName.equalsIgnoreCase("electricity") && status.equalsIgnoreCase("No")) {
                                     electricity.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (utilityName.equalsIgnoreCase("telephone") && status != null && status.length() != 0) {
+                                if (utilityName.equalsIgnoreCase("telephone") && status.equalsIgnoreCase("Yes")) {
                                     homeEssCount++;
                                     utilityBills++;
                                     phone.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else if (utilityName.equalsIgnoreCase("telephone") && status == null && status.length() == 0) {
+                                } else if (utilityName.equalsIgnoreCase("telephone") && status.equalsIgnoreCase("No")) {
                                     phone.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
