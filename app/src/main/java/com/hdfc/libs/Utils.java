@@ -2376,7 +2376,7 @@ public class Utils {
 
             CheckInCareModel checkInCareModel = new CheckInCareModel();
             checkInCareModel.setStrName(jsonObjectCheck.optString("check_in_care_name"));
-            JSONArray subMainactivities = jsonObjectCheck.getJSONArray("activities");
+            JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
 
             List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<CheckInCareActivityModel>();
             for (int i = 0; i < subMainactivities.length(); i++) {
@@ -2390,9 +2390,9 @@ public class Utils {
                 for (int j = 0; j < subactivities.length(); j++) {
                     JSONObject jsonObjectsubactivity = subactivities.getJSONObject(j);
 
-                    SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("status"),
-                            jsonObjectsubactivity.optString("sub_activity_name"), jsonObjectsubactivity.optString("utility_name"),
-                            jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("due_status"));
+                    SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("sub_activity_name"),
+                            jsonObjectsubactivity.optString("status"), jsonObjectsubactivity.optString("due_status"),
+                            jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("utility_name"));
                     subActivityModels.add(subActivityModel);
                 }
                 CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
@@ -2401,7 +2401,7 @@ public class Utils {
 
             checkInCareModel.setCheckInCareActivityModels(checkInCareActivityModels);
 
-            Config.checkInCareActivityNames.add(jsonObjectCheck.optString("check_in_care_name"));
+            Config.checkInCareActivityNames.add(checkInCareModel);
 
         } catch (JSONException e) {
             e.printStackTrace();

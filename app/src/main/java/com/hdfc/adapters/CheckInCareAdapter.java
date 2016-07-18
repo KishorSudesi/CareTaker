@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.CheckInCareModel;
 
 import java.util.List;
 
@@ -19,10 +20,10 @@ public class CheckInCareAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
     public Context _context;
-    public List<String> data;
+    public List<CheckInCareModel> data;
     private Utils utils;
 
-    public CheckInCareAdapter(Context context, List<String> d) {
+    public CheckInCareAdapter(Context context, List<CheckInCareModel> d) {
         _context = context;
         data = d;
     }
@@ -60,7 +61,7 @@ public class CheckInCareAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText(data.get(position));
+        viewHolder.name.setText(data.get(position).getStrName());
 
         return convertView;
     }

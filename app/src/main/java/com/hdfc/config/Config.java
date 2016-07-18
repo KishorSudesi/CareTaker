@@ -5,6 +5,7 @@ import android.os.Build;
 import com.hdfc.caretaker.BuildConfig;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.CheckInCareModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
@@ -192,7 +193,7 @@ public class Config {
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
     public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
     public static ArrayList<String> customerEmail = new ArrayList<>();
-    public static List<String> checkInCareActivityNames = new ArrayList<>();
+    public static List<CheckInCareModel> checkInCareActivityNames = new ArrayList<>();
 
 
 
