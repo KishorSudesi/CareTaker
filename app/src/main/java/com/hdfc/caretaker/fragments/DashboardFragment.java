@@ -13,9 +13,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.hdfc.adapters.CarouselPagerAdapter;
+import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.CheckInCareActivity;
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
+import com.hdfc.libs.Utils;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.storage.Query;
+import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
+import com.shephertz.app42.paas.sdk.android.storage.Storage;
+
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +41,7 @@ public class DashboardFragment extends Fragment {
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
     public static ImageView leftNav, rightNav;
     public static ViewPager pager;
+    private static Utils utils;
     //public static ViewPager pager;
     //public static ArrayList<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     //public static RoundedImageView roundedImageView;
@@ -94,7 +104,7 @@ public class DashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //utils = new Utils(getActivity());
+        utils = new Utils(getActivity());
         //context = getContext();
     }
 
@@ -111,6 +121,14 @@ public class DashboardFragment extends Fragment {
         leftNav = (ImageView) rootView.findViewById(R.id.left_nav);
         rightNav = (ImageView) rootView.findViewById(R.id.right_nav);
         checkInCare = (Button) rootView.findViewById(R.id.buttonCheckInCare);
+
+        Calendar c = Calendar.getInstance();
+        String iyear = String.valueOf(c.get(Calendar.YEAR));
+        String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
+
+        checkInCare.setVisibility(View.GONE);
+
+        fetchLatestCheckInCare(imonth, iyear, Config.customerModel.getStrCustomerID());
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 
@@ -142,11 +160,14 @@ public class DashboardFragment extends Fragment {
         leftNav.setVisibility(View.GONE);
         new setAdapterTask().execute();
 
+
         checkInCare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -233,6 +254,90 @@ public class DashboardFragment extends Fragment {
 
     }
 
+    public void fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
+
+
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+        iMonth = iMonth; // - 1
+
+
+        StorageService storageService = new StorageService(getActivity());
+
+        Query q1 = QueryBuilder.build("year", iYear, QueryBuilder.
+                Operator.EQUALS);
+        Query q2 = QueryBuilder.build("month", iMonth, QueryBuilder.
+                Operator.EQUALS);
+        Query q3 = QueryBuilder.build("customer_id", CustomerId, QueryBuilder.
+                Operator.EQUALS);
+
+        // Build query q1 for key1 equal to name and value1 equal to Nick
+
+        // Build query q2 for key2 equal to age and value2
+
+
+        Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+        Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
+
+
+        storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q5, 3000, 0, "created_date", 1, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                        Storage response = (Storage) o;
+
+                        if (response != null) {
+
+                            Utils.log(response.toString(), " S ");
+                            Utils.log("Size : " + response.getJsonDocList().size(), " S ");
+                            if (response.getJsonDocList().size() > 0) {
+                                try {
+                                    for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                        Storage.JSONDocument jsonDocument = response.
+                                                getJsonDocList().get(i);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        String strActivityId = jsonDocument.getDocId();
+                                        //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+
+                                        utils.createCheckInCareModel(strActivityId, strDocument);
+                                    }
+
+                                    checkInCare.setVisibility(View.VISIBLE);
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+
+                    }
+                }
+        );
+
+    }
+
+    /*public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+
+               *//* bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+                        utils.replaceSpace(Config.dependentModels.get(iPosition).getStrDependentID())).getAbsolutePath(),
+                        Config.intWidth, Config.intHeight);*//*
+
+                //threadHandler.sendEmptyMessage(0);
+            } catch (Exception | OutOfMemoryError e) {
+                e.printStackTrace();
+            }
+        }
+    }*/
+
     /*  public static class ThreadHandler extends Handler {
           @Override
           public void handleMessage(Message msg) {
@@ -275,19 +380,4 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    /*public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-               *//* bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
-                        utils.replaceSpace(Config.dependentModels.get(iPosition).getStrDependentID())).getAbsolutePath(),
-                        Config.intWidth, Config.intHeight);*//*
-
-                //threadHandler.sendEmptyMessage(0);
-            } catch (Exception | OutOfMemoryError e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 }

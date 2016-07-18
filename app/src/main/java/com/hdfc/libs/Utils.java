@@ -63,6 +63,8 @@ import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.CheckInCareActivityModel;
+import com.hdfc.models.CheckInCareModel;
 import com.hdfc.models.ClientModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
@@ -74,6 +76,7 @@ import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.NotificationModel;
 import com.hdfc.models.ProviderModel;
 import com.hdfc.models.ServiceModel;
+import com.hdfc.models.SubActivityModel;
 import com.hdfc.models.VideoModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -2363,6 +2366,47 @@ public class Utils {
         }
     }
 
+
+    public void createCheckInCareModel(String strActivityId, String strDocument) {
+
+
+        try {
+            JSONObject jsonObjectCheck = new JSONObject(strDocument);
+
+
+            CheckInCareModel checkInCareModel = new CheckInCareModel();
+            checkInCareModel.setStrName(jsonObjectCheck.optString("check_in_care_name"));
+            JSONArray subMainactivities = jsonObjectCheck.getJSONArray("activities");
+
+            List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<CheckInCareActivityModel>();
+            for (int i = 0; i < subMainactivities.length(); i++) {
+
+                JSONObject jsonObjectsubactivitites = subMainactivities.getJSONObject(i);
+                jsonObjectsubactivitites.optString("activity_name");
+
+                List<SubActivityModel> subActivityModels = new ArrayList<SubActivityModel>();
+
+                JSONArray subactivities = jsonObjectsubactivitites.optJSONArray("sub_activities");
+                for (int j = 0; j < subactivities.length(); j++) {
+                    JSONObject jsonObjectsubactivity = subactivities.getJSONObject(j);
+
+                    SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("status"),
+                            jsonObjectsubactivity.optString("sub_activity_name"), jsonObjectsubactivity.optString("utility_name"),
+                            jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("due_status"));
+                    subActivityModels.add(subActivityModel);
+                }
+                CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
+                checkInCareActivityModels.add(checkInCareActivityModel);
+            }
+
+            checkInCareModel.setCheckInCareActivityModels(checkInCareActivityModels);
+
+            Config.checkInCareActivityNames.add(jsonObjectCheck.optString("check_in_care_name"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     public void createActivityModel(String strActivityId, String strDocument, int iFlag, JSONArray jArray) {
         try {
 
@@ -3857,115 +3901,9 @@ public class Utils {
     }
 
 
-    public void fetchLatestCheckInCare(int iMonth, int iYear) {
-
-        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
-        iMonth = iMonth; // - 1
-
-        String strMonth = String.valueOf(iMonth);
-        String strMonthDate, strStartDate, strToDate, strEndDate;
-
-        if (iMonth <= 9)
-            strMonth = String.valueOf("0" + iMonth);
-        if (sessionManager.getActivityStatus()) {
-            Cursor cursor = null;
-            try {
-
-                strMonthDate = String.valueOf(iYear + "-" + strMonth + "-" + "01");
-
-                //String strFromDate = strMonthDate + "T05:30:00.000Z";
-                SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-                SimpleDateFormat queryFormat =
-                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-                Date strDate = (readFormat.parse(strMonthDate + " 00:00:00"));
-
-                strStartDate = queryFormat.format(strDate);
-
-                SimpleDateFormat readFormatDate =
-                        new SimpleDateFormat("yyyy-MM-dd", locale);
-                Date today = null;
-                try {
-                    today = readFormatDate.parse(strMonthDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(today);
-                calendar.add(Calendar.MONTH, 1);
-                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                int month = calendar.get(Calendar.MONTH) + 1;
-                int year = calendar.get(Calendar.YEAR);
-                String mnth = "";
-                if (month <= 9) {
-                    mnth = "0" + month;
-                } else {
-                    mnth = "" + month;
-                }
-                String lastDayOfMonth = year + "-" + mnth + "-01";
-
-                log(strStartDate, " Start Date ");
-
-                today = readFormat.parse(lastDayOfMonth + " 00:00:00");
-
-                strEndDate = queryFormat.format(today);
-                log(strEndDate, "LAST DATE ");
-
-                strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
-
-                //String strFromDate = strMonthDate + "T05:30:00.000Z";
-
-                strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
-                //
-                strToDate = getMonthLastDate(strMonthDate);
-
-                log(strToDate, " EDATE ");
-
-                strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
-
-                if (isConnectingToInternet()) {
 
 
-                    StorageService storageService = new StorageService(_ctxt);
 
-                    Query q2 = QueryBuilder.build("created_date", strStartDate, QueryBuilder.
-                            Operator.GREATER_THAN_EQUALTO);
-
-                    // Build query q1 for key1 equal to name and value1 equal to Nick
-
-                    // Build query q2 for key2 equal to age and value2
-
-                    Query q3 = QueryBuilder.build("created_date", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
-
-                    Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
-
-
-                    storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q4, 3000, 0, "created_date", 1, new App42CallBack() {
-                                @Override
-                                public void onSuccess(Object o) {
-
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    Storage response = (Storage) o;
-
-                                    
-                                    if (response != null) {
-
-                                    }
-                                }
-
-                                @Override
-                                public void onException(Exception e) {
-
-                                }
-                            }
-                    );
-
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }
     //Application Specig=fic End
 
     public void setListViewHeight(ListView listView) {

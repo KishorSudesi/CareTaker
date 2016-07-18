@@ -58,13 +58,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/edit_text_margin"
                 android:gravity="center|center_horizontal"
-                android:text="@string/attachments" />
+                android:text="@string/attachments"
+                android:visibility="gone" />
 
             <HorizontalScrollView
                 android:id="@+id/horizontal_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/dialogLinear"

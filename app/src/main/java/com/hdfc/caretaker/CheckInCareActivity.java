@@ -13,9 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
+import com.hdfc.adapters.CheckInCareAdapter;
+import com.hdfc.config.Config;
+
+import java.util.List;
+
 public class CheckInCareActivity extends AppCompatActivity {
 
     public static ListView checkActivities;
+    static List data;
     public ScrollView activities;
     public ImageButton backButton;
     public Button buttonHall, buttonKitchen, buttonWashroom, buttonBed;
@@ -38,21 +44,25 @@ public class CheckInCareActivity extends AppCompatActivity {
         linearImages = (LinearLayout) findViewById(R.id.LinearImages);
         linearImages.setVisibility(View.GONE);
         activities.setVisibility(View.GONE);
-
+/*
         String[] from = {"Check In Care Activity 1",
                 "Check In Care Activity 2",
                 "Check In Care Activity 3",
-                "Check In Care Activity 4"};
+                "Check In Care Activity 4"};*/
 
-        arrayAdapter = new ArrayAdapter(this, R.layout.check_in_care_activities, R.id.tvName, from);
-
-        checkActivities.setAdapter(arrayAdapter);
-        checkActivities.setDividerHeight(3);
+        // arrayAdapter = new ArrayAdapter(this, R.layout.check_in_care_activities, R.id.tvName, Config.checkInCareActivityNames);
+        data = Config.checkInCareActivityNames;
+        CheckInCareAdapter checkInCareAdapter = new CheckInCareAdapter(CheckInCareActivity.this, data);
+        checkActivities.setAdapter(checkInCareAdapter);
+        //checkInCareAdapter.notifyDataSetChanged();
         checkActivities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                activities.setVisibility(View.VISIBLE);
+                try {
+                    activities.setVisibility(View.VISIBLE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 

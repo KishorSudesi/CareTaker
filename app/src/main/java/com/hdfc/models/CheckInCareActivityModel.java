@@ -1,6 +1,7 @@
 package com.hdfc.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Admin on 07-07-2016.
@@ -9,9 +10,9 @@ public class CheckInCareActivityModel {
 
     private String strActivityName = "";
 
-    private ArrayList<SubActivityModel> subActivityModels = new ArrayList<>();
+    private List<SubActivityModel> subActivityModels = new ArrayList<>();
 
-    public CheckInCareActivityModel(String strActivityName, ArrayList<SubActivityModel> subActivityModels) {
+    public CheckInCareActivityModel(String strActivityName, List<SubActivityModel> subActivityModels) {
         this.strActivityName = strActivityName;
         this.subActivityModels = subActivityModels;
 
@@ -25,7 +26,7 @@ public class CheckInCareActivityModel {
         this.strActivityName = strActivityName;
     }
 
-    public ArrayList<SubActivityModel> getSubActivityModels() {
+    public List<SubActivityModel> getSubActivityModels() {
         return subActivityModels;
     }
 

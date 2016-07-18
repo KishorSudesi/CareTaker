@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -191,6 +192,9 @@ public class Config {
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
     public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
     public static ArrayList<String> customerEmail = new ArrayList<>();
+    public static List<String> checkInCareActivityNames = new ArrayList<>();
+
+
 
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 

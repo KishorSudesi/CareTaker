@@ -1,11 +1,15 @@
 package com.hdfc.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Admin on 07-07-2016.
  */
 public class CheckInCareModel {
+
+
+    private String strName = "";
     private String strStatus = "";
     private String strMonth = "";
     private String strYear = "";
@@ -16,18 +20,19 @@ public class CheckInCareModel {
     private String strCustomerID;
     private String strDependentID;
 
-    private ArrayList<PictureModel> pictureModels = new ArrayList<>();
-    private ArrayList<ImageModel> imageModels = new ArrayList<>();
+    private List<PictureModel> pictureModels = new ArrayList<>();
+    private List<ImageModel> imageModels = new ArrayList<>();
 
-    private ArrayList<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<>();
+    private List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<>();
 
     public CheckInCareModel() {
     }
 
-    public CheckInCareModel(String strStatus, String strMonth, String strYear,
+    public CheckInCareModel(String strName, String strStatus, String strMonth, String strYear,
                             String strHouseName, String strCreatedDate, String strUpdatedDate,
-                            String strCustomerID, String strDependentID, ArrayList<PictureModel> pictureModels,
-                            ArrayList<CheckInCareActivityModel> checkInCareActivityModels) {
+                            String strCustomerID, String strDependentID, List<PictureModel> pictureModels,
+                            List<CheckInCareActivityModel> checkInCareActivityModels) {
+        this.strName = strName;
         this.strStatus = strStatus;
         this.strMonth = strMonth;
         this.strYear = strYear;
@@ -42,6 +47,13 @@ public class CheckInCareModel {
 
     }
 
+    public String getStrName() {
+        return strName;
+    }
+
+    public void setStrName(String strName) {
+        this.strName = strName;
+    }
     public String getStrStatus() {
         return strStatus;
     }
@@ -107,7 +119,7 @@ public class CheckInCareModel {
     }
 
 
-    public ArrayList<PictureModel> getPictureModels() {
+    public List<PictureModel> getPictureModels() {
         return pictureModels;
     }
 
@@ -119,7 +131,7 @@ public class CheckInCareModel {
         this.pictureModels.clear();
     }
 
-    public ArrayList<ImageModel> getImageModels() {
+    public List<ImageModel> getImageModels() {
         return imageModels;
     }
 
@@ -132,11 +144,11 @@ public class CheckInCareModel {
     }
 
 
-    public ArrayList<CheckInCareActivityModel> getCheckInCareActivityModels() {
+    public List<CheckInCareActivityModel> getCheckInCareActivityModels() {
         return checkInCareActivityModels;
     }
 
-    public void setCheckInCareActivityModels(ArrayList<CheckInCareActivityModel> checkInCareActivityModels) {
+    public void setCheckInCareActivityModels(List<CheckInCareActivityModel> checkInCareActivityModels) {
         this.checkInCareActivityModels = checkInCareActivityModels;
     }
 
