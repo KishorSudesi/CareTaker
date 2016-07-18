@@ -2379,24 +2379,29 @@ public class Utils {
             JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
 
             List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<CheckInCareActivityModel>();
-            for (int i = 0; i < subMainactivities.length(); i++) {
+            try {
+                for (int i = 0; i < subMainactivities.length(); i++) {
 
-                JSONObject jsonObjectsubactivitites = subMainactivities.getJSONObject(i);
-                jsonObjectsubactivitites.optString("activity_name");
+                    JSONObject jsonObjectsubactivitites = subMainactivities.getJSONObject(i);
+                    jsonObjectsubactivitites.optString("activity_name");
 
-                List<SubActivityModel> subActivityModels = new ArrayList<SubActivityModel>();
+                    List<SubActivityModel> subActivityModels = new ArrayList<SubActivityModel>();
 
-                JSONArray subactivities = jsonObjectsubactivitites.optJSONArray("sub_activities");
-                for (int j = 0; j < subactivities.length(); j++) {
-                    JSONObject jsonObjectsubactivity = subactivities.getJSONObject(j);
+                    JSONArray subactivities = jsonObjectsubactivitites.optJSONArray("sub_activities");
+                    for (int j = 0; j < subactivities.length(); j++) {
+                        JSONObject jsonObjectsubactivity = subactivities.getJSONObject(j);
 
-                    SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("sub_activity_name"),
-                            jsonObjectsubactivity.optString("status"), jsonObjectsubactivity.optString("due_status"),
-                            jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("utility_name"));
-                    subActivityModels.add(subActivityModel);
+                        SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("sub_activity_name"),
+                                jsonObjectsubactivity.optString("status"), jsonObjectsubactivity.optString("due_status"),
+                                jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("utility_name"));
+                        subActivityModels.add(subActivityModel);
+                    }
+                    CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
+                    checkInCareActivityModels.add(checkInCareActivityModel);
                 }
-                CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
-                checkInCareActivityModels.add(checkInCareActivityModel);
+
+            } catch (Exception e) {
+
             }
 
             checkInCareModel.setCheckInCareActivityModels(checkInCareActivityModels);

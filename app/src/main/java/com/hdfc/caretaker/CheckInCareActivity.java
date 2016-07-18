@@ -24,17 +24,19 @@ import java.util.List;
 
 public class CheckInCareActivity extends AppCompatActivity {
 
-    public static ListView checkActivities;
-    public static List<CheckInCareActivityModel> activity = new ArrayList<>();
-    public static List<SubActivityModel> subActivityModels = new ArrayList<>();
     static List data;
-    public ScrollView activities;
-    public ImageButton backButton;
-    public Button buttonHall, buttonKitchen, buttonWashroom, buttonBed;
-    public TextView utilityBill, water, gas, electricity, phone, kitchenItems, grocery, maidServices, electronics, automobiles, homeAppliances;
-    public String subActivityName, status, dueStatus, dueDate, utilityName;
+    private static ListView checkActivities;
+    private static List<CheckInCareActivityModel> activity = new ArrayList<>();
+    private static List<SubActivityModel> subActivityModels = new ArrayList<>();
     ArrayAdapter arrayAdapter;
     LinearLayout dialogLinear, linearImages;
+    private ScrollView activities;
+    private ImageButton backButton;
+    private Button buttonHall, buttonKitchen, buttonWashroom, buttonBed;
+    private TextView utilityBill, water, gas, electricity, phone, kitchenItems, grocery,
+            maidServices, electronics, automobiles, homeAppliances, homeStatus, domesticStatus, workingStatus;
+    private String subActivityName, status, dueStatus, dueDate, utilityName;
+    private int homeEssCount = 0, domesticHelp = 0, equipmentStatus = 0, utilityBills = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class CheckInCareActivity extends AppCompatActivity {
         buttonBed = (Button) findViewById(R.id.btnBed);
         dialogLinear = (LinearLayout) findViewById(R.id.dialogLinear);
         linearImages = (LinearLayout) findViewById(R.id.LinearImages);
-        utilityBill = (TextView) findViewById(R.id.tvWorkingStatus);
+        utilityBill = (TextView) findViewById(R.id.tvUtilityBillStatus);
         water = (TextView) findViewById(R.id.tvWaterBill);
         gas = (TextView) findViewById(R.id.tvGasBill);
         electricity = (TextView) findViewById(R.id.tvElectricityBill);
@@ -61,6 +63,9 @@ public class CheckInCareActivity extends AppCompatActivity {
         electronics = (TextView) findViewById(R.id.tvElectronics);
         automobiles = (TextView) findViewById(R.id.tvAutomobiles);
         homeAppliances = (TextView) findViewById(R.id.tvHomeAppliances);
+        homeStatus = (TextView) findViewById(R.id.tvHomeStatus);
+        workingStatus = (TextView) findViewById(R.id.tvEquipmentStatus);
+        domesticStatus = (TextView) findViewById(R.id.tvDomesticStatus);
         linearImages.setVisibility(View.GONE);
         activities.setVisibility(View.GONE);
 
@@ -73,58 +78,80 @@ public class CheckInCareActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 activity = Config.checkInCareActivityNames.get(position).getCheckInCareActivityModels();
-
+                refreshData();
                 if (activity != null) {
                     for (int i = 0; i < activity.size(); i++) {
 
                         if (activity.get(i).getStrActivityName().equalsIgnoreCase("home_essentials")) {
                             subActivityModels = activity.get(i).getSubActivityModels();
+                            homeEssCount = 0;
+                            utilityBills = 0;
                             for (int j = 0; j < subActivityModels.size(); j++) {
                                 subActivityName = subActivityModels.get(j).getStrSubActivityName();
                                 status = subActivityModels.get(j).getStrStatus();
                                 dueStatus = subActivityModels.get(j).getStrDueStatus();
                                 dueDate = subActivityModels.get(j).getStrDueDate();
                                 utilityName = subActivityModels.get(j).getStrUtilityName();
-                                if (utilityName.equalsIgnoreCase("water") && status != null) {
+                                if (utilityName.equalsIgnoreCase("water ") && status != null && status.length() != 0) {
+                                    homeEssCount++;
+                                    utilityBills++;
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (utilityName.equalsIgnoreCase("water") && status == null && status.length() == 0) {
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (utilityName.equalsIgnoreCase("gas") && status != null) {
+                                if (utilityName.equalsIgnoreCase("gas") && status != null && status.length() != 0) {
+                                    homeEssCount++;
+                                    utilityBills++;
                                     gas.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (utilityName.equalsIgnoreCase("gas") && status == null && status.length() == 0) {
                                     gas.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (utilityName.equalsIgnoreCase("electricity") && status != null) {
+                                if (utilityName.equalsIgnoreCase("electricity") && status != null && status.length() != 0) {
+                                    homeEssCount++;
+                                    utilityBills++;
                                     electricity.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (utilityName.equalsIgnoreCase("electricity") && status == null && status.length() == 0) {
                                     electricity.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (utilityName.equalsIgnoreCase("telephone") && status != null) {
+                                if (utilityName.equalsIgnoreCase("telephone") && status != null && status.length() != 0) {
+                                    homeEssCount++;
+                                    utilityBills++;
                                     phone.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (utilityName.equalsIgnoreCase("telephone") && status == null && status.length() == 0) {
                                     phone.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (subActivityName.equalsIgnoreCase("kitchen_equipments") && status != null) {
+                                if (subActivityName.equalsIgnoreCase("kitchen_equipments") && status != null && status.length() != 0) {
+                                    homeEssCount++;
                                     kitchenItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (subActivityName.equalsIgnoreCase("kitchen_equipments") && status == null && status.length() == 0) {
                                     kitchenItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (subActivityName.equalsIgnoreCase("grocery") && status != null) {
+                                if (subActivityName.equalsIgnoreCase("grocery") && status != null && status.length() != 0) {
+                                    homeEssCount++;
                                     grocery.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (subActivityName.equalsIgnoreCase("grocery") && status == null && status.length() == 0) {
                                     grocery.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
                             }
-                        }
-                        if (activity.get(i).getStrActivityName().equalsIgnoreCase("domestic_help_status")) {
+                            if (homeEssCount == subActivityModels.size()) {
+                                homeStatus.setText("Done");
+                            } else {
+                                homeStatus.setText("Pending");
+                            }
+                            if (utilityBills == 4) {
+                                utilityBill.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
+                            } else {
+                                utilityBill.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+                            }
+                        } else if (activity.get(i).getStrActivityName().equalsIgnoreCase("domestic_help_status")) {
                             subActivityModels = activity.get(i).getSubActivityModels();
+                            domesticHelp = 0;
                             for (int j = 0; j < subActivityModels.size(); j++) {
                                 subActivityName = subActivityModels.get(j).getStrSubActivityName();
                                 status = subActivityModels.get(j).getStrStatus();
@@ -132,16 +159,22 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 dueDate = subActivityModels.get(j).getStrDueDate();
                                 utilityName = subActivityModels.get(j).getStrUtilityName();
 
-                                if (subActivityName.equalsIgnoreCase("maid_services") && status != null) {
+                                if (subActivityName.equalsIgnoreCase("maid_services") && status != null && status.length() != 0) {
+                                    domesticHelp++;
                                     maidServices.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (subActivityName.equalsIgnoreCase("maid_services") && status == null && status.length() == 0) {
                                     maidServices.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
                             }
-                        }
-                        if (activity.get(i).getStrActivityName().equalsIgnoreCase("equipment_working_status")) {
+                            if (domesticHelp == subActivityModels.size()) {
+                                domesticStatus.setText("Done");
+                            } else {
+                                domesticStatus.setText("Pending");
+                            }
+                        } else if (activity.get(i).getStrActivityName().equalsIgnoreCase("equipment_working_status")) {
                             subActivityModels = activity.get(i).getSubActivityModels();
+                            equipmentStatus = 0;
                             for (int j = 0; j < subActivityModels.size(); j++) {
                                 subActivityName = subActivityModels.get(j).getStrSubActivityName();
                                 status = subActivityModels.get(j).getStrStatus();
@@ -149,24 +182,32 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 dueDate = subActivityModels.get(j).getStrDueDate();
                                 utilityName = subActivityModels.get(j).getStrUtilityName();
 
-                                if (subActivityName.equalsIgnoreCase("electronic") && status != null) {
+                                if (subActivityName.equalsIgnoreCase("electronic") && status != null && status.length() != 0) {
+                                    equipmentStatus++;
                                     electronics.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (subActivityName.equalsIgnoreCase("electronic") && status == null && status.length() == 0) {
                                     electronics.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (subActivityName.equalsIgnoreCase("home_appliances") && status != null) {
+                                if (subActivityName.equalsIgnoreCase("home_appliances") && status != null && status.length() != 0) {
+                                    equipmentStatus++;
                                     homeAppliances.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (subActivityName.equalsIgnoreCase("home_appliances") && status == null && status.length() == 0) {
                                     homeAppliances.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
-                                if (subActivityName.equalsIgnoreCase("automobile") && status != null) {
+                                if (subActivityName.equalsIgnoreCase("automobile") && status != null && status.length() != 0) {
+                                    equipmentStatus++;
                                     automobiles.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
-                                } else {
+                                } else if (subActivityName.equalsIgnoreCase("automobile") && status == null && status.length() == 0) {
                                     automobiles.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
                                 }
+                            }
+                            if (equipmentStatus == subActivityModels.size()) {
+                                workingStatus.setText("Done");
+                            } else {
+                                workingStatus.setText("Pending");
                             }
                         }
 
@@ -195,6 +236,34 @@ public class CheckInCareActivity extends AppCompatActivity {
                 AddImages();
             }
         });
+
+    }
+
+    private void refreshData() {
+        homeStatus.setText("Pending");
+        domesticStatus.setText("Pending");
+        workingStatus.setText("Pending");
+        utilityBill.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+        water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        gas.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        electricity.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        phone.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        kitchenItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        grocery.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+
+        maidServices.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        electronics.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        homeAppliances.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
+
+        automobiles.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
 
     }
 
