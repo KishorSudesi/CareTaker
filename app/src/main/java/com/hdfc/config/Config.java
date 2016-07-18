@@ -151,8 +151,6 @@ public class Config {
     public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
     public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
     public static final String strReload = "RELOAD";
-    public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status", "doc_date"};
-    public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
     public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;
     public static int intServiceScreen = 7;
@@ -200,5 +198,10 @@ public class Config {
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
+
+    public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status", "doc_date", "is_updated"};
+
+    public static final String names_update[] = {"is_updated"};
+    public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
 
 }

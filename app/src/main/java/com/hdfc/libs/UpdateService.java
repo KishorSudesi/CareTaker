@@ -42,6 +42,7 @@ public class UpdateService extends Service {
     private Handler handler;
     private String strCustomerId;
     private int j = 0;
+    private boolean updateAll = false;
 
     @Override
     public void onCreate() {
@@ -63,6 +64,13 @@ public class UpdateService extends Service {
 
                     notificationModel = new NotificationModel(jObj.optString("message"), jObj.optString("time"), jObj.optString("user_type"), jObj.optString("created_by"), jObj.optString("user_id"), jObj.optString("created_by"), jObj.optString("activity_id"));
                 }
+
+                if (intent != null && intent.hasExtra("updateAll")) {
+                    updateAll = intent.getBooleanExtra("updateAll", false);
+
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -116,10 +124,12 @@ public class UpdateService extends Service {
                 //updateCustomers();
                 //updateDependents();
                 //updateProviders();
+
+
                 updateActivities();
-                updateServiceCustomer();
+                // updateServiceCustomer();
                 updateNotifications();
-                updateServices();
+                //updateServices();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -158,7 +168,7 @@ public class UpdateService extends Service {
                                             get(0);
 
                                     String strDocument = jsonDocument.getJsonDoc();
-                                    String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", ""};
+                                    String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", "", ""};
                                     try {
                                         //Config.jsonCustomer = new JSONObject(strDocument);
 
@@ -248,7 +258,7 @@ public class UpdateService extends Service {
 
                                         String strDocument = jsonDocument.getJsonDoc();
                                         String strDependentDocId = jsonDocument.getDocId();
-                                        String values[] = {strDependentDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionDependent, "", "1", ""};
+                                        String values[] = {strDependentDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionDependent, "", "1", "", ""};
 
                                         if (sessionManager.getDependentsStatus()) {
                                             String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
@@ -365,7 +375,7 @@ public class UpdateService extends Service {
                             defaultDate = Utils.defaultDate;
                         }
 
-                        Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
+                        Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
                         q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
                     } else {
 
@@ -394,7 +404,7 @@ public class UpdateService extends Service {
                                                     JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
                                                     jsonObjectActivity.remove("milestones");
                                                     strDocument = jsonObjectActivity.toString();
-                                                    String values[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionActivity, "", "1", jsonObjectActivity.optString("activity_date")};
+                                                    String values[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionActivity, "", "1", jsonObjectActivity.optString("activity_date"), ""};
                                                     Log.i("TAG", "Date :" + jsonObjectActivity.optString("activity_date"));
                                                     String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_COLLECTION_NAME + " = ?";
 
@@ -408,7 +418,7 @@ public class UpdateService extends Service {
 
                                                         // WHERE clause arguments
                                                         String[] selectionArgsMile = {strActivityId, Config.collectionMilestones, jObj.optString("id")};
-                                                        String valuesMilestone[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionMilestones, jObj.optString("id"), "1", jObj.optString("date")};
+                                                        String valuesMilestone[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionMilestones, jObj.optString("id"), "1", jObj.optString("date"), ""};
                                                         CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, valuesMilestone, Config.names_collection_table, selectionArgsMile);
 
 
@@ -478,7 +488,7 @@ public class UpdateService extends Service {
                                                     JSONObject jsonObjectServcies = new JSONObject(strServices);
 
                                                     if (jsonObjectServcies.has("unit")) {
-                                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionService, "1", ""};
+                                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionService, "1", "", "", ""};
                                                         String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 
                                                         // WHERE clause arguments
@@ -569,7 +579,7 @@ public class UpdateService extends Service {
                                     try {
                                         JSONObject jsonObjectServcies = new JSONObject(strServices);
                                         if (jsonObjectServcies.has("unit")) {
-                                            String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", ""};
+                                            String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", "", ""};
 
                                             String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 
@@ -666,7 +676,7 @@ public class UpdateService extends Service {
                                                     String strProviderDocId = jsonDocument.
                                                             getDocId();
 
-                                                    String values[] = {strProviderDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionProvider, "", "1", ""};
+                                                    String values[] = {strProviderDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionProvider, "", "1", "", ""};
                                                     if (sessionManager.getProviderStatus()) {
 
                                                         String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
@@ -712,84 +722,86 @@ public class UpdateService extends Service {
 
     public void updateNotifications() {
         try {
-
-            String defaultDate = null;
-            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification);
-            if (cursorData != null && cursorData.getCount() > 0) {
-                cursorData.moveToFirst();
-                defaultDate = cursorData.getString(0);
-                if (defaultDate == null || defaultDate.length() == 0) {
+            if (utils.isConnectingToInternet()) {
+                String defaultDate = null;
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    if (defaultDate == null || defaultDate.length() == 0) {
+                        defaultDate = Utils.defaultDate;
+                    }
+                    cursorData.close();
+                } else {
                     defaultDate = Utils.defaultDate;
                 }
-                cursorData.close();
-            } else {
-                defaultDate = Utils.defaultDate;
-            }
-            Query finalQuery, q1 = null;
-            StorageService storageService = null;
-            if (notificationModel != null) {
+                Query finalQuery, q1 = null;
+                StorageService storageService = null;
+                if (notificationModel != null) {
 
-                storageService = new StorageService(UpdateService.this);
-                q1 = QueryBuilder.build("user_id", notificationModel.getStrUserID(), QueryBuilder.Operator.EQUALS);
-                // Build query q2
-                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    storageService = new StorageService(UpdateService.this);
+                    q1 = QueryBuilder.build("user_id", notificationModel.getStrUserID(), QueryBuilder.Operator.EQUALS);
+                    // Build query q2
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
 
-                finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+                    finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
 
 
-                storageService.findDocsByQueryOrderBy(Config.collectionNotification, finalQuery, 3000, 0,
-                        "time", 1, new App42CallBack() {
+                    storageService.findDocsByQueryOrderBy(Config.collectionNotification, finalQuery, 3000, 0,
+                            "time", 1, new App42CallBack() {
 
-                            @Override
-                            public void onSuccess(Object o) {
+                                @Override
+                                public void onSuccess(Object o) {
 
-                                if (o != null) {
+                                    if (o != null) {
 
-                                    Storage storage = (Storage) o;
+                                        Storage storage = (Storage) o;
 
-                                    //Utils.log(storage.toString(), "not ");
-                                    try {
-                                        Log.i("TAG", "Service update notifications");
+                                        //Utils.log(storage.toString(), "not ");
+                                        try {
+                                            Log.i("TAG", "Service update notifications");
 
-                                        if (storage.getJsonDocList().size() > 0) {
-                                            CareTaker.dbCon.beginDBTransaction();
-                                            ArrayList<Storage.JSONDocument> jsonDocList = storage.
-                                                    getJsonDocList();
+                                            if (storage.getJsonDocList().size() > 0) {
+                                                CareTaker.dbCon.beginDBTransaction();
+                                                ArrayList<Storage.JSONDocument> jsonDocList = storage.
+                                                        getJsonDocList();
 
-                                            for (int i = 0; i < jsonDocList.size(); i++) {
-                                                String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, notificationModel.getStrUserID(), "1", ""};
-                                                String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
+                                                for (int i = 0; i < jsonDocList.size(); i++) {
+                                                    String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, notificationModel.getStrUserID(), "1", "", ""};
+                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
 
-                                                // WHERE clause arguments
-                                                String[] selectionArgs = {jsonDocList.get(i).getDocId(), notificationModel.getStrUserID()};
-                                                CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgs = {jsonDocList.get(i).getDocId(), notificationModel.getStrUserID()};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+
+                                                }
+                                                CareTaker.dbCon.dbTransactionSucessFull();
+                                                //fetchProviders(progressDialog, 1);
 
                                             }
-                                            CareTaker.dbCon.dbTransactionSucessFull();
-                                            //fetchProviders(progressDialog, 1);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            CareTaker.dbCon.endDBTransaction();
+                                            stopSelf();
                                         }
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    } finally {
-                                        CareTaker.dbCon.endDBTransaction();
-
+                                    } else {
+                                        stopSelf();
                                     }
-
-                                } else {
                                 }
-                            }
 
-                            @Override
-                            public void onException(Exception e) {
+                                @Override
+                                public void onException(Exception e) {
+                                    stopSelf();
 
+                                }
+                            });
 
-                            }
-                        });
+                } else if(Config.strDependentIds!=null && Config.strDependentIds.size()>0){
 
-            } else {
-
-               // for (j = 0; j < Config.strDependentIds.size(); j++) {
+                    // for (j = 0; j < Config.strDependentIds.size(); j++) {
                     storageService = null;
                     storageService = new StorageService(UpdateService.this);
                     q1 = QueryBuilder.build("user_id", Config.strDependentIds, QueryBuilder.Operator.INLIST);
@@ -820,7 +832,7 @@ public class UpdateService extends Service {
                                                         getJsonDocList();
 
                                                 for (int i = 0; i < jsonDocList.size(); i++) {
-                                                   JSONObject jsonObjectProvider = new JSONObject(jsonDocList.get(i).getJsonDoc());
+                                                    JSONObject jsonObjectProvider = new JSONObject(jsonDocList.get(i).getJsonDoc());
 
                                                     String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, jsonObjectProvider.getString("user_id"), "1", ""};
                                                     String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
@@ -848,21 +860,24 @@ public class UpdateService extends Service {
                                             e.printStackTrace();
                                         } finally {
                                             CareTaker.dbCon.endDBTransaction();
+                                            stopSelf();
 
                                         }
 
                                     } else {
+                                        stopSelf();
                                     }
                                 }
 
                                 @Override
                                 public void onException(Exception e) {
 
-
+                                    stopSelf();
                                 }
                             });
 
-                //}
+                    //}
+                }
             }
 
         } catch (Exception e) {

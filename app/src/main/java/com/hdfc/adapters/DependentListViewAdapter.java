@@ -1,9 +1,7 @@
 package com.hdfc.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,22 +11,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hdfc.caretaker.DependentDetailPersonal;
-import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 
-import java.io.File;
 import java.util.ArrayList;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by Admin on 27-06-2016.
  */
 public class DependentListViewAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
-    public MultiBitmapLoader multiBitmapLoader;
+    //public MultiBitmapLoader multiBitmapLoader;
     private Context contxt;
     private ArrayList data;
     private Utils utils;
@@ -37,7 +35,8 @@ public class DependentListViewAdapter extends BaseAdapter {
         contxt = ctxt;
         data = d;
         inflater = (LayoutInflater) contxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        multiBitmapLoader = new MultiBitmapLoader(contxt);
+       // multiBitmapLoader = new MultiBitmapLoader(contxt);
+        utils = new Utils(contxt);
     }
 
     public int getCount() {
@@ -55,7 +54,7 @@ public class DependentListViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         View vi = convertView;
-        ViewHolder holder;
+        ViewHolder holder=null;
 
         DependentModel editDependentModel = (DependentModel) data.get(position);
 
@@ -74,7 +73,7 @@ public class DependentListViewAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) vi.getTag();
         }
-        holder.image.setTag(editDependentModel);
+       // holder.image.setTag(editDependentModel);
 
         String strName = editDependentModel.getStrName();
 
@@ -92,14 +91,30 @@ public class DependentListViewAdapter extends BaseAdapter {
         holder.textRelation.setText(editDependentModel.getStrRelation());
 
         //File fileImage = new File(editDependentModel.getStrImagePath());
-        utils = new Utils(contxt);
-        File fileImage = utils.getInternalFileImages(editDependentModel.getStrDependentID());
 
-        if (fileImage.exists()) {
-            String filename = fileImage.getAbsolutePath();
-            multiBitmapLoader.loadBitmap(filename, holder.image);
-        } else {
-            holder.image.setImageDrawable(contxt.getResources().getDrawable(R.drawable.person_icon));
+
+
+//        File fileImage = utils.getInternalFileImages(editDependentModel.getStrDependentID());
+//
+//        if (fileImage.exists()) {
+//            String filename = fileImage.getAbsolutePath();
+//            multiBitmapLoader.loadBitmap(filename, holder.image);
+//        } else {
+//            holder.image.setImageDrawable(contxt.getResources().getDrawable(R.drawable.person_icon));
+//        }
+        try {
+
+
+            Glide.with(contxt)
+                    .load(editDependentModel.getStrImageUrl())
+                    .centerCrop()
+                    .bitmapTransform(new CropCircleTransformation(contxt))
+                    .placeholder(R.drawable.person_icon)
+                    .crossFade()
+                    .into(holder.image);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 

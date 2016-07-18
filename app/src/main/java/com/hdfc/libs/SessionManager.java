@@ -61,6 +61,10 @@ public class SessionManager {
 
     public final String KEY_DEPENDENTS_IDS = "dependents_ids";
     public final String KEY_PROVIDERS_IDS = "providers_ids";
+    public final String KEY_OLD_PASSWORD = "old_password";
+
+    public final String KEY_UPDATED_DEPENDENTS = "updated_dependents";
+    public final String KEY_CHECKIN_CARE_STATUS= "checkin_care_status";
 
     // Constructor
     public SessionManager(Context context) {
@@ -124,6 +128,60 @@ public class SessionManager {
         return pref.getBoolean(IS_LOGIN, false);
     }
 
+
+    /**
+     * save old password
+     */
+    public void saveOldPassword(String password) {
+
+
+        // Storing customerId in pref
+        editor.putString(KEY_OLD_PASSWORD, password);
+
+
+        // commit changes
+        editor.commit();
+    }
+
+    /**
+     * Get old password
+     */
+    public String getOldPassword() {
+
+
+        // return customer id
+        return pref.getString(KEY_OLD_PASSWORD, "");
+    }
+
+    /**
+     * save dependents update status for syncing
+     */
+    public void saveUpdateDependent(List<String> dependentsIdsList) {
+
+
+        Set<String> set = new HashSet<String>();
+        //set = pref.getStringSet(KEY_UPDATED_DEPENDENTS, new HashSet<String>());
+        set.addAll(dependentsIdsList);
+        editor.putStringSet(KEY_UPDATED_DEPENDENTS, set);
+        editor.commit();
+    }
+
+    /**
+     * Get dependents update status for syncing
+     */
+    public List<String> getUpdateDependent() {
+
+
+        List<String> dependentsIdsList = new ArrayList<String>();
+
+        Set<String> set = pref.getStringSet(KEY_UPDATED_DEPENDENTS, new HashSet<String>());
+        if (set != null && set.size() > 0) {
+            dependentsIdsList = new ArrayList<String>(set);
+        }
+        return dependentsIdsList;
+    }
+
+
     /**
      * save customer id
      */
@@ -171,6 +229,30 @@ public class SessionManager {
         // return customer id
         return pref.getBoolean(KEY_SERVICE_SAVED, false);
     }
+    /**
+     * save checkin care status
+     */
+    public void saveCheckInCareStatus(boolean status) {
+
+
+        // Storing service status in pref
+        editor.putBoolean(KEY_CHECKIN_CARE_STATUS, status);
+
+
+        // commit changes
+        editor.commit();
+    }
+
+    /**
+     * Get stored session data
+     */
+    public boolean getCheckInCareStatus() {
+
+
+        // return customer id
+        return pref.getBoolean(KEY_CHECKIN_CARE_STATUS, false);
+    }
+
 
 //    /**
 //     * save notification status

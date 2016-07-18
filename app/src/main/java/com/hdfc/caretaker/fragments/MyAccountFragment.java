@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +26,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.adapters.DependAdapter;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
@@ -37,7 +38,6 @@ import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
-import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 
 import org.json.JSONException;
@@ -45,6 +45,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 public class MyAccountFragment extends Fragment {
@@ -58,8 +60,8 @@ public class MyAccountFragment extends Fragment {
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
     public static ViewPager dependpager;
     private static Bitmap bitmap;
-    private static RoundedImageView roundedImageView;
-    private static Handler threadHandler;
+    private static ImageView roundedImageView;
+    //private static Handler threadHandler;
     private static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
     private static Context context;
@@ -113,7 +115,7 @@ public class MyAccountFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
 
         // dependpager = (ViewPager)view.findViewById(R.id.dependCarousel);
-        roundedImageView = (RoundedImageView) view.findViewById(R.id.imageView5);
+        roundedImageView = (ImageView) view.findViewById(R.id.imageView5);
 
 
         /*if(Config.dependentNames.size()<=1)
@@ -128,11 +130,21 @@ public class MyAccountFragment extends Fragment {
 
                 iPosition = intPosition;*/
 
-            threadHandler = new ThreadHandler();
-            Thread backgroundThread = new BackgroundThread();
-            backgroundThread.start();
+//            threadHandler = new ThreadHandler();
+//            Thread backgroundThread = new BackgroundThread();
+//            backgroundThread.start();
 
             //}
+
+            loadingPanel.setVisibility(View.VISIBLE);
+
+            if (Config.customerModel != null) {
+                loadImageSimpleTarget();
+
+//            threadHandler = new ThreadHandler();
+//            Thread backgroundThread = new BackgroundThread();
+//            backgroundThread.start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -282,6 +294,12 @@ public class MyAccountFragment extends Fragment {
                                                                     public void onSuccess(Object o) {
                                                                         // progressDialog.dismiss();
                                                                         // DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                        sessionManager.createLoginSession(strPass, Config.strUserName);
+                                                                        if (sessionManager.getOldPassword() != null && !(sessionManager.getOldPassword().equalsIgnoreCase("")) && sessionManager.getOldPassword().length() > 0) {
+
+                                                                        } else {
+                                                                            sessionManager.saveOldPassword(strOldPass);
+                                                                        }
                                                                         utils.toast(1, 1, "Password Change Successfully");
                                                                         dialog.dismiss();
                                                                     }
@@ -400,17 +418,35 @@ public class MyAccountFragment extends Fragment {
             }
         });
 
-        loadingPanel.setVisibility(View.VISIBLE);
 
-        threadHandler = new ThreadHandler();
-        Thread backgroundThread = new BackgroundThread();
-        backgroundThread.start();
 
         /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();*/
 
         return view;
+    }
+
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            roundedImageView.setImageBitmap(bitmap);
+            loadingPanel.setVisibility(View.GONE);
+        }
+    };
+
+    private void loadImageSimpleTarget() {
+
+        Glide.with(getActivity())
+                .load(Config.customerModel.getStrImgUrl())
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(getActivity()))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
     }
 
     public void goToAccountEdit() {
@@ -442,20 +478,38 @@ public class MyAccountFragment extends Fragment {
         // new setAdapterTask().execute();
     }
 
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-//            progressDialog.dismiss();
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+//    public static class ThreadHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+////            progressDialog.dismiss();
+//            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+//
+//            if (bitmap != null) {
+//                roundedImageView.setImageBitmap(bitmap);
+//            }
+//
+//            loadingPanel.setVisibility(View.GONE);
+//        }
+//    }
 
-            if (bitmap != null) {
-                roundedImageView.setImageBitmap(bitmap);
-            }
 
-            loadingPanel.setVisibility(View.GONE);
-        }
-    }
 
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//                //if(Config.customerModel!=null) {
+//                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+//                System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
+//                bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+//                //}
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            threadHandler.sendEmptyMessage(0);
+//        }
+//    }
     public class BackgroundThread extends Thread {
         @Override
         public void run() {
@@ -469,7 +523,7 @@ public class MyAccountFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            threadHandler.sendEmptyMessage(0);
+            //threadHandler.sendEmptyMessage(0);
         }
     }
 

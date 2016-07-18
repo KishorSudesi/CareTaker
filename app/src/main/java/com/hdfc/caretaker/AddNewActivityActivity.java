@@ -277,7 +277,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                 try {
                                     JSONObject jsonObjectServcies = new JSONObject(strServices);
                                     if (jsonObjectServcies.has("unit")) {
-                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", ""};
+                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", "",""};
                                         if (sessionManager.getServiceCustomer()) {
                                             String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 

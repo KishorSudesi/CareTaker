@@ -13,12 +13,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -52,6 +54,7 @@ import android.widget.Toast;
 import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
@@ -155,13 +158,15 @@ public class Utils {
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
+    private boolean isUpdateServer = false;
     private static SessionManager sessionManager;
 
     static {
         System.loadLibrary("stringGen");
     }
 
-    Date dat;
+    private Date dat;
+    private List<String> dependentsIdsList;
 
     public Utils(Context context) {
         _ctxt = context;
@@ -1285,7 +1290,7 @@ public class Utils {
 
         File fileImage = createFileInternal("images/" + strFileName);
 
-        log(strFileName + " ~ " + fileImage.lastModified(), " Load Image ");
+        log(strFileName + " ~ " + fileImage.lastModified() + " url " + strFileUrl, " Load Image ");
 
         if (fileImage.length() <= 0) {
 
@@ -1502,146 +1507,150 @@ public class Utils {
             }
 
         }
-        if (isConnectingToInternet()) {
+        try {
+            if (isConnectingToInternet()) {
 
 
-            /*progressDialog.setMessage(_ctxt.getString(R.string.loading));
-            progressDialog.setCancelable(false);
-            progressDialog.show();*/
+                /*progressDialog.setMessage(_ctxt.getString(R.string.loading));
+                progressDialog.setCancelable(false);
+                progressDialog.show();*/
 
-            StorageService storageService = new StorageService(_ctxt);
-         /*   storageService.findDocsByKeyValue(Config.collectionNotification,
-                    "user_id",
-                    Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
-                    new AsyncApp42ServiceApi.App42StorageServiceListener()*/
-            Query finalQuery;
-            Query q1 = QueryBuilder.build("user_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), QueryBuilder.Operator.EQUALS);
-            if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                String defaultDate = null;
-                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
-                if (cursorData != null && cursorData.getCount() > 0) {
-                    cursorData.moveToFirst();
-                    defaultDate = cursorData.getString(0);
-                    cursorData.close();
+                StorageService storageService = new StorageService(_ctxt);
+             /*   storageService.findDocsByKeyValue(Config.collectionNotification,
+                        "user_id",
+                        Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
+                        new AsyncApp42ServiceApi.App42StorageServiceListener()*/
+                Query finalQuery;
+                Query q1 = QueryBuilder.build("user_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), QueryBuilder.Operator.EQUALS);
+                if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                    String defaultDate = null;
+                    Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+                    if (cursorData != null && cursorData.getCount() > 0) {
+                        cursorData.moveToFirst();
+                        defaultDate = cursorData.getString(0);
+                        cursorData.close();
+                    } else {
+                        defaultDate = Utils.defaultDate;
+                    }
+                    // Build query q2
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+
+                    finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
                 } else {
-                    defaultDate = Utils.defaultDate;
+                    finalQuery = q1;
                 }
-                // Build query q2
-                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
-
-                finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
-            } else {
-                finalQuery = q1;
-            }
 
 
-            storageService.findDocsByQueryOrderBy(Config.collectionNotification, finalQuery, 3000, 0,
-                    "time", 1, new App42CallBack() {
+                storageService.findDocsByQueryOrderBy(Config.collectionNotification, finalQuery, 3000, 0,
+                        "time", 1, new App42CallBack() {
 
-                        @Override
-                        public void onSuccess(Object o) {
+                            @Override
+                            public void onSuccess(Object o) {
 
-                            if (o != null) {
+                                if (o != null) {
 
-                                Storage storage = (Storage) o;
+                                    Storage storage = (Storage) o;
 
-                                //Utils.log(storage.toString(), "not ");
-                                try {
+                                    //Utils.log(storage.toString(), "not ");
+                                    try {
 
-                                    if (storage.getJsonDocList().size() > 0) {
-                                        CareTaker.dbCon.beginDBTransaction();
-                                        ArrayList<Storage.JSONDocument> jsonDocList = storage.
-                                                getJsonDocList();
+                                        if (storage.getJsonDocList().size() > 0) {
+                                            CareTaker.dbCon.beginDBTransaction();
+                                            ArrayList<Storage.JSONDocument> jsonDocList = storage.
+                                                    getJsonDocList();
 
-                                        for (int i = 0; i < jsonDocList.size(); i++) {
-                                            String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), "1", ""};
-                                            if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                                String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
+                                            for (int i = 0; i < jsonDocList.size(); i++) {
+                                                String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), "1", "", ""};
+                                                if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
 
-                                                // WHERE clause arguments
-                                                String[] selectionArgs = {jsonDocList.get(i).getDocId(), Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
-                                                CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
-                                            } else {
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgs = {jsonDocList.get(i).getDocId(), Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                } else {
 
 
-                                                CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
-                                                createNotificationModel(jsonDocList.get(i).getDocId(),
-                                                        jsonDocList.get(i).getJsonDoc());
+                                                    CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                    createNotificationModel(jsonDocList.get(i).getDocId(),
+                                                            jsonDocList.get(i).getJsonDoc());
+                                                }
+
                                             }
 
+                                            iProviderCount = 0;
+                                            CareTaker.dbCon.dbTransactionSucessFull();
+
+                                            //fetchProviders(progressDialog, 1);
                                         }
 
-                                        iProviderCount = 0;
-                                        CareTaker.dbCon.dbTransactionSucessFull();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        CareTaker.dbCon.endDBTransaction();
 
-                                        //fetchProviders(progressDialog, 1);
+                                    }
+                                    if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                        List<String> idsList = new ArrayList<String>();
+
+                                        if (sessionManager.getNotificationIds().size() > 0) {
+                                            idsList.addAll(sessionManager.getNotificationIds());
+                                        }
+                                        idsList.add(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+                                        sessionManager.saveNotificationIds(idsList);
+
+                                        refreshNotifications();
                                     }
 
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    CareTaker.dbCon.endDBTransaction();
+                                } else {
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    if (sessionManager.getNotificationIds().size() == 0)
+                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                }
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+
+                                  /*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                                if (e != null) {
+                                   /* try {
+                                           *//* JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                            JSONObject jsonObjectError = jsonObject.
+                                                    getJSONObject("app42Fault");
+                                            String strMess = jsonObjectError.getString("details");
+
+                                            toast(2, 2, strMess);*//*
+                                        //toast(2, 2, _ctxt.getString(R.string.error));
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }*/
+                                } else if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
                                 if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                    List<String> idsList = new ArrayList<String>();
-
-                                    if (sessionManager.getNotificationIds().size() > 0) {
-                                        idsList.addAll(sessionManager.getNotificationIds());
-                                    }
-                                    idsList.add(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
-                                    sessionManager.saveNotificationIds(idsList);
-
                                     refreshNotifications();
                                 }
 
-                            } else {
-                                /*if (progressDialog.isShowing())
-                                    progressDialog.dismiss();*/
-                                if (sessionManager.getNotificationIds().size() == 0)
-                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
                             }
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                        });
 
-                        }
-
-                        @Override
-                        public void onException(Exception e) {
-
-                              /*if (progressDialog.isShowing())
-                                progressDialog.dismiss();*/
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-
-                            if (e != null) {
-                               /* try {
-                                       *//* JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                        JSONObject jsonObjectError = jsonObject.
-                                                getJSONObject("app42Fault");
-                                        String strMess = jsonObjectError.getString("details");
-
-                                        toast(2, 2, strMess);*//*
-                                    //toast(2, 2, _ctxt.getString(R.string.error));
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
-                                }*/
-                            } else if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                            }
-                            if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                refreshNotifications();
-                            }
-
-                        }
-                    });
-
-        } else {
-            /*if (progressDialog.isShowing())
-                progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                refreshNotifications();
+            } else {
+                /*if (progressDialog.isShowing())
+                    progressDialog.dismiss();*/
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                    refreshNotifications();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -1851,7 +1860,7 @@ public class Utils {
         if (cursor != null) {
             cursor.moveToFirst();
             do {
-
+                isUpdateServer = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_IS_UPDATED)));
                 createCustomerModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
             } while (cursor.moveToNext());
             cursor.close();
@@ -1880,152 +1889,363 @@ public class Utils {
             e.printStackTrace();
         }
 
+        if (!isUpdateServer && isConnectingToInternet()) {
+            updateorInsertCustomerData(iFlag);
+        }
 
-        if (isConnectingToInternet()) {
+    }
+
+    public void updateCustomerDetailOnServer() {
+        StorageService storageService = new StorageService(_ctxt);
+
+        JSONObject jsonToUpdate = new JSONObject();
+
+        try {
+            jsonToUpdate.put("customer_name", Config.customerModel.getStrName());
+            jsonToUpdate.put("customer_contact_no", Config.customerModel.getStrContacts());
+            jsonToUpdate.put("customer_address", Config.customerModel.getStrAddress());
+
+            jsonToUpdate.put("customer_dob", Config.customerModel.getStrDob());
+            jsonToUpdate.put("customer_country", Config.customerModel.getStrCountryCode());
+            jsonToUpdate.put("customer_country_code", Config.customerModel.getStrCountryIsdCode());
+
+            jsonToUpdate.put("customer_area_code", Config.customerModel.getStrCountryAreaCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        storageService.updateDocs(jsonToUpdate,
+                Config.customerModel.getStrCustomerID(),
+                Config.collectionCustomer, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+                        String values[] = {"false"};
+                        try {
+                            //Config.jsonCustomer = new JSONObject(strDocument);
+
+                            String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+                            // WHERE clause arguments
+                            String[] selectionArgs = {Config.collectionCustomer};
+                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_update, selectionArgs);
 
 
-            StorageService storageService = new StorageService(_ctxt);
-
-            storageService.findDocsByKeyValue(Config.collectionCustomer, "customer_email",
-                    Config.strUserName, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                        @Override
-                        public void onDocumentInserted(Storage response) {
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
-                        @Override
-                        public void onUpdateDocSuccess(Storage response) {
+
+                        try {
+                            UserService userService = new UserService(_ctxt);
+
+
+                            userService.onChangePassword(Config.strUserName, sessionManager.getOldPassword()
+                                    , sessionManager.getUserDetails().get(SessionManager.KEY_PASSWORD), new App42CallBack() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            // progressDialog.dismiss();
+
+                                            sessionManager.saveOldPassword("");
+                                        }
+
+                                        @Override
+                                        public void onException(Exception e) {
+                                            // progressDialog.dismiss();
+                                        }
+                                    });
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
+
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        //progressDialog.dismiss();
+                    }
+                });
+
+    }
+
+    private JSONObject createJson(JSONObject jsonDep, DependentModel dependentMod) {
+
+
+        DependentModel dependentModel = dependentMod;
+        //
+        JSONObject jsonDependant = jsonDep;
+        try {
+
+            jsonDependant.put("dependent_name", dependentModel.getStrName());
+
+            if (dependentModel.getStrIllness() == null || dependentModel.getStrIllness().equalsIgnoreCase(""))
+                dependentModel.setStrIllness("NA");
+
+            if (dependentModel.getStrNotes() == null || dependentModel.getStrNotes().equalsIgnoreCase(""))
+                dependentModel.setStrNotes("NA");
+
+            jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
+
+            jsonDependant.put("dependent_address", dependentModel.getStrAddress());
+            jsonDependant.put("dependent_email", dependentModel.getStrEmail());
+
+            jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
+            jsonDependant.put("dependent_age", dependentModel.getStrAge());
+            jsonDependant.put("dependent_dob", dependentModel.getStrDob());
+            jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
+
+            jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
+            jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
+            jsonDependant.put("customer_id", Config.customerModel.getStrCustomerID());
+
+            jsonDependant.put("health_bp", dependentModel.getIntHealthBp());
+
+            Config.dependentNames.add(dependentModel.getStrName());
+
+            jsonDependant.put("health_heart_rate", dependentModel.getIntHealthHeartRate());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonDependant;
+    }
+
+
+    public void updateDependentsDetailOnServer(final DependentModel dependentModel) {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                try {
+                    ((Activity) _ctxt).runOnUiThread(new Runnable() {
+
                         @Override
-                        public void onFindDocSuccess(Storage response) {
+                        public void run() {
+                            StorageService storageService = new StorageService(_ctxt);
+                            final String dependentsId = dependentModel.getStrDependentID();
+                            JSONObject jsonDependant = new JSONObject();
 
-                        /*if (progressDialog.isShowing())
-                            progressDialog.dismiss();*/
-//                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            try {
+                                createJson(jsonDependant, dependentModel);
 
-                            if (response != null) {
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
-                                if (response.getJsonDocList().size() > 0) {
+                            //JSONObject jsonToUpdate = new JSONObject();
 
+                            storageService.updateDocs(jsonDependant,
+                                    dependentsId,
+                                    Config.collectionDependent, new App42CallBack() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            try {
+                                                if (o != null) {
 
-                                    boolean mIsRegistered = true;
+                                                    Utils.log(o.toString(), "LOG_DATA");
 
-                                    Storage.JSONDocument jsonDocument = response.getJsonDocList().
-                                            get(0);
+                                                } else {
 
-                                    String strDocument = jsonDocument.getJsonDoc();
-                                    String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", ""};
-                                    try {
-                                        //Config.jsonCustomer = new JSONObject(strDocument);
+                                                }
+                                            } catch (Exception e1) {
 
-                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
-                                            String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
-
-                                            // WHERE clause arguments
-                                            String[] selectionArgs = {jsonDocument.getDocId()};
-                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
-                                        } else {
-                                            createCustomerModel(jsonDocument.getDocId(), strDocument);
-                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                e1.printStackTrace();
+                                            }
 
                                         }
 
-
-                                        JSONObject jsonObject = new JSONObject(strDocument);
-
-                                        if (jsonObject.has("customer_register"))
-                                            mIsRegistered = jsonObject.getBoolean("customer_register");
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    if (DashboardActivity.loadingPanel != null) {
-                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    }
-                                    if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
-
-                                    } else {
+                                        @Override
+                                        public void onException(Exception e) {
+                                        }
+                                    });
 
 
-                                        sessionManager.saveCustomerId(jsonDocument.getDocId());
-                                        if (iFlag == 1) {
+                        }
+                    });
 
-                                            if (!mIsRegistered) {
-                                                //todo add logic for taking to dependent add screen
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
+    }
+
+    public void updateorInsertCustomerData(final int iFlag) {
+        try {
+            if (isConnectingToInternet()) {
+
+
+                StorageService storageService = new StorageService(_ctxt);
+
+                storageService.findDocsByKeyValue(Config.collectionCustomer, "customer_email",
+                        Config.strUserName, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                            @Override
+                            public void onDocumentInserted(Storage response) {
+                            }
+
+                            @Override
+                            public void onUpdateDocSuccess(Storage response) {
+                            }
+
+                            @Override
+                            public void onFindDocSuccess(Storage response) {
+
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
+                                //                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                                if (response != null) {
+
+                                    if (response.getJsonDocList().size() > 0) {
+
+
+                                        boolean mIsRegistered = true;
+
+                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().
+                                                get(0);
+
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        try {
+                                            if (iFlag == 2) {
+                                                JSONObject jsonObject = new JSONObject(strDocument);
+                                                jsonObject.put("customer_profile_url", Config.customerModel.getStrImgUrl());
+                                                strDocument = jsonObject.toString();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", "", ""};
+                                        try {
+                                            //Config.jsonCustomer = new JSONObject(strDocument);
+
+                                            if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+                                                String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                                // WHERE clause arguments
+                                                String[] selectionArgs = {jsonDocument.getDocId()};
+                                                CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                            } else {
+                                                createCustomerModel(jsonDocument.getDocId(), strDocument);
+                                                CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+
                                             }
 
 
-                                            goToDashboard();
+                                            if (iFlag == 1) {
+                                                JSONObject jsonObject = new JSONObject(strDocument);
+
+                                                if (jsonObject.has("customer_register"))
+                                                    mIsRegistered = jsonObject.getBoolean("customer_register");
+                                            }
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-                                    }
+                                        if (iFlag == 1) {
+                                            if (DashboardActivity.loadingPanel != null) {
+                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                            }
+                                        }
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
 
 
-                                } else {
-                                    if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+                                            sessionManager.saveCustomerId(jsonDocument.getDocId());
+                                            if (iFlag == 1) {
+
+                                                if (!mIsRegistered) {
+                                                    //todo add logic for taking to dependent add screen
+                                                }
+
+
+                                                goToDashboard();
+                                            }
+                                        }
+
 
                                     } else {
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
 
 
-                                        toast(2, 2, _ctxt.getString(R.string.error));
+                                            toast(2, 2, _ctxt.getString(R.string.error));
+                                        }
+                                    }
+                                } else {
+                                    if (iFlag == 1) {
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
+                                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                        }
                                     }
                                 }
-                            } else {
-                                if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+                            }
 
-                                } else {
-                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                            @Override
+                            public void onInsertionFailed(App42Exception ex) {
+                            }
+
+                            @Override
+                            public void onFindDocFailed(App42Exception ex) {
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
+                                if (iFlag == 1) {
+                                    if (DashboardActivity.loadingPanel != null) {
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    }
+
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                        JSONObject jsonObjectError =
+                                                jsonObject.getJSONObject("app42Fault");
+
+                                        int appErrorCode = jsonObjectError.getInt("appErrorCode");
+
+                                        String strMess = jsonObjectError.getString("details");
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
+                                            if (appErrorCode == 2601)
+                                                toast(2, 2, _ctxt.getString(R.string.invalid_credentials));
+                                            else
+                                                toast(2, 2, strMess);
+                                        }
+
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                    }
                                 }
                             }
-                        }
 
-                        @Override
-                        public void onInsertionFailed(App42Exception ex) {
-                        }
-
-                        @Override
-                        public void onFindDocFailed(App42Exception ex) {
-                        /*if (progressDialog.isShowing())
-                            progressDialog.dismiss();*/
-                            if (DashboardActivity.loadingPanel != null) {
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            @Override
+                            public void onUpdateDocFailed(App42Exception ex) {
                             }
-
-                            try {
-                                JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                JSONObject jsonObjectError =
-                                        jsonObject.getJSONObject("app42Fault");
-
-                                int appErrorCode = jsonObjectError.getInt("appErrorCode");
-
-                                String strMess = jsonObjectError.getString("details");
-                                if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
-
-                                } else {
-                                    if (appErrorCode == 2601)
-                                        toast(2, 2, _ctxt.getString(R.string.invalid_credentials));
-                                    else
-                                        toast(2, 2, strMess);
-                                }
-
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onUpdateDocFailed(App42Exception ex) {
-                        }
-                    });
-        } else {
-            /*if (progressDialog.isShowing())
-                progressDialog.dismiss();*/
-            if (DashboardActivity.loadingPanel != null)
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
-
+                        });
             } else {
-                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                /*if (progressDialog.isShowing())
+                    progressDialog.dismiss();*/
+                if (iFlag == 1) {
+                    if (DashboardActivity.loadingPanel != null)
+                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                    if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                    } else {
+                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                    }
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -2059,6 +2279,9 @@ public class Utils {
                 clientModel.setCustomerModel(Config.customerModel);*/
             Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
 
+            if (isUpdateServer && isConnectingToInternet()) {
+                updateCustomerDetailOnServer();
+            }
 
             //     }
         } catch (JSONException e) {
@@ -2273,8 +2496,8 @@ public class Utils {
         }
     }
 
-    public void createDependentModel(String strDependentDocId, String strDocument) {
-
+    public DependentModel createDependentModel(String strDependentDocId, String strDocument) {
+        DependentModel dependentModel = null;
         try {
 
             JSONObject jsonObjectDependent = new JSONObject(strDocument);
@@ -2286,7 +2509,7 @@ public class Utils {
                     sessionManager.saveDependentsIds(Config.strDependentIds);
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_contact_no"));
 
-                    DependentModel dependentModel = new DependentModel();
+                    dependentModel = new DependentModel();
 
                     dependentModel.setStrIllness(jsonObjectDependent.
                             optString("dependent_illness"));
@@ -2364,6 +2587,7 @@ public class Utils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return dependentModel;
     }
 
 
@@ -2379,30 +2603,36 @@ public class Utils {
             JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
 
             List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<CheckInCareActivityModel>();
+
             try {
-                for (int i = 0; i < subMainactivities.length(); i++) {
+                if (subMainactivities != null && subMainactivities.length() > 0) {
+                    for (int i = 0; i < subMainactivities.length(); i++) {
 
-                    JSONObject jsonObjectsubactivitites = subMainactivities.getJSONObject(i);
-                    jsonObjectsubactivitites.optString("activity_name");
 
-                    List<SubActivityModel> subActivityModels = new ArrayList<SubActivityModel>();
+                        JSONObject jsonObjectsubactivitites = subMainactivities.getJSONObject(i);
+                        jsonObjectsubactivitites.optString("activity_name");
+                        if (jsonObjectsubactivitites != null && jsonObjectsubactivitites.length() > 0) {
+                            List<SubActivityModel> subActivityModels = new ArrayList<SubActivityModel>();
 
-                    JSONArray subactivities = jsonObjectsubactivitites.optJSONArray("sub_activities");
-                    for (int j = 0; j < subactivities.length(); j++) {
-                        JSONObject jsonObjectsubactivity = subactivities.getJSONObject(j);
+                            JSONArray subactivities = jsonObjectsubactivitites.optJSONArray("sub_activities");
+                            for (int j = 0; j < subactivities.length(); j++) {
+                                JSONObject jsonObjectsubactivity = subactivities.getJSONObject(j);
 
-                        SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("sub_activity_name"),
-                                jsonObjectsubactivity.optString("status"), jsonObjectsubactivity.optString("due_status"),
-                                jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("utility_name"));
-                        subActivityModels.add(subActivityModel);
+                                SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("status"),
+                                        jsonObjectsubactivity.optString("sub_activity_name"), jsonObjectsubactivity.optString("utility_name"),
+                                        jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("due_status"));
+                                subActivityModels.add(subActivityModel);
+                            }
+                            CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
+                            checkInCareActivityModels.add(checkInCareActivityModel);
+                        }
+
                     }
-                    CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
-                    checkInCareActivityModels.add(checkInCareActivityModel);
                 }
-
             } catch (Exception e) {
 
             }
+
 
             checkInCareModel.setCheckInCareActivityModels(checkInCareActivityModels);
 
@@ -2412,6 +2642,7 @@ public class Utils {
             e.printStackTrace();
         }
     }
+
     public void createActivityModel(String strActivityId, String strDocument, int iFlag, JSONArray jArray) {
         try {
 
@@ -2775,10 +3006,18 @@ public class Utils {
                 if (cursor != null) {
                     cursor.moveToFirst();
                     do {
+                        DependentModel dependentModel = null;
+                        dependentModel = createDependentModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                        dependentsIdsList = new ArrayList<>();
+                        dependentsIdsList.clear();
+                        dependentsIdsList.addAll(sessionManager.getUpdateDependent());
+                        if (isConnectingToInternet() && dependentsIdsList.contains(dependentModel.getStrDependentID())) {
+                            updateDependentsDetailOnServer(dependentModel);
+                        }
 
-                        createDependentModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
                     } while (cursor.moveToNext());
                     cursor.close();
+
                 }
 
 
@@ -2841,19 +3080,31 @@ public class Utils {
 
                                     String strDocument = jsonDocument.getJsonDoc();
                                     String strDependentDocId = jsonDocument.getDocId();
-                                    String values[] = {strDependentDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionDependent, "", "1", ""};
 
-                                    if (sessionManager.getDependentsStatus()) {
-                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
-
-                                        // WHERE clause arguments
-                                        String[] selectionArgs = {strDependentDocId};
-                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
-
+                                    if (sessionManager.getUpdateDependent().contains(strDependentDocId)) {
+                                        Utils.log("in contains index=" + i, "LOG_DATA");
+                                        Utils.log("updated id :" + strDependentDocId, "LOG_DATA");
+                                        List<String> dependentsIdsList = new ArrayList<String>();
+                                        dependentsIdsList.addAll(sessionManager.getUpdateDependent());
+                                        Utils.log("List Before :" + dependentsIdsList.toString(), "LOG_DATA");
+                                        dependentsIdsList.remove(strDependentDocId);
+                                        sessionManager.saveUpdateDependent(dependentsIdsList);
+                                        Utils.log("List After :" + dependentsIdsList.toString(), "LOG_DATA");
                                     } else {
+                                        String values[] = {strDependentDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionDependent, "", "1", "", ""};
 
-                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
-                                        createDependentModel(strDependentDocId, strDocument);
+                                        if (sessionManager.getDependentsStatus()) {
+                                            String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                            // WHERE clause arguments
+                                            String[] selectionArgs = {strDependentDocId};
+                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+
+                                        } else {
+
+                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                            createDependentModel(strDependentDocId, strDocument);
+                                        }
                                     }
                                 }
                                 CareTaker.dbCon.dbTransactionSucessFull();
@@ -3193,7 +3444,7 @@ public class Utils {
                                                     String strProviderDocId = jsonDocument.
                                                             getDocId();
 
-                                                    String values[] = {strProviderDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionProvider, "", "1", ""};
+                                                    String values[] = {strProviderDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionProvider, "", "1", "", ""};
                                                     if (sessionManager.getProviderStatus()) {
 
                                                         String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
@@ -3346,6 +3597,7 @@ public class Utils {
 
             if (fileModel != null && fileModel.getStrFileUrl() != null &&
                     !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
+
                 loadImageFromWeb(fileModel.getStrFileName(),
                         fileModel.getStrFileUrl());
             }
@@ -3756,7 +4008,7 @@ public class Utils {
                     defaultDate = Utils.defaultDate;
                 }
 
-                Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
+                Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
                 q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
             } else {
 
@@ -3798,7 +4050,7 @@ public class Utils {
                                             JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
                                             jsonObjectActivity.remove("milestones");
                                             strDocument = jsonObjectActivity.toString();
-                                            String values[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionActivity, "", "1", jsonObjectActivity.optString("activity_date")};
+                                            String values[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionActivity, "", "1", jsonObjectActivity.optString("activity_date"), ""};
                                             Log.i("TAG", "Date :" + jsonObjectActivity.optString("activity_date"));
                                             if (sessionManager.getActivityStatus()) {
                                                 String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_COLLECTION_NAME + " = ?";
@@ -3906,9 +4158,6 @@ public class Utils {
     }
 
 
-
-
-
     //Application Specig=fic End
 
     public void setListViewHeight(ListView listView) {
@@ -3985,7 +4234,7 @@ public class Utils {
         @Override
         public void run() {
             try {
-                loadAllFiles();
+                //loadAllFiles();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -4009,4 +4258,87 @@ public class Utils {
 //            }
 //        });
 //    }
+
+    public Bitmap rotateBitmap(String src, Bitmap bitmap) {
+        try {
+            int orientation = getExifOrientation(src);
+
+            if (orientation == 1) {
+                return bitmap;
+            }
+
+            Matrix matrix = new Matrix();
+            switch (orientation) {
+                case 2:
+                    matrix.setScale(-1, 1);
+                    break;
+                case 3:
+                    matrix.setRotate(180);
+                    break;
+                case 4:
+                    matrix.setRotate(180);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 5:
+                    matrix.setRotate(90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 6:
+                    matrix.setRotate(90);
+                    break;
+                case 7:
+                    matrix.setRotate(-90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 8:
+                    matrix.setRotate(-90);
+                    break;
+                default:
+                    return bitmap;
+            }
+
+            try {
+                Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                bitmap.recycle();
+                return oriented;
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+                return bitmap;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
+
+    public int getExifOrientation(String src) throws IOException {
+        int orientation = 1;
+
+        ExifInterface exif = new ExifInterface(src);
+        String orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        try {
+            orientation = Integer.parseInt(orientationString);
+        } catch (NumberFormatException e) {
+        }
+
+        return orientation;
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        //Uri contentUri = Uri.parse(contentURI);
+        try {
+            Cursor cursor = _ctxt.getContentResolver().query(contentUri, null, null, null, null);
+            if (cursor == null) {
+                return contentUri.getPath();
+            } else {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                return cursor.getString(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

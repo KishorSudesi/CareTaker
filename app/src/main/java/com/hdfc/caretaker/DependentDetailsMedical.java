@@ -2,6 +2,7 @@ package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -14,7 +15,9 @@ import android.widget.EditText;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
 import com.hdfc.app42service.UserService;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
@@ -31,13 +34,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Admin on 24-06-2016.
  */
-public class
-DependentDetailsMedical extends AppCompatActivity {
+public class DependentDetailsMedical extends AppCompatActivity {
 
     private Utils utils;
     public static Date date;
@@ -51,17 +55,18 @@ DependentDetailsMedical extends AppCompatActivity {
     private static int editregisterflag = 0;
     public static int uploadSize, uploadingCount = 0;
     private SessionManager sessionManager;
+    private int mPosition;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dependent_details_medical);
-
+        jsonDependant=new JSONObject();
         utils = new Utils(DependentDetailsMedical.this);
         utils.setStatusBarColor("#2196f3");
-
-        sessionManager=new SessionManager(DependentDetailsMedical.this);
+        editregisterflag = 0;
+        sessionManager = new SessionManager(DependentDetailsMedical.this);
 
         progressDialog = new ProgressDialog(DependentDetailsMedical.this);
 
@@ -69,6 +74,11 @@ DependentDetailsMedical extends AppCompatActivity {
         editDiseases = (EditText) findViewById(R.id.editDiseasesdepend);
         editNotes = (EditText) findViewById(R.id.editNotesdepend);
         buttonContinue = (Button) findViewById(R.id.btnContinuedepend);
+        Bundle getBundle = getIntent().getExtras();
+        if (getBundle != null) {
+            mPosition = getBundle.getInt("childposition");
+        } else {
+        }
 
         editDiseases.addTextChangedListener(new TextWatcher() {
             @Override
@@ -121,9 +131,9 @@ DependentDetailsMedical extends AppCompatActivity {
                 public void onClick(View v) {
 
 
-                    String buttonText=buttonContinue.getText().toString().trim();
+                    String buttonText = buttonContinue.getText().toString().trim();
 
-                    if (buttonText.equalsIgnoreCase(getString(R.string.submit)) ) {
+                    if (buttonText.equalsIgnoreCase(getString(R.string.submit))) {
                         validateDependantMedicalData();
                     } else {
                         skip();
@@ -153,6 +163,10 @@ DependentDetailsMedical extends AppCompatActivity {
     public void backToSelection() {
         Intent selection = new Intent(DependentDetailsMedical.this,
                 DependentDetailPersonal.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("editflag",true);
+        bundle.putInt("childposition",mPosition);
+        selection.putExtras(bundle);
         startActivity(selection);
         finish();
     }
@@ -222,10 +236,10 @@ DependentDetailsMedical extends AppCompatActivity {
         }
     }
 
-    private void createJson() {
+    private JSONObject createJson(JSONObject jsonDep) {
         DependentModel dependentModel = DependentDetailPersonal.dependentModel;
         //
-        jsonDependant = new JSONObject();
+        JSONObject jsonDependant = jsonDep;
         try {
 
             jsonDependant.put("dependent_name", dependentModel.getStrName());
@@ -257,6 +271,63 @@ DependentDetailsMedical extends AppCompatActivity {
             jsonDependant.put("health_heart_rate", 80 + iDependentCount);
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonDependant;
+    }
+
+    public void updateDependentDataInDb()
+
+    {
+        try {
+            String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+            // WHERE clause arguments
+            String[] selectionArgs = {Config.collectionDependent, DependentDetailPersonal.dependentModel.getStrDependentID()};
+            Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                do {
+
+                    JSONObject jsonReceived = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                    jsonReceived = createJson(jsonReceived);
+
+                    String strDocument = jsonReceived.toString();
+                    Calendar c = Calendar.getInstance();
+                    System.out.println("Current time => " + c.getTime());
+
+
+                    String updatedAt = Utils.readFormat.format(c.getTime());
+
+                    String values[] = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), updatedAt, strDocument, Config.collectionDependent, "", "1", "",""};
+                    try {
+                        //Config.jsonCustomer = new JSONObject(strDocument);
+
+                        selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                        // WHERE clause arguments
+                        String[] selectionArgsUpdate = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
+                        boolean isUpdatedDB = CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgsUpdate);
+                        if (isUpdatedDB) {
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // createCustomerModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                } while (cursor.moveToNext());
+                cursor.close();
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+
+                backToDashBoard();
+
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                backToDashBoard();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -591,7 +662,7 @@ DependentDetailsMedical extends AppCompatActivity {
 
 
             if (DependentDetailPersonal.dependentModel != null) {
-                createJson();
+                jsonDependant = createJson(new JSONObject());
             }
 
 
@@ -923,12 +994,34 @@ DependentDetailsMedical extends AppCompatActivity {
 
     }
 
-    public void updateDependentData() {
+    private void backToDashBoard() {
+        try {
+            utils.toast(1, 1, getString(R.string.your_details_saved));
 
+            //Config.clientModels.setCustomerModel(Config.customerModel);
+
+//                                        SignupActivity._mViewPager.setCurrentItem(1);
+            editregisterflag = 3;
+            Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
+            Config.intSelectedMenu = Config.intRecipientScreen;
+            startActivity(next);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateDependentData() {
+        final List<String> dependentIdsList = new ArrayList<>();
+        dependentIdsList.clear();
         if (DependentDetailPersonal.dependentModel != null) {
-            createJson();
+
+            jsonDependant = createJson(new JSONObject());
+            dependentIdsList.addAll(sessionManager.getUpdateDependent());
+            dependentIdsList.add(DependentDetailPersonal.dependentModel.getStrDependentID());
         }
         if (utils.isConnectingToInternet()) {
+
 
             StorageService storageService = new StorageService(DependentDetailsMedical.this);
 
@@ -940,32 +1033,16 @@ DependentDetailsMedical extends AppCompatActivity {
                         @Override
                         public void onSuccess(Object o) {
                             try {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
-
                                 if (o != null) {
 
                                     Utils.log(o.toString(), "LOG");
 
-                                    utils.toast(1, 1, getString(R.string.your_details_saved));
-
-                                    //Config.clientModels.setCustomerModel(Config.customerModel);
-
-//                                        SignupActivity._mViewPager.setCurrentItem(1);
-                                    editregisterflag = 3;
-                                    Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
-                                    Config.intSelectedMenu = Config.intRecipientScreen;
-                                    startActivity(next);
-                                    finish();
-
+                                    updateDependentDataInDb();
                                 } else {
 
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             } catch (Exception e1) {
-                                utils.toast(2, 2, getString(R.string.error));
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
+
                                 e1.printStackTrace();
                             }
 
@@ -973,22 +1050,16 @@ DependentDetailsMedical extends AppCompatActivity {
 
                         @Override
                         public void onException(Exception e) {
-                            Utils.log(e.getMessage(), "EE");
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
-                            if (e != null) {
-                                utils.toast(2, 2, getString(R.string.error));
-                            } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
+
+                            sessionManager.saveUpdateDependent(dependentIdsList);
+                            updateDependentDataInDb();
 
                         }
                     });
 
         } else {
-            if (progressDialog.isShowing())
-                progressDialog.dismiss();
-            utils.toast(2, 2, getString(R.string.warning_internet));
+            sessionManager.saveUpdateDependent(dependentIdsList);
+            updateDependentDataInDb();
         }
     }
 

@@ -376,6 +376,18 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         textViewAccount.setTextColor(getResources().getColor(R.color.blue));
         //}
     }
+
+    public static void updateActivityIconMenu() {
+        try {
+            setMenu();
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+            buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity_active));
+            txtViewActivity.setTextColor(context.getResources().getColor(R.color.blue));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void goToActivity(boolean bReload) {
 
         //if (Config.intSelectedMenu == Config.intListActivityScreen ||
@@ -421,7 +433,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_dashboard);
 
-        if (f instanceof MyAccountEditFragment||f instanceof AddCareRecipientsFragment) {
+        if (f instanceof MyAccountEditFragment || f instanceof AddCareRecipientsFragment) {
             Config.intSelectedMenu = Config.intAccountScreen;
             MyAccountFragment fragment = MyAccountFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

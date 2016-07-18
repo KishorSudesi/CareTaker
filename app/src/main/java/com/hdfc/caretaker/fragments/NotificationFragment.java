@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.CompletedActivity;
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
@@ -158,6 +159,7 @@ public class NotificationFragment extends Fragment {
                 if (activityModel != null) {
                     if (activityModel.getStrActivityStatus().equalsIgnoreCase("new")) {
 
+                        DashboardActivity.updateActivityIconMenu();
                         UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().
                                 beginTransaction();
@@ -165,6 +167,7 @@ public class NotificationFragment extends Fragment {
                         ft.commit();
 
                     } else {
+                        DashboardActivity.updateActivityIconMenu();
                         Intent intent = new Intent(getActivity(), CompletedActivity.class);
                         Bundle args = new Bundle();
                         args.putSerializable("ACTIVITY", activityModel);

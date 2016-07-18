@@ -434,7 +434,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         JSONObject jsonObjectServcies = new JSONObject(strServices);
 
                         if (jsonObjectServcies.has("unit")) {
-                            String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionService, "1", ""};
+                            String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionService, "1", "","",""};
                             if (actionType == UPDATE) { // WHERE clause
                                 String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 

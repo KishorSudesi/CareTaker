@@ -1,12 +1,12 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,6 +17,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.App42GCMService;
@@ -41,9 +44,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class AddNewActivityStep2Activity extends AppCompatActivity {
 
@@ -54,7 +58,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private static StorageService storageService;
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
-    private static Bitmap bitmap;
+    private static Bitmap bitmapImg;
     private static Handler threadHandler;
     //private static String strSelectedCarla;
     private static int iUpdateFlag = 0;
@@ -65,6 +69,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private String strCarlaImagepath, _strDate, strDate, strAlert;
     private String getStrSelectedCarla, strProviderId, strPushMessage;
     private SessionManager sessionManager;
+    private Context mContext;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -91,6 +96,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_activity_step2);
 
         iUpdateFlag = 0;
+        mContext=this;
 
         utils = new Utils(AddNewActivityStep2Activity.this);
         progressDialog = new ProgressDialog(AddNewActivityStep2Activity.this);
@@ -281,9 +287,10 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
 
-                                    threadHandler = new ThreadHandler();
-                                    Thread backgroundThread = new BackgroundThread();
-                                    backgroundThread.start();
+//                                    threadHandler = new ThreadHandler();
+//                                    Thread backgroundThread = new BackgroundThread();
+//                                    backgroundThread.start();
+                                    loadImageSimpleTarget(strCarlaImagepath);
 
                                     progressDialog.setMessage(getResources().getString(R.string.uploading_image));
                                     progressDialog.setCancelable(false);
@@ -515,7 +522,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                             startDate = utils.convertStringToDate(strStartDateCopy);
 
                                             Utils.log(String.valueOf(endDate + " ! " + startDate + " ! " + activityDate), " CRATED ");
-                                            String values[] = {strInsertedDocumentId, response.getJsonDocList().get(0).getUpdatedAt(), strDoc, Config.collectionActivity,"", "1", _strDate};
+                                            String values[] = {strInsertedDocumentId, response.getJsonDocList().get(0).getUpdatedAt(), strDoc, Config.collectionActivity,"", "1", _strDate,""};
 
 
                                             CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
@@ -907,35 +914,60 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         finish();
     }
 
-    public static class ThreadHandler extends Handler {
+//    public static class ThreadHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            progressDialog.dismiss();
+//
+//            if (bitmap != null)
+//                imageViewCarla.setImageBitmap(bitmap);
+//        }
+//    }
+
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
-        public void handleMessage(Message msg) {
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg=bitmap;
+
             progressDialog.dismiss();
 
             if (bitmap != null)
                 imageViewCarla.setImageBitmap(bitmap);
         }
+    };
+
+    private void loadImageSimpleTarget(String url) {
+
+        Glide.with(mContext)
+                .load(url)
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(mContext))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
     }
 
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                if (strCarlaImagepath != null && !strCarlaImagepath.equalsIgnoreCase("")) {
-
-                    File f1 = utils.getInternalFileImages(strProviderId);
-
-                    if (f1.length() <= 0)
-                        utils.loadImageFromWeb(strProviderId, strCarlaImagepath);
-
-                    bitmap = utils.getBitmapFromFile(f1.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
-
-                }
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception | OutOfMemoryError e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//
+//                if (strCarlaImagepath != null && !strCarlaImagepath.equalsIgnoreCase("")) {
+//
+//                    File f1 = utils.getInternalFileImages(strProviderId);
+//
+//                    if (f1.length() <= 0)
+//                        utils.loadImageFromWeb(strProviderId, strCarlaImagepath);
+//
+//                    bitmap = utils.getBitmapFromFile(f1.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
+//
+//                }
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception | OutOfMemoryError e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }

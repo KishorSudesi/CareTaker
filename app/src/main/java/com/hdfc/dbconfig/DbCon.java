@@ -199,4 +199,9 @@ public class DbCon {
     public void dbTransactionSucessFull() {
         dbHelper.dbTransactionSucessFull();
     }
+
+    public void updateServerStatus(String status)
+    {
+        dbHelper.updateServerStatus(status);
+    }
 }

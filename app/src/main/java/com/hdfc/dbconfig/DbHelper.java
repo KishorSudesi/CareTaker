@@ -29,6 +29,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DOC_DATE = "doc_date";
     public static final String COLUMN_STATUS = "status";
     public static final String COLUMN_DEPENDENT_ID = "dependent_id";
+    public static final String COLUMN_IS_UPDATED = "is_updated";
     static final String strTableNameFiles = "files";
     private static final int DATABASE_VERSION = 1;
     private static String dbPass = ""; //"hdfc@12#$";//
@@ -36,7 +37,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static SQLiteDatabase db;
     //private Utils utils;
     private String strCollectionsQuery = "CREATE TABLE " + strTableNameCollection + " ( id integer primary key autoincrement," +
-            " object_id VARCHAR(50), updated_date integer, document text, collection_name VARCHAR(50),dependent_id VARCHAR(50),status integer,doc_date date)";
+            " object_id VARCHAR(50), updated_date integer, document text, collection_name VARCHAR(50),dependent_id VARCHAR(50),status integer,doc_date date,is_updated VARCHAR)";
 
     private String strFilesQuery = "CREATE TABLE " + strTableNameFiles + " ( id integer primary key autoincrement," +
             " name VARCHAR(100), url VARCHAR(300), file_type VARCHAR(10),  file_hash VARCHAR(50))";
@@ -293,6 +294,12 @@ public class DbHelper extends SQLiteOpenHelper {
         if (db != null && !db.isOpen())
             open();
         db.setTransactionSuccessful();
+    }
+
+    public void updateServerStatus(String status)
+    {
+        if (db != null && !db.isOpen())
+            open();
     }
 
    /* public android.database.Cursor getMaxDate(String collectionName) {

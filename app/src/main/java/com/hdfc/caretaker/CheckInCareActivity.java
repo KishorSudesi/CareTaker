@@ -270,9 +270,7 @@ public class CheckInCareActivity extends AppCompatActivity {
     public void AddImages() {
         ImageView imageView = new ImageView(CheckInCareActivity.this);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setImageDrawable(getResources().getDrawable(R.drawable.shri1));
-
-
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.person_icon));
         dialogLinear.addView(imageView);
 
     }

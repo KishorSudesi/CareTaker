@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     public void goToLogin(View v) {
         Intent selection = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(selection);
+        finish();
     }
 
     @Override
@@ -152,7 +153,9 @@ public class MainActivity extends AppCompatActivity {
                     Config.strUserName = sessionManager.getEmail();
                     utils.fetchCustomer(new ProgressDialog(MainActivity.this), 1);
                     Intent in=new Intent(MainActivity.this, UpdateService.class);
+                    in.putExtra("updateAll",true);
                     startService(in);
+                    finish();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -58,25 +58,36 @@ public class AddDependentFragment extends Fragment {
 
         utils = new Utils(getActivity());
 
+        if (SignupActivity.dependentModels != null && SignupActivity.dependentModels.size() > 0) {
+            buttonContinue.setVisibility(View.VISIBLE);
+        } else {
+            buttonContinue.setVisibility(View.INVISIBLE);
+        }
+
+
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setMessage(R.string.add_recipients);
-                alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getActivity(),DependentDetailPersonalActivity.class);
-                        startActivity(intent);
-                    }
-                });
-                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SignupActivity._mViewPager.setCurrentItem(2);
-                    }
-                });
-                alertDialogBuilder.show();
+                if (SignupActivity.dependentModels != null && SignupActivity.dependentModels.size() > 0) {
+
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setMessage(R.string.add_recipients);
+                    alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getActivity(), DependentDetailPersonalActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SignupActivity._mViewPager.setCurrentItem(2);
+                        }
+                    });
+                    alertDialogBuilder.show();
+                }
             }
         });
 
