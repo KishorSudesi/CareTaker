@@ -8,16 +8,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -51,15 +54,20 @@ import android.widget.Toast;
 import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.caretaker.SignupActivity;
 import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.CheckInCareActivityModel;
+import com.hdfc.models.CheckInCareModel;
 import com.hdfc.models.ClientModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
@@ -67,10 +75,13 @@ import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FieldModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
+import com.hdfc.models.ImageModelCheck;
 import com.hdfc.models.MilestoneModel;
 import com.hdfc.models.NotificationModel;
+import com.hdfc.models.PictureModel;
 import com.hdfc.models.ProviderModel;
 import com.hdfc.models.ServiceModel;
+import com.hdfc.models.SubActivityModel;
 import com.hdfc.models.VideoModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -99,6 +110,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -109,6 +121,8 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
+
+    public static String defaultDate = "2016-01-01T06:04:57.691Z";
     //application specific
     public static Locale locale = Locale.ENGLISH;
 
@@ -139,22 +153,26 @@ public class Utils {
     private final static SimpleDateFormat queryFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
 
-    public static Uri customerImageUri=null;
+    public static Uri customerImageUri = null;
     public static int iProviderCount = 0;
     public static Bitmap noBitmap;
     public static int iActivityCount = 0;
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
+    private static SessionManager sessionManager;
 
     static {
         System.loadLibrary("stringGen");
     }
 
-    Date dat;
+    private boolean isUpdateServer = false;
+    private Date dat;
+    private List<String> dependentsIdsList;
 
     public Utils(Context context) {
         _ctxt = context;
+        sessionManager = new SessionManager(_ctxt);
         dat = new Date();
         WindowManager wm = (WindowManager) _ctxt.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -671,7 +689,7 @@ public class Utils {
 
     public static void logout() {
         try {
-
+            CareTaker.dbCon.delete(DbHelper.strTableNameCollection, null, null);
             Config.intSelectedMenu = 0;
             //Config.intDependentsCount = 0;
 
@@ -687,6 +705,7 @@ public class Utils {
             Config.strProviderIds.clear();
             Config.strProviderIdsAdded.clear();
 
+
             Config.intSelectedDependent = 0;
 
             Config.boolIsLoggedIn = false;
@@ -697,15 +716,23 @@ public class Utils {
             Config.fileModels.clear();
 
             //todo clear shared pref.
+            sessionManager.logoutUser();
 
+            if (CareTaker.dbCon != null) {
+                //CareTaker.dbCon.close();
+            }
             unregisterGcm();
 
             File fileImage = createFileInternal("images/");
             deleteAllFiles(fileImage);
 
+
             Intent dashboardIntent = new Intent(_ctxt, LoginActivity.class);
-            ((Activity) _ctxt).finish();
+            dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             _ctxt.startActivity(dashboardIntent);
+            ((Activity) _ctxt).finish();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -752,7 +779,6 @@ public class Utils {
     public static void refreshNotifications() {
 
         if (NotificationFragment.listViewActivities != null) {
-
             NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
                     Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels());
 
@@ -941,6 +967,7 @@ public class Utils {
 
         Date date = null;
         try {
+            // 2016-07-14T14:24:36.000+0530
             date = readFormat.parse(strDate);
             //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         } catch (ParseException e) {
@@ -1118,7 +1145,6 @@ public class Utils {
         customerImageUri = Uri.fromFile(file);
         if (file != null) {
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, customerImageUri);
-
             if (fragment != null)
                 fragment.startActivityForResult(cameraIntent, Config.START_CAMERA_REQUEST_CODE);
             else
@@ -1266,7 +1292,7 @@ public class Utils {
 
         File fileImage = createFileInternal("images/" + strFileName);
 
-        log(strFileName + " ~ " + fileImage.lastModified(), " Load Image ");
+        log(strFileName + " ~ " + fileImage.lastModified() + " url " + strFileUrl, " Load Image ");
 
         if (fileImage.length() <= 0) {
 
@@ -1324,6 +1350,7 @@ public class Utils {
         return output;
     }
 
+
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap original = null;
@@ -1348,7 +1375,6 @@ public class Utils {
         int intSampleHeight = 0;
         if (strPath != null && !strPath.equalsIgnoreCase("")) {
             try {
-                //
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(strPath, options);
                 options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight,
@@ -1453,93 +1479,183 @@ public class Utils {
     public void loadNotifications() {
 
         final ProgressDialog progressDialog = new ProgressDialog(_ctxt);
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
-        if (isConnectingToInternet()) {
+        if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
 
-            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
-            /*progressDialog.setMessage(_ctxt.getString(R.string.loading));
-            progressDialog.setCancelable(false);
-            progressDialog.show();*/
+            try {
 
-            StorageService storageService = new StorageService(_ctxt);
-         /*   storageService.findDocsByKeyValue(Config.collectionNotification,
-                    "user_id",
-                    Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
-                    new AsyncApp42ServiceApi.App42StorageServiceListener()*/
+                // WHERE  clause
+                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
 
-            Query q1 = QueryBuilder.build("user_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), QueryBuilder.Operator.EQUALS);
+                // WHERE clause arguments
+                String[] selectionArgs = {Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
+                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, "datetime(" + DbHelper.COLUMN_UPDATE_DATE + ") DESC", null, false, null, null);
+                Log.i("TAG", "Cursor count:" + cursor.getCount());
+                if (cursor != null) {
+                    cursor.moveToFirst();
 
-            storageService.findDocsByQueryOrderBy(Config.collectionNotification, q1, 3000, 0,
-                    "time", 1, new App42CallBack() {
+                    do {
 
-                        @Override
-                        public void onSuccess(Object o) {
+                        createNotificationModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                    } while (cursor.moveToNext());
+                    cursor.close();
+                }
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                refreshNotifications();
 
-                            if (o != null) {
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                                Storage storage = (Storage) o;
+        }
+        try {
+            if (isConnectingToInternet()) {
 
-                                //Utils.log(storage.toString(), "not ");
 
-                                if (storage.getJsonDocList().size() > 0) {
+                /*progressDialog.setMessage(_ctxt.getString(R.string.loading));
+                progressDialog.setCancelable(false);
+                progressDialog.show();*/
 
-                                    ArrayList<Storage.JSONDocument> jsonDocList = storage.
-                                            getJsonDocList();
+                StorageService storageService = new StorageService(_ctxt);
+             /*   storageService.findDocsByKeyValue(Config.collectionNotification,
+                        "user_id",
+                        Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
+                        new AsyncApp42ServiceApi.App42StorageServiceListener()*/
+                Query finalQuery;
+                Query q1 = QueryBuilder.build("user_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), QueryBuilder.Operator.EQUALS);
+                if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                    String defaultDate = null;
+                    Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+                    if (cursorData != null && cursorData.getCount() > 0) {
+                        cursorData.moveToFirst();
+                        defaultDate = cursorData.getString(0);
+                        cursorData.close();
+                    } else {
+                        defaultDate = Utils.defaultDate;
+                    }
+                    // Build query q2
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
 
-                                    for (int i = 0; i < jsonDocList.size(); i++) {
+                    finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+                } else {
+                    finalQuery = q1;
+                }
 
-                                        createNotificationModel(jsonDocList.get(i).getDocId(),
-                                                jsonDocList.get(i).getJsonDoc());
+
+                storageService.findDocsByQueryOrderBy(Config.collectionNotification, finalQuery, 3000, 0,
+                        "time", 1, new App42CallBack() {
+
+                            @Override
+                            public void onSuccess(Object o) {
+
+                                if (o != null) {
+
+                                    Storage storage = (Storage) o;
+
+                                    //Utils.log(storage.toString(), "not ");
+                                    try {
+
+                                        if (storage.getJsonDocList().size() > 0) {
+                                            CareTaker.dbCon.beginDBTransaction();
+                                            ArrayList<Storage.JSONDocument> jsonDocList = storage.
+                                                    getJsonDocList();
+
+                                            for (int i = 0; i < jsonDocList.size(); i++) {
+                                                String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), "1", "", ""};
+                                                if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
+
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgs = {jsonDocList.get(i).getDocId(), Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                } else {
+
+
+                                                    CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                    createNotificationModel(jsonDocList.get(i).getDocId(),
+                                                            jsonDocList.get(i).getJsonDoc());
+                                                }
+
+                                            }
+
+                                            iProviderCount = 0;
+                                            CareTaker.dbCon.dbTransactionSucessFull();
+
+                                            //fetchProviders(progressDialog, 1);
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        CareTaker.dbCon.endDBTransaction();
+
+                                    }
+                                    if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                        List<String> idsList = new ArrayList<String>();
+
+                                        if (sessionManager.getNotificationIds().size() > 0) {
+                                            idsList.addAll(sessionManager.getNotificationIds());
+                                        }
+                                        idsList.add(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+                                        sessionManager.saveNotificationIds(idsList);
+
+                                        refreshNotifications();
                                     }
 
-                                    iProviderCount = 0;
-
-                                    //fetchProviders(progressDialog, 1);
+                                } else {
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    if (sessionManager.getNotificationIds().size() == 0)
+                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
-                            } else {
-                                /*if (progressDialog.isShowing())
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+
+                                  /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                if (e != null) {
+                                   /* try {
+                                           *//* JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                            JSONObject jsonObjectError = jsonObject.
+                                                    getJSONObject("app42Fault");
+                                            String strMess = jsonObjectError.getString("details");
+
+                                            toast(2, 2, strMess);*//*
+                                        //toast(2, 2, _ctxt.getString(R.string.error));
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }*/
+                                } else if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                }
+                                if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                    refreshNotifications();
+                                }
+
                             }
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                            refreshNotifications();
-                        }
+                        });
 
-                        @Override
-                        public void onException(Exception e) {
-
-                              /*if (progressDialog.isShowing())
-                                progressDialog.dismiss();*/
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-
-                            if (e != null) {
-                               /* try {
-                                       *//* JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                        JSONObject jsonObjectError = jsonObject.
-                                                getJSONObject("app42Fault");
-                                        String strMess = jsonObjectError.getString("details");
-
-                                        toast(2, 2, strMess);*//*
-                                    //toast(2, 2, _ctxt.getString(R.string.error));
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
-                                }*/
-                            } else {
-                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                            }
-                            refreshNotifications();
-
-                        }
-                    });
-
-        } else {
-            /*if (progressDialog.isShowing())
-                progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            toast(2, 2, _ctxt.getString(R.string.warning_internet));
-            refreshNotifications();
+            } else {
+                /*if (progressDialog.isShowing())
+                    progressDialog.dismiss();*/
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                    refreshNotifications();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
     }
 
     public void createNotificationModel(String strDocumentId, String strDocument) {
@@ -1560,8 +1676,10 @@ public class Utils {
                 notificationModel.setStrActivityId(jsonObjectProvider.optString("activity_id"));
 
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
-                    if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by")))
+                    if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by"))) {
                         Config.strProviderIds.add(jsonObjectProvider.getString("created_by"));
+                        sessionManager.saveProvidersIds(Config.strProviderIds);
+                    }
                 }
 
                 if (!Config.strNotificationIds.contains(strDocumentId)) {
@@ -1571,9 +1689,11 @@ public class Utils {
                 }
             }
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
     protected void updateTabColor(int id, View v) {
@@ -1583,11 +1703,11 @@ public class Utils {
             tab.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
             if (i == id) {
                 tab.setBackgroundResource(R.drawable.tab_selected);
-                tab.setTypeface(null,Typeface.BOLD);
+                tab.setTypeface(null, Typeface.BOLD);
                 //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             } else {
                 tab.setBackgroundResource(R.drawable.tab_normal);
-                tab.setTypeface(null,Typeface.NORMAL);
+                tab.setTypeface(null, Typeface.NORMAL);
                 //tab.setTextColor(_ctxt.getResources().getColor(R.color.colorWhite));
             }
         }
@@ -1732,115 +1852,402 @@ public class Utils {
         return password.length() > 1;
     }
 
+    public void fetchCustomerFromDB() {
+
+        String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+        // WHERE clause arguments
+        String[] selectionArgs = {Config.collectionCustomer};
+        Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            do {
+                isUpdateServer = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_IS_UPDATED)));
+                createCustomerModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+    }
+
     public void fetchCustomer(final ProgressDialog progressDialog, final int iFlag) {
+        if (iFlag == 1) {
+            Config.fileModels.clear();
+            iActivityCount = 0;
+            iProviderCount = 0;
+        }
 
-        if (isConnectingToInternet()) {
-
-            if (iFlag == 1) {
-                Config.fileModels.clear();
-                iActivityCount = 0;
-                iProviderCount = 0;
+        try {
+            if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
+                fetchCustomerFromDB();
+                if (DashboardActivity.loadingPanel != null) {
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                }
+                if (iFlag == 1) {
+                    goToDashboard();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            StorageService storageService = new StorageService(_ctxt);
+        if (!isUpdateServer && isConnectingToInternet()) {
+            updateorInsertCustomerData(iFlag);
+        }
 
-            storageService.findDocsByKeyValue(Config.collectionCustomer, "customer_email",
-                    Config.strUserName, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                        @Override
-                        public void onDocumentInserted(Storage response) {
+    }
+
+    public void updateCustomerDetailOnServer() {
+        StorageService storageService = new StorageService(_ctxt);
+
+        JSONObject jsonToUpdate = new JSONObject();
+
+        try {
+            jsonToUpdate.put("customer_name", Config.customerModel.getStrName());
+            jsonToUpdate.put("customer_contact_no", Config.customerModel.getStrContacts());
+            jsonToUpdate.put("customer_address", Config.customerModel.getStrAddress());
+
+            jsonToUpdate.put("customer_dob", Config.customerModel.getStrDob());
+            jsonToUpdate.put("customer_country", Config.customerModel.getStrCountryCode());
+            jsonToUpdate.put("customer_country_code", Config.customerModel.getStrCountryIsdCode());
+
+            jsonToUpdate.put("customer_area_code", Config.customerModel.getStrCountryAreaCode());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        storageService.updateDocs(jsonToUpdate,
+                Config.customerModel.getStrCustomerID(),
+                Config.collectionCustomer, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+                        String values[] = {"false"};
+                        try {
+                            //Config.jsonCustomer = new JSONObject(strDocument);
+
+                            String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+                            // WHERE clause arguments
+                            String[] selectionArgs = {Config.collectionCustomer};
+                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_update, selectionArgs);
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
-                        @Override
-                        public void onUpdateDocSuccess(Storage response) {
-                        }
 
-                        @Override
-                        public void onFindDocSuccess(Storage response) {
+                        try {
+                            UserService userService = new UserService(_ctxt);
 
-                        /*if (progressDialog.isShowing())
-                            progressDialog.dismiss();*/
-//                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                            if (response != null) {
+                            userService.onChangePassword(Config.strUserName, sessionManager.getOldPassword()
+                                    , sessionManager.getUserDetails().get(SessionManager.KEY_PASSWORD), new App42CallBack() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            // progressDialog.dismiss();
 
-                                if (response.getJsonDocList().size() > 0) {
-
-                                    boolean mIsRegistered = true;
-
-                                    Storage.JSONDocument jsonDocument = response.getJsonDocList().
-                                            get(0);
-
-                                    String strDocument = jsonDocument.getJsonDoc();
-
-                                    try {
-                                        //Config.jsonCustomer = new JSONObject(strDocument);
-                                        createCustomerModel(jsonDocument.getDocId(), strDocument);
-
-                                        JSONObject jsonObject = new JSONObject(strDocument);
-
-                                        if (jsonObject.has("customer_register"))
-                                            mIsRegistered = jsonObject.getBoolean("customer_register");
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    if (iFlag == 1) {
-
-                                        if (!mIsRegistered) {
-                                            //todo add logic for taking to dependent add screen
+                                            sessionManager.saveOldPassword("");
                                         }
 
-                                        goToDashboard();
-                                    }
-
-
-                                } else {
-                                    toast(2, 2, _ctxt.getString(R.string.error));
-                                }
-                            } else {
-                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                            }
+                                        @Override
+                                        public void onException(Exception e) {
+                                            // progressDialog.dismiss();
+                                        }
+                                    });
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
-                        @Override
-                        public void onInsertionFailed(App42Exception ex) {
-                        }
+
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        //progressDialog.dismiss();
+                    }
+                });
+
+    }
+
+    private JSONObject createJson(JSONObject jsonDep, DependentModel dependentMod) {
+
+
+        DependentModel dependentModel = dependentMod;
+        //
+        JSONObject jsonDependant = jsonDep;
+        try {
+
+            jsonDependant.put("dependent_name", dependentModel.getStrName());
+
+            if (dependentModel.getStrIllness() == null || dependentModel.getStrIllness().equalsIgnoreCase(""))
+                dependentModel.setStrIllness("NA");
+
+            if (dependentModel.getStrNotes() == null || dependentModel.getStrNotes().equalsIgnoreCase(""))
+                dependentModel.setStrNotes("NA");
+
+            jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
+
+            jsonDependant.put("dependent_address", dependentModel.getStrAddress());
+            jsonDependant.put("dependent_email", dependentModel.getStrEmail());
+
+            jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
+            jsonDependant.put("dependent_age", dependentModel.getStrAge());
+            jsonDependant.put("dependent_dob", dependentModel.getStrDob());
+            jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
+
+            jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
+            jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
+            jsonDependant.put("customer_id", Config.customerModel.getStrCustomerID());
+
+            jsonDependant.put("health_bp", dependentModel.getIntHealthBp());
+
+            Config.dependentNames.add(dependentModel.getStrName());
+
+            jsonDependant.put("health_heart_rate", dependentModel.getIntHealthHeartRate());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonDependant;
+    }
+
+
+    public void updateDependentsDetailOnServer(final DependentModel dependentModel) {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                try {
+                    ((Activity) _ctxt).runOnUiThread(new Runnable() {
 
                         @Override
-                        public void onFindDocFailed(App42Exception ex) {
-                        /*if (progressDialog.isShowing())
-                            progressDialog.dismiss();*/
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                        public void run() {
+                            StorageService storageService = new StorageService(_ctxt);
+                            final String dependentsId = dependentModel.getStrDependentID();
+                            JSONObject jsonDependant = new JSONObject();
 
                             try {
-                                JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                JSONObject jsonObjectError =
-                                        jsonObject.getJSONObject("app42Fault");
+                                createJson(jsonDependant, dependentModel);
 
-                                int appErrorCode = jsonObjectError.getInt("appErrorCode");
-
-                                String strMess = jsonObjectError.getString("details");
-
-                                if (appErrorCode == 2601)
-                                    toast(2, 2, _ctxt.getString(R.string.invalid_credentials));
-                                else
-                                    toast(2, 2, strMess);
-
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        }
 
-                        @Override
-                        public void onUpdateDocFailed(App42Exception ex) {
+                            //JSONObject jsonToUpdate = new JSONObject();
+
+                            storageService.updateDocs(jsonDependant,
+                                    dependentsId,
+                                    Config.collectionDependent, new App42CallBack() {
+                                        @Override
+                                        public void onSuccess(Object o) {
+                                            try {
+                                                if (o != null) {
+
+                                                    Utils.log(o.toString(), "LOG_DATA");
+
+                                                } else {
+
+                                                }
+                                            } catch (Exception e1) {
+
+                                                e1.printStackTrace();
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onException(Exception e) {
+                                        }
+                                    });
+
+
                         }
                     });
-        } else {
-            /*if (progressDialog.isShowing())
-                progressDialog.dismiss();*/
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
+    }
+
+    public void updateorInsertCustomerData(final int iFlag) {
+        try {
+            if (isConnectingToInternet()) {
+
+
+                StorageService storageService = new StorageService(_ctxt);
+
+                storageService.findDocsByKeyValue(Config.collectionCustomer, "customer_email",
+                        Config.strUserName, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                            @Override
+                            public void onDocumentInserted(Storage response) {
+                            }
+
+                            @Override
+                            public void onUpdateDocSuccess(Storage response) {
+                            }
+
+                            @Override
+                            public void onFindDocSuccess(Storage response) {
+
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
+                                //                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                                if (response != null) {
+
+                                    if (response.getJsonDocList().size() > 0) {
+
+
+                                        boolean mIsRegistered = true;
+
+                                        Storage.JSONDocument jsonDocument = response.getJsonDocList().
+                                                get(0);
+
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        try {
+                                            if (iFlag == 2) {
+                                                JSONObject jsonObject = new JSONObject(strDocument);
+                                                jsonObject.put("customer_profile_url", Config.customerModel.getStrImgUrl());
+                                                strDocument = jsonObject.toString();
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", "", ""};
+                                        try {
+                                            //Config.jsonCustomer = new JSONObject(strDocument);
+
+                                            if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+                                                String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                                // WHERE clause arguments
+                                                String[] selectionArgs = {jsonDocument.getDocId()};
+                                                CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                            } else {
+                                                createCustomerModel(jsonDocument.getDocId(), strDocument);
+                                                CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+
+                                            }
+
+
+                                            if (iFlag == 1) {
+                                                JSONObject jsonObject = new JSONObject(strDocument);
+
+                                                if (jsonObject.has("customer_register"))
+                                                    mIsRegistered = jsonObject.getBoolean("customer_register");
+                                            }
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        if (iFlag == 1) {
+                                            if (DashboardActivity.loadingPanel != null) {
+                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                            }
+                                        }
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
+
+
+                                            sessionManager.saveCustomerId(jsonDocument.getDocId());
+                                            if (iFlag == 1) {
+
+                                                if (!mIsRegistered) {
+                                                    //todo add logic for taking to dependent add screen
+                                                }
+
+
+                                                goToDashboard();
+                                            }
+                                        }
+
+
+                                    } else {
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
+
+
+                                            toast(2, 2, _ctxt.getString(R.string.error));
+                                        }
+                                    }
+                                } else {
+                                    if (iFlag == 1) {
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
+                                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onInsertionFailed(App42Exception ex) {
+                            }
+
+                            @Override
+                            public void onFindDocFailed(App42Exception ex) {
+                            /*if (progressDialog.isShowing())
+                                progressDialog.dismiss();*/
+                                if (iFlag == 1) {
+                                    if (DashboardActivity.loadingPanel != null) {
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    }
+
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                        JSONObject jsonObjectError =
+                                                jsonObject.getJSONObject("app42Fault");
+
+                                        int appErrorCode = jsonObjectError.getInt("appErrorCode");
+
+                                        String strMess = jsonObjectError.getString("details");
+                                        if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                                        } else {
+                                            if (appErrorCode == 2601)
+                                                toast(2, 2, _ctxt.getString(R.string.invalid_credentials));
+                                            else
+                                                toast(2, 2, strMess);
+                                        }
+
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onUpdateDocFailed(App42Exception ex) {
+                            }
+                        });
+            } else {
+                /*if (progressDialog.isShowing())
+                    progressDialog.dismiss();*/
+                if (iFlag == 1) {
+                    if (DashboardActivity.loadingPanel != null)
+                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                    if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+
+                    } else {
+                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1874,6 +2281,9 @@ public class Utils {
                 clientModel.setCustomerModel(Config.customerModel);*/
             Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
 
+            if (isUpdateServer && isConnectingToInternet()) {
+                updateCustomerDetailOnServer();
+            }
 
             //     }
         } catch (JSONException e) {
@@ -1884,44 +2294,45 @@ public class Utils {
     public void createServiceModel(String strDocumentId, JSONObject jsonObject) {
 
         try {
+
             ServiceModel serviceModel = new ServiceModel();
 
-            serviceModel.setDoubleCost(jsonObject.getDouble("cost"));
-            serviceModel.setStrServiceName(jsonObject.getString("service_name"));
-            serviceModel.setiServiceNo(jsonObject.getInt("service_no"));
-            serviceModel.setStrCategoryName(jsonObject.getString("category_name"));
-            serviceModel.setiUnit(jsonObject.getInt("unit"));
-            //  serviceModel.setStrServiceType(jsonObject.getString("service_type"));
-            serviceModel.setiUnitValue(jsonObject.getInt("unit_value"));
+            serviceModel.setDoubleCost(jsonObject.optDouble("cost"));
+            serviceModel.setStrServiceName(jsonObject.optString("service_name"));
+            serviceModel.setiServiceNo(jsonObject.optInt("service_no"));
+            serviceModel.setStrCategoryName(jsonObject.optString("category_name"));
+            serviceModel.setiUnit(jsonObject.optInt("unit"));
+            //  serviceModel.setStrServiceType(jsonObject.optString("service_type"));
+            serviceModel.setiUnitValue(jsonObject.optInt("unit_value"));
 
             if (jsonObject.has("milestones")) {
 
                 JSONArray jsonArrayMilestones = jsonObject.
-                        getJSONArray("milestones");
+                        optJSONArray("milestones");
 
                 for (int k = 0; k < jsonArrayMilestones.length(); k++) {
 
                     JSONObject jsonObjectMilestone =
-                            jsonArrayMilestones.getJSONObject(k);
+                            jsonArrayMilestones.optJSONObject(k);
 
                     MilestoneModel milestoneModel = new MilestoneModel();
 
-                    milestoneModel.setiMilestoneId(jsonObjectMilestone.getInt("id"));
-                    milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
-                    milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
-                    milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
-                    // milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                    milestoneModel.setiMilestoneId(jsonObjectMilestone.optInt("id"));
+                    milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.optString("status"));
+                    milestoneModel.setStrMilestoneName(jsonObjectMilestone.optString("name"));
+                    milestoneModel.setStrMilestoneDate(jsonObjectMilestone.optString("date"));
+                    // milestoneModel.setVisible(jsonObjectMilestone.optBoolean("show"));
 
                     //
 
                     if (jsonObjectMilestone.has("show")) {
 
                         try {
-                            milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                            milestoneModel.setVisible(jsonObjectMilestone.optBoolean("show"));
                         } catch (Exception e) {
                             boolean b = true;
                             try {
-                                if (jsonObjectMilestone.getInt("show") == 0)
+                                if (jsonObjectMilestone.optInt("show") == 0)
                                     b = false;
                                 milestoneModel.setVisible(b);
                             } catch (Exception e1) {
@@ -1933,11 +2344,11 @@ public class Utils {
                     if (jsonObjectMilestone.has("reschedule")) {
 
                         try {
-                            milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+                            milestoneModel.setReschedule(jsonObjectMilestone.optBoolean("reschedule"));
                         } catch (Exception e) {
                             boolean b = true;
                             try {
-                                if (jsonObjectMilestone.getInt("reschedule") == 0)
+                                if (jsonObjectMilestone.optInt("reschedule") == 0)
                                     b = false;
                                 milestoneModel.setReschedule(b);
                             } catch (Exception e1) {
@@ -1948,65 +2359,65 @@ public class Utils {
 
                     if (jsonObjectMilestone.has("scheduled_date"))
                         milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
-                                getString("scheduled_date"));
+                                optString("scheduled_date"));
 
                     if (jsonObjectMilestone.has("fields")) {
 
                         JSONArray jsonArrayFields = jsonObjectMilestone.
-                                getJSONArray("fields");
+                                optJSONArray("fields");
 
                         for (int l = 0; l < jsonArrayFields.length(); l++) {
 
                             JSONObject jsonObjectField =
-                                    jsonArrayFields.getJSONObject(l);
+                                    jsonArrayFields.optJSONObject(l);
 
                             FieldModel fieldModel = new FieldModel();
 
-                            fieldModel.setiFieldID(jsonObjectField.getInt("id"));
+                            fieldModel.setiFieldID(jsonObjectField.optInt("id"));
 
                             if (jsonObjectField.has("hide"))
-                                fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+                                fieldModel.setFieldView(jsonObjectField.optBoolean("hide"));
 
-                            fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
-                            fieldModel.setStrFieldData(jsonObjectField.getString("data"));
-                            fieldModel.setStrFieldLabel(jsonObjectField.getString("label"));
-                            fieldModel.setStrFieldType(jsonObjectField.getString("type"));
+                            fieldModel.setFieldRequired(jsonObjectField.optBoolean("required"));
+                            fieldModel.setStrFieldData(jsonObjectField.optString("data"));
+                            fieldModel.setStrFieldLabel(jsonObjectField.optString("label"));
+                            fieldModel.setStrFieldType(jsonObjectField.optString("type"));
 
                             if (jsonObjectField.has("values")) {
 
                                 fieldModel.setStrFieldValues(jsonToStringArray(jsonObjectField.
-                                        getJSONArray("values")));
+                                        optJSONArray("values")));
                             }
 
                             if (jsonObjectField.has("child")) {
 
-                                fieldModel.setChild(jsonObjectField.getBoolean("child"));
+                                fieldModel.setChild(jsonObjectField.optBoolean("child"));
 
                                 if (jsonObjectField.has("child_type"))
                                     fieldModel.setStrChildType(jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_type")));
+                                            optJSONArray("child_type")));
 
                                 if (jsonObjectField.has("child_value"))
                                     fieldModel.setStrChildValue(jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_value")));
+                                            optJSONArray("child_value")));
 
                                 if (jsonObjectField.has("child_condition"))
                                     fieldModel.setStrChildCondition(jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_condition")));
+                                            optJSONArray("child_condition")));
 
                                 if (jsonObjectField.has("child_field"))
                                     fieldModel.setiChildfieldID(jsonToIntArray(jsonObjectField.
-                                            getJSONArray("child_field")));
+                                            optJSONArray("child_field")));
                             }
                             ////
                             if (jsonObjectField.has("array_fields")) {
 
                                 try {
-                                    fieldModel.setiArrayCount(jsonObjectField.getInt("array_fields"));
+                                    fieldModel.setiArrayCount(jsonObjectField.optInt("array_fields"));
                                 } catch (Exception e) {
                                     int i = 0;
                                     try {
-                                        i = Integer.parseInt(jsonObjectField.getString("array_fields"));
+                                        i = Integer.parseInt(jsonObjectField.optString("array_fields"));
                                         fieldModel.setiArrayCount(i);
                                     } catch (Exception e1) {
                                         e1.printStackTrace();
@@ -2015,10 +2426,10 @@ public class Utils {
 
                                 if (jsonObjectField.has("array_type"))
                                     fieldModel.setStrArrayType(jsonToStringArray(jsonObjectField.
-                                            getJSONArray("array_type")));
+                                            optJSONArray("array_type")));
 
                                 if (jsonObjectField.has("array_data"))
-                                    fieldModel.setStrArrayData(jsonObjectField.getString("array_data"));
+                                    fieldModel.setStrArrayData(jsonObjectField.optString("array_data"));
 
                             }
                             ////
@@ -2038,22 +2449,22 @@ public class Utils {
                 Config.strServcieIds.add(strDocumentId);
 
                 //
-                if (!Config.strServiceCategoryNames.contains(jsonObject.getString("category_name"))) {
-                    Config.strServiceCategoryNames.add(jsonObject.getString("category_name"));
+                if (!Config.strServiceCategoryNames.contains(jsonObject.optString("category_name"))) {
+                    Config.strServiceCategoryNames.add(jsonObject.optString("category_name"));
 
                     CategoryServiceModel categoryServiceModel = new CategoryServiceModel();
-                    categoryServiceModel.setStrCategoryName(jsonObject.getString("category_name"));
+                    categoryServiceModel.setStrCategoryName(jsonObject.optString("category_name"));
                     categoryServiceModel.setServiceModels(serviceModel);
 
                     Config.categoryServiceModels.add(categoryServiceModel);
                 } else {
-                    int iPosition = Config.strServiceCategoryNames.indexOf(jsonObject.getString("category_name"));
+                    int iPosition = Config.strServiceCategoryNames.indexOf(jsonObject.optString("category_name"));
                     Config.categoryServiceModels.get(iPosition).setServiceModels(serviceModel);
                 }
                 //
             }
-
-        } catch (JSONException e) {
+            Log.i("TAG", "ServiceModel size:" + Config.categoryServiceModels.size());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -2066,11 +2477,11 @@ public class Utils {
             if (jsonObjectProvider.has("provider_name")) {
 
                 ProviderModel providerModel = new ProviderModel(
-                        jsonObjectProvider.getString("provider_name"),
-                        jsonObjectProvider.getString("provider_profile_url"), "",
-                        jsonObjectProvider.getString("provider_address"),
-                        jsonObjectProvider.getString("provider_contact_no"),
-                        jsonObjectProvider.getString("provider_email"), strDocumentId);
+                        jsonObjectProvider.optString("provider_name"),
+                        jsonObjectProvider.optString("provider_profile_url"), "",
+                        jsonObjectProvider.optString("provider_address"),
+                        jsonObjectProvider.optString("provider_contact_no"),
+                        jsonObjectProvider.optString("provider_email"), strDocumentId);
 
                 if (!Config.strProviderIdsAdded.contains(strDocumentId)) {
 
@@ -2079,7 +2490,7 @@ public class Utils {
                     Config.providerModels.add(providerModel);
 
                     Config.fileModels.add(new FileModel(strDocumentId,
-                            jsonObjectProvider.getString("provider_profile_url"), "IMAGE"));
+                            jsonObjectProvider.optString("provider_profile_url"), "IMAGE"));
                 }
             }
         } catch (JSONException e) {
@@ -2087,8 +2498,8 @@ public class Utils {
         }
     }
 
-    public void createDependentModel(String strDependentDocId, String strDocument) {
-
+    public DependentModel createDependentModel(String strDependentDocId, String strDocument) {
+        DependentModel dependentModel = null;
         try {
 
             JSONObject jsonObjectDependent = new JSONObject(strDocument);
@@ -2097,68 +2508,69 @@ public class Utils {
 
                 if (!Config.strDependentIds.contains(strDependentDocId)) {
                     Config.strDependentIds.add(strDependentDocId);
+                    sessionManager.saveDependentsIds(Config.strDependentIds);
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_contact_no"));
 
-                    DependentModel dependentModel = new DependentModel();
+                    dependentModel = new DependentModel();
 
                     dependentModel.setStrIllness(jsonObjectDependent.
-                            getString("dependent_illness"));
-                    dependentModel.setIntHealthBp(jsonObjectDependent.getInt("health_bp"));
+                            optString("dependent_illness"));
+                    dependentModel.setIntHealthBp(jsonObjectDependent.optInt("health_bp"));
                     dependentModel.setIntHealthHeartRate(jsonObjectDependent.
-                            getInt("health_heart_rate"));
+                            optInt("health_heart_rate"));
 
                     dependentModel.setStrRelation(jsonObjectDependent.
-                            getString("dependent_relation"));
+                            optString("dependent_relation"));
                     dependentModel.setStrAddress(jsonObjectDependent.
-                            getString("dependent_address"));
-                    dependentModel.setStrNotes(jsonObjectDependent.getString("dependent_notes"));
+                            optString("dependent_address"));
+                    dependentModel.setStrNotes(jsonObjectDependent.optString("dependent_notes"));
                     dependentModel.setStrContacts(jsonObjectDependent.
-                            getString("dependent_contact_no"));
-                    dependentModel.setStrName(jsonObjectDependent.getString("dependent_name"));
+                            optString("dependent_contact_no"));
+                    dependentModel.setStrName(jsonObjectDependent.optString("dependent_name"));
 
                     dependentModel.setStrDob(jsonObjectDependent.getString("dependent_dob"));
 
                     if (jsonObjectDependent.has("dependent_profile_url")) {
                         dependentModel.setStrImageUrl(jsonObjectDependent.
-                                getString("dependent_profile_url"));
+                                optString("dependent_profile_url"));
                     }
 
-                    dependentModel.setStrEmail(jsonObjectDependent.getString("dependent_email"));
-                    dependentModel.setStrAge(jsonObjectDependent.getString("dependent_age"));
+                    dependentModel.setStrEmail(jsonObjectDependent.optString("dependent_email"));
+                    dependentModel.setStrAge(jsonObjectDependent.optString("dependent_age"));
 
-                    dependentModel.setStrCustomerID(jsonObjectDependent.getString("customer_id"));
+                    dependentModel.setStrCustomerID(jsonObjectDependent.optString("customer_id"));
 
                     dependentModel.setStrDependentID(strDependentDocId);
 
-                    Config.dependentNames.add(jsonObjectDependent.getString("dependent_name"));
+                    Config.dependentNames.add(jsonObjectDependent.optString("dependent_name"));
 
 
                     //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
                     /*if (jsonObjectDependent.has("services")) {
 
-                        JSONArray jsonArrayServices = jsonObjectDependent.getJSONArray("services");
+                        JSONArray jsonArrayServices = jsonObjectDependent.optJSONArray("services");
 
                         for (int j = 0; j < jsonArrayServices.length(); j++) {
 
-                            JSONObject jsonObjectService = jsonArrayServices.getJSONObject(j);
+                            JSONObject jsonObjectService = jsonArrayServices.optJSONObject(j);
 
                             String strFeatures[] = jsonToStringArray(jsonObjectService.
-                                    getJSONArray("service_features"));
+                                    optJSONArray("service_features"));
 
                             ServiceModel serviceModel = new ServiceModel(
-                                    jsonObjectService.getString("service_name"),
-                                    jsonObjectService.getString("service_desc"),
-                                    jsonObjectService.getString("updated_date"),
+                                    jsonObjectService.optString("service_name"),
+                                    jsonObjectService.optString("service_desc"),
+                                    jsonObjectService.optString("updated_date"),
                                     strFeatures,
-                                    jsonObjectService.getInt("unit"),
-                                    jsonObjectService.getInt("unit_consumed"),
-                                    jsonObjectService.getString("service_id"),
-                                    jsonObjectService.getString("service_history_id")
+                                    jsonObjectService.optInt("unit"),
+                                    jsonObjectService.optInt("unit_consumed"),
+                                    jsonObjectService.optString("service_id"),
+                                    jsonObjectService.optString("service_history_id")
                             );
 
                             //serviceModels.add(serviceModel);
-                            *//*Config.dependentModels.get(iActivityCount).
+                            *//*Config.dependentModels.opt(iActivityCount).
                                     setServiceModels(serviceModel);*//*
 
                             dependentModel.setServiceModel(serviceModel);
@@ -2177,53 +2589,155 @@ public class Utils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return dependentModel;
     }
 
-    public void createActivityModel(String strActivityId, String strDocument, int iFlag) {
+
+    public void createCheckInCareModel(String strActivityId, String strDocument) {
+
+
+        try {
+            JSONObject jsonObjectCheck = new JSONObject(strDocument);
+
+
+            CheckInCareModel checkInCareModel = new CheckInCareModel();
+            //
+            checkInCareModel.setStrName(jsonObjectCheck.optString("check_in_care_name"));
+            JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
+            JSONArray picture = jsonObjectCheck.optJSONArray("picture");
+
+            try {
+                if (picture != null && picture.length() > 0) {
+
+                    for (int m = 0; m < picture.length(); m++) {
+                        JSONObject jsonObject = picture.getJSONObject(m);
+
+
+                        if (jsonObject != null && jsonObject.length() > 0) {
+
+                            PictureModel pictureModel = new PictureModel();
+
+                            pictureModel.setStrStatus(jsonObject.getString("status"));
+                            pictureModel.setStrRoomName(jsonObject.getString("room_name"));
+                            List<ImageModelCheck> imageModels = new ArrayList<>();
+
+                            JSONArray imageDetails = jsonObject.optJSONArray("pictures_details");
+                            for (int k = 0; k < imageDetails.length(); k++) {
+                                JSONObject jsonObjectImage = imageDetails.getJSONObject(k);
+
+                                ImageModelCheck imageModelCheck = new ImageModelCheck(jsonObjectImage.optString("image_url"),
+                                        jsonObjectImage.optString("description"), jsonObjectImage.optString("date_time"));
+                                imageModels.add(imageModelCheck);
+                            }
+
+                            pictureModel.setImageModels(imageModels);
+
+                            checkInCareModel.setPictureModel(pictureModel);
+
+                            Config.roomtypeName.add(pictureModel);
+
+
+                        }
+
+                    }
+
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<CheckInCareActivityModel>();
+
+            try {
+                if (subMainactivities != null && subMainactivities.length() > 0) {
+                    for (int i = 0; i < subMainactivities.length(); i++) {
+
+
+                        JSONObject jsonObjectsubactivitites = subMainactivities.getJSONObject(i);
+                        jsonObjectsubactivitites.optString("activity_name");
+                        if (jsonObjectsubactivitites != null && jsonObjectsubactivitites.length() > 0) {
+                            List<SubActivityModel> subActivityModels = new ArrayList<SubActivityModel>();
+
+                            JSONArray subactivities = jsonObjectsubactivitites.optJSONArray("sub_activities");
+                            for (int j = 0; j < subactivities.length(); j++) {
+                                JSONObject jsonObjectsubactivity = subactivities.getJSONObject(j);
+
+                                SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("status"),
+                                        jsonObjectsubactivity.optString("sub_activity_name"), jsonObjectsubactivity.optString("utility_name"),
+                                        jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("due_status"));
+                                subActivityModels.add(subActivityModel);
+                            }
+                            CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
+                            checkInCareActivityModels.add(checkInCareActivityModel);
+                        }
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+
+
+            checkInCareModel.setCheckInCareActivityModels(checkInCareActivityModels);
+
+            Config.checkInCareActivityNames.add(checkInCareModel);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createActivityModel(String strActivityId, String strDocument, int iFlag, JSONArray jArray) {
         try {
 
             JSONObject jsonObjectActivity =
                     new JSONObject(strDocument);
 
+
             if (jsonObjectActivity.has("activity_name")) {
 
                 ActivityModel activityModel = new ActivityModel();
 
-                activityModel.setStrActivityName(jsonObjectActivity.getString("activity_name"));
+                activityModel.setStrActivityName(jsonObjectActivity.optString("activity_name"));
                 activityModel.setStrActivityID(strActivityId);
-                activityModel.setStrProviderID(jsonObjectActivity.getString("provider_id"));
-                activityModel.setStrDependentID(jsonObjectActivity.getString("dependent_id"));
-                activityModel.setStrustomerID(jsonObjectActivity.getString("customer_id"));
-                activityModel.setStrActivityStatus(jsonObjectActivity.getString("status"));
-                activityModel.setStrActivityDesc(jsonObjectActivity.getString("activity_desc"));
+                activityModel.setStrProviderID(jsonObjectActivity.optString("provider_id"));
+                activityModel.setStrDependentID(jsonObjectActivity.optString("dependent_id"));
+                activityModel.setStrustomerID(jsonObjectActivity.optString("customer_id"));
+                activityModel.setStrActivityStatus(jsonObjectActivity.optString("status"));
+                activityModel.setStrActivityDesc(jsonObjectActivity.optString("activity_desc"));
+              /*  activityModel.setStrActivityMessage(jsonObjectActivity.
+                        optString("activity_message"));*/
 
                 activityModel.setStrCreatedBy(jsonObjectActivity.optString("created_by"));
-              /*  activityModel.setStrActivityMessage(jsonObjectActivity.
-                        getString("activity_message"));*/
 
-                if (!Config.strProviderIds.contains(jsonObjectActivity.getString("provider_id")))
-                    Config.strProviderIds.add(jsonObjectActivity.getString("provider_id"));
+                if (!Config.strProviderIds.contains(jsonObjectActivity.optString("provider_id"))) {
+                    Config.strProviderIds.add(jsonObjectActivity.optString("provider_id"));
+                    sessionManager.saveProvidersIds(Config.strProviderIds);
+                }
 
-                activityModel.setStrServcieID(jsonObjectActivity.getString("service_id"));
-                activityModel.setStrServiceName(jsonObjectActivity.getString("service_name"));
-               /* activityModel.setStrServiceDesc(jsonObjectActivity.getString("service_desc"));*/
+                activityModel.setStrServcieID(jsonObjectActivity.optString("service_id"));
+                activityModel.setStrServiceName(jsonObjectActivity.optString("service_name"));
+               /* activityModel.setStrServiceDesc(jsonObjectActivity.optString("service_desc"));*/
 
                 if (jsonObjectActivity.has("activity_date"))
-                    activityModel.setStrActivityDate(jsonObjectActivity.getString("activity_date"));
+                    activityModel.setStrActivityDate(jsonObjectActivity.optString("activity_date"));
                 else
                     activityModel.setStrActivityDate("");
 
                 if (jsonObjectActivity.has("activity_done_date"))
                     activityModel.setStrActivityDoneDate(jsonObjectActivity.
-                            getString("activity_done_date"));
+                            optString("activity_done_date"));
 
-                activityModel.setbActivityOverdue(jsonObjectActivity.getBoolean("overdue"));
+                activityModel.setbActivityOverdue(jsonObjectActivity.optBoolean("overdue"));
 
                 activityModel.setStrActivityProviderStatus(jsonObjectActivity.
-                        getString("provider_status"));
+                        optString("provider_status"));
 
                 activityModel.setStrActivityProviderMessage(jsonObjectActivity.
-                        getString("provider_message"));
+                        optString("provider_message"));
 
                 ArrayList<FeedBackModel> feedBackModels = new ArrayList<>();
                 ArrayList<VideoModel> videoModels = new ArrayList<>();
@@ -2232,22 +2746,22 @@ public class Utils {
                 if (jsonObjectActivity.has("feedbacks")) {
 
                     JSONArray jsonArrayFeedback = jsonObjectActivity.
-                            getJSONArray("feedbacks");
+                            optJSONArray("feedbacks");
 
                     for (int k = 0; k < jsonArrayFeedback.length(); k++) {
 
                         JSONObject jsonObjectFeedback =
-                                jsonArrayFeedback.getJSONObject(k);
+                                jsonArrayFeedback.optJSONObject(k);
 
                         if (jsonObjectFeedback.has("feedback_message")) {
 
                             FeedBackModel feedBackModel = new FeedBackModel(
-                                    jsonObjectFeedback.getString("feedback_message"),
-                                    jsonObjectFeedback.getString("feedback_by"),
-                                    jsonObjectFeedback.getInt("feedback_rating"),
-                                    false, //jsonObjectFeedback.getBoolean("feedback_report")
-                                    jsonObjectFeedback.getString("feedback_time"),
-                                    jsonObjectFeedback.getString("feedback_by_type"));
+                                    jsonObjectFeedback.optString("feedback_message"),
+                                    jsonObjectFeedback.optString("feedback_by"),
+                                    jsonObjectFeedback.optInt("feedback_rating"),
+                                    false, //jsonObjectFeedback.optBoolean("feedback_report")
+                                    jsonObjectFeedback.optString("feedback_time"),
+                                    jsonObjectFeedback.optString("feedback_by_type"));
 
                             feedBackModels.add(feedBackModel);
 
@@ -2263,23 +2777,23 @@ public class Utils {
                 if (jsonObjectActivity.has("videos")) {
 
                     JSONArray jsonArrayVideos = jsonObjectActivity.
-                            getJSONArray("videos");
+                            optJSONArray("videos");
 
                     for (int k = 0; k < jsonArrayVideos.length(); k++) {
 
                         JSONObject jsonObjectVideo = jsonArrayVideos.
-                                getJSONObject(k);
+                                optJSONObject(k);
 
                         if (jsonObjectVideo.has("video_name")) {
 
                             VideoModel videoModel = new VideoModel(
-                                    jsonObjectVideo.getString("video_name"),
-                                    jsonObjectVideo.getString("video_url"),
-                                    jsonObjectVideo.getString("video_description"),
-                                    jsonObjectVideo.getString("video_taken"));
+                                    jsonObjectVideo.optString("video_name"),
+                                    jsonObjectVideo.optString("video_url"),
+                                    jsonObjectVideo.optString("video_description"),
+                                    jsonObjectVideo.optString("video_taken"));
 
-                            Config.fileModels.add(new FileModel(jsonObjectVideo.getString("video_name"),
-                                    jsonObjectVideo.getString("video_url"), "VIDEO"));
+                            Config.fileModels.add(new FileModel(jsonObjectVideo.optString("video_name"),
+                                    jsonObjectVideo.optString("video_url"), "VIDEO"));
 
                             videoModels.add(videoModel);
                         }
@@ -2290,23 +2804,23 @@ public class Utils {
                 if (jsonObjectActivity.has("images")) {
 
                     JSONArray jsonArrayVideos = jsonObjectActivity.
-                            getJSONArray("images");
+                            optJSONArray("images");
 
                     for (int k = 0; k < jsonArrayVideos.length(); k++) {
 
                         JSONObject jsonObjectImage = jsonArrayVideos.
-                                getJSONObject(k);
+                                optJSONObject(k);
 
                         if (jsonObjectImage.has("image_name")) {
 
                             ImageModel imageModel = new ImageModel(
-                                    jsonObjectImage.getString("image_name"),
-                                    jsonObjectImage.getString("image_url"),
-                                    jsonObjectImage.getString("image_description"),
-                                    jsonObjectImage.getString("image_taken"));
+                                    jsonObjectImage.optString("image_name"),
+                                    jsonObjectImage.optString("image_url"),
+                                    jsonObjectImage.optString("image_description"),
+                                    jsonObjectImage.optString("image_taken"));
 
-                            Config.fileModels.add(new FileModel(jsonObjectImage.getString("image_name"),
-                                    jsonObjectImage.getString("image_url"), "IMAGE"));
+                            Config.fileModels.add(new FileModel(jsonObjectImage.optString("image_name"),
+                                    jsonObjectImage.optString("image_url"), "IMAGE"));
 
                             imageModels.add(imageModel);
 
@@ -2316,50 +2830,56 @@ public class Utils {
                 }
 
                 //milestones start
-                if (jsonObjectActivity.has("milestones")) {
+                if (jsonObjectActivity.has("milestones") || (jArray != null && jArray.length() > 0)) {
+                    JSONArray jsonArrayMilestones;
 
-                    JSONArray jsonArrayMilestones = jsonObjectActivity.
-                            getJSONArray("milestones");
+                    if (jsonObjectActivity.has("milestones")) {
+                        jsonArrayMilestones = jsonObjectActivity.
+                                optJSONArray("milestones");
+                    } else {
+                        jsonArrayMilestones = jArray;
+                    }
+
 
                     for (int k = 0; k < jsonArrayMilestones.length(); k++) {
 
                         JSONObject jsonObjectMilestone =
-                                jsonArrayMilestones.getJSONObject(k);
+                                jsonArrayMilestones.optJSONObject(k);
 
                         MilestoneModel milestoneModel = new MilestoneModel();
 
-                        milestoneModel.setiMilestoneId(jsonObjectMilestone.getInt("id"));
-                        milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.getString("status"));
-                        milestoneModel.setStrMilestoneName(jsonObjectMilestone.getString("name"));
-                        milestoneModel.setStrMilestoneDate(jsonObjectMilestone.getString("date"));
-                        milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                        milestoneModel.setiMilestoneId(jsonObjectMilestone.optInt("id"));
+                        milestoneModel.setStrMilestoneStatus(jsonObjectMilestone.optString("status"));
+                        milestoneModel.setStrMilestoneName(jsonObjectMilestone.optString("name"));
+                        milestoneModel.setStrMilestoneDate(jsonObjectMilestone.optString("date"));
+                        milestoneModel.setVisible(jsonObjectMilestone.optBoolean("show"));
 
                         // ArrayList<FileModel> fileModels = new ArrayList<>();
 
                         if (jsonObjectMilestone.has("files")) {
 
                             JSONArray jsonArrayMsFiles = jsonObjectMilestone.
-                                    getJSONArray("files");
+                                    optJSONArray("files");
 
                             for (int m = 0; m < jsonArrayMsFiles.length(); m++) {
 
                                 JSONObject jsonObjectMsFile = jsonArrayMsFiles.
-                                        getJSONObject(m);
+                                        optJSONObject(m);
 
                                 if (jsonObjectMsFile.has("file_name")) {
 
                                     Utils.log(jsonObjectMsFile.toString(), " JSONOBJECT ");
 
                                     FileModel fileModel = new FileModel(
-                                            jsonObjectMsFile.getString("file_name"),
-                                            jsonObjectMsFile.getString("file_url"),
-                                            jsonObjectMsFile.getString("file_type"),
-                                            jsonObjectMsFile.getString("file_desc"),
-                                            jsonObjectMsFile.getString("file_path"),
-                                            jsonObjectMsFile.getString("file_time"));
+                                            jsonObjectMsFile.optString("file_name"),
+                                            jsonObjectMsFile.optString("file_url"),
+                                            jsonObjectMsFile.optString("file_type"),
+                                            jsonObjectMsFile.optString("file_desc"),
+                                            jsonObjectMsFile.optString("file_path"),
+                                            jsonObjectMsFile.optString("file_time"));
 
-                                    Config.fileModels.add(new FileModel(jsonObjectMsFile.getString("file_name"),
-                                            jsonObjectMsFile.getString("file_url"), jsonObjectMsFile.getString("file_type")));
+                                    Config.fileModels.add(new FileModel(jsonObjectMsFile.optString("file_name"),
+                                            jsonObjectMsFile.optString("file_url"), jsonObjectMsFile.optString("file_type")));
 
                                     milestoneModel.setFileModel(fileModel);
                                 }
@@ -2369,11 +2889,11 @@ public class Utils {
                         if (jsonObjectMilestone.has("show")) {
 
                             try {
-                                milestoneModel.setVisible(jsonObjectMilestone.getBoolean("show"));
+                                milestoneModel.setVisible(jsonObjectMilestone.optBoolean("show"));
                             } catch (Exception e) {
                                 boolean b = true;
                                 try {
-                                    if (jsonObjectMilestone.getInt("show") == 0)
+                                    if (jsonObjectMilestone.optInt("show") == 0)
                                         b = false;
                                     milestoneModel.setVisible(b);
                                 } catch (Exception e1) {
@@ -2385,11 +2905,11 @@ public class Utils {
                         if (jsonObjectMilestone.has("reschedule")) {
 
                             try {
-                                milestoneModel.setReschedule(jsonObjectMilestone.getBoolean("reschedule"));
+                                milestoneModel.setReschedule(jsonObjectMilestone.optBoolean("reschedule"));
                             } catch (Exception e) {
                                 boolean b = true;
                                 try {
-                                    if (jsonObjectMilestone.getInt("reschedule") == 0)
+                                    if (jsonObjectMilestone.optInt("reschedule") == 0)
                                         b = false;
                                     milestoneModel.setReschedule(b);
                                 } catch (Exception e1) {
@@ -2400,64 +2920,64 @@ public class Utils {
 
                         if (jsonObjectMilestone.has("scheduled_date"))
                             milestoneModel.setStrMilestoneScheduledDate(jsonObjectMilestone.
-                                    getString("scheduled_date"));
+                                    optString("scheduled_date"));
 
                         if (jsonObjectMilestone.has("fields")) {
 
                             JSONArray jsonArrayFields = jsonObjectMilestone.
-                                    getJSONArray("fields");
+                                    optJSONArray("fields");
 
                             for (int l = 0; l < jsonArrayFields.length(); l++) {
 
                                 JSONObject jsonObjectField =
-                                        jsonArrayFields.getJSONObject(l);
+                                        jsonArrayFields.optJSONObject(l);
 
                                 FieldModel fieldModel = new FieldModel();
 
-                                fieldModel.setiFieldID(jsonObjectField.getInt("id"));
+                                fieldModel.setiFieldID(jsonObjectField.optInt("id"));
 
                                 if (jsonObjectField.has("hide"))
-                                    fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+                                    fieldModel.setFieldView(jsonObjectField.optBoolean("hide"));
 
-                                fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
-                                fieldModel.setStrFieldData(jsonObjectField.getString("data"));
-                                fieldModel.setStrFieldLabel(jsonObjectField.getString("label"));
-                                fieldModel.setStrFieldType(jsonObjectField.getString("type"));
+                                fieldModel.setFieldRequired(jsonObjectField.optBoolean("required"));
+                                fieldModel.setStrFieldData(jsonObjectField.optString("data"));
+                                fieldModel.setStrFieldLabel(jsonObjectField.optString("label"));
+                                fieldModel.setStrFieldType(jsonObjectField.optString("type"));
 
                                 if (jsonObjectField.has("values")) {
 
                                     fieldModel.setStrFieldValues(jsonToStringArray(jsonObjectField.
-                                            getJSONArray("values")));
+                                            optJSONArray("values")));
                                 }
 
                                 if (jsonObjectField.has("child")) {
 
-                                    fieldModel.setChild(jsonObjectField.getBoolean("child"));
+                                    fieldModel.setChild(jsonObjectField.optBoolean("child"));
 
                                     if (jsonObjectField.has("child_type"))
                                         fieldModel.setStrChildType(jsonToStringArray(jsonObjectField.
-                                                getJSONArray("child_type")));
+                                                optJSONArray("child_type")));
 
                                     if (jsonObjectField.has("child_value"))
                                         fieldModel.setStrChildValue(jsonToStringArray(jsonObjectField.
-                                                getJSONArray("child_value")));
+                                                optJSONArray("child_value")));
 
                                     if (jsonObjectField.has("child_condition"))
                                         fieldModel.setStrChildCondition(jsonToStringArray(jsonObjectField.
-                                                getJSONArray("child_condition")));
+                                                optJSONArray("child_condition")));
 
                                     if (jsonObjectField.has("child_field"))
                                         fieldModel.setiChildfieldID(jsonToIntArray(jsonObjectField.
-                                                getJSONArray("child_field")));
+                                                optJSONArray("child_field")));
                                 }
                                 if (jsonObjectField.has("array_fields")) {
 
                                     try {
-                                        fieldModel.setiArrayCount(jsonObjectField.getInt("array_fields"));
+                                        fieldModel.setiArrayCount(jsonObjectField.optInt("array_fields"));
                                     } catch (Exception e) {
                                         int i = 0;
                                         try {
-                                            i = Integer.parseInt(jsonObjectField.getString("array_fields"));
+                                            i = Integer.parseInt(jsonObjectField.optString("array_fields"));
                                             fieldModel.setiArrayCount(i);
                                         } catch (Exception e1) {
                                             e1.printStackTrace();
@@ -2466,10 +2986,10 @@ public class Utils {
 
                                     if (jsonObjectField.has("array_type"))
                                         fieldModel.setStrArrayType(jsonToStringArray(jsonObjectField.
-                                                getJSONArray("array_type")));
+                                                optJSONArray("array_type")));
 
                                     if (jsonObjectField.has("array_data"))
-                                        fieldModel.setStrArrayData(jsonObjectField.getString("array_data"));
+                                        fieldModel.setStrArrayData(jsonObjectField.optString("array_data"));
 
                                 }
                                 ////
@@ -2496,9 +3016,9 @@ public class Utils {
 
                 if (iFlag == 1) {
 
-                    int iPosition = Config.strDependentIds.indexOf(jsonObjectActivity.getString("dependent_id"));
+                    int iPosition = Config.strDependentIds.indexOf(jsonObjectActivity.optString("dependent_id"));
 
-                    if (iPosition > -1 && iPosition<Config.dependentModels.size())
+                    if (iPosition > -1 && iPosition < Config.dependentModels.size())
                         Config.dependentModels.get(iPosition).setMonthActivityModel(activityModel);
 
                     if (!Config.strActivityIds.contains(strActivityId))
@@ -2514,103 +3034,240 @@ public class Utils {
     public void fetchDependents(String strCustomerId, final ProgressDialog progressDialog,
                                 final int iFlag) {
 
+
+        if (strCustomerId == null || strCustomerId.length() == 0 || (strCustomerId.equalsIgnoreCase(""))) {
+            strCustomerId = sessionManager.getCustomerId();
+        } else {
+
+        }
+        if (sessionManager.getDependentsStatus()) {
+            try {
+
+                // WHERE   clause
+                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+                // WHERE clause arguments
+                String[] selectionArgs = {Config.collectionDependent};
+                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                Log.i("TAG", "Cursor count:" + cursor.getCount());
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    do {
+                        DependentModel dependentModel = null;
+                        dependentModel = createDependentModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                        dependentsIdsList = new ArrayList<>();
+                        dependentsIdsList.clear();
+                        dependentsIdsList.addAll(sessionManager.getUpdateDependent());
+                        if (isConnectingToInternet() && dependentsIdsList.contains(dependentModel.getStrDependentID())) {
+                            updateDependentsDetailOnServer(dependentModel);
+                        }
+
+                    } while (cursor.moveToNext());
+                    cursor.close();
+
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+
+                fetchProviders(progressDialog, iFlag);
+            }
+
+        }
+
+
         if (isConnectingToInternet()) {
+
+            String defaultDate = null;
+            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionDependent);
+            if (cursorData != null && cursorData.getCount() > 0) {
+                cursorData.moveToFirst();
+                defaultDate = cursorData.getString(0);
+                cursorData.close();
+            } else {
+                defaultDate = Utils.defaultDate;
+            }
+            Query finalQuery = null;
+            Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
+            // Build query q2
+            if (sessionManager.getDependentsStatus()) {
+                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+
+                finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+            } else {
+                finalQuery = q1;
+            }
+
 
             StorageService storageService = new StorageService(_ctxt);
 
-            storageService.findDocsByKeyValue(Config.collectionDependent, "customer_id",
-                    strCustomerId, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+            storageService.findDocsByQuery(Config.collectionDependent, finalQuery, new App42CallBack() {
+                @Override
+                public void onSuccess(Object o) {
 
-                        @Override
-                        public void onDocumentInserted(Storage response) {
-                        }
+                    Storage storage = (Storage) o;
+                    if (o != null) {
 
-                        @Override
-                        public void onUpdateDocSuccess(Storage response) {
-                        }
+                        if (storage.getJsonDocList().size() > 0) {
 
-                        @Override
-                        public void onFindDocSuccess(Storage response) {
-
-                            if (response != null) {
-
-                                if (response.getJsonDocList().size() > 0) {
-
-                                    //Utils.log(response.toString(), " 1 ");
+                            //Utils.log(response.toString(), " 1 ");
 
                                     /*Config.strDependentIds.clear();
                                     Config.dependentModels.clear();*/
 
-                                    for (int i = 0; i < response.getJsonDocList().size(); i++) {
-
-                                        Storage.JSONDocument jsonDocument = response.
-                                                getJsonDocList().get(i);
-
-                                        String strDocument = jsonDocument.getJsonDoc();
-                                        String strDependentDocId = jsonDocument.getDocId();
-                                        createDependentModel(strDependentDocId, strDocument);
-                                    }
-
-                                    //if (iFlag == 1)
-                                    //fetchLatestActivities(progressDialog, iFlag);
-
-
-                                } else {
-                                    /*if (progressDialog.isShowing())
-                                        progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    toast(2, 2, _ctxt.getString(R.string.error));
-                                }
-                                fetchProviders(progressDialog, iFlag);
-                            } else {
-                                /*if (progressDialog.isShowing())
-                                    progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                            }
-                        }
-
-                        @Override
-                        public void onInsertionFailed(App42Exception ex) {
-                        }
-
-                        @Override
-                        public void onFindDocFailed(App42Exception ex) {
-
 
                             try {
-                                Utils.log(ex.getMessage(), " 9 ");
-                                JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                JSONObject jsonObjectError =
-                                        jsonObject.getJSONObject("app42Fault");
-                                String strMess = jsonObjectError.getString("details");
+                                CareTaker.dbCon.beginDBTransaction();
+                                for (int i = 0; i < storage.getJsonDocList().size(); i++) {
 
-                                //toast(2, 2, strMess);
+                                    Storage.JSONDocument jsonDocument = storage.
+                                            getJsonDocList().get(i);
 
-                                //fetchLatestActivities(progressDialog, iFlag);
-                                fetchProviders(progressDialog, iFlag);
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
+                                    String strDocument = jsonDocument.getJsonDoc();
+                                    String strDependentDocId = jsonDocument.getDocId();
+
+                                    if (sessionManager.getUpdateDependent().contains(strDependentDocId)) {
+                                        Utils.log("in contains index=" + i, "LOG_DATA");
+                                        Utils.log("updated id :" + strDependentDocId, "LOG_DATA");
+                                        List<String> dependentsIdsList = new ArrayList<String>();
+                                        dependentsIdsList.addAll(sessionManager.getUpdateDependent());
+                                        Utils.log("List Before :" + dependentsIdsList.toString(), "LOG_DATA");
+                                        dependentsIdsList.remove(strDependentDocId);
+                                        sessionManager.saveUpdateDependent(dependentsIdsList);
+                                        Utils.log("List After :" + dependentsIdsList.toString(), "LOG_DATA");
+                                    } else {
+                                        String values[] = {strDependentDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionDependent, "", "1", "", ""};
+
+                                        if (sessionManager.getDependentsStatus()) {
+                                            String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                            // WHERE clause arguments
+                                            String[] selectionArgs = {strDependentDocId};
+                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+
+                                        } else {
+
+                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                            createDependentModel(strDependentDocId, strDocument);
+                                        }
+                                    }
+                                }
+                                CareTaker.dbCon.dbTransactionSucessFull();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                CareTaker.dbCon.endDBTransaction();
+
                             }
+
+
+                            //if (iFlag == 1)
+                            //fetchLatestActivities(progressDialog, iFlag);
+                            //fetchProviders(progressDialog, iFlag);
+                            //if (iFlag == 1)
+                            //fetchLatestActivities(progressDialog, iFlag);
+
+
+                        } else {
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            if (!sessionManager.getDependentsStatus())
+                                toast(2, 2, _ctxt.getString(R.string.error));
                         }
 
-                        @Override
-                        public void onUpdateDocFailed(App42Exception ex) {
+                        if (!sessionManager.getDependentsStatus()) {
+                            sessionManager.saveDependentsStatus(true);
+                            fetchProviders(progressDialog, iFlag);
                         }
-                    });
+
+                    } else {
+                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                        if (!sessionManager.getDependentsStatus())
+                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                    }
+
+                            /*} else {
+                                *//*if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*//*
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                            }*/
+
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    try {
+                        Utils.log(e.getMessage(), " 9 ");
+                        JSONObject jsonObject = new JSONObject(e.getMessage());
+                        JSONObject jsonObjectError =
+                                jsonObject.optJSONObject("app42Fault");
+                        String strMess = jsonObjectError.optString("details");
+
+                        //toast(2, 2, strMess);
+
+                        //fetchLatestActivities(progressDialog, iFlag);
+                        if (!sessionManager.getDependentsStatus()) {
+                            fetchProviders(progressDialog, iFlag);
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+
+//            storageService.findDocsByKeyValue(Config.collectionDependent, "customer_id",
+//                    strCustomerId, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+//
+//                        @Override
+//                        public void onDocumentInserted(Storage response) {
+//                        }
+//
+//                        @Override
+//                        public void onUpdateDocSuccess(Storage response) {
+//                        }
+//
+//                        @Override
+//                        public void onFindDocSuccess(Storage response) {
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onInsertionFailed(App42Exception ex) {
+//                        }
+//
+//                        @Override
+//                        public void onFindDocFailed(App42Exception ex) {
+//
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onUpdateDocFailed(App42Exception ex) {
+//                        }
+//                    });
 
         } else {
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
             DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+            if (!sessionManager.getDependentsStatus())
+                toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
+
+
     }
 
     public Query generateQuery(String strStatus) {
 
-        /*Calendar calendar = Calendar.getInstance();
-        String value1 = convertDateToString(calendar.getTime());*/
+        /*Calendar calendar = Calendar.optInstance();
+        String value1 = convertDateToString(calendar.optTime());*/
 
         String key2 = "dependent_id";
         String value2 = Config.strDependentIds.get(iActivityCount);
@@ -2649,7 +3306,7 @@ public class Utils {
 
                 storageService.setOtherMetaHeaders(otherMetaHeaders);*/
 
-                //log(query.get(), " QUERY ");
+                //log(query.opt(), " QUERY ");
 
                 storageService.findDocsByQueryOrderBy(Config.collectionActivity, query, max, offset,
                         "activity_done_date", 1, //1 for descending
@@ -2673,7 +3330,16 @@ public class Utils {
 
                                             String strDocument = jsonDocument.getJsonDoc();
                                             String strActivityId = jsonDocument.getDocId();
-                                            createActivityModel(strActivityId, strDocument, 0);
+                                            try {
+                                                JSONObject jsonObjectActivity =
+                                                        new JSONObject(strDocument);
+                                                JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                                jsonObjectActivity.remove("milestones");
+                                                strDocument = jsonObjectActivity.toString();
+                                                createActivityModel(strActivityId, strDocument, 0, jArray);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                     }
@@ -2693,8 +3359,8 @@ public class Utils {
                                     if (e != null) {
                                         JSONObject jsonObject = new JSONObject(e.getMessage());
                                         JSONObject jsonObjectError =
-                                                jsonObject.getJSONObject("app42Fault");
-                                        int appErrorCode = jsonObjectError.getInt("appErrorCode");
+                                                jsonObject.optJSONObject("app42Fault");
+                                        int appErrorCode = jsonObjectError.optInt("appErrorCode");
 
                                         Utils.log(e.getMessage(), " 4 ");
 
@@ -2727,23 +3393,79 @@ public class Utils {
 
         //todo remove this after offline sync enabled
         Config.strProviderIds.clear();
+        sessionManager.getProvidersIds().clear();
         Config.strProviderIds.add("5715c39ee4b0d2aca6fe5d17");
+        sessionManager.saveProvidersIds(Config.strProviderIds);
 
         if (Config.strProviderIds.size() > 0) {
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+            if (sessionManager.getProviderStatus()) {
+                try {
+
+                    // WHERE  clause
+                    String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+                    // WHERE clause arguments
+                    String[] selectionArgs = {Config.collectionProvider};
+                    Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                    Log.i("TAG", "Cursor count:" + cursor.getCount());
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        do {
+
+                            createProviderModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                        } while (cursor.moveToNext());
+
+                        cursor.close();
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                // toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                if (iFlag == 0)
+                    loadImages();
+                if (iFlag == 1)
+                    refreshNotificationsImages();
+                if (iFlag == 2)
+                    loadImagesActivityMonth();
+            }
+
 
             if (isConnectingToInternet()) {
 
               /*  if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.
                         get(iProviderCount))) {*/
+                String defaultDate = null;
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionProvider);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    cursorData.close();
+                } else {
+                    defaultDate = Utils.defaultDate;
+                }
 
-                DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
                 StorageService storageService = new StorageService(_ctxt);
-
+                Query finalQuery = null;
                 Query query = QueryBuilder.build("_id", Config.strProviderIds,
                         QueryBuilder.Operator.INLIST);
+                if (sessionManager.getProviderStatus()) {
+                    // Build query q2
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
 
-                storageService.findDocsByQuery(Config.collectionProvider, query,
+                    finalQuery = QueryBuilder.compoundOperator(query, QueryBuilder.Operator.AND, q2);
+
+                } else {
+                    finalQuery = query;
+                }
+
+
+                storageService.findDocsByQuery(Config.collectionProvider, finalQuery,
                         new App42CallBack() {
 
                             @Override
@@ -2757,35 +3479,58 @@ public class Utils {
                                         Utils.log(o.toString(), " Response Success");
 
                                         Storage storage = (Storage) o;
+                                        try {
+                                            if (storage.getJsonDocList().size() > 0) {
+                                                CareTaker.dbCon.beginDBTransaction();
+                                                for (int i = 0; i < storage.getJsonDocList().size(); i++) {
 
-                                        if (storage.getJsonDocList().size() > 0) {
+                                                    Storage.JSONDocument jsonDocument = storage.
+                                                            getJsonDocList().get(i);
 
-                                            for (int i = 0; i < storage.getJsonDocList().size(); i++) {
+                                                    String strDocument = jsonDocument.getJsonDoc();
+                                                    String strProviderDocId = jsonDocument.
+                                                            getDocId();
 
-                                                Storage.JSONDocument jsonDocument = storage.
-                                                        getJsonDocList().get(i);
+                                                    String values[] = {strProviderDocId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionProvider, "", "1", "", ""};
+                                                    if (sessionManager.getProviderStatus()) {
 
-                                                String strDocument = jsonDocument.getJsonDoc();
-                                                String strProviderDocId = jsonDocument.
-                                                        getDocId();
-                                                createProviderModel(strProviderDocId,
-                                                        strDocument);
+                                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                                        // WHERE clause arguments
+                                                        String[] selectionArgs = {strProviderDocId};
+                                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                    } else {
+                                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                        createProviderModel(strProviderDocId,
+                                                                strDocument);
+                                                    }
+
+
+                                                }
+                                                CareTaker.dbCon.dbTransactionSucessFull();
                                             }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            CareTaker.dbCon.endDBTransaction();
+
                                         }
-
-                                        if (iFlag == 0)
-                                            loadImages();
-                                        if (iFlag == 1)
-                                            refreshNotificationsImages();
-                                        if (iFlag == 2)
-                                            loadImagesActivityMonth();
-
-                                    } else {
+                                        if (!sessionManager.getProviderStatus()) {
+                                            sessionManager.saveProviderStatus(true);
+                                            if (iFlag == 0)
+                                                loadImages();
+                                            if (iFlag == 1)
+                                                refreshNotificationsImages();
+                                            if (iFlag == 2)
+                                                loadImagesActivityMonth();
+                                        }
+                                    } else if (!sessionManager.getProviderStatus()) {
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                    if (!sessionManager.getProviderStatus())
+                                        toast(2, 2, _ctxt.getString(R.string.error));
                                 }
                             }
 
@@ -2804,33 +3549,31 @@ public class Utils {
                                             refreshNotificationsImages();
                                         if (iFlag == 2)
                                             loadImagesActivityMonth();
-                                    } else {
+                                    } else if (!sessionManager.getProviderStatus()) {
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
-                                    toast(2, 2, _ctxt.getString(R.string.error));
+                                    if (!sessionManager.getProviderStatus())
+                                        toast(2, 2, _ctxt.getString(R.string.error));
                                 }
                             }
                         });
-            } else {
-                /*if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-*/
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                toast(2, 2, _ctxt.getString(R.string.warning_internet));
             }
         } else {
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
             DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            if (iFlag == 0)
-                loadImages();
-            if (iFlag == 1)
-                refreshNotificationsImages();
-            if (iFlag == 2)
-                loadImagesActivityMonth();
+            if (!sessionManager.getProviderStatus()) {
+                if (iFlag == 0)
+                    loadImages();
+                if (iFlag == 1)
+                    refreshNotificationsImages();
+                if (iFlag == 2)
+                    loadImagesActivityMonth();
+            }
         }
+
     }
 
     //
@@ -2901,6 +3644,7 @@ public class Utils {
 
             if (fileModel != null && fileModel.getStrFileUrl() != null &&
                     !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
+
                 loadImageFromWeb(fileModel.getStrFileName(),
                         fileModel.getStrFileUrl());
             }
@@ -2924,12 +3668,16 @@ public class Utils {
 
     public void goToDashboard() {
 
-        Config.intSelectedMenu = Config.intDashboardScreen;
+        try {
+            Config.intSelectedMenu = Config.intDashboardScreen;
 
-        toast(1, 1, _ctxt.getString(R.string.success_login));
-        Config.boolIsLoggedIn = true;
-        Intent intent = new Intent(_ctxt, DashboardActivity.class);
-        _ctxt.startActivity(intent);
+            toast(1, 1, _ctxt.getString(R.string.success_login));
+            Config.boolIsLoggedIn = true;
+            Intent intent = new Intent(_ctxt, DashboardActivity.class);
+            _ctxt.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadImages() {
@@ -2941,6 +3689,7 @@ public class Utils {
         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
         threadHandler = new ThreadHandler();
+
         Thread backgroundThread = new BackgroundThread();
         backgroundThread.start();
     }
@@ -3021,7 +3770,16 @@ public class Utils {
 
                                         String strDocument = jsonDocument.getJsonDoc();
                                         String strActivityId = jsonDocument.getDocId();
-                                        createActivityModel(strActivityId, strDocument, 0);
+                                        try {
+                                            JSONObject jsonObjectActivity =
+                                                    new JSONObject(strDocument);
+                                            JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                            jsonObjectActivity.remove("milestones");
+                                            strDocument = jsonObjectActivity.toString();
+                                            createActivityModel(strActivityId, strDocument, 0, jArray);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
 
@@ -3128,37 +3886,144 @@ public class Utils {
     public void fetchLatestActivitiesByMonth(int iMonth, int iYear,
                                              final ProgressDialog progressDialog) {
 
+        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+        iMonth = iMonth; // - 1
+
+        String strMonth = String.valueOf(iMonth);
+        String strMonthDate, strStartDate, strToDate, strEndDate;
+
+        if (iMonth <= 9)
+            strMonth = String.valueOf("0" + iMonth);
+        if (sessionManager.getActivityStatus()) {
+            Cursor cursor = null;
+            try {
+
+                strMonthDate = String.valueOf(iYear + "-" + strMonth + "-" + "01");
+
+                //String strFromDate = strMonthDate + "T05:30:00.000Z";
+                SimpleDateFormat readFormat =
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+                SimpleDateFormat queryFormat =
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
+                Date strDate = (readFormat.parse(strMonthDate + " 00:00:00"));
+
+                strStartDate = queryFormat.format(strDate);
+
+                SimpleDateFormat readFormatDate =
+                        new SimpleDateFormat("yyyy-MM-dd", locale);
+                Date today = null;
+                try {
+                    today = readFormatDate.parse(strMonthDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(today);
+                calendar.add(Calendar.MONTH, 1);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                int year = calendar.get(Calendar.YEAR);
+                String mnth = "";
+                if (month <= 9) {
+                    mnth = "0" + month;
+                } else {
+                    mnth = "" + month;
+                }
+                String lastDayOfMonth = year + "-" + mnth + "-01";
+
+                log(strStartDate, " Start Date ");
+
+                today = readFormat.parse(lastDayOfMonth + " 00:00:00");
+
+                strEndDate = queryFormat.format(today);
+                log(strEndDate, "LAST DATE ");
+
+                // WHERE clause
+                String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDate + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDate + "')";
+
+                cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
+
+                if (cursor != null && cursor.getCount() > 0) {
+                    Log.i("TAG", "cursor count:" + cursor.getCount());
+                    cursor.moveToFirst();
+                    do {
+
+                        try {
+                            //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
+                            // WHERE clause arguments
+                            //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
+                            String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDate + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDate + "')";
+
+                            //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
+                            Cursor cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
+                            JSONArray jArray = new JSONArray();
+                            int index = 0;
+                            if (cursorMilestone != null && cursorMilestone.getCount() > 0) {
+                                cursorMilestone.moveToFirst();
+                                do {
+
+                                    String strDocument = cursorMilestone.getString(cursorMilestone.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
+                                    JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+
+                                    jArray.put(index, jsonObjectActivity);
+                                    index++;
+                                } while (cursorMilestone.moveToNext());
+
+
+                            }
+                            if (cursorMilestone != null) {
+                                cursorMilestone.close();
+                            }
+                            createActivityModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)), 1, jArray);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } while (cursor.moveToNext());
+
+                    //ActivityFragment.reload();
+                    //todo uncomment for multiple carlas
+                    //fetchProviders(progressDialog, 2);
+
+                } else {
+
+
+                }
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                loadImagesActivityMonth();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        }
+
+        strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
+
+        //String strFromDate = strMonthDate + "T05:30:00.000Z";
+
+        strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
+        //
+        strToDate = getMonthLastDate(strMonthDate);
+
+        log(strToDate, " EDATE ");
+
+        strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
+
+        String key2 = "dependent_id";
+
+
         if (isConnectingToInternet()) {
 
-            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
             StorageService storageService = new StorageService(_ctxt);
 
-            iMonth = iMonth; // - 1
 
-            String strMonth = String.valueOf(iMonth);
-
-            if (iMonth <= 9)
-                strMonth = String.valueOf("0" + iMonth);
-
-            String strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
-
-            //String strFromDate = strMonthDate + "T05:30:00.000Z";
-
-            //
-
-
-            String strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
-            //
-
-
-            String strToDate = getMonthLastDate(strMonthDate);
-
-            log(strToDate, " EDATE ");
-
-            String strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
-
-            String key2 = "dependent_id";
             //String value2 = Config.strDependentIds.get(iActivityCount);
 
             Query q1 = QueryBuilder.build(key2, Config.strDependentIds, QueryBuilder.Operator.INLIST);
@@ -3175,6 +4040,26 @@ public class Utils {
             Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
 
             Query q5 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+
+            if (sessionManager.getActivityStatus()) {
+                String defaultDate = null;
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    if (defaultDate == null || defaultDate.length() == 0) {
+                        defaultDate = Utils.defaultDate;
+                    }
+                    cursorData.close();
+                } else {
+                    defaultDate = Utils.defaultDate;
+                }
+
+                Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+            } else {
+
+            }
 
            /* int max = 1;
             int offset = 0;
@@ -3197,18 +4082,64 @@ public class Utils {
                             if (response != null) {
 
                                 log(response.toString(), " S ");
-
+                                log("Size : " + response.getJsonDocList().size(), " S ");
                                 if (response.getJsonDocList().size() > 0) {
+                                    try {
+                                        for (int i = 0; i < response.getJsonDocList().size(); i++) {
 
-                                    for (int i = 0; i < response.getJsonDocList().size(); i++) {
+                                            Storage.JSONDocument jsonDocument = response.
+                                                    getJsonDocList().get(i);
 
-                                        Storage.JSONDocument jsonDocument = response.
-                                                getJsonDocList().get(i);
+                                            String strDocument = jsonDocument.getJsonDoc();
+                                            String strActivityId = jsonDocument.getDocId();
+                                            JSONObject jsonObjectActivity =
+                                                    new JSONObject(strDocument);
+                                            JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                            jsonObjectActivity.remove("milestones");
+                                            strDocument = jsonObjectActivity.toString();
+                                            String values[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionActivity, "", "1", jsonObjectActivity.optString("activity_date"), ""};
+                                            Log.i("TAG", "Date :" + jsonObjectActivity.optString("activity_date"));
+                                            if (sessionManager.getActivityStatus()) {
+                                                String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_COLLECTION_NAME + " = ?";
 
-                                        String strDocument = jsonDocument.getJsonDoc();
-                                        String strActivityId = jsonDocument.getDocId();
-                                        createActivityModel(strActivityId, strDocument, 1);
+                                                // WHERE clause arguments
+                                                String[] selectionArgs = {strActivityId, Config.collectionActivity};
+                                                CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                for (int j = 0; j < jArray.length(); j++) {
+                                                    JSONObject jObj = jArray.optJSONObject(j);
+                                                    strDocument = jObj.toString();
+                                                    selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_COLLECTION_NAME + " =? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
+
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgsMile = {strActivityId, Config.collectionMilestones, jObj.optString("id")};
+                                                    String valuesMilestone[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionMilestones, jObj.optString("id"), "1", jObj.optString("date")};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, valuesMilestone, Config.names_collection_table, selectionArgsMile);
+
+
+                                                }
+
+                                            } else {
+                                                CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+
+                                                createActivityModel(strActivityId, strDocument, 1, jArray);
+                                                for (int j = 0; j < jArray.length(); j++) {
+                                                    JSONObject jObj = jArray.optJSONObject(j);
+                                                    strDocument = jObj.toString();
+
+                                                    String valuesMilestone[] = {strActivityId, response.getJsonDocList().get(i).getUpdatedAt(), strDocument, Config.collectionMilestones, jObj.optString("id"), "1", jObj.optString("date")};
+                                                    CareTaker.dbCon.insert(DbHelper.strTableNameCollection, valuesMilestone, Config.names_collection_table);
+                                                }
+
+
+                                            }
+
+
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
+
+
                                 }
 
                             } else {
@@ -3221,7 +4152,11 @@ public class Utils {
                             //ActivityFragment.reload();
                             //todo uncomment for multiple carlas
                             //fetchProviders(progressDialog, 2);
-                            loadImagesActivityMonth();
+
+                            if (!sessionManager.getActivityStatus()) {
+                                sessionManager.saveActivityStatus(true);
+                                loadImagesActivityMonth();
+                            }
                         }
 
                         @Override
@@ -3240,7 +4175,7 @@ public class Utils {
 
                                     toast(2, 2, strMess);
 */
-                                } else {
+                                } else if (!sessionManager.getActivityStatus()) {
                                     /*if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
                                     DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -3249,14 +4184,15 @@ public class Utils {
                             } catch (Exception e1) {
                                 e1.printStackTrace();
                             }
-                            //todo uncomment for multiple carlas
                             //ActivityFragment.reload();
                             //fetchProviders(progressDialog, 2);
-                            loadImagesActivityMonth();
+                            if (!sessionManager.getActivityStatus()) {
+                                loadImagesActivityMonth();
+                            }
                         }
                     }
             );
-        } else {
+        } else if (!sessionManager.getActivityStatus()) {
           /*  if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
             DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -3264,7 +4200,11 @@ public class Utils {
             //fetchProviders(progressDialog, 2);
             toast(2, 2, _ctxt.getString(R.string.warning_internet));
         }
+
+
     }
+
+
     //Application Specig=fic End
 
     public void setListViewHeight(ListView listView) {
@@ -3320,6 +4260,105 @@ public class Utils {
 
     /* method to set expandable lsit view's height based on children */
 
+    public Bitmap rotateBitmap(String src, Bitmap bitmap) {
+        try {
+            int orientation = getExifOrientation(src);
+
+            if (orientation == 1) {
+                return bitmap;
+            }
+
+            Matrix matrix = new Matrix();
+            switch (orientation) {
+                case 2:
+                    matrix.setScale(-1, 1);
+                    break;
+                case 3:
+                    matrix.setRotate(180);
+                    break;
+                case 4:
+                    matrix.setRotate(180);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 5:
+                    matrix.setRotate(90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 6:
+                    matrix.setRotate(90);
+                    break;
+                case 7:
+                    matrix.setRotate(-90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 8:
+                    matrix.setRotate(-90);
+                    break;
+                default:
+                    return bitmap;
+            }
+
+            try {
+                Bitmap oriented = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                bitmap.recycle();
+                return oriented;
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+                return bitmap;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
+
+    public int getExifOrientation(String src) throws IOException {
+        int orientation = 1;
+
+        ExifInterface exif = new ExifInterface(src);
+        String orientationString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        try {
+            orientation = Integer.parseInt(orientationString);
+        } catch (NumberFormatException e) {
+        }
+
+        return orientation;
+    }
+
+//    public void deleteCollectionDoc(String collectionName) {
+//
+//        StorageService storageService = new StorageService(_ctxt);
+//
+//        storageService.deleteAllDocs(collectionName, new App42CallBack() {
+//            public void onSuccess(Object response) {
+//                App42Response app42response = (App42Response) response;
+//                System.out.println("response is " + app42response);
+//            }
+//
+//            public void onException(Exception ex) {
+//                System.out.println("Exception Message" + ex.getMessage());
+//            }
+//        });
+//    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        //Uri contentUri = Uri.parse(contentURI);
+        try {
+            Cursor cursor = _ctxt.getContentResolver().query(contentUri, null, null, null, null);
+            if (cursor == null) {
+                return contentUri.getPath();
+            } else {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                return cursor.getString(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -3341,7 +4380,7 @@ public class Utils {
         @Override
         public void run() {
             try {
-                loadAllFiles();
+                //loadAllFiles();
 
             } catch (Exception e) {
                 e.printStackTrace();

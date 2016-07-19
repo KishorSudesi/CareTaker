@@ -35,6 +35,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:textColor="@color/blue"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </TableRow>
@@ -48,6 +49,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:textColor="@color/colorBlackDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </TableRow>
@@ -61,6 +63,7 @@
                     android:layout_margin="@dimen/margin_general"
                     android:layout_marginTop="10dp"
                     android:padding="@dimen/padding_general"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </TableRow>

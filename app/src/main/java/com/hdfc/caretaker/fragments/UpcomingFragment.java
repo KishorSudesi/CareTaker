@@ -1,12 +1,12 @@
 package com.hdfc.caretaker.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -16,27 +16,30 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hdfc.caretaker.DashboardActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ProviderModel;
 
-import java.io.File;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 public class UpcomingFragment extends Fragment {
-    private static Bitmap bitmap;
+    private static Bitmap bitmapImg;
 
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
     private static ProgressDialog progressDialog;
-    private static String strCarlaImageUrl;
+    private static String strCarlaImageUrl,imageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName, strNo = "";
     private Utils utils;
     private int iPosition;
+    private Context mContext;
 
 //    private ImageButton buttonCancel;
 
@@ -61,6 +64,7 @@ public class UpcomingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
+        mContext=getActivity();
         txtViewHeader = (TextView) view.findViewById(R.id.header);
         txtViewMSG = (TextView) view.findViewById(R.id.textViewMSG);
         txtViewDate = (TextView) view.findViewById(R.id.textViewDate);
@@ -91,6 +95,7 @@ public class UpcomingFragment extends Fragment {
 
             strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
             strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
+            imageUrl=providerModel.getStrImgUrl();
         }
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
@@ -163,50 +168,77 @@ public class UpcomingFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        threadHandler = new ThreadHandler();
-        Thread backgroundThread = new BackgroundThread();
-        backgroundThread.start();
+//        threadHandler = new ThreadHandler();
+//        Thread backgroundThread = new BackgroundThread();
+//        backgroundThread.start();
+
+        loadImageSimpleTarget(imageUrl);
 
         /*progressDialog.setMessage(getResources().getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
         progressDialog.show();*/
     }
 
-    public static class ThreadHandler extends Handler {
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
-        public void handleMessage(Message msg) {
-//            progressDialog.dismiss();
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg=bitmap;
+
+            progressDialog.dismiss();
 
             if (bitmap != null)
                 imageViewCarla.setImageBitmap(bitmap);
         }
+    };
+
+    private void loadImageSimpleTarget(String url) {
+
+        Glide.with(mContext)
+                .load(url)
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(mContext))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
     }
 
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                if(strCarlaImageName!=null&&!strCarlaImageName.equalsIgnoreCase("")) {
-
-                    File f = utils.getInternalFileImages(strCarlaImageName);
-
-                    if (!f.exists()) {
-                        if (strCarlaImageUrl != null && !strCarlaImageUrl.equalsIgnoreCase(""))
-                            utils.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
-                    }
-
-                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
-                            Config.intHeight);
-                }
-
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception | OutOfMemoryError e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public static class ThreadHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+////            progressDialog.dismiss();
+//            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+//
+//            if (bitmap != null)
+//                imageViewCarla.setImageBitmap(bitmap);
+//        }
+//    }
+//
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//
+//                if(strCarlaImageName!=null&&!strCarlaImageName.equalsIgnoreCase("")) {
+//
+//                    File f = utils.getInternalFileImages(strCarlaImageName);
+//
+//                    if (!f.exists()) {
+//                        if (strCarlaImageUrl != null && !strCarlaImageUrl.equalsIgnoreCase(""))
+//                            utils.loadImageFromWeb(strCarlaImageName, strCarlaImageUrl);
+//                    }
+//
+//                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
+//                            Config.intHeight);
+//                }
+//
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception | OutOfMemoryError e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 }
 

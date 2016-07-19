@@ -9,13 +9,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.MultiBitmapLoader;
+import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
-import java.io.File;
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by Admin on 2/19/2016.
@@ -23,7 +25,7 @@ import java.util.List;
 public class ActivityMonthListAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    public MultiBitmapLoader multiBitmapLoader;
+    //public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private List<ActivityModel> data;
     private Utils utils;
@@ -31,7 +33,7 @@ public class ActivityMonthListAdapter extends BaseAdapter {
     public ActivityMonthListAdapter(Context ctxt, List<ActivityModel> y) {
         _context = ctxt;
         data = y;
-        multiBitmapLoader = new MultiBitmapLoader(ctxt);
+        //multiBitmapLoader = new MultiBitmapLoader(ctxt);
         utils = new Utils(ctxt);
     }
 
@@ -116,10 +118,18 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 
             try {
 
-                File f = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrDependentID().trim()));
-
-                if(f.exists())
-                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);
+//                File f = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrDependentID().trim()));
+//
+//                if (f.exists())
+//                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);
+                int iPosition = Config.strDependentIds.indexOf(data.get(position).getStrDependentID().trim());
+                Glide.with(_context)
+                        .load(Config.dependentModels.get(iPosition).getStrImageUrl())
+                        .centerCrop()
+                        .bitmapTransform(new CropCircleTransformation(_context))
+                        .placeholder(R.drawable.person_icon)
+                        .crossFade()
+                        .into(viewHolder.imageViewPerson);
 
             } catch (Exception e) {
                 e.printStackTrace();

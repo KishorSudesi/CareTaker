@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hdfc.caretaker.DashboardActivity;
+import com.bumptech.glide.Glide;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 
-import java.io.File;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +30,7 @@ public class CarlaCompletedFragment extends Fragment {
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
-    private String strCarlaImageName;
+    private String strCarlaImageName,strCarlaImageUrl;
     private Utils utils;
     private int iPosition;
 
@@ -83,6 +82,8 @@ public class CarlaCompletedFragment extends Fragment {
             txtViewMSG.setText(ActivityCompletedFragment._activityModel.getStrActivityDesc());
 
             strCarlaImageName = utils.replaceSpace(ActivityCompletedFragment._activityModel.getStrProviderID());
+            strCarlaImageUrl=utils.replaceSpace(Config.providerModels.get(iPosition).getStrImgUrl());
+
         }
         //
         return view;
@@ -93,41 +94,48 @@ public class CarlaCompletedFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        threadHandler = new ThreadHandler();
-        Thread backgroundThread = new BackgroundThread();
-        backgroundThread.start();
+//        threadHandler = new ThreadHandler();
+//        Thread backgroundThread = new BackgroundThread();
+//        backgroundThread.start();
+        Glide.with(getActivity())
+                .load(strCarlaImageUrl)
+                .centerCrop()
+                .bitmapTransform(new CropCircleTransformation(getActivity()))
+                .placeholder(R.drawable.person_icon)
+                .crossFade()
+                .into(imageViewCarla);
 
         /*progressDialog.setMessage(getResources().getString(R.string.uploading_image));
         progressDialog.setCancelable(false);
         progressDialog.show();*/
     }
 
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
-        }
-    }
-
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                if (strCarlaImageName != null && !strCarlaImageName.equalsIgnoreCase("")) {
-
-                    File f = utils.getInternalFileImages(strCarlaImageName);
-                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
-                            Config.intHeight);
-                }
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception | OutOfMemoryError e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public static class ThreadHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+//
+//            if (bitmap != null)
+//                imageViewCarla.setImageBitmap(bitmap);
+//        }
+//    }
+//
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//
+//                if (strCarlaImageName != null && !strCarlaImageName.equalsIgnoreCase("")) {
+//
+//                    File f = utils.getInternalFileImages(strCarlaImageName);
+//                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
+//                            Config.intHeight);
+//                }
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception | OutOfMemoryError e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
 }

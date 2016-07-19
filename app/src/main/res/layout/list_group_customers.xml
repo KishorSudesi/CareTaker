@@ -31,7 +31,8 @@
                 android:id="@+id/textViewName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="abcd"
                 android:textStyle="bold" />
 
 
@@ -40,14 +41,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:textSize="15sp" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
 
             <TextView
                 android:id="@+id/textViewContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:textSize="15sp"/>
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                />
         </LinearLayout>
 
     </LinearLayout>

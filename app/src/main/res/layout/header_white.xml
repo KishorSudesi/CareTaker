@@ -8,8 +8,6 @@
     <RelativeLayout
         android:id="@+id/logoLayout"
         android:layout_width="wrap_content"
-
-
         android:layout_height="120dip"
         android:background="@drawable/header_background"
         android:orientation="vertical">
@@ -45,7 +43,7 @@
         android:padding="@dimen/text_padding"
         android:text="@string/dependent_details"
         android:textColor="@color/blue"
-        android:textSize="28sp" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <!-- <Button
          android:id="@+id/buttonSkip"

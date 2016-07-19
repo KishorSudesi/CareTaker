@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/no_videos"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="gone" />
 
     <ListView

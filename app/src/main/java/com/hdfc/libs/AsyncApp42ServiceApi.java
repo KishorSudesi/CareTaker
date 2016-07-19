@@ -52,7 +52,7 @@ public class AsyncApp42ServiceApi {
 
         App42API.initialize(context, apiKey, apiSecret);
         App42CacheManager.setPolicy(App42CacheManager.Policy.NETWORK_FIRST);
-        App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
+        //App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
 
         this.userService = App42API.buildUserService();
         this.storageService = App42API.buildStorageService();
@@ -386,6 +386,36 @@ public class AsyncApp42ServiceApi {
             }
         }.start();
     }
+
+    public void deleteAllDocs(final String dbName, final String collectionName,
+                               final App42CallBack callBack) {
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = storageService.deleteAllDocuments(dbName,
+                            collectionName);
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
 
     public void findDocByDocId(final String dbName, final String collectionName,
                                final String docId, final App42StorageServiceListener callBack) {
@@ -798,7 +828,7 @@ public class AsyncApp42ServiceApi {
     }
 
     /*
-	 * This function Uploads File On App42 Cloud.
+     * This function Uploads File On App42 Cloud.
 	 */
     public void uploadImageForUser(final String name, final String userName,
                                    final String filePath, final UploadFileType fileType, final String description, final App42CallBack callBack) {

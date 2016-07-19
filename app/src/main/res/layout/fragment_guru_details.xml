@@ -212,6 +212,7 @@
                 android:background="@drawable/button_blue_white_border"
                 android:onClick="validateUser"
                 android:text="@string/string_continue"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite" />
 

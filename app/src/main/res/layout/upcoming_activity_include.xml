@@ -77,7 +77,6 @@
         android:layout_below="@+id/textViewDate"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-
         android:background="#000000"/>
 
     <TextView

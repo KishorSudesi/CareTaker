@@ -24,8 +24,8 @@ import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountEditFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
-import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.shephertz.app42.paas.sdk.android.App42API;
 
@@ -42,7 +42,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     private static TextView txtViewActivity, textViewNotifications, textViewAccount, textViewSeniors;
 
     private static Context context;
-
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -73,7 +72,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         }
     };
-
+    private SessionManager sessionManager;
     private Utils utils;
 
     public static void goToDashboard() {
@@ -109,7 +108,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_layout);
-
+        sessionManager = new SessionManager(DashboardActivity.this);
         buttonActivity = (ImageButton) findViewById(R.id.buttonCallActivity);
         txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
 
@@ -122,7 +121,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
         textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
 
-        context = DashboardActivity.this;
+        context = this;
 
         // Bundle b = getIntent().getExtras();
 
@@ -240,15 +239,25 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         }
 
         loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
-        utils = new Utils(DashboardActivity.this);
+        utils = new Utils(this);
         progressDialog = new ProgressDialog(DashboardActivity.this);
 
         utils.setStatusBarColor("#2196f3");
 
         appCompatActivity = DashboardActivity.this;
 
-        if (Config.customerModel != null)
-            App42API.setLoggedInUser(Config.customerModel.getStrEmail());
+
+        if (Config.customerModel != null) {
+            Config.strUserName = sessionManager.getEmail();
+            if (Config.customerModel.getStrEmail() == null || Config.customerModel.getStrEmail().length() == 0 || Config.customerModel.getStrEmail().equalsIgnoreCase("")) {
+
+
+                App42API.setLoggedInUser(sessionManager.getEmail());
+            } else {
+
+                App42API.setLoggedInUser(Config.customerModel.getStrEmail());
+            }
+        }
 
         try {
             if (!AccountSuccessActivity.isCreatedNow &&
@@ -280,7 +289,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             e.printStackTrace();
         }
 
+
     }
+
 
     @Override
     public void onError(String var1) {
@@ -365,6 +376,18 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         textViewAccount.setTextColor(getResources().getColor(R.color.blue));
         //}
     }
+
+    public static void updateActivityIconMenu() {
+        try {
+            setMenu();
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+            buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity_active));
+            txtViewActivity.setTextColor(context.getResources().getColor(R.color.blue));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void goToActivity(boolean bReload) {
 
         //if (Config.intSelectedMenu == Config.intListActivityScreen ||
@@ -410,7 +433,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_dashboard);
 
-        if (f instanceof MyAccountEditFragment||f instanceof AddCareRecipientsFragment) {
+        if (f instanceof MyAccountEditFragment || f instanceof AddCareRecipientsFragment) {
             Config.intSelectedMenu = Config.intAccountScreen;
             MyAccountFragment fragment = MyAccountFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -424,9 +447,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     ///
-                    if (CareTaker.dbCon != null) {
+                   /* if (CareTaker.dbCon != null) {
                         CareTaker.dbCon.close();
-                    }
+                    }*/
                     //
                     Utils.logout();
                 }

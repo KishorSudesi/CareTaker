@@ -107,6 +107,7 @@ public class App42GCMController {
         } else {
             callBack.onGCMRegistrationId(regid);
         }
+        Log.i("TAG", "Reg id :" + regid);
 
     }
 

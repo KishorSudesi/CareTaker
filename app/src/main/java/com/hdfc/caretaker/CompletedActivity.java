@@ -21,6 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.adapters.MileStoneAdapter;
 import com.hdfc.adapters.RatingCompletedAdapter;
 import com.hdfc.app42service.App42GCMService;
@@ -35,7 +38,6 @@ import com.hdfc.models.FieldModel;
 import com.hdfc.views.TouchImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
-import com.shephertz.app42.paas.sdk.android.imageProcessor.Image;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 import org.json.JSONArray;
@@ -49,10 +51,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 public class CompletedActivity extends AppCompatActivity {
 
     private static boolean bWhichScreen;
-    private static Bitmap bitmap;
+    private static Bitmap bitmapImg;
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
     private static RelativeLayout loadingPanel;
@@ -69,7 +73,7 @@ public class CompletedActivity extends AppCompatActivity {
     private static ArrayList<String> strImageTitles = new ArrayList<>();
     private static ListView listView;
     private static boolean bReload;
-    private String strCarlaImageName;
+    private String strCarlaImageName, strCarlaImageUrl;
     private Utils utils;
     private EditText editFeedBack;
     //private CheckBox checkReport;
@@ -80,7 +84,7 @@ public class CompletedActivity extends AppCompatActivity {
     private ScrollView sv;
     private TextView tvTasks;
     private TextView smileyMessage;
-
+    private LinearLayout linearLayoutRatingAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,12 +136,12 @@ public class CompletedActivity extends AppCompatActivity {
             loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
             tvTasks = (TextView) findViewById(R.id.tvTasks);
 
-            final LinearLayout linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
+            linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
             final TextView textViewAddRating = (TextView) findViewById(R.id.textViewAddRating);
 
             sv = (ScrollView) findViewById(R.id.scrollView);
 
-            smileyMessage = (TextView)findViewById(R.id.smileyMessage);
+            smileyMessage = (TextView) findViewById(R.id.smileyMessage);
 
             if (textViewAddRating != null) {
 
@@ -204,6 +208,7 @@ public class CompletedActivity extends AppCompatActivity {
             if (activityModel != null) {
 
                 int iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+                strCarlaImageUrl = Config.providerModels.get(iPosition).getStrImgUrl();
                 String strDate = "\n" + utils.formatDate(activityModel.getStrActivityDate());
                 if (txtAdditionalServices != null) {
                     txtAdditionalServices.setText(activityModel.getStrActivityName() + strDate);
@@ -308,8 +313,12 @@ public class CompletedActivity extends AppCompatActivity {
                             }
 
 
-                            if (b)
+                            if (b) {
+                                textViewAddRating.setVisibility(View.GONE);
+                                linearLayoutRatingAdd.setVisibility(View.GONE);
+                                smileyMessage.setVisibility(View.GONE);
                                 uploadCheckBox();
+                            }
 
                         }
                     });
@@ -341,6 +350,10 @@ public class CompletedActivity extends AppCompatActivity {
                 }
 
                 loadingPanel.setVisibility(View.VISIBLE);
+                if (strCarlaImageName != null && !strCarlaImageName.equalsIgnoreCase("")) {
+
+                    loadImageSimpleTarget(strCarlaImageUrl);
+                }
                 threadHandler = new ThreadHandler();
                 Thread backgroundThread = new BackgroundThread();
                 backgroundThread.start();
@@ -351,6 +364,30 @@ public class CompletedActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+
+
+            if (bitmap != null)
+                imageViewCarla.setImageBitmap(bitmap);
+        }
+    };
+
+    private void loadImageSimpleTarget(String url) {
+
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(context))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
     }
 
 
@@ -448,6 +485,10 @@ public class CompletedActivity extends AppCompatActivity {
                                                             jsonObjectFeedback.getString("feedback_by_type"));
 
                                                     activityModel.setFeedBackModel(feedBackModel);
+                                                    if (feedBackModel.getStrFeedBackByType().equalsIgnoreCase("customer") &&
+                                                            feedBackModel.getStrFeedBackBy().equalsIgnoreCase(activityModel.getStrustomerID())) {
+                                                        activityModel.setRatingAddedByCutsm(true);
+                                                    }
 
                                                    /* Config.dependentModels.get(Config.intSelectedDependent).
                                                             getActivityModels().get(iActivityPosition).setFeedBackModel(feedBackModel);*/
@@ -649,22 +690,22 @@ public class CompletedActivity extends AppCompatActivity {
 
         iRating = Integer.parseInt((String) v.getTag());
 
-        if(iRating == 1){
+        if (iRating == 1) {
             smileyMessage.setVisibility(View.VISIBLE);
             smileyMessage.setText("Sorry to Hear that, New Zeal Team will contact you shortly");
         }
-        if(iRating == 2){
+        if (iRating == 2) {
             smileyMessage.setVisibility(View.VISIBLE);
             smileyMessage.setText("Not Happy with us, Your Feedback will Help us Improve.");
         }
-        if(iRating == 3){
+        if (iRating == 3) {
             smileyMessage.setVisibility(View.VISIBLE);
             smileyMessage.setText("Something went wrong-Tell us more.");
         }
-        if(iRating == 4){
+        if (iRating == 4) {
             smileyMessage.setVisibility(View.INVISIBLE);
         }
-        if(iRating == 5){
+        if (iRating == 5) {
             smileyMessage.setVisibility(View.INVISIBLE);
         }
 
@@ -740,9 +781,6 @@ public class CompletedActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
 
-
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
 
             try {
 
@@ -826,12 +864,6 @@ public class CompletedActivity extends AppCompatActivity {
         public void run() {
             try {
 
-                if (strCarlaImageName != null && !strCarlaImageName.equalsIgnoreCase("")) {
-
-                    File f = utils.getInternalFileImages(strCarlaImageName);
-                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intScreenWidth,
-                            Config.intHeight);
-                }
 
                 try {
 

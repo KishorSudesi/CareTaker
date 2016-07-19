@@ -30,13 +30,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recorded at " />
+            android:text="Recorded at "
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
 
         <TextView
             android:id="@+id/dateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12.20PM 6th Sept,1993" />
+            android:text="12.20PM 6th Sept,1993"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            />
     </LinearLayout>
 
     <TextView
@@ -46,5 +50,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="5dp"
-        android:text="Here is your information regarding video" />
+        android:text="Here is your information regarding video"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
 </LinearLayout>

@@ -14,9 +14,9 @@
         android:layout_centerVertical="true"
         android:padding="@dimen/text_padding"
         android:text="@string/dependents"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/blue"
-        android:textSize="25sp" />
+         />
 
     <ImageButton
         android:id="@+id/buttonback"

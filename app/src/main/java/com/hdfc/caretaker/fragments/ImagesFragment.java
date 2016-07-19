@@ -1,20 +1,21 @@
 package com.hdfc.caretaker.fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.hdfc.caretaker.DependentDetailPersonal;
+import com.bumptech.glide.Glide;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.MyLinearView;
-import com.hdfc.views.RoundedImageView;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class ImagesFragment extends Fragment {
 
@@ -38,10 +39,9 @@ public class ImagesFragment extends Fragment {
 
         LinearLayout l = (LinearLayout)
                 inflater.inflate(R.layout.fragment_images, container, false);
-
         //RelativeLayout loadingPanel = (RelativeLayout) l.findViewById(R.id.loadingPanel);
 
-        RoundedImageView imageView = (RoundedImageView) l.findViewById(R.id.content);
+        ImageView imageView = (ImageView) l.findViewById(R.id.content);
 
         Utils utils = new Utils(getActivity());
 
@@ -52,18 +52,30 @@ public class ImagesFragment extends Fragment {
             Utils.log(" 3 ", " IN ");
 
             //loadingPanel.setVisibility(View.VISIBLE);
+            //   Config.dependentModels.add(DependentDetailPersonal.dependentModel);
+
+//            Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+//                    utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
+//                    Config.intWidth, Config.intHeight);
+//
+//            if (bitmap != null)
+//                imageView.setImageBitmap(bitmap);
+//            else
+//                imageView.setImageBitmap(Utils.noBitmap);
+
+//            Glide.with(getActivity()).load(Config.dependentModels.get(intPosition).getStrImageUrl()).diskCacheStrategy(DiskCacheStrategy.ALL)
+//                   .into(imageView);
 
 
-         //   Config.dependentModels.add(DependentDetailPersonal.dependentModel);
+            Glide.with(getActivity())
+                    .load(Config.dependentModels.get(intPosition).getStrImageUrl())
+                    .centerCrop()
+                    .bitmapTransform(new CropCircleTransformation(getActivity()))
+                    .placeholder(R.drawable.person_icon)
+                    .crossFade()
+                    .into(imageView);
 
-            Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
-                    utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
-                    Config.intWidth, Config.intHeight);
-
-            if (bitmap != null)
-                imageView.setImageBitmap(bitmap);
-            else
-                imageView.setImageBitmap(Utils.noBitmap);
+            //imageLoader.displayImage(Config.dependentModels.get(intPosition).getStrImageUrl(), imageView, CareTaker.defaultOptions);
 
             //loadingPanel.setVisibility(View.GONE);
 

@@ -10,25 +10,26 @@
         android:layout_width="match_parent"
         android:layout_height="120dip"
         android:background="@drawable/header_background">
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="30dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@mipmap/back_arrow"
-        android:onClick="backToSelection"
-        android:textAllCaps="false"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="176dp"
-        android:layout_height="80dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/logo_final" />
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="30dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@mipmap/back_arrow"
+            android:onClick="backToSelection"
+            android:textAllCaps="false"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="176dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/logo_final" />
 
     </RelativeLayout>
 
@@ -43,7 +44,8 @@
         android:padding="@dimen/text_padding"
         android:text="@string/personal_info"
         android:textColor="@color/blue"
-        android:textSize="28sp" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
 
     <include
         android:id="@+id/include"

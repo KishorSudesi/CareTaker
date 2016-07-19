@@ -1,6 +1,7 @@
 package com.hdfc.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by balamurugan@adstringo.in on 01-01-2016.
@@ -26,10 +27,10 @@ public class DependentModel {
     private String strDependentID;
     private String strCustomerID;
 
-    private ArrayList<ServiceModel> serviceModels = new ArrayList<>();
-    private ArrayList<ActivityModel> activityModels = new ArrayList<>();
-    private ArrayList<ActivityModel> monthActivityModel = new ArrayList<>();
-    private ArrayList<NotificationModel> notificationModels = new ArrayList<>();
+    private List<ServiceModel> serviceModels = new ArrayList<>();
+    private List<ActivityModel> activityModels = new ArrayList<>();
+    private List<ActivityModel> monthActivityModel = new ArrayList<>();
+    private List<NotificationModel> notificationModels = new ArrayList<>();
 
     public DependentModel() {
     }
@@ -64,15 +65,15 @@ public class DependentModel {
         this.strDob = strDob;
     }
 
-    public void setActivityModels(ArrayList<ActivityModel> activityModels) {
+    public void setActivityModels(List<ActivityModel> activityModels) {
         this.activityModels = activityModels;
     }
 
-    public void setNotificationModels(ArrayList<NotificationModel> notificationModels) {
+    public void setNotificationModels(List<NotificationModel> notificationModels) {
         this.notificationModels = notificationModels;
     }
 
-    public ArrayList<ActivityModel> getActivityModels() {
+    public List<ActivityModel> getActivityModels() {
         return activityModels;
     }
 
@@ -84,12 +85,12 @@ public class DependentModel {
         this.activityModels.add(activityModel);
     }
 
-    public ArrayList<ActivityModel> getMonthActivityModel() {
+    public List<ActivityModel> getMonthActivityModel() {
         return monthActivityModel;
     }
 
-    public void setMonthActivityModel(ArrayList<ActivityModel> monthActivityModel) {
-        this.monthActivityModel = monthActivityModel;
+    public void setMonthActivityModel(List<ActivityModel> monthActivityModel) {
+        this.monthActivityModel.addAll(monthActivityModel);
     }
 
     public void setMonthActivityModel(ActivityModel monthActivityModel) {
@@ -212,19 +213,19 @@ public class DependentModel {
         this.strCustomerID = strCustomerID;
     }
 
-    public ArrayList<ServiceModel> getServiceModels() {
+    public List<ServiceModel> getServiceModels() {
         return serviceModels;
     }
 
-    public void setServiceModels(ArrayList<ServiceModel> serviceModels) {
-        this.serviceModels = serviceModels;
+    public void setServiceModels(List<ServiceModel> serviceModels) {
+        this.serviceModels.addAll(serviceModels);
     }
 
     public void setServiceModel(ServiceModel serviceModel) {
         this.serviceModels.add(serviceModel);
     }
 
-    public ArrayList<NotificationModel> getNotificationModels() {
+    public List<NotificationModel> getNotificationModels() {
         return notificationModels;
     }
 

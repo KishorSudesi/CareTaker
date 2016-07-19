@@ -40,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:paddingLeft="13dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#333333" />
 
             <TextView
@@ -49,6 +50,8 @@
                 android:paddingLeft="13dp"
                 android:text="@string/read_more"
                 android:textColor="@color/colorPrimaryDark"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -63,6 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="13dp"
                     android:textColor="@color/colorPrimaryDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
                 <TextView
@@ -71,6 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:textColor="@color/colorPrimaryDark"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -79,9 +84,4 @@
 
     </LinearLayout>
 
-    <!-- <RelativeLayout
-         android:layout_width="match_parent"
-         android:layout_height="0.75dp"
-         android:background="@color/blue">
-     </RelativeLayout>-->
 </LinearLayout>

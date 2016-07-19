@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="@dimen/padding_general"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorPrimary" />
 
     <TextView
@@ -21,6 +22,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="@dimen/padding_general"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorAccentDark" />
 
 </LinearLayout>

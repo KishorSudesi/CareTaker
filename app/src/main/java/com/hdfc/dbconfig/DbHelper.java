@@ -21,15 +21,23 @@ import java.util.Date;
 public class DbHelper extends SQLiteOpenHelper {
 
     public static final String strTableNameCollection = "collections";
-    public static final String strTableNameFiles = "files";
+    public static final String DATABASE_NAME = "caretaker";
+    public static final String COLUMN_OBJECT_ID = "object_id";
+    public static final String COLUMN_UPDATE_DATE = "updated_date";
+    public static final String COLUMN_DOCUMENT = "document";
+    public static final String COLUMN_COLLECTION_NAME = "collection_name";
+    public static final String COLUMN_DOC_DATE = "doc_date";
+    public static final String COLUMN_STATUS = "status";
+    public static final String COLUMN_DEPENDENT_ID = "dependent_id";
+    public static final String COLUMN_IS_UPDATED = "is_updated";
+    static final String strTableNameFiles = "files";
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "caretaker";
     private static String dbPass = ""; //"hdfc@12#$";//
     private static DbHelper dbInstance = null;
     private static SQLiteDatabase db;
     //private Utils utils;
     private String strCollectionsQuery = "CREATE TABLE " + strTableNameCollection + " ( id integer primary key autoincrement," +
-            " object_id VARCHAR(50), updated_date integer, document text, collection_name VARCHAR(50), status integer)";
+            " object_id VARCHAR(50), updated_date integer, document text, collection_name VARCHAR(50),dependent_id VARCHAR(50),status integer,doc_date date,is_updated VARCHAR)";
 
     private String strFilesQuery = "CREATE TABLE " + strTableNameFiles + " ( id integer primary key autoincrement," +
             " name VARCHAR(100), url VARCHAR(300), file_type VARCHAR(10),  file_hash VARCHAR(50))";
@@ -46,6 +54,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         try {
             dbPass = AESCrypt.decrypt(Config.string, "IqSKDxDO7p2HjCs+8R4Z0A==");
+
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
@@ -130,6 +139,7 @@ public class DbHelper extends SQLiteOpenHelper {
         ContentValues initialValues = createContentValues(values, names);
         long inserted = 0;
         try {
+
             inserted = db.insert(tbl, null, initialValues);
         } catch (Exception e) {
         }
@@ -141,10 +151,22 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if (db != null && !db.isOpen())
             open();
-
         //Cursor cur = null;
         //try {
-        return db.query(isDistinct, tbl, names, where, args, groupBy, having, order, limit);
+        return db.query(true, tbl, names, where, args, groupBy, having, order, limit);
+        /*} catch (Exception e) {
+            return null;
+        }*/
+    }
+
+
+    Cursor rawQuery(String query) {
+
+        if (db != null && !db.isOpen())
+            open();
+        //Cursor cur = null;
+        //try {
+        return db.rawQuery(query, null);
         /*} catch (Exception e) {
             return null;
         }*/
@@ -173,6 +195,10 @@ public class DbHelper extends SQLiteOpenHelper {
         boolean isUpdated = false;
         try {
             isUpdated = db.update(tbl, updateValues, where, args) > 0;
+
+            if (!isUpdated) {
+                insert(values, names, strTableNameCollection);
+            }
         } catch (Exception e) {
         }
         return isUpdated;
@@ -251,4 +277,47 @@ public class DbHelper extends SQLiteOpenHelper {
             }
         }
     }
+
+    public void beginDBTransaction() {
+        if (db != null && !db.isOpen())
+            open();
+        db.beginTransaction();
+    }
+
+    public void endDBTransaction() {
+        if (db != null && !db.isOpen())
+            open();
+        db.endTransaction();
+    }
+
+    public void dbTransactionSucessFull() {
+        if (db != null && !db.isOpen())
+            open();
+        db.setTransactionSuccessful();
+    }
+
+    public void updateServerStatus(String status)
+    {
+        if (db != null && !db.isOpen())
+            open();
+    }
+
+   /* public android.database.Cursor getMaxDate(String collectionName) {
+        if (db != null && !db.isOpen())
+            open();
+
+        android.database.Cursor cursor = db.rawQuery(query, null);
+
+
+        return cursor;
+    }*/
+   /* public android.database.Cursor getMaxDate(String collectionName,String strDependentsId) {
+        if (db != null && !db.isOpen())
+            open();
+        String query = "Select MAX(" + COLUMN_UPDATE_DATE + ") from " + strTableNameCollection + " where " + COLUMN_COLLECTION_NAME + " = '" + collectionName + "' AND "+ COLUMN_DEPENDENT_ID + " = '" + strDependentsId + "'";
+        android.database.Cursor cursor = db.rawQuery(query, null);
+
+
+        return cursor;
+    }*/
 }

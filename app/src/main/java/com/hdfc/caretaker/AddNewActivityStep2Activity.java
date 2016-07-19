@@ -1,12 +1,12 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,13 +17,19 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.libs.AsyncApp42ServiceApi;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.FieldModel;
 import com.hdfc.models.MilestoneModel;
@@ -38,9 +44,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class AddNewActivityStep2Activity extends AppCompatActivity {
 
@@ -51,7 +58,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private static StorageService storageService;
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
-    private static Bitmap bitmap;
+    private static Bitmap bitmapImg;
     private static Handler threadHandler;
     //private static String strSelectedCarla;
     private static int iUpdateFlag = 0;
@@ -61,6 +68,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private Utils utils;
     private String strCarlaImagepath, _strDate, strDate, strAlert;
     private String getStrSelectedCarla, strProviderId, strPushMessage;
+    private SessionManager sessionManager;
+    private Context mContext;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -80,6 +89,19 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             // Overriding onDateTimeCancel() is optional.
         }
     };
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+
+            progressDialog.dismiss();
+
+            if (bitmap != null)
+                imageViewCarla.setImageBitmap(bitmap);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +109,11 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_activity_step2);
 
         iUpdateFlag = 0;
+        mContext=this;
 
         utils = new Utils(AddNewActivityStep2Activity.this);
         progressDialog = new ProgressDialog(AddNewActivityStep2Activity.this);
+        sessionManager = new SessionManager(AddNewActivityStep2Activity.this);
 
         ImageButton cancelButton = (ImageButton) findViewById(R.id.buttonBack);
         Button submitButtton = (Button) findViewById(R.id.button);
@@ -107,15 +131,15 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             if (textViewLabel != null)
                 textViewLabel.append(AddNewActivityActivity.selectedServiceModel.getStrServiceName());
 
-        //    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.milestoneLayout);
+            //    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.milestoneLayout);
 
             for (MilestoneModel milestoneModel : AddNewActivityActivity.selectedServiceModel.
                     getMilestoneModels()) {
 
                 TextView textViewName = new TextView(AddNewActivityStep2Activity.this);
-            //    textViewName.setTextAppearance(this, R.style.MilestoneStyle);
+                //    textViewName.setTextAppearance(this, R.style.MilestoneStyle);
                 textViewName.setText(milestoneModel.getStrMilestoneName());
-          //      textViewName.setTextColor(getResources().getColor(R.color.colorWhite));
+                //      textViewName.setTextColor(getResources().getColor(R.color.colorWhite));
            /*     textViewName.setPadding(10, 10, 10, 10);
                 textViewName.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_success));
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
@@ -207,7 +231,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
     }
 
-    public void goBack(){
+    public void goBack() {
 
         if (iUpdateFlag < iActivityCreated) {
             Intent newIntent = new Intent(AddNewActivityStep2Activity.this, AddNewActivityActivity.class);
@@ -245,78 +269,79 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
         storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email",
                 getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-            @Override
-            public void onDocumentInserted(Storage response) {
-            }
+                    @Override
+                    public void onDocumentInserted(Storage response) {
+                    }
 
-            @Override
-            public void onUpdateDocSuccess(Storage response) {
-            }
+                    @Override
+                    public void onUpdateDocSuccess(Storage response) {
+                    }
 
-            @Override
-            public void onFindDocSuccess(Storage response) {
+                    @Override
+                    public void onFindDocSuccess(Storage response) {
 
-                if(response!=null) {
+                        if (response != null) {
 
-                    if (response.getJsonDocList().size() > 0) {
+                            if (response.getJsonDocList().size() > 0) {
 
-                        Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-                        String strDocument = jsonDocument.getJsonDoc();
+                                Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                                String strDocument = jsonDocument.getJsonDoc();
 
-                        try {
-                            jsonObjectCarla = new JSONObject(strDocument);
-                            textView6.setText(jsonObjectCarla.getString("provider_name"));
-                            textView7.setText(jsonObjectCarla.getString("provider_email"));
-                            //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
-                            //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
-                            strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
+                                try {
+                                    jsonObjectCarla = new JSONObject(strDocument);
+                                    textView6.setText(jsonObjectCarla.getString("provider_name"));
+                                    textView7.setText(jsonObjectCarla.getString("provider_email"));
+                                    //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                                    //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
+                                    strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
-                            strProviderId = jsonDocument.getDocId();
+                                    strProviderId = jsonDocument.getDocId();
 
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+
+//                                    threadHandler = new ThreadHandler();
+//                                    Thread backgroundThread = new BackgroundThread();
+//                                    backgroundThread.start();
+                                    loadImageSimpleTarget(strCarlaImagepath);
+
+                                    progressDialog.setMessage(getResources().getString(R.string.uploading_image));
+                                    progressDialog.setCancelable(false);
+                                    progressDialog.show();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        } else {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
 
-                            threadHandler = new ThreadHandler();
-                            Thread backgroundThread = new BackgroundThread();
-                            backgroundThread.start();
+                    }
 
-                            progressDialog.setMessage(getResources().getString(R.string.uploading_image));
-                            progressDialog.setCancelable(false);
-                            progressDialog.show();
+                    @Override
+                    public void onInsertionFailed(App42Exception ex) {
+                    }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    @Override
+                    public void onFindDocFailed(App42Exception ex) {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+
+                        if (ex != null) {
+                            utils.toast(2, 2, ex.getMessage());
+                        } else {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
                         }
                     }
 
-                }else{
-                    if (progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    utils.toast(2, 2, getString(R.string.warning_internet));
-                }
-
-            }
-
-            @Override
-            public void onInsertionFailed(App42Exception ex) {
-            }
-
-            @Override
-            public void onFindDocFailed(App42Exception ex) {
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-
-                if(ex!=null) {
-                    utils.toast(2, 2, ex.getMessage());
-                }else{
-                    utils.toast(2, 2, getString(R.string.warning_internet));
-                }
-            }
-
-            @Override
-            public void onUpdateDocFailed(App42Exception ex) {
-            }
-        });
+                    @Override
+                    public void onUpdateDocFailed(App42Exception ex) {
+                    }
+                });
     }
 
     @Override
@@ -371,7 +396,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
             strPushMessage = getString(R.string.activity_create_notification_1)
                     + serviceModel.getStrCategoryName()
-                    + getString(R.string.activity_create_notification_2)
+                    //+ getString(R.string.activity_create_notification_2)
                     + getString(R.string.activity_create_notification_3)
                     + serviceModel.getStrServiceName()
                     + getString(R.string.to)
@@ -476,108 +501,129 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             e1.printStackTrace();
         }
 
-        storageService.insertDocs(jsonObjectServices,
-                new AsyncApp42ServiceApi.App42StorageServiceListener() {
+        if (utils.isConnectingToInternet()) {
+            storageService.insertDocs(jsonObjectServices,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
 
-                    @Override
-                    public void onDocumentInserted(Storage response) {
-                        try {
-                            if (response != null) {
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            try {
+                                if (response != null) {
 
-                                if (response.getJsonDocList().size() > 0) {
-                                    strInsertedDocumentId = response.getJsonDocList().get(0).getDocId();
-                                    iUpdateFlag = iActivityCreated;
-                                    jsonObject.put("activity_id", strInsertedDocumentId);//todo add to care taker
+                                    if (response.getJsonDocList().size() > 0) {
+                                        strInsertedDocumentId = response.getJsonDocList().get(0).getDocId();
+                                        iUpdateFlag = iActivityCreated;
+                                        String strDoc = response.getJsonDocList().get(0).getJsonDoc();
+                                        jsonObject.put("activity_id", strInsertedDocumentId);//todo add to care taker
 
 
-                                    //
-                                    Calendar calendar = Calendar.getInstance();
+                                        //
+                                        Calendar calendar = Calendar.getInstance();
 
-                                    Date startDate = null, endDate = null;
-                                    String strStartDateCopy, strEndDateCopy;
-                                    String strDateNow = "";
-                                    Date activityDate = null;
+                                        Date startDate = null, endDate = null;
+                                        String strStartDateCopy, strEndDateCopy;
+                                        String strDateNow = "";
+                                        Date activityDate = null;
 
-                                    try {
-                                        Date dateNow = calendar.getTime();
-                                        strEndDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T23:59:59.999Z";
-                                        strStartDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T00:00:00.000Z";
-                                        activityDate = utils.convertStringToDate(_strDate);
+                                        try {
+                                            Date dateNow = calendar.getTime();
+                                            strEndDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T23:59:59.999Z";
+                                            strStartDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T00:00:00.000Z";
+                                            activityDate = utils.convertStringToDate(_strDate);
 
-                                        endDate = utils.convertStringToDate(strEndDateCopy);
-                                        startDate = utils.convertStringToDate(strStartDateCopy);
+                                            endDate = utils.convertStringToDate(strEndDateCopy);
+                                            startDate = utils.convertStringToDate(strStartDateCopy);
 
-                                        Utils.log(String.valueOf(endDate + " ! " + startDate + " ! " + activityDate), " CRATED ");
+                                            Utils.log(String.valueOf(endDate + " ! " + startDate + " ! " + activityDate), " CRATED ");
+                                            String values[] = {strInsertedDocumentId, response.getJsonDocList().get(0).getUpdatedAt(), strDoc, Config.collectionActivity,"", "1", _strDate,""};
 
-                                        if (activityDate.before(endDate) && activityDate.after(startDate)) {
-                                            utils.createActivityModel(
-                                                    response.getJsonDocList().get(0).getDocId(),
-                                                    response.getJsonDocList().get(0).getJsonDoc(), 1
-                                            );
+
+                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                            sessionManager.saveActivityStatus(true);
+                                            if (activityDate.before(endDate) && activityDate.after(startDate)) {
+                                                Storage.JSONDocument jsonDocument = response.
+                                                        getJsonDocList().get(0);
+
+                                                String strDocument = jsonDocument.getJsonDoc();
+                                                String strActivityId = jsonDocument.getDocId();
+                                                JSONObject jsonObjectActivity =
+                                                        new JSONObject(strDocument);
+                                                JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                                jsonObjectActivity.remove("milestones");
+                                                strDocument = jsonObjectActivity.toString();
+
+                                                utils.createActivityModel(
+                                                        strActivityId,
+                                                        strDocument, 1,
+                                                        jArray);
+                                            }
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
+                                        //
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        fetchService(serviceModel);
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.error));
                                     }
-                                    //
-
-                                    fetchService(serviceModel);
                                 } else {
                                     if (progressDialog.isShowing())
                                         progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
-                            } else {
+                            } catch (Exception e) {
+                                e.printStackTrace();
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                utils.toast(2, 2, getString(R.string.error));
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
-                            utils.toast(2, 2, getString(R.string.error));
-                        }
-                    }
+                            try {
+                                if (ex != null) {
+                                    JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                    JSONObject jsonObjectError = jsonObject.
+                                            getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+                                    utils.toast(2, 2, strMess);
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
 
-                    @Override
-                    public void onUpdateDocSuccess(Storage response) {
-                    }
-
-                    @Override
-                    public void onFindDocSuccess(Storage response) {
-                    }
-
-                    @Override
-                    public void onInsertionFailed(App42Exception ex) {
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
-                        try {
-                            if (ex != null) {
-                                JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                JSONObject jsonObjectError = jsonObject.
-                                        getJSONObject("app42Fault");
-                                String strMess = jsonObjectError.getString("details");
-                                utils.toast(2, 2, strMess);
-                            } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                                utils.toast(2, 2, getString(R.string.error));
                             }
-
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                            utils.toast(2, 2, getString(R.string.error));
                         }
-                    }
 
-                    @Override
-                    public void onFindDocFailed(App42Exception ex) {
-                    }
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
 
-                    @Override
-                    public void onUpdateDocFailed(App42Exception ex) {
-                    }
-                },
-                Config.collectionActivity);
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    },
+                    Config.collectionActivity);
+        } else {
+
+        }
+
     }
 
     public void fetchService(final ServiceModel serviceModel) {
@@ -725,7 +771,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
-
+    ///////////////////////
 
     ///////////////////////
     private void insertNotification() {
@@ -783,7 +829,6 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             goToActivityList(strAlert);
         }
     }
-    ///////////////////////
 
     public void sendPushToProvider(String strUserName, String strMessage) {
 
@@ -835,6 +880,9 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 progressDialog.dismiss();
 
                             if (o != null) {
+                                String selection = DbHelper.COLUMN_OBJECT_ID;
+                                String selectionArgs[] = {strInsertedDocumentId};
+                                CareTaker.dbCon.delete(Config.collectionActivity, selection, selectionArgs);
                                 utils.toast(2, 2, getString(R.string.activity_deleted));
                             } else {
                                 utils.toast(2, 2, getString(R.string.warning_internet));
@@ -861,6 +909,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
     }
 
+//    public static class ThreadHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            progressDialog.dismiss();
+//
+//            if (bitmap != null)
+//                imageViewCarla.setImageBitmap(bitmap);
+//        }
+//    }
+
     public void goToActivityList(String strMess) {
 
         if (progressDialog.isShowing())
@@ -878,35 +936,36 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         finish();
     }
 
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            progressDialog.dismiss();
+    private void loadImageSimpleTarget(String url) {
 
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
-        }
+        Glide.with(mContext)
+                .load(url)
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(mContext))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
     }
 
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                if(strCarlaImagepath!=null&&!strCarlaImagepath.equalsIgnoreCase("")) {
-
-                    File f1 = utils.getInternalFileImages(strProviderId);
-
-                    if (f1.length() <= 0)
-                        utils.loadImageFromWeb(strProviderId, strCarlaImagepath);
-
-                    bitmap = utils.getBitmapFromFile(f1.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
-
-                }
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception | OutOfMemoryError e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//
+//                if (strCarlaImagepath != null && !strCarlaImagepath.equalsIgnoreCase("")) {
+//
+//                    File f1 = utils.getInternalFileImages(strProviderId);
+//
+//                    if (f1.length() <= 0)
+//                        utils.loadImageFromWeb(strProviderId, strCarlaImagepath);
+//
+//                    bitmap = utils.getBitmapFromFile(f1.getAbsolutePath(), Config.intScreenWidth, Config.intHeight);
+//
+//                }
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception | OutOfMemoryError e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }

@@ -31,10 +31,10 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="230dp"
-            android:layout_height="150dp"
+            android:layout_width="176dp"
+            android:layout_height="80dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/logo" />
+            android:background="@drawable/logo_final" />
 
         <TextView
             android:id="@+id/textView2"
@@ -44,7 +44,7 @@
             android:layout_centerHorizontal="true"
             android:text="@string/who_needs_care"
             android:textColor="@color/blue"
-            android:textSize="30sp" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <ImageView
             android:id="@+id/imageSenior"
@@ -66,6 +66,7 @@
             android:background="@drawable/button_white"
             android:onClick="selectedMyself"
             android:text="@string/myself"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textAllCaps="false"
             android:textColor="@color/blue" />
 
@@ -82,6 +83,7 @@
             android:onClick="selectedLovedOne"
             android:text="@string/loved_one"
             android:textAllCaps="false"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorWhite" />
     </RelativeLayout>
 

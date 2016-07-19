@@ -21,6 +21,7 @@
         android:layout_margin="@dimen/margin_general"
         android:padding="@dimen/padding_general"
         android:textColor="#fff"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textStyle="bold" />
 
 </LinearLayout>

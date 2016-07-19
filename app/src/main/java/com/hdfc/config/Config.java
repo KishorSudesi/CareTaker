@@ -5,15 +5,18 @@ import android.os.Build;
 import com.hdfc.caretaker.BuildConfig;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CategoryServiceModel;
+import com.hdfc.models.CheckInCareModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
+import com.hdfc.models.PictureModel;
 import com.hdfc.models.ProviderModel;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -31,6 +34,8 @@ public class Config {
     public static final String collectionDependent = "dependent";
     public static final String collectionActivity = "activity";
     public static final String collectionNotification = "notification";
+    public static final String collectionMilestones = "milestones";
+    public static final String collectionCheckInCare = "checkincare";
 
     public static final int iSdkVersion = Build.VERSION.SDK_INT;
     public static final int iAppVersion = BuildConfig.VERSION_CODE;
@@ -147,6 +152,9 @@ public class Config {
     public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
     public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
     public static final String strReload = "RELOAD";
+    public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status", "doc_date", "is_updated"};
+    public static final String names_update[] = {"is_updated"};
+    public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
     public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;
     public static int intServiceScreen = 7;
@@ -157,7 +165,6 @@ public class Config {
     public static int intDashboardScreen = 1;
     public static int intReportsScreen = 4;
     public static int intScreenWidth = 0;
-
     //public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     //User Specific clear at logout or whenever needed
     public static int intScreenHeight = 0;
@@ -174,13 +181,11 @@ public class Config {
     public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
-    public static CustomerModel customerModel =null;
-    public static DependentModel dependentModel = null;
-    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
-
+    public static CustomerModel customerModel = null;
    /* public static ConfirmDependentModel confirmDependentModel = null;
     public static ConfirmCustomerModel confirmCustomerModel = null;*/
-
+   public static DependentModel dependentModel = null;
+    public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
     //public static ClientModel clientModels = new ClientModel();
     //public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
     public static ArrayList<ProviderModel> providerModels = new ArrayList<>();
@@ -189,9 +194,10 @@ public class Config {
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
     public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
     public static ArrayList<String> customerEmail = new ArrayList<>();
+    public static List<CheckInCareModel> checkInCareActivityNames = new ArrayList<>();
+    public static List<PictureModel> roomtypeName = new ArrayList<>();
 
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
-
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
 
 }

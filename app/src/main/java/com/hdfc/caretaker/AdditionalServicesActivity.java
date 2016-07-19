@@ -3,10 +3,10 @@ package com.hdfc.caretaker;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,8 +16,11 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.AdditionalServicesAdapter;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.libs.AsyncApp42ServiceApi;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CategoryServiceModel;
 import com.hdfc.models.FieldModel;
@@ -36,9 +39,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class AdditionalServicesActivity extends AppCompatActivity {
 
@@ -57,9 +58,11 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     private List<String> listDataHeader = new ArrayList<>();
     private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
-    public static ArrayList<String> serviceIds= new ArrayList<String>();
+    public static ArrayList<String> serviceIds = new ArrayList<String>();
 
     private ExpandableListView listView;
+    private SessionManager sessionManager;
+    private byte INSERT = 0, UPDATE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         //dynamicUserTab = (LinearLayout) findViewById(R.id.dynamicUserTab);
 
         // utils = new Utils(AdditionalServicesActivity.this);
-
+        sessionManager = new SessionManager(this);
         selectedServiceModels.clear();
         selectedServiceHistoryModels.clear();
         serviceIds.clear();
@@ -275,67 +278,199 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
         loadingPanel.setVisibility(View.VISIBLE);
 
-        StorageService storageService = new StorageService(AdditionalServicesActivity.this);
+        if (sessionManager.getServiceStatus()) {
+            try {
 
-        storageService.findAllDocs(Config.collectionService,
-                new App42CallBack() {
 
-                    @Override
-                    public void onSuccess(Object o) {
+                String defaultDate = null;
+                if (utils.isConnectingToInternet()) {
+                    Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionService);
+                    if (cursorData != null && cursorData.getCount() > 0) {
+                        cursorData.moveToFirst();
+                        defaultDate = cursorData.getString(0);
+                        cursorData.close();
+                    } else {
+                        defaultDate = Utils.defaultDate;
+                    }
 
-                        if (o != null) {
+                    StorageService storageService = new StorageService(AdditionalServicesActivity.this);
 
-                            Storage storage = (Storage) o;
+                    // Build query q2
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    storageService.findDocsByQuery(Config.collectionService, q2,
+                            new App42CallBack() {
 
-                            ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
+                                @Override
+                                public void onSuccess(Object o) {
 
-                            for (int i = 0; i < jsonDocList.size(); i++) {
+                                    if (o != null) {
+                                        updateInsertData(o, UPDATE);
+                                    } else {
 
-                                Storage.JSONDocument jsonDocument = jsonDocList.get(i);
+                                    }
 
-                                String strDocumentId = jsonDocument.getDocId();
 
-                                String strServices = jsonDocument.getJsonDoc();
+                                }
 
-                                try {
+                                @Override
+                                public void onException(Exception e) {
 
-                                    JSONObject jsonObjectServcies = new JSONObject(strServices);
+                                    try {
 
-                                    if (jsonObjectServcies.has("unit"))
-                                        utils.createServiceModel(strDocumentId, jsonObjectServcies);
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                        if (e != null) {
+                                            JSONObject jsonObject = new JSONObject(e.getMessage());
+                                            JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                            String strMess = jsonObjectError.getString("details");
+
+                                            // utils.toast(2, 2, strMess);
+                                        } else {
+                                            //utils.toast(2, 2, getString(R.string.warning_internet));
+                                        }
+
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                    }
                                 }
                             }
 
-                        } else {
-                            utils.toast(2, 2, getString(R.string.warning_internet));
-                        }
+                    );
+                }
 
-                        refreshAdapter();
-                    }
 
-                    @Override
-                    public void onException(Exception e) {
+                // WHERE clause
+                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
 
-                        try {
-                            refreshAdapter();
-                            if (e != null) {
-                                JSONObject jsonObject = new JSONObject(e.getMessage());
-                                JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
-                                String strMess = jsonObjectError.getString("details");
+                // WHERE clause arguments
+                String[] selectionArgs = {Config.collectionService};
+                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    do {
+                        JSONObject jsonObjectServcies = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                        utils.createServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
+                    } while (cursor.moveToNext());
+                    refreshAdapter();
+                    cursor.close();
+                }
 
-                                utils.toast(2, 2, strMess);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        } else if (utils.isConnectingToInternet()) {
+
+            StorageService storageService = new StorageService(AdditionalServicesActivity.this);
+
+            storageService.findAllDocs(Config.collectionService,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+
+                            if (o != null) {
+
+                                updateInsertData(o, INSERT);
+
                             } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                               // utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
+
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+
+                            try {
+                                if (!sessionManager.getServiceStatus()) {
+                                    refreshAdapter();
+                                }
+
+                                if (e != null) {
+                                    JSONObject jsonObject = new JSONObject(e.getMessage());
+                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                    String strMess = jsonObjectError.getString("details");
+
+                                    utils.toast(2, 2, strMess);
+                                } else {
+                                    //utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
                         }
                     }
-                });
+
+            );
+        } else {
+            // utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+
+
+    }
+
+    public void updateInsertData(Object o, byte actionType) {
+        try {
+            Storage storage = (Storage) o;
+
+            ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
+            try {
+
+                CareTaker.dbCon.beginDBTransaction();
+
+                for (int i = 0; i < jsonDocList.size(); i++) {
+
+                    Storage.JSONDocument jsonDocument = jsonDocList.get(i);
+
+                    String strDocumentId = jsonDocument.getDocId();
+
+                    String strServices = jsonDocument.getJsonDoc();
+
+                    try {
+                        JSONObject jsonObjectServcies = new JSONObject(strServices);
+
+                        if (jsonObjectServcies.has("unit")) {
+                            String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionService, "1", "","",""};
+                            if (actionType == UPDATE) { // WHERE clause
+                                String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                // WHERE clause arguments
+                                String[] selectionArgs = {strDocumentId};
+                                CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                            } else {
+                                CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                utils.createServiceModel(strDocumentId, jsonObjectServcies);
+                                sessionManager.saveServiceStatus(true);
+
+                            }
+
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+                CareTaker.dbCon.dbTransactionSucessFull();
+
+                refreshAdapter();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                CareTaker.dbCon.endDBTransaction();
+
+            }
+
+        } catch (Exception e) {
+
+        }
     }
 
     public void refreshAdapter() {
@@ -561,9 +696,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 jsonObjectMilestone.put("status", milestoneModel.getStrMilestoneStatus());
                 jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                 jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
-                jsonObjectMilestone.put("show",milestoneModel.isVisible());
-                jsonObjectMilestone.put("scheduled_date",milestoneModel.getStrMilestoneScheduledDate());
-                jsonObjectMilestone.put("reschedule",milestoneModel.isReschedule());
+                jsonObjectMilestone.put("show", milestoneModel.isVisible());
+                jsonObjectMilestone.put("scheduled_date", milestoneModel.getStrMilestoneScheduledDate());
+                jsonObjectMilestone.put("reschedule", milestoneModel.isReschedule());
 
                 JSONArray jsonArrayFields = new JSONArray();
 
@@ -661,8 +796,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     jsonObjectMilestone.put("name", milestoneModel.getStrMilestoneName());
                     jsonObjectMilestone.put("date", milestoneModel.getStrMilestoneDate());
                     jsonObjectMilestone.put("show", milestoneModel.isVisible());
-                    jsonObjectMilestone.put("scheduled_date",milestoneModel.getStrMilestoneScheduledDate());
-                    jsonObjectMilestone.put("reschedule",milestoneModel.isReschedule());
+                    jsonObjectMilestone.put("scheduled_date", milestoneModel.getStrMilestoneScheduledDate());
+                    jsonObjectMilestone.put("reschedule", milestoneModel.isReschedule());
 
                     JSONArray jsonArrayFields = new JSONArray();
 
@@ -830,6 +965,18 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
                                         updateServiceDependent(strDocumentId, strDocument,
                                                 serviceModel);
+//                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionServiceCustomer, "1"};
+//                                        // WHERE clause
+//                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+//
+//                                        // WHERE clause arguments
+//                                        String[] selectionArgs = {strDocumentId};
+//
+//                                        boolean result = CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+//                                        if (!result) {
+//                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+//                                        }
+//                                        sessionManager.saveServiceCustomer(true);
                                     }
                                 } else {
                                     /*if (progressDialog.isShowing())
@@ -926,7 +1073,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         utils.toast(1, 1, getString(R.string.service_added));
         goBack();
     }
-
 
 
 }

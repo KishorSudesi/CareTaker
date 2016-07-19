@@ -1,5 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,32 +8,45 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.adapters.DependAdapter;
+import com.hdfc.app42service.StorageService;
+import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.AdditionalServicesActivity;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
-import com.hdfc.views.RoundedImageView;
+import com.shephertz.app42.paas.sdk.android.App42CallBack;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 public class MyAccountFragment extends Fragment {
@@ -46,22 +60,32 @@ public class MyAccountFragment extends Fragment {
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
     public static ViewPager dependpager;
     private static Bitmap bitmap;
-    private static RoundedImageView roundedImageView;
-    private static Handler threadHandler;
+    private static ImageView roundedImageView;
+    //private static Handler threadHandler;
     private static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
     private static Context context;
     private static int iPosition;
     public DependAdapter adapter;
-    TextView txtviewBuyServices;
-    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout,textViewRecipient;
+    TextView txtviewBuyServices, txtviewChangePassword;
+    TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout, textViewRecipient;
+    String strOldPass, strPass;
+    private EditText editTextOldPassword, editTextPassword, editTextConfirmPassword;
     private Utils utils;
+    private SessionManager sessionManager;
 
     public static MyAccountFragment newInstance() {
         MyAccountFragment fragment = new MyAccountFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     @Override
@@ -75,12 +99,14 @@ public class MyAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_account, container, false);
         txtviewBuyServices = (TextView) view.findViewById(R.id.txtviewBuyServices);
+        txtviewChangePassword = (TextView) view.findViewById(R.id.txtviewChangePassword);
         txtNumber = (TextView) view.findViewById(R.id.editText3);
 
         ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
         buttonBack.setVisibility(View.GONE);
 
         utils = new Utils(getActivity());
+        sessionManager = new SessionManager(getActivity());
 
         loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
@@ -89,7 +115,7 @@ public class MyAccountFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
 
         // dependpager = (ViewPager)view.findViewById(R.id.dependCarousel);
-        roundedImageView = (RoundedImageView) view.findViewById(R.id.imageView5);
+        roundedImageView = (ImageView) view.findViewById(R.id.imageView5);
 
 
         /*if(Config.dependentNames.size()<=1)
@@ -104,11 +130,21 @@ public class MyAccountFragment extends Fragment {
 
                 iPosition = intPosition;*/
 
-                threadHandler = new ThreadHandler();
-                Thread backgroundThread = new BackgroundThread();
-                backgroundThread.start();
+//            threadHandler = new ThreadHandler();
+//            Thread backgroundThread = new BackgroundThread();
+//            backgroundThread.start();
 
             //}
+
+            loadingPanel.setVisibility(View.VISIBLE);
+
+            if (Config.customerModel != null) {
+                loadImageSimpleTarget();
+
+//            threadHandler = new ThreadHandler();
+//            Thread backgroundThread = new BackgroundThread();
+//            backgroundThread.start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,8 +170,10 @@ public class MyAccountFragment extends Fragment {
         txtviewBuyServices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(getActivity(), AdditionalServicesActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -155,6 +193,163 @@ public class MyAccountFragment extends Fragment {
         });
 
 
+        txtviewChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_change_password);
+
+                editTextOldPassword = (EditText) dialog.findViewById(R.id.editOldPassword);
+                editTextPassword = (EditText) dialog.findViewById(R.id.editPassword);
+                editTextConfirmPassword = (EditText) dialog.findViewById(R.id.editConfirmPassword);
+                Button dialogButton = (Button) dialog.findViewById(R.id.btndialogOk);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        editTextOldPassword.setError(null);
+                        editTextPassword.setError(null);
+                        editTextConfirmPassword.setError(null);
+
+                        boolean cancel = false;
+                        View focusView = null;
+
+                        strOldPass = editTextOldPassword.getText().toString().trim();
+                        strPass = editTextPassword.getText().toString().trim();
+                        String strConfirmPass = editTextConfirmPassword.getText().toString().trim();
+                        if (TextUtils.isEmpty(strOldPass)) {
+                            editTextOldPassword.setError(getString(R.string.error_field_required));
+                            focusView = editTextOldPassword;
+                            cancel = true;
+                        }
+                        if (TextUtils.isEmpty(strPass)) {
+                            editTextPassword.setError(getString(R.string.error_field_required));
+                            focusView = editTextOldPassword;
+                            cancel = true;
+                        }
+                        if (TextUtils.isEmpty(strConfirmPass)) {
+                            editTextConfirmPassword.setError(getString(R.string.error_field_required));
+                            focusView = editTextOldPassword;
+                            cancel = true;
+                        }
+                        if (!Utils.isEmpty(strOldPass) && !Utils.isEmpty(strPass) &&
+                                !Utils.isEmpty(strConfirmPass)) {
+
+                            if (!strPass.equalsIgnoreCase(strConfirmPass)) {
+                                editTextConfirmPassword.setError(getString(R.string.error_confirm_password));
+                                focusView = editTextConfirmPassword;
+                                cancel = true;
+                            }
+
+                            if (strOldPass.equalsIgnoreCase(strPass)) {
+                                editTextPassword.setError(getString(R.string.error_same_password));
+                                focusView = editTextPassword;
+                                cancel = true;
+                            }
+                        }
+
+                        if (cancel) {
+                            focusView.requestFocus();
+                        } else {
+
+                            if (utils.isConnectingToInternet()) {
+
+                        /*progressDialog.setMessage(getActivity().getString(R.string.uploading));
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();*/
+
+                                // DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
+                                StorageService storageService = new StorageService(getActivity());
+
+                                JSONObject jsonToUpdate = new JSONObject();
+
+
+                                storageService.updateDocs(jsonToUpdate,
+                                        Config.customerModel.getStrCustomerID(),
+                                        Config.collectionCustomer, new App42CallBack() {
+                                            @Override
+                                            public void onSuccess(Object o) {
+
+                                                if (strPass != null && !strPass.equalsIgnoreCase("")) {
+
+                                                    if (utils.isConnectingToInternet()) {
+
+                                                        // progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
+
+                                       /* try {
+                                            strOldPass = AESCrypt.encrypt(Config.string, strOldPass);
+                                            strPass = AESCrypt.encrypt(Config.string, strPass);
+                                        } catch (GeneralSecurityException e) {
+                                            e.printStackTrace();
+                                        }*/
+
+                                                        UserService userService = new UserService(getActivity());
+
+                                                        userService.onChangePassword(Config.strUserName, strOldPass
+                                                                , strPass, new App42CallBack() {
+                                                                    @Override
+                                                                    public void onSuccess(Object o) {
+                                                                        // progressDialog.dismiss();
+                                                                        // DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                        sessionManager.createLoginSession(strPass, Config.strUserName);
+                                                                        if (sessionManager.getOldPassword() != null && !(sessionManager.getOldPassword().equalsIgnoreCase("")) && sessionManager.getOldPassword().length() > 0) {
+
+                                                                        } else {
+                                                                            sessionManager.saveOldPassword(strOldPass);
+                                                                        }
+                                                                        utils.toast(1, 1, "Password Change Successfully");
+                                                                        dialog.dismiss();
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onException(Exception e) {
+                                                                        // progressDialog.dismiss();
+                                                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                        try {
+                                                                            JSONObject jsonObject = new JSONObject(e.getMessage());
+                                                                            JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
+                                                                            String strMess = jsonObjectError.getString("details");
+
+                                                                            utils.toast(2, 2, strMess);
+                                                                        } catch (JSONException e1) {
+                                                                            e1.printStackTrace();
+                                                                        }
+                                                                    }
+                                                                });
+
+                                                    } else
+                                                        utils.toast(2, 2, getString(R.string.warning_internet));
+
+                                                } else {
+                                                    // progressDialog.dismiss();
+                                                    // DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                    utils.toast(1, 1, "Enter Password ");
+
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onException(Exception e) {
+                                                //progressDialog.dismiss();
+                                                // DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                utils.toast(2, 2, e.getMessage());
+                                            }
+                                        });
+
+                            } else utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
+
+
+                    }
+                });
+
+
+                dialog.show();
+            }
+        });
        /* roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,17 +418,35 @@ public class MyAccountFragment extends Fragment {
             }
         });
 
-        loadingPanel.setVisibility(View.VISIBLE);
 
-        threadHandler = new ThreadHandler();
-        Thread backgroundThread = new BackgroundThread();
-        backgroundThread.start();
 
         /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();*/
 
         return view;
+    }
+
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            roundedImageView.setImageBitmap(bitmap);
+            loadingPanel.setVisibility(View.GONE);
+        }
+    };
+
+    private void loadImageSimpleTarget() {
+
+        Glide.with(getActivity())
+                .load(Config.customerModel.getStrImgUrl())
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(getActivity()))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
     }
 
     public void goToAccountEdit() {
@@ -265,41 +478,52 @@ public class MyAccountFragment extends Fragment {
         // new setAdapterTask().execute();
     }
 
-    public static class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-//            progressDialog.dismiss();
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+//    public static class ThreadHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+////            progressDialog.dismiss();
+//            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+//
+//            if (bitmap != null) {
+//                roundedImageView.setImageBitmap(bitmap);
+//            }
+//
+//            loadingPanel.setVisibility(View.GONE);
+//        }
+//    }
 
-            if (bitmap != null) {
-                roundedImageView.setImageBitmap(bitmap);
-            }
 
-            loadingPanel.setVisibility(View.GONE);
-        }
-    }
 
-    public static Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//                //if(Config.customerModel!=null) {
+//                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+//                System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
+//                bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+//                //}
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            threadHandler.sendEmptyMessage(0);
+//        }
+//    }
     public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {
                 //if(Config.customerModel!=null) {
-                    File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
-                    System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
-                    bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+                System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
+                bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 //}
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            threadHandler.sendEmptyMessage(0);
+            //threadHandler.sendEmptyMessage(0);
         }
     }
 

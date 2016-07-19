@@ -88,6 +88,22 @@
                     android:paddingLeft="10dp"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
+                <TextView
+                    android:id="@+id/txtviewChangePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bottom_border_blue"
+                    android:drawableLeft="@drawable/password"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="Change Password"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
 
                 <TextView
                     android:id="@+id/txtviewBuyServices"
@@ -184,7 +200,7 @@
 
             </RelativeLayout>
 
-            <com.hdfc.views.RoundedImageView
+            <ImageView
                 android:id="@+id/imageView5"
                 android:layout_width="120dp"
                 android:layout_height="120dp"

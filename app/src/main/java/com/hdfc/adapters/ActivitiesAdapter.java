@@ -1,6 +1,7 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
@@ -16,8 +20,9 @@ import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.ProviderModel;
 
-import java.io.File;
 import java.util.ArrayList;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by balamurugan@adstringo.in on 2/17/2016.
@@ -139,7 +144,7 @@ public class ActivitiesAdapter extends BaseAdapter {
 
                     viewHolder.textViewText.setText(activityModel.getStrActivityName());
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -151,11 +156,26 @@ public class ActivitiesAdapter extends BaseAdapter {
 
             try {
 
-                File f = utils.getInternalFileImages(utils.replaceSpace(
-                        activityModel.getStrProviderID()));
+//                File f = utils.getInternalFileImages(utils.replaceSpace(
+//                        activityModel.getStrProviderID()));
+//
+//                if (f.exists())
+//                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.roundedImageView);
 
-                if (f.exists())
-                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.roundedImageView);
+                int iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+                Glide.with(_context)
+                        .load(Config.providerModels.get(iPosition).getStrImgUrl())
+                        .asBitmap()
+                        .centerCrop()
+                        .transform(new CropCircleTransformation(_context))
+                        .placeholder(R.drawable.person_icon)
+
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                viewHolder.roundedImageView.setImageBitmap(resource);
+                            }
+                        });
 
             } catch (Exception e) {
                 e.printStackTrace();

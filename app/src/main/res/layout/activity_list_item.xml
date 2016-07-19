@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
                 android:textColor="@color/blue"
-                android:textSize="50sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
 
             <TextView
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
                 android:textColor="#222222"
-                android:textSize="13sp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_general"
                 android:layout_marginRight="@dimen/margin_general"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:padding="@dimen/padding_general"
                 android:src="@drawable/tick" />
 
@@ -65,16 +65,15 @@
             <TextView
                 android:id="@+id/textViewkop"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
                 android:textColor="#222222"
-                android:textSize="18sp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -82,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/blue"
-                    android:textSize="14sp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
                 <TextView
@@ -91,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
                     android:textColor="@color/blue"
-                    android:textSize="14sp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>

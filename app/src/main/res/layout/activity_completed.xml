@@ -213,6 +213,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/red"
                     android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     />
 
                 <LinearLayout
@@ -308,6 +309,7 @@
                                 android:minLines="4"
                                 android:paddingTop="10dp"
                                 android:scrollbarStyle="insideInset"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:scrollbars="vertical" />
                         </RelativeLayout>
 
@@ -332,6 +334,7 @@
                             android:background="@drawable/button_success"
                             android:text="@string/submit_feedback"
                             android:textAllCaps="false"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:textColor="@color/colorWhite" />
 
 

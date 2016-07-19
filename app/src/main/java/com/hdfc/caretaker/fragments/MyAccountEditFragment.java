@@ -21,24 +21,31 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UploadService;
-import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.dbconfig.DbHelper;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
-import com.hdfc.views.RoundedImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.upload.Upload;
 import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
+
+import net.sqlcipher.Cursor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,14 +57,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 public class MyAccountEditFragment extends Fragment {
 
     public static String strCustomerImgNameCamera;
     public static String strCustomerImgName = "";
-    public static Bitmap bitmap = null;
+    public static Bitmap bitmapImg = null;
     public static Uri uri;
     private static Utils utils;
-    private static RoundedImageView roundedImageView;
+    private static ImageView roundedImageView;
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static boolean isImageChanged = false;
@@ -68,12 +77,18 @@ public class MyAccountEditFragment extends Fragment {
     private String strName;
     private String strContactNo;
     private String strPass;
+    private String strCountryCode;
+
+    //strAddress = editAddress.getText().toString().trim();
+    private String strDob;
+    private String strCountry;
     private String strAddress;
     private String strOldPass;
-    private String strCustomerImagePath = "", strAreaCode;
+    private String strCustomerImagePath = "", strAreaCode, imageUrl = "";
 
     private RadioButton mobile;
     private Spinner citizenship;
+    private SessionManager sessionManager;
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -111,6 +126,7 @@ public class MyAccountEditFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account_edit, container, false);
         TextView txtViewHeader = (TextView) view.findViewById(R.id.header);
         TextView mail = (TextView) view.findViewById(R.id.textViewEmail);
+        sessionManager = new SessionManager(getActivity());
         mail.setText(Config.customerModel.getStrEmail());
 
         //RelativeLayout loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
@@ -119,7 +135,7 @@ public class MyAccountEditFragment extends Fragment {
 
         progressDialog = new ProgressDialog(getActivity());
 
-        roundedImageView = (RoundedImageView) view.findViewById(R.id.imageView5);
+        roundedImageView = (ImageView) view.findViewById(R.id.imageView5);
 
         name = (EditText) view.findViewById(R.id.editTextGuruName);
 
@@ -215,8 +231,8 @@ public class MyAccountEditFragment extends Fragment {
         utils = new Utils(getActivity());
 
         threadHandler = new ThreadHandler();
-        Thread backgroundThread = new BackgroundThread();
-        backgroundThread.start();
+//        Thread backgroundThread = new BackgroundThread();
+//        backgroundThread.start();
 
        /* progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
@@ -225,6 +241,8 @@ public class MyAccountEditFragment extends Fragment {
         //loadingPanel.setVisibility(View.VISIBLE);
         //
         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+        imageUrl = Config.customerModel.getStrImgUrl();
+        loadImageSimpleTarget(Config.customerModel.getStrImgUrl());
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,9 +263,6 @@ public class MyAccountEditFragment extends Fragment {
                 name.setError(null);
                 number.setError(null);
                 //city.setError(null);
-                editTextOldPassword.setError(null);
-                editTextPassword.setError(null);
-                editTextConfirmPassword.setError(null);
 
                 editAreaCode.setError(null);
                 editDob.setError(null);
@@ -256,18 +271,16 @@ public class MyAccountEditFragment extends Fragment {
                     strAreaCode = editAreaCode.getText().toString().trim();
                 }
 
-                final String strCountryCode = editCountryCode.getText().toString().trim();
+                strCountryCode = editCountryCode.getText().toString().trim();
 
                 //strAddress = editAddress.getText().toString().trim();
-                final String strDob = editDob.getText().toString().trim();
-                final String strCountry = citizenship.getSelectedItem().toString().trim();
+                strDob = editDob.getText().toString().trim();
+                strCountry = citizenship.getSelectedItem().toString().trim();
 
                 strName = name.getText().toString().trim();
                 strContactNo = number.getText().toString();
                 //strAddress = city.getText().toString().trim();
-                strOldPass = editTextOldPassword.getText().toString().trim();
-                strPass = editTextPassword.getText().toString().trim();
-                String strConfirmPass = editTextConfirmPassword.getText().toString().trim();
+
 
                 boolean cancel = false;
                 View focusView = null;
@@ -302,21 +315,7 @@ public class MyAccountEditFragment extends Fragment {
                     utils.toast(2, 2, getString(R.string.select_country));
                 }
 
-                if (!Utils.isEmpty(strOldPass) && !Utils.isEmpty(strPass) &&
-                        !Utils.isEmpty(strConfirmPass)) {
 
-                    if (!strPass.equalsIgnoreCase(strConfirmPass)) {
-                        editTextConfirmPassword.setError(getString(R.string.error_confirm_password));
-                        focusView = editTextConfirmPassword;
-                        cancel = true;
-                    }
-
-                    if (strOldPass.equalsIgnoreCase(strPass)) {
-                        editTextPassword.setError(getString(R.string.error_same_password));
-                        focusView = editTextPassword;
-                        cancel = true;
-                    }
-                }
 
                 /*if (TextUtils.isEmpty(strAddress)) {
                     city.setError(getString(R.string.error_field_required));
@@ -371,85 +370,189 @@ public class MyAccountEditFragment extends Fragment {
                         storageService.updateDocs(jsonToUpdate,
                                 Config.customerModel.getStrCustomerID(),
                                 Config.collectionCustomer, new App42CallBack() {
-                            @Override
-                            public void onSuccess(Object o) {
+                                    @Override
+                                    public void onSuccess(Object o) {
 
-                                Config.customerModel.setStrAddress(strAddress);
-                                Config.customerModel.setStrContacts(strContactNo);
-                                Config.customerModel.setStrName(strName);
+                                        Config.customerModel.setStrAddress(strAddress);
+                                        Config.customerModel.setStrContacts(strContactNo);
+                                        Config.customerModel.setStrName(strName);
 
-                                Config.customerModel.setStrDob(strDob);
-                                Config.customerModel.setStrCountryCode(strCountry);
-                                Config.customerModel.setStrAddress(strCountry);
-                                Config.customerModel.setStrCountryIsdCode(strCountryCode);
+                                        Config.customerModel.setStrDob(strDob);
+                                        Config.customerModel.setStrCountryCode(strCountry);
+                                        Config.customerModel.setStrAddress(strCountry);
+                                        Config.customerModel.setStrCountryIsdCode(strCountryCode);
 
-                                if (editAreaCode.getVisibility() == View.VISIBLE)
-                                    Config.customerModel.setStrCountryAreaCode(strAreaCode);
+                                        if (editAreaCode.getVisibility() == View.VISIBLE) {
+                                            Config.customerModel.setStrCountryAreaCode(strAreaCode);
+                                        }
 
-                                if (strPass != null && !strPass.equalsIgnoreCase("")) {
 
-                                    if (utils.isConnectingToInternet()) {
+                                        if (utils.isConnectingToInternet()) {
 
-                                        // progressDialog.setMessage(getActivity().getString(R.string.verify_identity_password));
+                                            updateUserDatainDB("false");
+                                        }
 
-                                       /* try {
-                                            strOldPass = AESCrypt.encrypt(Config.string, strOldPass);
-                                            strPass = AESCrypt.encrypt(Config.string, strPass);
-                                        } catch (GeneralSecurityException e) {
-                                            e.printStackTrace();
-                                        }*/
+                                    }
 
-                                        UserService userService = new UserService(getActivity());
+                                    @Override
+                                    public void onException(Exception e) {
+                                        //progressDialog.dismiss();
+                                        updateUserDatainDB("true");
+                                    }
+                                });
 
-                                        userService.onChangePassword(Config.strUserName, strOldPass
-                                                , strPass, new App42CallBack() {
-                                            @Override
-                                            public void onSuccess(Object o) {
-                                                // progressDialog.dismiss();
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
-                                                goToAccount();
-                                            }
+                    }
 
-                                            @Override
-                                            public void onException(Exception e) {
-                                                // progressDialog.dismiss();
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                                try {
-                                                    JSONObject jsonObject = new JSONObject(e.getMessage());
-                                                    JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
-                                                    String strMess = jsonObjectError.getString("details");
 
-                                                    utils.toast(2, 2, strMess);
-                                                } catch (JSONException e1) {
-                                                    e1.printStackTrace();
-                                                }
-                                            }
-                                        });
+                    if (utils.isConnectingToInternet()) {
 
-                                    } else utils.toast(2, 2, getString(R.string.warning_internet));
 
-                                } else {
-                                    // progressDialog.dismiss();
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    utils.toast(1, 1, getActivity().getString(R.string.account_updated));
-                                    goToAccount();
-                                }
-                            }
-
-                            @Override
-                            public void onException(Exception e) {
-                                //progressDialog.dismiss();
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, e.getMessage());
-                            }
-                        });
-
-                    } else utils.toast(2, 2, getString(R.string.warning_internet));
+                    } else {
+                        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+                        updateUserDatainDB("true");
+                    }
                 }
             }
         });
         return view;
+    }
+
+    private void updateUserDatainDB(String isUpdated)
+
+    {
+        try {
+            String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+            // WHERE clause arguments
+            String[] selectionArgs = {Config.collectionCustomer};
+            Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                do {
+
+                    JSONObject jsonReceived = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+
+                    jsonReceived.put("customer_name", strName);
+                    jsonReceived.put("customer_profile_url", imageUrl);
+                    jsonReceived.put("customer_contact_no", strContactNo);
+                    jsonReceived.put("customer_address", strCountry);
+
+                    jsonReceived.put("customer_dob", strDob);
+                    jsonReceived.put("customer_country", strCountry);
+                    jsonReceived.put("customer_country_code", strCountryCode);
+
+                    if (editAreaCode.getVisibility() == View.VISIBLE)
+                        jsonReceived.put("customer_area_code", strAreaCode);
+                    String strDocument = jsonReceived.toString();
+                    Calendar c = Calendar.getInstance();
+                    System.out.println("Current time => " + c.getTime());
+
+
+                    String updatedAt = Utils.readFormat.format(c.getTime());
+
+                    String values[] = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), updatedAt, strDocument, Config.collectionCustomer, "", "1", "", "" + isUpdated};
+                    try {
+                        //Config.jsonCustomer = new JSONObject(strDocument);
+
+                        selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                        // WHERE clause arguments
+                        String[] selectionArgsUpdate = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
+                        boolean isUpdatedDB = CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgsUpdate);
+                        if (isUpdatedDB) {
+                            Config.customerModel.setStrAddress(strAddress);
+                            Config.customerModel.setStrContacts(strContactNo);
+                            Config.customerModel.setStrName(strName);
+
+                            Config.customerModel.setStrDob(strDob);
+                            Config.customerModel.setStrCountryCode(strCountry);
+                            Config.customerModel.setStrAddress(strCountry);
+                            Config.customerModel.setStrCountryIsdCode(strCountryCode);
+
+
+                            if (editAreaCode.getVisibility() == View.VISIBLE)
+                                Config.customerModel.setStrCountryAreaCode(strAreaCode);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // createCustomerModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                } while (cursor.moveToNext());
+                cursor.close();
+
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                goToAccount();
+
+            } else if (!utils.isConnectingToInternet()) {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                utils.toast(1, 1, "Not Updated");
+                goToAccount();
+            } else if (utils.isConnectingToInternet()) {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                utils.toast(1, 1, getActivity().getString(R.string.account_updated));
+                goToAccount();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+            if (uri != null) {
+                bitmapImg = utils.rotateBitmap(utils.getRealPathFromURI(uri), bitmapImg);
+            }
+
+            if (!isImageChanged) {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                if (bitmap != null)
+                    roundedImageView.setImageBitmap(bitmap);
+                else {
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera));
+                    utils.toast(2, 2, getString(R.string.error));
+                }
+            }
+            if (isImageChanged) {
+                if (bitmap != null)
+                    checkImage();
+                else {
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera));
+                    utils.toast(2, 2, getString(R.string.error));
+                }
+            }
+
+        }
+    };
+
+    private void loadImageSimpleTarget(String url) {
+
+        Glide.with(getActivity())
+                .load(url)
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(getActivity()))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
+    }
+
+    private void loadImageSimpleTarget(Uri url) {
+
+        Glide.with(getActivity())
+                .load(url)
+                .asBitmap()
+                .centerCrop()
+                .transform(new CropCircleTransformation(getActivity()))
+                .placeholder(R.drawable.person_icon)
+                .into(target);
     }
 
     private void goToAccount() {
@@ -474,15 +577,18 @@ public class MyAccountEditFragment extends Fragment {
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
                         strCustomerImgName = Utils.customerImageUri.getPath();
-                        Thread backgroundThreadCamera = new BackgroundThreadCamera();
-                        backgroundThreadCamera.start();
+                        showImageFromCamera();
+//                        Thread backgroundThreadCamera = new BackgroundThreadCamera();
+//                        backgroundThreadCamera.start();
                         break;
 
                     case Config.START_GALLERY_REQUEST_CODE:
                         if (intent.getData() != null) {
                             uri = intent.getData();
-                            Thread backgroundThreadGallery = new BackgroundThreadGallery();
-                            backgroundThreadGallery.start();
+                            showImageFromGallery();
+
+//                            Thread backgroundThreadGallery = new BackgroundThreadGallery();
+//                            backgroundThreadGallery.start();
                         }
                         break;
                 }
@@ -509,47 +615,48 @@ public class MyAccountEditFragment extends Fragment {
 */
                 uploadService.removeImage(Config.strCustomerImageName,
                         Config.customerModel.getStrEmail(),
-                            new App42CallBack() {
-                        public void onSuccess(Object response) {
+                        new App42CallBack() {
+                            public void onSuccess(Object response) {
 
-                            if(response!=null){
-                                uploadImage();
-                            }else{
-                               /* if (progressDialog.isShowing())
-                                    progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
-                        }
-                        @Override
-                        public void onException(Exception e) {
-
-                            if(e!=null) {
-
-                                App42Exception exception = (App42Exception) e;
-                                int appErrorCode = exception.getAppErrorCode();
-
-                                if (appErrorCode != 1401 ) {
+                                if (response != null) {
                                     uploadImage();
                                 } else {
+                               /* if (progressDialog.isShowing())
+                                    progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+
+                                if (e != null) {
+
+                                    App42Exception exception = (App42Exception) e;
+                                    int appErrorCode = exception.getAppErrorCode();
+
+                                    if (appErrorCode != 1401) {
+                                        uploadImage();
+                                    } else {
                                     /*if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    utils.toast(2, 2, getString(R.string.error));
-                                }
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        utils.toast(2, 2, getString(R.string.error));
+                                    }
 
-                            }else{
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                } else {
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
-                        }
-                    });
+                        });
 
             } else {
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 utils.toast(2, 2, getString(R.string.warning_internet));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
@@ -558,7 +665,7 @@ public class MyAccountEditFragment extends Fragment {
         }
     }
 
-    public void uploadImage(){
+    public void uploadImage() {
 
         try {
 
@@ -570,61 +677,84 @@ public class MyAccountEditFragment extends Fragment {
                         strCustomerImgName,
                         Config.strCustomerImageName, "Profile Picture",
                         Config.customerModel.getStrEmail(),
-                    UploadFileType.IMAGE, new App42CallBack() {
-                        public void onSuccess(Object response) {
+                        UploadFileType.IMAGE, new App42CallBack() {
+                            public void onSuccess(Object response) {
 
-                            if(response!=null) {
+                                if (response != null) {
 
-                                Upload upload = (Upload) response;
-                                ArrayList<Upload.File> fileList = upload.getFileList();
+                                    Upload upload = (Upload) response;
+                                    ArrayList<Upload.File> fileList = upload.getFileList();
 
-                                if (fileList.size() > 0 && bitmap != null) {
+                                    if (fileList.size() > 0 && bitmapImg != null) {
 
-                                    Upload.File file = fileList.get(0);
+                                        Upload.File file = fileList.get(0);
 
-                                    final String url = file.getUrl();
+                                        final String url = file.getUrl();
 
-                                    JSONObject jsonToUpdate = new JSONObject();
+                                        JSONObject jsonToUpdate = new JSONObject();
 
-                                    try {
-                                        jsonToUpdate.put("customer_profile_url", url);
+                                        try {
+                                            jsonToUpdate.put("customer_profile_url", url);
+                                            imageUrl = url;
 
-                                        StorageService storageService =
-                                                new StorageService(getActivity());
+                                            StorageService storageService =
+                                                    new StorageService(getActivity());
 
-                                        storageService.updateDocs(jsonToUpdate,
-                                                Config.customerModel.getStrCustomerID(),
-                                                Config.collectionCustomer, new App42CallBack() {
+                                            storageService.updateDocs(jsonToUpdate,
+                                                    Config.customerModel.getStrCustomerID(),
+                                                    Config.collectionCustomer, new App42CallBack() {
 
-                                            @Override
-                                            public void onSuccess(Object o) {
+                                                        @Override
+                                                        public void onSuccess(Object o) {
 
-                                                if (o != null) {
-
-                                                    try {
-                                                        File f = utils.getInternalFileImages(
-                                                                Config.customerModel.getStrCustomerID());
-
-                                                        if (f.exists())
-                                                            f.delete();
-
-                                                        File newFile = new File(strCustomerImgName);
-                                                        File renameFile = new File(
-                                                                strCustomerImagePath);
-
-                                                        utils.moveFile(newFile, renameFile);
-
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-
-                                                    roundedImageView.setImageBitmap(bitmap);
+                                                            if (o != null) {
+                                                                Config.customerModel.setStrImgUrl(url);
+                                                                utils.updateorInsertCustomerData(2);
+//                                                                String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", ""};
+//                                                                try {
+//                                                                    //Config.jsonCustomer = new JSONObject(strDocument);
+//
+//                                                                    if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
+//                                                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+//
+//                                                                        // WHERE clause arguments
+//                                                                        String[] selectionArgs = {jsonDocument.getDocId()};
+//                                                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+//                                                                    } else {
+//                                                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+//
+//                                                                    }
+//
+//
+//
+//
+//                                                                } catch (Exception e) {
+//                                                                    e.printStackTrace();
+//                                                                }
+//                                                                try {
+//                                                                    File f = utils.getInternalFileImages(
+//                                                                            Config.customerModel.getStrCustomerID());
+//
+//                                                                    if (f.exists())
+//                                                                        f.delete();
+//
+//                                                                    File newFile = new File(strCustomerImgName);
+//                                                                    File renameFile = new File(
+//                                                                            strCustomerImagePath);
+//
+//                                                                    utils.moveFile(newFile, renameFile);
+//
+//                                                                } catch (Exception e) {
+//                                                                    e.printStackTrace();
+//                                                                }
+//
+                                                                roundedImageView.setImageBitmap(bitmapImg);
 
                                                     /*if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
-                                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                                                    utils.toast(2, 2, getString(R.string.update_profile_image));
+                                                                utils.toast(2, 2, getString(R.string.update_profile_image));
 
                                                    /* if (Config.jsonObject.has("customer_profile_url")) {
 
@@ -635,65 +765,65 @@ public class MyAccountEditFragment extends Fragment {
                                                             e.printStackTrace();
                                                         }
                                                     }*/
-                                                    isImageChanged = false;
+                                                                isImageChanged = false;
 
-                                                } else {
+                                                            } else {
                                                     /*if (progressDialog.isShowing())
                                                         progressDialog.dismiss();*/
-                                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                }
-                                            }
+                                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                                            }
+                                                        }
 
-                                            @Override
-                                            public void onException(Exception e) {
+                                                        @Override
+                                                        public void onException(Exception e) {
                                                 /*if (progressDialog.isShowing())
                                                     progressDialog.dismiss();*/
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                                                if (e != null) {
-                                                    Utils.log(e.toString(), "response");
-                                                    utils.toast(2, 2, e.getMessage());
-                                                } else {
-                                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                                }
-                                            }
-                                        });
-                                        //
+                                                            if (e != null) {
+                                                                Utils.log(e.toString(), "response");
+                                                                utils.toast(2, 2, e.getMessage());
+                                                            } else {
+                                                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                                            }
+                                                        }
+                                                    });
+                                            //
 
-                                    } catch (JSONException e) {
+                                        } catch (JSONException e) {
                                             e.printStackTrace();
-                                    }
+                                        }
 
-                                } else {
+                                    } else {
                                         /*if (progressDialog.isShowing())
                                             progressDialog.dismiss();*/
-                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                    utils.toast(2, 2, getString(R.string.error));
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        utils.toast(2, 2, getString(R.string.error));
                                     }
-                            }else{
+                                } else {
                                /* if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onException(Exception e) {
+                            @Override
+                            public void onException(Exception e) {
 
                             /*if (progressDialog.isShowing())
                                 progressDialog.dismiss();*/
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
-                            if(e!=null) {
-                                Utils.log(e.toString(), "response");
-                                utils.toast(2, 2, e.getMessage());
-                            }else{
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                if (e != null) {
+                                    Utils.log(e.toString(), "response");
+                                    utils.toast(2, 2, e.getMessage());
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
-                        }
-                    });
+                        });
 
             } else {
                 /*if (progressDialog.isShowing())
@@ -702,7 +832,7 @@ public class MyAccountEditFragment extends Fragment {
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 utils.toast(2, 2, getString(R.string.warning_internet));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             /*if (progressDialog.isShowing())
                 progressDialog.dismiss();*/
@@ -720,8 +850,8 @@ public class MyAccountEditFragment extends Fragment {
 
             if (!isImageChanged) {
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                if (bitmap != null)
-                    roundedImageView.setImageBitmap(bitmap);
+                if (bitmapImg != null)
+                    roundedImageView.setImageBitmap(bitmapImg);
                 else {
                     roundedImageView.setBackgroundDrawable(getActivity().getResources().
                             getDrawable(R.mipmap.camera));
@@ -730,7 +860,7 @@ public class MyAccountEditFragment extends Fragment {
             }
 
             if (isImageChanged) {
-                if (bitmap != null)
+                if (bitmapImg != null)
                     checkImage();
                 else {
                     DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -744,43 +874,78 @@ public class MyAccountEditFragment extends Fragment {
         }
     }
 
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-
-                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
-                Utils.log(f.getAbsolutePath(), " FP ");
-                bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//
+//                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+//                Utils.log(f.getAbsolutePath(), " FP ");
+//                bitmapImg = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+//
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     //
-    public class BackgroundThreadGallery extends Thread {
-        @Override
-        public void run() {
 
-            try {
-                if (uri != null) {
-                    Calendar calendar = new GregorianCalendar();
-                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                    File galleryFile = utils.createFileInternalImage(strFileName);
-                    strCustomerImgName = galleryFile.getAbsolutePath();
-                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
-                    utils.copyInputStreamToFile(is, galleryFile);
-                    bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-                    isImageChanged = true;
-                }
-                threadHandler.sendEmptyMessage(0);
-            } catch (Exception e) {
-                e.printStackTrace();
+    private void showImageFromGallery() {
+        try {
+            if (uri != null) {
+                Calendar calendar = new GregorianCalendar();
+                String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+                File galleryFile = utils.createFileInternalImage(strFileName);
+                strCustomerImgName = galleryFile.getAbsolutePath();
+                InputStream is = getActivity().getContentResolver().openInputStream(uri);
+                utils.copyInputStreamToFile(is, galleryFile);
+                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                //bitmapImg=utils.roundedBitmap(bitmapImg);
+                loadImageSimpleTarget(uri);
+                isImageChanged = true;
             }
+            // threadHandler.sendEmptyMessage(0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+//    public class BackgroundThreadGallery extends Thread {
+//        @Override
+//        public void run() {
+//
+//            try {
+//                if (uri != null) {
+//                    Calendar calendar = new GregorianCalendar();
+//                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+//                    File galleryFile = utils.createFileInternalImage(strFileName);
+//                    strCustomerImgName = galleryFile.getAbsolutePath();
+//                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
+//                    utils.copyInputStreamToFile(is, galleryFile);
+//                    bitmap = utils.getbitmapImgFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+//                    bitmapImg=utils.roundedBitmap(bitmapImg);
+//                    isImageChanged = true;
+//                }
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+    private void showImageFromCamera() {
+        try {
+            if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
+                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                loadImageSimpleTarget(strCustomerImgName);
+                isImageChanged = true;
+            }
+            //threadHandler.sendEmptyMessage(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public class BackgroundThreadCamera extends Thread {
@@ -789,7 +954,7 @@ public class MyAccountEditFragment extends Fragment {
 
             try {
                 if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
-                    bitmap = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                    bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
                     isImageChanged = true;
                 }
                 threadHandler.sendEmptyMessage(0);
