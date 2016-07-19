@@ -89,6 +89,19 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             // Overriding onDateTimeCancel() is optional.
         }
     };
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+
+            progressDialog.dismiss();
+
+            if (bitmap != null)
+                imageViewCarla.setImageBitmap(bitmap);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,7 +396,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
             strPushMessage = getString(R.string.activity_create_notification_1)
                     + serviceModel.getStrCategoryName()
-                    + getString(R.string.activity_create_notification_2)
+                    //+ getString(R.string.activity_create_notification_2)
                     + getString(R.string.activity_create_notification_3)
                     + serviceModel.getStrServiceName()
                     + getString(R.string.to)
@@ -758,7 +771,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
-
+    ///////////////////////
 
     ///////////////////////
     private void insertNotification() {
@@ -816,7 +829,6 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             goToActivityList(strAlert);
         }
     }
-    ///////////////////////
 
     public void sendPushToProvider(String strUserName, String strMessage) {
 
@@ -897,6 +909,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
     }
 
+//    public static class ThreadHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            progressDialog.dismiss();
+//
+//            if (bitmap != null)
+//                imageViewCarla.setImageBitmap(bitmap);
+//        }
+//    }
+
     public void goToActivityList(String strMess) {
 
         if (progressDialog.isShowing())
@@ -913,30 +935,6 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         startActivity(newIntent);
         finish();
     }
-
-//    public static class ThreadHandler extends Handler {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            progressDialog.dismiss();
-//
-//            if (bitmap != null)
-//                imageViewCarla.setImageBitmap(bitmap);
-//        }
-//    }
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg=bitmap;
-
-            progressDialog.dismiss();
-
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
-        }
-    };
 
     private void loadImageSimpleTarget(String url) {
 
