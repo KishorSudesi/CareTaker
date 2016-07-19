@@ -111,7 +111,7 @@
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <TextView
-                            android:id="@+id/tvPhotos1"
+                            android:id="@+id/tvPhotosStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="(Pending)"
