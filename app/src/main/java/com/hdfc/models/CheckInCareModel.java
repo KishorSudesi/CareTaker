@@ -16,6 +16,7 @@ public class CheckInCareModel {
     private String strHouseName = "";
     private String strCreatedDate = "";
     private String strUpdatedDate = "";
+    private String strMediaComment = "";
 
     private String strCustomerID;
     private String strDependentID;
@@ -30,7 +31,7 @@ public class CheckInCareModel {
 
     public CheckInCareModel(String strName, String strStatus, String strMonth, String strYear,
                             String strHouseName, String strCreatedDate, String strUpdatedDate,
-                            String strCustomerID, String strDependentID, List<PictureModel> pictureModels,
+                            String strCustomerID, String strDependentID, String strMediaComment, List<PictureModel> pictureModels,
                             List<CheckInCareActivityModel> checkInCareActivityModels) {
         this.strName = strName;
         this.strStatus = strStatus;
@@ -41,6 +42,7 @@ public class CheckInCareModel {
         this.strUpdatedDate = strUpdatedDate;
         this.strCustomerID = strCustomerID;
         this.strDependentID = strDependentID;
+        this.strMediaComment = strMediaComment;
         this.pictureModels = pictureModels;
         this.checkInCareActivityModels = checkInCareActivityModels;
 
@@ -118,16 +120,24 @@ public class CheckInCareModel {
         this.strCustomerID = strCustomerID;
     }
 
+    public String getStrMediaComment() {
+        return strMediaComment;
+    }
+
+    public void setStrMediaComment(String strMediaComment) {
+        this.strMediaComment = strMediaComment;
+    }
+
 
     public List<PictureModel> getPictureModels() {
         return pictureModels;
     }
 
-    public void setPictureModels(List<PictureModel> pictureModels) {
+    public void setPictureModels(ArrayList<PictureModel> pictureModels) {
         this.pictureModels = pictureModels;
     }
 
-    public void setPictureModels(ArrayList<PictureModel> pictureModels) {
+    public void setPictureModels(List<PictureModel> pictureModels) {
         this.pictureModels = pictureModels;
     }
 
