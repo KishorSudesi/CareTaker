@@ -320,8 +320,11 @@ public class LoginActivity extends AppCompatActivity {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
 
-                            if (iFlag == 1)
+                            if (iFlag == 1) {
                                 utils.toast(2, 2, getString(R.string.invalid_credentials));
+                                progressDialog.dismiss();
+
+                            }
                             else
                                 utils.toast(2, 2, getString(R.string.error_invalid_email));
                         }

@@ -24,8 +24,7 @@ public class CheckInImage extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CheckInImage.this, CheckInCareActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
 

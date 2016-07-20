@@ -2603,6 +2603,7 @@ public class Utils {
             CheckInCareModel checkInCareModel = new CheckInCareModel();
             //
             checkInCareModel.setStrName(jsonObjectCheck.optString("check_in_care_name"));
+            checkInCareModel.setStrMediaComment(jsonObjectCheck.optString("media_comment"));
             JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
             JSONArray picture = jsonObjectCheck.optJSONArray("picture");
 
