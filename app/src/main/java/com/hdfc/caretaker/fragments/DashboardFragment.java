@@ -36,7 +36,6 @@ import java.util.Calendar;
  */
 public class DashboardFragment extends Fragment {
 
-    public static int PAGES = Config.dependentModels.size();
     // You can choose a bigger number for LOOPS, but you know, nobody will fling
     // more than 1000 times just in order to test your "infinite" ViewPager :D
     public final static int LOOPS = 1;//Config.intDependentsCount;
@@ -44,6 +43,7 @@ public class DashboardFragment extends Fragment {
     public final static float BIG_SCALE = 1.0f; //1.0f
     public final static float SMALL_SCALE = 0.7f; //0.7f
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
+    public static int PAGES = Config.dependentModels.size();
     public static ImageView leftNav, rightNav;
     public static ViewPager pager;
     private static Utils utils;
@@ -268,12 +268,13 @@ public class DashboardFragment extends Fragment {
 
     public void fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
 
-
-        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
-        iMonth = iMonth; // - 1
+        //iMonth = iMonth; // - 1
         Config.checkInCareActivityNames.clear();
 
         if (sessionManager.getCheckInCareStatus()) {
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
             Cursor cursor=null;
             try {
 
@@ -297,9 +298,9 @@ public class DashboardFragment extends Fragment {
                     } while (cursor.moveToNext());
 
                     checkInCare.setVisibility(View.VISIBLE);
-                } else {
+                }/* else {
 
-                }
+                }*/
 
 
             } catch (Exception e) {
@@ -308,13 +309,13 @@ public class DashboardFragment extends Fragment {
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 if(cursor!=null)
                 cursor.close();
-
             }
-
         }
 
-
         if (utils.isConnectingToInternet()) {
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
             String defaultDate = null;
             Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
             if (cursorData != null && cursorData.getCount() > 0) {
@@ -352,6 +353,7 @@ public class DashboardFragment extends Fragment {
 
 
                             Storage response = (Storage) o;
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                             if (response != null) {
 
@@ -392,12 +394,12 @@ public class DashboardFragment extends Fragment {
                                         }
                                         if (!sessionManager.getCheckInCareStatus()) {
                                             sessionManager.saveCheckInCareStatus(true);
-                                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                            //DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                             checkInCare.setVisibility(View.VISIBLE);
                                         }
 
                                     } catch (Exception e) {
-
+                                        e.printStackTrace();
                                     }
                                 }
                             }
@@ -405,7 +407,7 @@ public class DashboardFragment extends Fragment {
 
                         @Override
                         public void onException(Exception e) {
-
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
                         }
                     }
             );
