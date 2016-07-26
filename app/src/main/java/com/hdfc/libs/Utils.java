@@ -971,6 +971,7 @@ public class Utils {
             date = readFormat.parse(strDate);
             //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         } catch (ParseException e) {
+            date = new Date();
             e.printStackTrace();
         }
         return date; //

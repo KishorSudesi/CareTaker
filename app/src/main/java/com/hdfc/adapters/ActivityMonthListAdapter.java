@@ -122,9 +122,9 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 //
 //                if (f.exists())
 //                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);
-                int iPosition = Config.strDependentIds.indexOf(data.get(position).getStrDependentID().trim());
+                int iPosition = Config.strProviderIdsAdded.indexOf(data.get(position).getStrProviderID().trim());
                 Glide.with(_context)
-                        .load(Config.dependentModels.get(iPosition).getStrImageUrl())
+                        .load(Config.providerModels.get(iPosition).getStrImgUrl())
                         .centerCrop()
                         .bitmapTransform(new CropCircleTransformation(_context))
                         .placeholder(R.drawable.person_icon)

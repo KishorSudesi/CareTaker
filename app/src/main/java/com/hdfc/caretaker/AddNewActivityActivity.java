@@ -532,8 +532,24 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                             fieldModel.setiFieldID(jsonObjectField.getInt("id"));
 
-                            if (jsonObjectField.has("hide"))
-                                fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+                            if (jsonObjectField.has("hide")) {
+
+                                try {
+                                    fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+                                } catch (Exception e) {
+                                    int i;
+                                    try {
+                                        i = jsonObjectField.getInt("hide");
+                                        if (i == 1)
+                                            fieldModel.setFieldView(true);
+                                        else
+                                            fieldModel.setFieldView(false);
+
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            }
 
 //                            fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
                             fieldModel.setStrFieldData(jsonObjectField.getString("data"));
@@ -548,7 +564,21 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                             if (jsonObjectField.has("child")) {
 
-                                fieldModel.setChild(jsonObjectField.getBoolean("child"));
+                                try {
+                                    fieldModel.setChild(jsonObjectField.getBoolean("child"));
+                                } catch (Exception e) {
+                                    int i;
+                                    try {
+                                        i = jsonObjectField.getInt("child");
+                                        if (i == 1)
+                                            fieldModel.setChild(true);
+                                        else
+                                            fieldModel.setChild(false);
+
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
 
                                 if (jsonObjectField.has("child_type"))
                                     fieldModel.setStrChildType(utils.jsonToStringArray(jsonObjectField.
