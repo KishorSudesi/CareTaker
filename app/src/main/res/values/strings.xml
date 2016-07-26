@@ -12,6 +12,8 @@
     <string name="name">Name</string>
     <string name="DOB">Date of Birth</string>
     <string name="password">Password</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="password_hint">*****</string>
     <string name="im_new_here">I am new here</string>
     <string name="old_password">Old Password</string>

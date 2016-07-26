@@ -118,9 +118,11 @@ public class CheckInCareActivity extends AppCompatActivity {
                                     utilityBills++;
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
                                     water.setTag(dueDate);
-                                } else if (utilityName.equalsIgnoreCase("water") && status.equalsIgnoreCase("No")) {
+                                    water.setClickable(false);
+                                } else if (utilityName.equalsIgnoreCase("water ") && status.equalsIgnoreCase("No")) {
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
                                     water.setTag(dueDate);
+                                    water.setClickable(true);
 
                                 }
                                 if (utilityName.equalsIgnoreCase("gas") && status.equalsIgnoreCase("Yes")) {
@@ -128,27 +130,33 @@ public class CheckInCareActivity extends AppCompatActivity {
                                     utilityBills++;
                                     gas.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
                                     gas.setTag(dueDate);
+                                    gas.setClickable(false);
                                 } else if (utilityName.equalsIgnoreCase("gas") && status.equalsIgnoreCase("No")) {
                                     gas.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
                                     gas.setTag(dueDate);
+                                    gas.setClickable(true);
                                 }
                                 if (utilityName.equalsIgnoreCase("electricity") && status.equalsIgnoreCase("Yes")) {
                                     homeEssCount++;
                                     utilityBills++;
                                     electricity.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
                                     electricity.setTag(dueDate);
+                                    electricity.setClickable(false);
                                 } else if (utilityName.equalsIgnoreCase("electricity") && status.equalsIgnoreCase("No")) {
                                     electricity.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
                                     electricity.setTag(dueDate);
+                                    electricity.setClickable(true);
                                 }
                                 if (utilityName.equalsIgnoreCase("telephone") && status.equalsIgnoreCase("Yes")) {
                                     homeEssCount++;
                                     utilityBills++;
                                     phone.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick), null);
                                     phone.setTag(dueDate);
+                                    phone.setClickable(false);
                                 } else if (utilityName.equalsIgnoreCase("telephone") && status.equalsIgnoreCase("No")) {
                                     phone.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.tick_disable), null);
                                     phone.setTag(dueDate);
+                                    phone.setClickable(true);
                                 }
                                 if (subActivityName.equalsIgnoreCase("kitchen_equipments") && status != null && status.length() != 0) {
                                     homeEssCount++;

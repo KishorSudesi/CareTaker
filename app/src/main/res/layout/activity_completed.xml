@@ -156,14 +156,15 @@
 
                 <TextView
                     android:id="@+id/tvTasks"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:background="@drawable/indigo_box"
                     android:gravity="left|right"
                     android:padding="@dimen/padding_general"
                     android:text="@string/tasks"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorWhite" />
 
                 <ExpandableListView
                     android:id="@+id/listViewAdditionalServices"
@@ -171,14 +172,15 @@
                     android:layout_height="300dp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:background="@drawable/indigo_box"
                     android:gravity="left|right"
                     android:padding="@dimen/padding_general"
                     android:text="@string/attachments"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorWhite" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -211,9 +213,9 @@
                     android:id="@+id/smileyMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/red"
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/red"
                     />
 
                 <LinearLayout
@@ -309,8 +311,8 @@
                                 android:minLines="4"
                                 android:paddingTop="10dp"
                                 android:scrollbarStyle="insideInset"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:scrollbars="vertical" />
+                                android:scrollbars="vertical"
+                                android:textAppearance="?android:attr/textAppearanceSmall" />
                         </RelativeLayout>
 
                         <!--    <CheckBox
@@ -344,14 +346,15 @@
 
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:background="@drawable/indigo_box"
                     android:gravity="left|right"
                     android:padding="@dimen/padding_general"
                     android:text="@string/ratings"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorWhite" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

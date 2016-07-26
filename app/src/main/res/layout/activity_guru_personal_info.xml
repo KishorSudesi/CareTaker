@@ -129,7 +129,7 @@
             android:layout_marginTop="25dp"
             android:drawableLeft="@drawable/password"
             android:drawablePadding="10dp"
-            android:hint="*****"
+            android:hint="@string/enter_password"
             android:inputType="textPassword"
             android:padding="10dp" />
 
@@ -143,7 +143,7 @@
             android:layout_marginTop="25dp"
             android:drawableLeft="@drawable/re_password"
             android:drawablePadding="10dp"
-            android:hint="*****"
+            android:hint="@string/confirm_password"
             android:inputType="textPassword"
             android:padding="10dp" />
 
