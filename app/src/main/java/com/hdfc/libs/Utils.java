@@ -129,6 +129,9 @@ public class Utils {
     public final static SimpleDateFormat readFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
 
+    public final static SimpleDateFormat readFormatDB =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
+
     public final static SimpleDateFormat readFormatDate =
             new SimpleDateFormat("yyyy-MM-dd", locale);
 
@@ -151,6 +154,9 @@ public class Utils {
             new SimpleDateFormat("dd/MM/yyyy", locale);
 
     private final static SimpleDateFormat queryFormat =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
+
+    private final static SimpleDateFormat queryFormatDB =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
 
     public static Uri customerImageUri = null;
@@ -1687,6 +1693,14 @@ public class Utils {
                     Config.strNotificationIds.add(strDocumentId);
                     Config.dependentModels.get(Config.intSelectedDependent).
                             setNotificationModels(notificationModel);
+                } else {
+                    int iPosition = Config.strNotificationIds.indexOf(notificationModel.getStrNotificationID());
+
+                    if (iPosition > -1 && iPosition < Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().size()) {
+                        Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().set(iPosition, notificationModel);
+                    } else {
+
+                    }
                 }
             }
 
@@ -2492,6 +2506,14 @@ public class Utils {
 
                     Config.fileModels.add(new FileModel(strDocumentId,
                             jsonObjectProvider.optString("provider_profile_url"), "IMAGE"));
+                } else {
+                    int iPosition = Config.strProviderIdsAdded.indexOf(providerModel.getStrProviderId());
+
+                    if (iPosition > -1 && iPosition < Config.providerModels.size()) {
+                        Config.providerModels.set(iPosition, providerModel);
+                    } else {
+
+                    }
                 }
             }
         } catch (JSONException e) {
@@ -2510,43 +2532,47 @@ public class Utils {
                 if (!Config.strDependentIds.contains(strDependentDocId)) {
                     Config.strDependentIds.add(strDependentDocId);
                     sessionManager.saveDependentsIds(Config.strDependentIds);
+                }
+                if (!Config.dependentNames.contains(jsonObjectDependent.getString("dependent_contact_no"))) {
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_contact_no"));
+                }
 
-                    dependentModel = new DependentModel();
+                dependentModel = new DependentModel();
 
-                    dependentModel.setStrIllness(jsonObjectDependent.
-                            optString("dependent_illness"));
-                    dependentModel.setIntHealthBp(jsonObjectDependent.optInt("health_bp"));
-                    dependentModel.setIntHealthHeartRate(jsonObjectDependent.
-                            optInt("health_heart_rate"));
+                dependentModel.setStrIllness(jsonObjectDependent.
+                        optString("dependent_illness"));
+                dependentModel.setIntHealthBp(jsonObjectDependent.optInt("health_bp"));
+                dependentModel.setIntHealthHeartRate(jsonObjectDependent.
+                        optInt("health_heart_rate"));
 
-                    dependentModel.setStrRelation(jsonObjectDependent.
-                            optString("dependent_relation"));
-                    dependentModel.setStrAddress(jsonObjectDependent.
-                            optString("dependent_address"));
-                    dependentModel.setStrNotes(jsonObjectDependent.optString("dependent_notes"));
-                    dependentModel.setStrContacts(jsonObjectDependent.
-                            optString("dependent_contact_no"));
-                    dependentModel.setStrName(jsonObjectDependent.optString("dependent_name"));
+                dependentModel.setStrRelation(jsonObjectDependent.
+                        optString("dependent_relation"));
+                dependentModel.setStrAddress(jsonObjectDependent.
+                        optString("dependent_address"));
+                dependentModel.setStrNotes(jsonObjectDependent.optString("dependent_notes"));
+                dependentModel.setStrContacts(jsonObjectDependent.
+                        optString("dependent_contact_no"));
+                dependentModel.setStrName(jsonObjectDependent.optString("dependent_name"));
 
-                    dependentModel.setStrDob(jsonObjectDependent.getString("dependent_dob"));
+                dependentModel.setStrDob(jsonObjectDependent.getString("dependent_dob"));
 
-                    if (jsonObjectDependent.has("dependent_profile_url")) {
-                        dependentModel.setStrImageUrl(jsonObjectDependent.
-                                optString("dependent_profile_url"));
-                    }
+                if (jsonObjectDependent.has("dependent_profile_url")) {
+                    dependentModel.setStrImageUrl(jsonObjectDependent.
+                            optString("dependent_profile_url"));
+                }
 
-                    dependentModel.setStrEmail(jsonObjectDependent.optString("dependent_email"));
-                    dependentModel.setStrAge(jsonObjectDependent.optString("dependent_age"));
+                dependentModel.setStrEmail(jsonObjectDependent.optString("dependent_email"));
+                dependentModel.setStrAge(jsonObjectDependent.optString("dependent_age"));
 
-                    dependentModel.setStrCustomerID(jsonObjectDependent.optString("customer_id"));
+                dependentModel.setStrCustomerID(jsonObjectDependent.optString("customer_id"));
 
-                    dependentModel.setStrDependentID(strDependentDocId);
-
+                dependentModel.setStrDependentID(strDependentDocId);
+                if (!Config.dependentNames.contains(jsonObjectDependent.optString("dependent_name"))) {
                     Config.dependentNames.add(jsonObjectDependent.optString("dependent_name"));
+                }
 
 
-                    //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+                //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
                     /*if (jsonObjectDependent.has("services")) {
 
@@ -2578,16 +2604,23 @@ public class Utils {
                         }
                     }*/
 
+                int iPosition = Config.strDependentIds.indexOf(dependentModel.getStrDependentID());
+
+                if (iPosition > -1 && iPosition < Config.dependentModels.size()) {
+                    Config.dependentModels.set(iPosition, dependentModel);
+                } else {
                     Config.dependentModels.add(dependentModel);
-
-                    ClientModel clientModel = new ClientModel();
-                    clientModel.setDependentModels(Config.dependentModels);
-
-                    Config.fileModels.add(new FileModel(strDependentDocId,
-                            dependentModel.getStrImageUrl(), "IMAGE"));
                 }
+
+
+                ClientModel clientModel = new ClientModel();
+                clientModel.setDependentModels(Config.dependentModels);
+
+                Config.fileModels.add(new FileModel(strDependentDocId,
+                        dependentModel.getStrImageUrl(), "IMAGE"));
+                //}
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return dependentModel;
@@ -2820,6 +2853,7 @@ public class Utils {
                                     jsonObjectImage.optString("image_description"),
                                     jsonObjectImage.optString("image_taken"));
 
+
                             Config.fileModels.add(new FileModel(jsonObjectImage.optString("image_name"),
                                     jsonObjectImage.optString("image_url"), "IMAGE"));
 
@@ -2878,6 +2912,7 @@ public class Utils {
                                             jsonObjectMsFile.optString("file_desc"),
                                             jsonObjectMsFile.optString("file_path"),
                                             jsonObjectMsFile.optString("file_time"));
+
 
                                     Config.fileModels.add(new FileModel(jsonObjectMsFile.optString("file_name"),
                                             jsonObjectMsFile.optString("file_url"), jsonObjectMsFile.optString("file_type")));
@@ -3870,12 +3905,40 @@ public class Utils {
         return date; //
     }
 
+    public String convertDateToStringQueryDB(Date dtDate) {
+
+        String date = null;
+
+        try {
+            date = readFormatDB.format(dtDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //log("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
     public Date convertStringToDateQuery(String strDate) {
 
         Date date = null;
 
         try {
             date = queryFormat.parse(strDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //log("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
+    public Date convertStringToDateQueryDB(String strDate) {
+
+        Date date = null;
+
+        try {
+            date = queryFormatDB.parse(strDate);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -3891,57 +3954,30 @@ public class Utils {
         iMonth = iMonth; // - 1
 
         String strMonth = String.valueOf(iMonth);
-        String strMonthDate, strStartDate, strToDate, strEndDate;
+        String strMonthDate, strStartDate, strToDate, strEndDate, strEndDateDB, strStartDateDB, strToDateDB;
 
         if (iMonth <= 9)
             strMonth = String.valueOf("0" + iMonth);
+
+        strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
+
+        //String strFromDate = strMonthDate + "T05:30:00.000Z";
+
+        strStartDateDB = convertDateToStringQueryDB(convertStringToDateQueryDB(strMonthDate + "T00:00:00.000"));
+        //
+        strToDateDB = getMonthLastDate(strMonthDate);
+
+        log(strToDateDB, " EDATE ");
+
+        strEndDateDB = convertDateToStringQueryDB(convertStringToDateQueryDB(strToDateDB + "T24:00:00.00"));
+
+
         if (sessionManager.getActivityStatus()) {
             Cursor cursor = null;
             try {
 
-                strMonthDate = String.valueOf(iYear + "-" + strMonth + "-" + "01");
-
-                //String strFromDate = strMonthDate + "T05:30:00.000Z";
-                SimpleDateFormat readFormat =
-                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-                SimpleDateFormat queryFormat =
-                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-                Date strDate = (readFormat.parse(strMonthDate + " 00:00:00"));
-
-                strStartDate = queryFormat.format(strDate);
-
-                SimpleDateFormat readFormatDate =
-                        new SimpleDateFormat("yyyy-MM-dd", locale);
-                Date today = null;
-                try {
-                    today = readFormatDate.parse(strMonthDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(today);
-                calendar.add(Calendar.MONTH, 1);
-                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                int month = calendar.get(Calendar.MONTH) + 1;
-                int year = calendar.get(Calendar.YEAR);
-                String mnth = "";
-                if (month <= 9) {
-                    mnth = "0" + month;
-                } else {
-                    mnth = "" + month;
-                }
-                String lastDayOfMonth = year + "-" + mnth + "-01";
-
-                log(strStartDate, " Start Date ");
-
-                today = readFormat.parse(lastDayOfMonth + " 00:00:00");
-
-                strEndDate = queryFormat.format(today);
-                log(strEndDate, "LAST DATE ");
-
                 // WHERE clause
-                String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDate + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDate + "')";
+                String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDateDB + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDateDB + "')";
 
                 cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
 
@@ -3954,7 +3990,7 @@ public class Utils {
                             //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
                             // WHERE clause arguments
                             //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
-                            String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDate + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDate + "')";
+                            String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDateDB + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDateDB + "')";
 
                             //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
                             Cursor cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
@@ -4004,17 +4040,17 @@ public class Utils {
             }
         }
 
-        strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
-
-        //String strFromDate = strMonthDate + "T05:30:00.000Z";
-
-        strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
-        //
-        strToDate = getMonthLastDate(strMonthDate);
-
-        log(strToDate, " EDATE ");
-
-        strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
+//        strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
+//
+//        //String strFromDate = strMonthDate + "T05:30:00.000Z";
+//
+//        strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
+//        //
+//        strToDate = getMonthLastDate(strMonthDate);
+//
+//        log(strToDate, " EDATE ");
+//
+//        strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
 
         String key2 = "dependent_id";
 
@@ -4024,7 +4060,17 @@ public class Utils {
 
             StorageService storageService = new StorageService(_ctxt);
 
+            strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
 
+            //String strFromDate = strMonthDate + "T05:30:00.000Z";
+
+            strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
+            //
+            strToDate = getMonthLastDate(strMonthDate);
+
+            log(strToDate, " EDATE ");
+
+            strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
             //String value2 = Config.strDependentIds.get(iActivityCount);
 
             Query q1 = QueryBuilder.build(key2, Config.strDependentIds, QueryBuilder.Operator.INLIST);
@@ -4044,7 +4090,7 @@ public class Utils {
 
             if (sessionManager.getActivityStatus()) {
                 String defaultDate = null;
-                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification);
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionActivity);
                 if (cursorData != null && cursorData.getCount() > 0) {
                     cursorData.moveToFirst();
                     defaultDate = cursorData.getString(0);
@@ -4056,7 +4102,7 @@ public class Utils {
                     defaultDate = Utils.defaultDate;
                 }
 
-                Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
                 q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
             } else {
 

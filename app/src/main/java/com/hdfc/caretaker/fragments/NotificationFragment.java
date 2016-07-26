@@ -46,7 +46,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * <p/>
+ * <p>
  * to handle interaction events.
  * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -54,9 +54,10 @@ import java.util.ArrayList;
 public class NotificationFragment extends Fragment {
     public static ListView listViewActivities;
     public static NotificationAdapter notificationAdapter;
-    private Utils utils;
+    private static Utils utils;
     private SessionManager sessionManager;
     private ActivityModel activityModel = null;
+    public static LinearLayout dynamicUserTab;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -83,7 +84,7 @@ public class NotificationFragment extends Fragment {
 
         listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivity);
         TextView emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
-        LinearLayout dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
+        dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
 
         utils = new Utils(getActivity());
         sessionManager = new SessionManager(getActivity());
@@ -187,10 +188,18 @@ public class NotificationFragment extends Fragment {
         return rootView;
     }
 
+    public static void refreshNotification() {
+        try {
+            utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public ActivityModel getActivityModel(String activityId) {
         try {
-            activityModel =null;
+            activityModel = null;
             // storageService.findDocsByQuery(Config.collectionActivity, q5, //1 for descending
             //new App42CallBack()
             Query q3 = QueryBuilder.build("docId", activityId, QueryBuilder.Operator.EQUALS);
@@ -250,7 +259,7 @@ public class NotificationFragment extends Fragment {
                     }
             );
         } catch (Exception e) {
-            activityModel=null;
+            activityModel = null;
         }
         return activityModel;
     }

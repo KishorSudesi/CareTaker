@@ -35,7 +35,7 @@ import java.util.Locale;
 public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     private static final String dateTemplate = "MMMM yyyy";
-    static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
+   public static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     static int month, year;
     private static TextView currentMonth;
     private static Calendar calendar;

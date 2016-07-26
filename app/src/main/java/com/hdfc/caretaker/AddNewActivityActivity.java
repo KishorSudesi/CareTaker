@@ -35,18 +35,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddNewActivityActivity extends AppCompatActivity {
 
     public static ServiceModel selectedServiceModel = null;
     private static ProgressDialog progressDialog;
-    private static ArrayList<String> strServcieIds = new ArrayList<>();
-    private static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
-    private static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
+    private static List<String> strServcieIds = new ArrayList<>();
+    private static List<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
+    private static List<String> strServiceCategoryNames = new ArrayList<>();
     private Utils utils;
 
     private List<String> listDataHeader = new ArrayList<>();
-    private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
+    private Map<String, List<ServiceModel>> listDataChild = new HashMap<>();
 
     private Button buttonContinue;
 
@@ -134,7 +135,6 @@ public class AddNewActivityActivity extends AppCompatActivity {
                             buttonContinue.setVisibility(View.VISIBLE);
 
 
-
                     } else {
                         utils.toast(2, 2, "In Progress");
                     }
@@ -219,9 +219,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     do {
                         JSONObject jsonObjectServcies = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
 
-                        if (jsonObjectServcies.has("unit")) {
-                            createActivityServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
-                        }
+                        // if (jsonObjectServcies.has("unit")) {
+                        createActivityServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
+                        //}
                     } while (cursor.moveToNext());
                     refreshAdapter();
                     cursor.close();
@@ -276,23 +276,23 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                                 try {
                                     JSONObject jsonObjectServcies = new JSONObject(strServices);
-                                    if (jsonObjectServcies.has("unit")) {
-                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", "",""};
-                                        if (sessionManager.getServiceCustomer()) {
-                                            String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+                                    // if (jsonObjectServcies.has("unit")) {
+                                    String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", "", ""};
+                                    if (sessionManager.getServiceCustomer()) {
+                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 
-                                            // WHERE clause arguments
-                                            String[] selectionArgs = {strDocumentId};
-                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
-                                        } else {
-                                            createActivityServiceModel(strDocumentId,
-                                                    jsonObjectServcies);
-                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
-
-                                        }
-
+                                        // WHERE clause arguments
+                                        String[] selectionArgs = {strDocumentId};
+                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                    } else {
+                                        createActivityServiceModel(strDocumentId,
+                                                jsonObjectServcies);
+                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
 
                                     }
+
+
+                                    // }
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -562,41 +562,42 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                         getJSONArray("values")));
                             }
 
-                            if (jsonObjectField.has("child")) {
 
-                                try {
-                                    fieldModel.setChild(jsonObjectField.getBoolean("child"));
-                                } catch (Exception e) {
-                                    int i;
-                                    try {
-                                        i = jsonObjectField.getInt("child");
-                                        if (i == 1)
-                                            fieldModel.setChild(true);
-                                        else
-                                            fieldModel.setChild(false);
+                            try {
+                                if (jsonObjectField.has("child")) {
+                                    boolean hasChild = false;
+                                    Object aObj = jsonObjectField.get("child");
+                                    if (aObj instanceof Integer) {
+                                        hasChild = jsonObjectField.getInt("child") == 1 ? true : false;
 
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
+                                    } else if (aObj instanceof Boolean) {
+                                        hasChild = jsonObjectField.getBoolean("child");
+
                                     }
+
+                                    fieldModel.setChild(hasChild);
+
+
+                                    if (jsonObjectField.has("child_type"))
+                                        fieldModel.setStrChildType(utils.jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_type")));
+
+                                    if (jsonObjectField.has("child_value"))
+                                        fieldModel.setStrChildValue(utils.jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_value")));
+
+                                    if (jsonObjectField.has("child_condition"))
+                                        fieldModel.setStrChildCondition(utils.jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_condition")));
+
+                                    if (jsonObjectField.has("child_field"))
+                                        fieldModel.setiChildfieldID(utils.jsonToIntArray(jsonObjectField.
+                                                getJSONArray("child_field")));
                                 }
-
-                                if (jsonObjectField.has("child_type"))
-                                    fieldModel.setStrChildType(utils.jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_type")));
-
-                                if (jsonObjectField.has("child_value"))
-                                    fieldModel.setStrChildValue(utils.jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_value")));
-
-                                if (jsonObjectField.has("child_condition"))
-                                    fieldModel.setStrChildCondition(utils.jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_condition")));
-
-                                if (jsonObjectField.has("child_field"))
-                                    fieldModel.setiChildfieldID(utils.jsonToIntArray(jsonObjectField.
-                                            getJSONArray("child_field")));
-                            }
 //
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             if (jsonObjectField.has("array_fields")) {
 
                                 try {

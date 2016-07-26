@@ -186,6 +186,7 @@
     <string name="menu_seniors">Care Recipients</string>
     <string name="menu_notification">Status</string>
     <string name="menu_account">My Account</string>
+    <string name="menu_sync">Sync</string>
 
     <!--Warning Strings-->
     <string name="warning_profile_pic">We need a Profile Picture</string>

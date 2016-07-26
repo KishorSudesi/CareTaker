@@ -473,7 +473,8 @@ public class LoginActivity extends AppCompatActivity {
                                 User user = (User) o;
 
                                 ArrayList<String> roleList = user.getRoleList();
-
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
                                 //todo check rolelist
                                 //Utils.log(String.valueOf(roleList.size()), " ROLE ");
                                 //roleList.size()>0 && roleList.get(0).equalsIgnoreCase("provider");

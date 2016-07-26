@@ -13,7 +13,6 @@ import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -116,15 +115,15 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.dateNumber.setText(strTimeStamp.substring(8, 10));
 
-            String strMonthYear = "";
-
-            Date fullDate = utils.convertStringToDate(strTimeStamp);
-            String strFullTimeStamp = utils.convertDateToStringFormat(fullDate, Utils.writeFormat);
-
+            String strMonthYear = "", strFullTimeStamp = "";
             try {
+                Date fullDate = utils.convertStringToDate(strTimeStamp);
+                strFullTimeStamp = utils.convertDateToStringFormat(fullDate, Utils.writeFormat);
+
+
                 date = Utils.readFormatDate.parse(strTimeStamp.substring(0, 10));
                 strMonthYear = Utils.writeFormatMonth.format(date);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

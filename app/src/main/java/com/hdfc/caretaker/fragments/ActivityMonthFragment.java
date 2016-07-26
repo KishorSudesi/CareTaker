@@ -191,20 +191,21 @@ public class ActivityMonthFragment extends Fragment {
                                 //todo check string
                                 Date fullDate = utils.convertStringToDate(strTimeStamp);
                                 //String strFullTimeStamp = utils.convertDateToStringFormat(fullDate, Utils.readFormat);
+                                if (fullDate != null) {
+                                    String strActivityMonth = writeFormatMonth.format(fullDate);
 
-                                String strActivityMonth = writeFormatMonth.format(fullDate);
-
-                                int iActivityYear = Integer.parseInt(writeFormatYear.format(fullDate));
-                                int iActivityDate = Integer.parseInt(writeFormatDate.format(fullDate));
+                                    int iActivityYear = Integer.parseInt(writeFormatYear.format(fullDate));
+                                    int iActivityDate = Integer.parseInt(writeFormatDate.format(fullDate));
 
                              /*   Utils.log(String.valueOf(iActivityYear + " == " + theyear + " && "
                                         + strActivityMonth + " EQS " + themonth + " && " + iActivityDate
                                         + " == " + theday), " Compare ");*/
 
-                                if (iActivityYear == theyear &&
-                                        strActivityMonth.trim().equalsIgnoreCase(themonth) &&
-                                        iActivityDate == theday) {
-                                    activitiesModelSelected.add(activityModel);
+                                    if (iActivityYear == theyear &&
+                                            strActivityMonth.trim().equalsIgnoreCase(themonth) &&
+                                            iActivityDate == theday) {
+                                        activitiesModelSelected.add(activityModel);
+                                    }
                                 }
                             }
                         } catch (Exception e) {

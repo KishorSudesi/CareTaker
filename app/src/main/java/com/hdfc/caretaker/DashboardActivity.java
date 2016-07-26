@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -26,8 +27,12 @@ import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.Config;
 import com.hdfc.libs.SessionManager;
+import com.hdfc.libs.UpdateService;
 import com.hdfc.libs.Utils;
 import com.shephertz.app42.paas.sdk.android.App42API;
+
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by user on 08-01-2016.
@@ -38,7 +43,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     private static ProgressDialog progressDialog;
     private static AppCompatActivity appCompatActivity;
 
-    private static ImageButton buttonActivity, buttonNotifications, buttonAccount, buttonSeniors;
+    private static ImageButton buttonActivity, buttonNotifications, buttonAccount, buttonSeniors, buttonSync;
     private static TextView txtViewActivity, textViewNotifications, textViewAccount, textViewSeniors;
 
     private static Context context;
@@ -92,6 +97,50 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     }
 
+    public void refreshActivityView() {
+        try {
+
+            if (Config.intSelectedMenu == Config.intActivityScreen ||
+                    Config.intSelectedMenu == Config.intListActivityScreen) {
+                // Config.intSelectedMenu = 0;
+                Log.i("TAG", "In refreshActivityView");
+                Calendar calendar = Calendar.getInstance(Locale.getDefault());
+                int month = calendar.get(Calendar.MONTH) + 1;
+                int year = calendar.get(Calendar.YEAR);
+                ActivityFragment.refreshData(month, year);
+            } else if (Config.intSelectedMenu == Config.intNotificationScreen) {
+                NotificationFragment.refreshNotification();
+            } else if (!AccountSuccessActivity.isCreatedNow &&
+                    Config.intSelectedMenu == Config.intDashboardScreen) {
+
+                   /* threadHandler = new ThreadHandler();
+                    Thread backgroundThread = new BackgroundThread();
+                    backgroundThread.start();*/
+
+
+                loadingPanel.setVisibility(View.VISIBLE);
+                /*progressDialog.setMessage(getResources().getString(R.string.loading));
+                progressDialog.setCancelable(false);
+                progressDialog.show();*/
+
+
+                Utils.iActivityCount = 0;
+                Utils.iProviderCount = 0;
+
+                utils.fetchDependents(Config.customerModel.getStrCustomerID(),
+                        progressDialog, 0);
+
+            } else {
+                //Config.intSelectedMenu = 0;
+                if (Config.intSelectedMenu == Config.intDashboardScreen)
+                    goToDashboard();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void setMenu() {
         buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity));
         buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
@@ -120,6 +169,8 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         buttonSeniors = (ImageButton) findViewById(R.id.buttonSeniors);
         textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
+
+        buttonSync = (ImageButton) findViewById(R.id.buttonSync);
 
         context = this;
 
@@ -209,6 +260,18 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 public void onClick(View v) {
                     //Config.intSelectedMenu = 0;
                     goToDashboardMenu();
+                }
+            });
+        }
+
+        if (buttonSync != null) {
+            buttonSync.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadingPanel.setVisibility(View.VISIBLE);
+                    Intent in = new Intent(DashboardActivity.this, UpdateService.class);
+                    in.putExtra("updateAll", true);
+                    startService(in);
                 }
             });
         }

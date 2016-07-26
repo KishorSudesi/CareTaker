@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.hdfc.libs.UpdateService;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
@@ -152,10 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
                     Config.strUserName = sessionManager.getEmail();
                     utils.fetchCustomer(new ProgressDialog(MainActivity.this), 1);
-                    Intent in=new Intent(MainActivity.this, UpdateService.class);
-                    in.putExtra("updateAll",true);
-                    startService(in);
-                    finish();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

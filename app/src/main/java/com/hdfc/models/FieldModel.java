@@ -19,7 +19,7 @@ public class FieldModel implements Serializable {
     private String strArrayType[];
     private int iArrayCount;
 
-    private boolean isChild;
+    private boolean isChild=false;
     private String strChildType[];
     private String strChildValue[];
     private String strChildCondition[];

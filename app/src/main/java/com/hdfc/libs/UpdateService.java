@@ -9,8 +9,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 
 import com.hdfc.app42service.StorageService;
+import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
@@ -124,12 +126,13 @@ public class UpdateService extends Service {
                 //updateCustomers();
                 //updateDependents();
                 //updateProviders();
+                if (updateAll) {
+                    updateCustomers();
+                } else {
 
+                    updateActivities();
 
-                updateActivities();
-                // updateServiceCustomer();
-                updateNotifications();
-                //updateServices();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -164,6 +167,7 @@ public class UpdateService extends Service {
 
                                 if (response.getJsonDocList().size() > 0) {
                                     Log.i("TAG", "Service update customer");
+
                                     Storage.JSONDocument jsonDocument = response.getJsonDocList().
                                             get(0);
 
@@ -177,8 +181,9 @@ public class UpdateService extends Service {
                                             // WHERE clause arguments
                                             String[] selectionArgs = {jsonDocument.getDocId()};
                                             CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                            Config.customerModel = null;
+                                            utils.createCustomerModel(jsonDocument.getDocId(), strDocument);
                                         } else {
-                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
 
                                         }
 
@@ -193,18 +198,23 @@ public class UpdateService extends Service {
                             } else {
 
                             }
+                            updateDependents();
                         }
 
                         @Override
                         public void onInsertionFailed(App42Exception ex) {
+                            updateDependents();
                         }
+
 
                         @Override
                         public void onFindDocFailed(App42Exception ex) {
+                            updateDependents();
                         }
 
                         @Override
                         public void onUpdateDocFailed(App42Exception ex) {
+                            updateDependents();
                         }
                     });
         } else {
@@ -250,6 +260,7 @@ public class UpdateService extends Service {
                             if (storage.getJsonDocList().size() > 0) {
 
                                 try {
+
                                     CareTaker.dbCon.beginDBTransaction();
                                     for (int i = 0; i < storage.getJsonDocList().size(); i++) {
 
@@ -269,7 +280,6 @@ public class UpdateService extends Service {
 
                                         } else {
 
-                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
                                         }
                                     }
                                     CareTaker.dbCon.dbTransactionSucessFull();
@@ -291,12 +301,12 @@ public class UpdateService extends Service {
 
                         }
 
-
+                        updateProviders();
                     }
 
                     @Override
                     public void onException(Exception e) {
-
+                        updateProviders();
                     }
                 });
 
@@ -363,7 +373,7 @@ public class UpdateService extends Service {
 
                     if (sessionManager.getActivityStatus()) {
                         String defaultDate = null;
-                        Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification);
+                        Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionActivity);
                         if (cursorData != null && cursorData.getCount() > 0) {
                             cursorData.moveToFirst();
                             defaultDate = cursorData.getString(0);
@@ -375,7 +385,7 @@ public class UpdateService extends Service {
                             defaultDate = Utils.defaultDate;
                         }
 
-                        Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                        Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
                         q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
                     } else {
 
@@ -435,11 +445,22 @@ public class UpdateService extends Service {
 
                                     }
 
+
+                                    if (updateAll) {
+                                        updateServices();
+                                    } else {
+                                        updateNotifications();
+                                    }
+
                                 }
 
                                 @Override
                                 public void onException(Exception e) {
-
+                                    if (updateAll) {
+                                        updateServices();
+                                    } else {
+                                        updateNotifications();
+                                    }
 
                                 }
                             }
@@ -510,7 +531,6 @@ public class UpdateService extends Service {
                                             CareTaker.dbCon.endDBTransaction();
 
                                         }
-                                        stopSelf();
                                     } catch (Exception e) {
 
                                     }
@@ -519,12 +539,12 @@ public class UpdateService extends Service {
                                     // utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
 
-
+                                updateServiceCustomer();
                             }
 
                             @Override
                             public void onException(Exception e) {
-                                stopSelf();
+                                updateServiceCustomer();
                             }
                         }
 
@@ -570,6 +590,7 @@ public class UpdateService extends Service {
                                 ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
 
                                 CareTaker.dbCon.beginDBTransaction();
+
                                 for (int i = 0; i < jsonDocList.size(); i++) {
 
                                     Storage.JSONDocument jsonDocument = jsonDocList.get(i);
@@ -578,7 +599,7 @@ public class UpdateService extends Service {
 
                                     try {
                                         JSONObject jsonObjectServcies = new JSONObject(strServices);
-                                        if (jsonObjectServcies.has("unit")) {
+                                        //if (jsonObjectServcies.has("unit")) {
                                             String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", "", ""};
 
                                             String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
@@ -588,7 +609,7 @@ public class UpdateService extends Service {
                                             CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
 
                                             sessionManager.saveServiceCustomer(true);
-                                        }
+                                        //}
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -603,12 +624,14 @@ public class UpdateService extends Service {
                             e.printStackTrace();
                         } finally {
                             CareTaker.dbCon.endDBTransaction();
-
+                            updateNotifications();
                         }
+
                     }
 
                     @Override
                     public void onException(Exception e) {
+                        updateNotifications();
                     }
                 });
 
@@ -666,6 +689,7 @@ public class UpdateService extends Service {
                                         Storage storage = (Storage) o;
                                         try {
                                             if (storage.getJsonDocList().size() > 0) {
+
                                                 CareTaker.dbCon.beginDBTransaction();
                                                 for (int i = 0; i < storage.getJsonDocList().size(); i++) {
 
@@ -685,7 +709,6 @@ public class UpdateService extends Service {
                                                         String[] selectionArgs = {strProviderDocId};
                                                         CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
                                                     } else {
-                                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
 
                                                     }
 
@@ -705,12 +728,14 @@ public class UpdateService extends Service {
                                     e.printStackTrace();
 
                                 }
+                                updateActivities();
                             }
 
                             @Override
                             public void onException(Exception e) {
                                     /*if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
+                                updateActivities();
                             }
                         });
             }
@@ -762,6 +787,7 @@ public class UpdateService extends Service {
                                             Log.i("TAG", "Service update notifications");
 
                                             if (storage.getJsonDocList().size() > 0) {
+
                                                 CareTaker.dbCon.beginDBTransaction();
                                                 ArrayList<Storage.JSONDocument> jsonDocList = storage.
                                                         getJsonDocList();
@@ -784,22 +810,25 @@ public class UpdateService extends Service {
                                             e.printStackTrace();
                                         } finally {
                                             CareTaker.dbCon.endDBTransaction();
+                                            dismissDialog();
                                             stopSelf();
                                         }
 
                                     } else {
+                                        dismissDialog();
                                         stopSelf();
                                     }
                                 }
 
                                 @Override
                                 public void onException(Exception e) {
+                                    dismissDialog();
                                     stopSelf();
 
                                 }
                             });
 
-                } else if(Config.strDependentIds!=null && Config.strDependentIds.size()>0){
+                } else if (Config.strDependentIds != null && Config.strDependentIds.size() > 0) {
 
                     // for (j = 0; j < Config.strDependentIds.size(); j++) {
                     storageService = null;
@@ -860,18 +889,20 @@ public class UpdateService extends Service {
                                             e.printStackTrace();
                                         } finally {
                                             CareTaker.dbCon.endDBTransaction();
+                                            dismissDialog();
                                             stopSelf();
 
                                         }
 
                                     } else {
+                                        dismissDialog();
                                         stopSelf();
                                     }
                                 }
 
                                 @Override
                                 public void onException(Exception e) {
-
+                                    dismissDialog();
                                     stopSelf();
                                 }
                             });
@@ -880,6 +911,27 @@ public class UpdateService extends Service {
                 }
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void dismissDialog() {
+        try {
+            Log.i("TAG","In dissmiss dialog");
+            if (DashboardActivity.loadingPanel != null && DashboardActivity.loadingPanel.getVisibility() == View.VISIBLE && updateAll) {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            }
+
+            try {
+                if (updateAll) {
+                    DashboardActivity activity = new DashboardActivity();
+                    activity.refreshActivityView();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

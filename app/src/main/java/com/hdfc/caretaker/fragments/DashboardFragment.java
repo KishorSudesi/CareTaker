@@ -392,9 +392,9 @@ public class DashboardFragment extends Fragment {
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                         if (!sessionManager.getCheckInCareStatus()) {
                                             sessionManager.saveCheckInCareStatus(true);
-                                            //DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                             checkInCare.setVisibility(View.VISIBLE);
                                         }
 

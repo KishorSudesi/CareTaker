@@ -68,10 +68,18 @@ public class AccountSuccessActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();*/
 
-            threadHandler = new ThreadHandler();
-            Thread backgroundThread = new BackgroundThread();
-            backgroundThread.start();
+//            threadHandler = new ThreadHandler();
+//            Thread backgroundThread = new BackgroundThread();
+//            backgroundThread.start();
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
 
+            Intent dashboardIntent = new Intent(AccountSuccessActivity.this, DashboardActivity.class);
+            Config.intSelectedMenu = Config.intDashboardScreen;
+            Config.boolIsLoggedIn = true;
+            isCreatedNow = true;
+            startActivity(dashboardIntent);
+            finish();
         } catch (Exception e) {
             logout();
         }
