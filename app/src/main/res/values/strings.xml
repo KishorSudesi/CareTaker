@@ -76,6 +76,7 @@
     <string name="your_details_saved">Your Details Saved</string>
     <string name="dependents">Care Recipients</string>
     <string name="number">9874560123</string>
+    <string name="hint_number">Enter Contact Number</string>
     <string name="gurunathan">Mr.Gurunathan</string>
     <string name="string_email">abc@xyz.com</string>
     <string name="search_contacts">Search from Contacts</string>

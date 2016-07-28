@@ -79,6 +79,7 @@
             </HorizontalScrollView>
 
         </LinearLayout>
+
         <ScrollView
             android:id="@+id/scrollCheckInCare"
             android:layout_width="match_parent"
@@ -227,44 +228,48 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/homeessentials"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="40dp"
+                        android:background="@drawable/table_row"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/tvUtilityBillStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_general"
-                            android:layout_weight="1"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:drawablePadding="10dp"
+                            android:gravity="center"
                             android:padding="@dimen/margin_general"
                             android:text="Utility Bills"
-                            android:textAppearance="?android:attr/textAppearanceMedium" />
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textStyle="bold" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
                     <TableLayout
                         android:id="@+id/table3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/homeessentials"
-                        android:layout_marginTop="2dp"
-                        android:padding="@dimen/padding_general">
+                        android:layout_below="@+id/homeessentials">
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
                             <TextView
                                 android:id="@+id/tvWaterBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+
                                 android:layout_weight="1"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick_disable"
                                 android:padding="@dimen/margin_general"
                                 android:text="Water"
@@ -274,8 +279,9 @@
                                 android:id="@+id/tvGasBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+
                                 android:layout_weight="1"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick"
                                 android:padding="@dimen/margin_general"
                                 android:text="Gas"
@@ -286,14 +292,16 @@
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
                             <TextView
                                 android:id="@+id/tvElectricityBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+
                                 android:layout_weight="1"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick_disable"
                                 android:padding="@dimen/margin_general"
                                 android:text="Electricity"
@@ -303,8 +311,9 @@
                                 android:id="@+id/tvPhoneBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+
                                 android:layout_weight="1"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick"
                                 android:padding="@dimen/margin_general"
                                 android:text="Phone"
@@ -312,27 +321,19 @@
 
                         </TableRow>
 
-                    </TableLayout>
-
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/table3"
-                        android:layout_marginTop="2dp"
-                        android:background="@drawable/bottom_border_grey"
-                        android:padding="@dimen/padding_general">
-
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
                             <TextView
                                 android:id="@+id/tvKitchenItems"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+
                                 android:layout_weight="1"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick"
                                 android:padding="@dimen/margin_general"
                                 android:text="Kitchen Items"
@@ -342,8 +343,9 @@
                                 android:id="@+id/tvGrocery"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+
                                 android:layout_weight="1"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick_disable"
                                 android:padding="@dimen/margin_general"
                                 android:text="Grocery"
@@ -352,6 +354,7 @@
                         </TableRow>
 
                     </TableLayout>
+
 
                 </RelativeLayout>
 
@@ -389,11 +392,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:background="@drawable/bottom_border_grey"
-                        android:padding="@dimen/padding_general">
+                        >
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+
+                            android:background="@drawable/table_row_item"
                             android:layout_gravity="center">
 
                             <TextView
@@ -401,7 +406,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_margin="@dimen/margin_general"
+                                android:padding="5dp"
                                 android:drawablePadding="10dp"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Maid Services"
@@ -423,6 +428,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
+                        android:layout_marginBottom="5dp"
                         android:layout_height="40dp">
 
                         <TextView
@@ -446,19 +452,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
-                        android:padding="@dimen/padding_general">
+                        >
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
                             <TextView
                                 android:id="@+id/tvElectronics"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+                                android:background="@drawable/table_row_item"
                                 android:layout_weight="1"
+                                android:padding="5dp"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Electronics"
                                 android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -467,8 +475,9 @@
                                 android:id="@+id/tvAutomobiles"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+                                android:background="@drawable/table_row_item"
                                 android:layout_weight="1"
+                                android:padding="5dp"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Automobiles"
                                 android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -477,13 +486,15 @@
 
                         <TableRow
                             android:layout_width="match_parent"
+                            android:background="@drawable/table_row"
                             android:layout_height="wrap_content">
 
                             <TextView
                                 android:id="@+id/tvHomeAppliances"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/margin_general"
+                                android:padding="5dp"
+                                android:background="@drawable/table_row_item"
                                 android:drawablePadding="10dp"
                                 android:drawableRight="@drawable/tick_red"
                                 android:text="Home Appliances"
