@@ -2474,7 +2474,9 @@ public class Utils {
                     Config.categoryServiceModels.add(categoryServiceModel);
                 } else {
                     int iPosition = Config.strServiceCategoryNames.indexOf(jsonObject.optString("category_name"));
-                    Config.categoryServiceModels.get(iPosition).setServiceModels(serviceModel);
+
+                    if (iPosition > 0 && iPosition < Config.categoryServiceModels.size())
+                        Config.categoryServiceModels.get(iPosition).setServiceModels(serviceModel);
                 }
                 //
             }

@@ -85,6 +85,18 @@ public class CompletedActivity extends AppCompatActivity {
     private TextView tvTasks;
     private TextView smileyMessage;
     private LinearLayout linearLayoutRatingAdd;
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+
+
+            if (bitmap != null)
+                imageViewCarla.setImageBitmap(bitmap);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +220,9 @@ public class CompletedActivity extends AppCompatActivity {
             if (activityModel != null) {
 
                 int iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
-                strCarlaImageUrl = Config.providerModels.get(iPosition).getStrImgUrl();
+
+                if (iPosition > -1 && iPosition < Config.providerModels.size())
+                    strCarlaImageUrl = Config.providerModels.get(iPosition).getStrImgUrl();
                 String strDate = "\n" + utils.formatDate(activityModel.getStrActivityDate());
                 if (txtAdditionalServices != null) {
                     txtAdditionalServices.setText(activityModel.getStrActivityName() + strDate);
@@ -217,7 +231,11 @@ public class CompletedActivity extends AppCompatActivity {
                     txtViewHead2.setText(activityModel.getStrActivityName());
                     txtViewHead2.setVisibility(View.GONE);
                 }
-                String strHead = getResources().getString(R.string.assisted_by) + Config.providerModels.get(iPosition).getStrName();
+                String strHead = getResources().getString(R.string.assisted_by);
+
+                if (iPosition > -1 && iPosition < Config.providerModels.size())
+                    strHead += Config.providerModels.get(iPosition).getStrName();
+
                 if (txtViewHead1 != null) {
                     txtViewHead1.setText(strHead);
                 }
@@ -365,19 +383,6 @@ public class CompletedActivity extends AppCompatActivity {
         }
 
     }
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
-
-
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
-        }
-    };
 
     private void loadImageSimpleTarget(String url) {
 

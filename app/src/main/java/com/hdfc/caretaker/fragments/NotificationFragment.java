@@ -1,7 +1,6 @@
 package com.hdfc.caretaker.fragments;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -37,6 +36,8 @@ import com.shephertz.app42.paas.sdk.android.storage.Query;
 import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
+import net.sqlcipher.Cursor;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,10 +55,10 @@ import java.util.ArrayList;
 public class NotificationFragment extends Fragment {
     public static ListView listViewActivities;
     public static NotificationAdapter notificationAdapter;
+    public static LinearLayout dynamicUserTab;
     private static Utils utils;
     private SessionManager sessionManager;
     private ActivityModel activityModel = null;
-    public static LinearLayout dynamicUserTab;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -68,6 +69,14 @@ public class NotificationFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void refreshNotification() {
+        try {
+            utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -111,6 +120,7 @@ public class NotificationFragment extends Fragment {
                     String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId() + "'";
 
                     Cursor cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
+                    Cursor cursorMilestone = null;
 
                     if (cursor != null && cursor.getCount() > 0) {
                         Log.i("TAG", "cursor count:" + cursor.getCount());
@@ -124,7 +134,7 @@ public class NotificationFragment extends Fragment {
                                 String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "'";
 
                                 //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
-                                Cursor cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
+                                cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
                                 JSONArray jArray = new JSONArray();
                                 int index = 0;
                                 if (cursorMilestone != null && cursorMilestone.getCount() > 0) {
@@ -148,6 +158,8 @@ public class NotificationFragment extends Fragment {
                                 activityModel = createActivityModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)), 1, jArray);
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+                                CareTaker.dbCon.closeCursor(cursorMilestone);
                             }
 
 
@@ -187,15 +199,6 @@ public class NotificationFragment extends Fragment {
 
         return rootView;
     }
-
-    public static void refreshNotification() {
-        try {
-            utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public ActivityModel getActivityModel(String activityId) {
         try {

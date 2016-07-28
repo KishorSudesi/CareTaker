@@ -135,7 +135,10 @@ public class NotificationAdapter extends BaseAdapter {
 
                     if (mNotifyPosition > -1 && mNotifyPosition < Config.providerModels.size())
                         strName = Config.providerModels.get(mNotifyPosition).getStrName();
-                    strUrl = Config.providerModels.get(mNotifyPosition).getStrImgUrl();
+
+                    if (mNotifyPosition > -1 && mNotifyPosition < Config.providerModels.size())
+                        strUrl = Config.providerModels.get(mNotifyPosition).getStrImgUrl();
+
                 }
             }
 
