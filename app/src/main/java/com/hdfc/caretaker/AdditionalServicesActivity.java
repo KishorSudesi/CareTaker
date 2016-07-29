@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -277,7 +278,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         progressDialog.show();*/
 
         loadingPanel.setVisibility(View.VISIBLE);
-
+        Log.i("TAG", "Session manager" + sessionManager.getServiceStatus() + " list size :" + Config.categoryServiceModels.size());
         if (sessionManager.getServiceStatus()) {
             try {
 
@@ -375,7 +376,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                                 updateInsertData(o, INSERT);
 
                             } else {
-                               // utils.toast(2, 2, getString(R.string.warning_internet));
+                                // utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
 
@@ -434,7 +435,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         JSONObject jsonObjectServcies = new JSONObject(strServices);
 
                         if (jsonObjectServcies.has("unit")) {
-                            String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionService, "1", "","",""};
+                            String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionService, "1", "", "", ""};
                             if (actionType == UPDATE) { // WHERE clause
                                 String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 

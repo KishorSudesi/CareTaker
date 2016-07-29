@@ -31,6 +31,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -696,6 +697,9 @@ public class Utils {
     public static void logout() {
         try {
             CareTaker.dbCon.delete(DbHelper.strTableNameCollection, null, null);
+            //todo clear shared pref.
+            sessionManager.logoutUser();
+            sessionManager = null;
             Config.intSelectedMenu = 0;
             //Config.intDependentsCount = 0;
 
@@ -710,7 +714,7 @@ public class Utils {
             Config.strActivityIds.clear();
             Config.strProviderIds.clear();
             Config.strProviderIdsAdded.clear();
-
+            Config.strServiceCategoryNames.clear();
 
             Config.intSelectedDependent = 0;
 
@@ -721,9 +725,6 @@ public class Utils {
 
             Config.fileModels.clear();
 
-            //todo clear shared pref.
-            sessionManager.logoutUser();
-
             if (CareTaker.dbCon != null) {
                 //CareTaker.dbCon.close();
             }
@@ -732,13 +733,13 @@ public class Utils {
             File fileImage = createFileInternal("images/");
             deleteAllFiles(fileImage);
 
-
             Intent dashboardIntent = new Intent(_ctxt, LoginActivity.class);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             _ctxt.startActivity(dashboardIntent);
             ((Activity) _ctxt).finish();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1071,15 +1072,40 @@ public class Utils {
             mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }*/
+    public boolean isValidAreaCode(String number) {
+        if (number == null) {
+            return false;
+        } else {
+
+            if (number.length() > 1) {
+                return true;
+
+
+            } else {
+                return false;
+            }
+        }
+
+    }
+
     public boolean validCellPhone(String number) {
         //return android.util.Patterns.PHONE.matcher(number).matches();
 
         boolean isValid = false;
 
-        if (number.length() >= 6 && number.length() <= 15)
-            isValid = true;
+//        if (number.length() >= 6 && number.length() <= 15)
+//            isValid = true;
 
-        return isValid;
+        if (number == null) {
+            return false;
+        } else {
+            if (number.length() < 6 || number.length() > 13) {
+                return false;
+            } else {
+                return android.util.Patterns.PHONE.matcher(number).matches();
+            }
+        }
+
     }
 
     public boolean validateMobile(String number) {
@@ -1431,13 +1457,14 @@ public class Utils {
 
             Button bt = new Button(_ctxt);
             bt.setId(i);
-            bt.setText(Config.dependentModels.get(i).getStrName());
+            bt.setText((Config.dependentModels.get(i).getStrName()).toUpperCase());
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
             params.setMargins(1, 10, 7, 0);
             bt.setLayoutParams(params);
-            bt.setAllCaps(false);
+            bt.setAllCaps(true);
+            bt.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             bt.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
             // bt.setTextColor(Color.parseColor("white"));
             bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
@@ -1891,6 +1918,7 @@ public class Utils {
             iActivityCount = 0;
             iProviderCount = 0;
         }
+        this.progressDialog=progressDialog;
 
         try {
             if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
@@ -2113,8 +2141,7 @@ public class Utils {
                             @Override
                             public void onFindDocSuccess(Storage response) {
 
-                            /*if (progressDialog.isShowing())
-                                progressDialog.dismiss();*/
+
                                 //                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                                 if (response != null) {
@@ -2165,11 +2192,7 @@ public class Utils {
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-                                        if (iFlag == 1) {
-                                            if (DashboardActivity.loadingPanel != null) {
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                            }
-                                        }
+
                                         if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
 
                                         } else {
@@ -2182,7 +2205,12 @@ public class Utils {
                                                     //todo add logic for taking to dependent add screen
                                                 }
 
+                                                if (iFlag == 1) {
+                                                    if (DashboardActivity.loadingPanel != null) {
+                                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                    }
 
+                                                }
                                                 goToDashboard();
                                             }
                                         }
@@ -2214,8 +2242,12 @@ public class Utils {
 
                             @Override
                             public void onFindDocFailed(App42Exception ex) {
-                            /*if (progressDialog.isShowing())
-                                progressDialog.dismiss();*/
+                                try {
+                                    if (progressDialog!=null && progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 if (iFlag == 1) {
                                     if (DashboardActivity.loadingPanel != null) {
                                         DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -2249,8 +2281,12 @@ public class Utils {
                             }
                         });
             } else {
-                /*if (progressDialog.isShowing())
-                    progressDialog.dismiss();*/
+                try {
+                    if (progressDialog!=null && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (iFlag == 1) {
                     if (DashboardActivity.loadingPanel != null)
                         DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -3707,6 +3743,13 @@ public class Utils {
     public void goToDashboard() {
 
         try {
+            try {
+                if (progressDialog!=null && progressDialog.isShowing())
+                    progressDialog.dismiss();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             Config.intSelectedMenu = Config.intDashboardScreen;
 
             toast(1, 1, _ctxt.getString(R.string.success_login));

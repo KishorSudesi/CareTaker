@@ -64,7 +64,7 @@ public class SessionManager {
     public final String KEY_OLD_PASSWORD = "old_password";
 
     public final String KEY_UPDATED_DEPENDENTS = "updated_dependents";
-    public final String KEY_CHECKIN_CARE_STATUS= "checkin_care_status";
+    public final String KEY_CHECKIN_CARE_STATUS = "checkin_care_status";
 
     // Constructor
     public SessionManager(Context context) {
@@ -114,6 +114,19 @@ public class SessionManager {
      */
     public void logoutUser() {
         // Clearing all data from Shared Preferences
+        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        editor = pref.edit();
+        editor.remove(KEY_SERVICE_SAVED);
+        editor.remove(KEY_CHECKIN_CARE_STATUS);
+        editor.remove(KEY_UPDATED_DEPENDENTS);
+        editor.remove(KEY_ACTIVITY_SAVED);
+        editor.remove(KEY_CUST_ID);
+        editor.remove(KEY_DEPENDENTS_IDS);
+        editor.remove(KEY_DEPENDENTS_SAVED);
+        editor.remove(KEY_NOTIFICATION_SAVED);
+        editor.remove(KEY_SERVICE_CUSTOMER);
+        editor.remove(KEY_PROVIDERS_IDS);
+        editor.remove(KEY_PROVIDER_SAVED);
         editor.clear();
         editor.commit();
 
@@ -229,6 +242,7 @@ public class SessionManager {
         // return customer id
         return pref.getBoolean(KEY_SERVICE_SAVED, false);
     }
+
     /**
      * save checkin care status
      */

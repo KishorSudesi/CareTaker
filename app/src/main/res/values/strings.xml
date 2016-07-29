@@ -165,6 +165,7 @@
     <string name="email__already_exists">Email Id Already Exists Please Proceed to Login</string>
 
     <string name="error_field_required">This Field is Required</string>
+    <string name="error_wrong_date">Enter Current or Future Date and Time</string>
     <string name="error">Something went wrong. Please try Again!!!</string>
     <string name="error_same_password">New and Old Password cannot be same</string>
     <string name="error_register">Error in uploading with server. Please try again Later!!!</string>

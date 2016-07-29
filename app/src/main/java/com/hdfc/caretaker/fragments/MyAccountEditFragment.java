@@ -289,10 +289,12 @@ public class MyAccountEditFragment extends Fragment {
                     number.setError(getString(R.string.error_field_required));
                     focusView = number;
                     cancel = true;
+                    return;
                 } else if (!utils.validCellPhone(strContactNo)) {
                     number.setError(getString(R.string.error_invalid_contact_no));
                     focusView = number;
                     cancel = true;
+                    return;
                 }
 
                 if (editAreaCode.getVisibility() == View.VISIBLE) {
@@ -301,7 +303,7 @@ public class MyAccountEditFragment extends Fragment {
                         editAreaCode.setError(getString(R.string.error_field_required));
                         focusView = editAreaCode;
                         cancel = true;
-                    } else if (!utils.validCellPhone(strAreaCode)) {
+                    } else if (!utils.isValidAreaCode(strAreaCode)) {
                         editAreaCode.setError(getString(R.string.error_invalid_area_code));
                         focusView = editAreaCode;
                         cancel = true;
@@ -327,6 +329,7 @@ public class MyAccountEditFragment extends Fragment {
                     editDob.setError(getString(R.string.error_field_required));
                     focusView = editDob;
                     cancel = true;
+                    return;
                 }
 
 
@@ -334,6 +337,7 @@ public class MyAccountEditFragment extends Fragment {
                     name.setError(getString(R.string.error_field_required));
                     focusView = name;
                     cancel = true;
+                    return;
                 }
 
                 if (cancel) {

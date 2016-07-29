@@ -64,7 +64,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     private static int idregisterflag = 0;
     private static Thread backgroundThreadCamera, backgroundThread;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo, strDate,strCountryCode,strCountry;//,strAddress;
+    private static String strName, strEmail, strConfirmPass, strContactNo, strDate, strCountryCode, strCountry;//,strAddress;
     private static ProgressDialog mProgress = null;
     private static String jsonDocId;
     String strMess = "";
@@ -107,13 +107,13 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         utils = new Utils(ActivityGuruPersonalInfo.this);
 
-        back = (ImageButton)findViewById(R.id.buttonBack);
+        back = (ImageButton) findViewById(R.id.buttonBack);
 
         imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);
 
         editName = (EditText) findViewById(R.id.editName);
         editEmail = (EditText) findViewById(R.id.editEmail);
-        editPass = (EditText)  findViewById(R.id.editPassword);
+        editPass = (EditText) findViewById(R.id.editPassword);
         editConfirmPass = (EditText) findViewById(R.id.editConfirmPassword);
         editContactNo = (EditText) findViewById(R.id.editContactNo);
         editAreaCode = (EditText) findViewById(R.id.editAreaCode);
@@ -123,7 +123,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    goBack();
+                goBack();
             }
         });
 
@@ -228,8 +228,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                             public void onSuccess(Object response) {
 
-                                Utils.log(response.toString()," TAG ");
-                                if(response!=null) {
+                                Utils.log(response.toString(), " TAG ");
+                                if (response != null) {
                                     Upload upload = (Upload) response;
                                     ArrayList<Upload.File> fileList = upload.getFileList();
 
@@ -240,7 +240,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         Config.customerModel.setStrImgUrl(strCustomerImageUrl);
                                         //checkStorage();
                                         idregisterflag = 2;
-                                            uploadData();
+                                        uploadData();
                                     } else {
                                         if (mProgress.isShowing())
                                             mProgress.dismiss();
@@ -248,7 +248,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         utils.toast(2, 2, ((Upload) response).getStrResponse());
                                         //uploadImage();
                                     }
-                                }else{
+                                } else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
                                     utils.toast(2, 2, getString(R.string.warning_internet));
@@ -258,10 +258,10 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                             @Override
                             public void onException(Exception e) {
 
-                                Utils.log(e.getMessage()," TAG ");
+                                Utils.log(e.getMessage(), " TAG ");
 
 
-                                if(e!=null) {
+                                if (e != null) {
                                     App42Exception exception = (App42Exception) e;
                                     int appErrorCode = exception.getAppErrorCode();
 
@@ -277,7 +277,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         utils.toast(2, 2, getString(R.string.error));
                                         //uploadImage();
                                     }
-                                }else{
+                                } else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
                                     utils.toast(2, 2, getString(R.string.warning_internet));
@@ -289,7 +289,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     mProgress.dismiss();
                 utils.toast(2, 2, getString(R.string.warning_internet));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             if (mProgress.isShowing())
                 mProgress.dismiss();
@@ -319,7 +319,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                             public void onDocumentInserted(Storage response) {
                                 if (mProgress.isShowing())
                                     mProgress.dismiss();
-                                if (response != null){
+                                if (response != null) {
                                     Utils.log(response.toString(), "");
                                     if (response.isResponseSuccess()) {
                                         Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
@@ -349,12 +349,12 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
 
                                     }
-                                }else{
+                                } else {
                                     /*if (mProgress.isShowing())
                                         mProgress.dismiss();*/
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
-                         }
+                            }
 
                             @Override
                             public void onUpdateDocSuccess(Storage response) {
@@ -369,11 +369,11 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                 if (mProgress.isShowing())
                                     mProgress.dismiss();
 
-                                if(ex!=null){
+                                if (ex != null) {
                                     //int appErrorCode = ex.getAppErrorCode();
                                     Utils.log(ex.getMessage(), "");
                                     utils.toast(2, 2, getString(R.string.error_register));
-                                }else{
+                                } else {
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             }
@@ -398,7 +398,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         }
     }
 
-    private void createUser(){
+    private void createUser() {
         UserService userService = new UserService(ActivityGuruPersonalInfo.this);
 
         ArrayList<String> roleList = new ArrayList<>();
@@ -445,7 +445,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                     @Override
                     public void onException(Exception e) {
-                        if(mProgress.isShowing())
+                        if (mProgress.isShowing())
                             mProgress.dismiss();
                         if (e != null) {
 
@@ -453,7 +453,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(e.getMessage());
                                 JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
 
-                                int appErrorCode = ((App42Exception)e).getAppErrorCode();
+                                int appErrorCode = ((App42Exception) e).getAppErrorCode();
 
                                 if (appErrorCode == 2001) {
 
@@ -463,8 +463,9 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                             .setCancelable(false)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
-                                                    Intent i = new Intent(ActivityGuruPersonalInfo.this,LoginActivity.class);
-                                                    startActivity(i);                                                            }
+                                                    Intent i = new Intent(ActivityGuruPersonalInfo.this, LoginActivity.class);
+                                                    startActivity(i);
+                                                }
                                             })
                                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
@@ -476,7 +477,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
 
 //                                                utils.toast(2,2,getString(R.string.email__already_exists));
-                                }else {
+                                } else {
                                     strMess = jsonObjectError.getString("message");
                                     utils.toast(2, 2, e.getMessage());
                                 }
@@ -566,17 +567,19 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
-
+            return;
         } else {
 
             if (TextUtils.isEmpty(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_field_required));
                 focusView = editContactNo;
                 cancel = true;
+                return;
             } else if (!utils.validCellPhone(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_invalid_contact_no));
                 focusView = editContactNo;
                 cancel = true;
+                return;
             }
 
             if (editAreaCode.getVisibility() == View.VISIBLE) {
@@ -585,10 +588,12 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     editAreaCode.setError(getString(R.string.error_field_required));
                     focusView = editAreaCode;
                     cancel = true;
-                } else if (!utils.validCellPhone(strAreaCode)) {
+                    return;
+                } else if (!utils.isValidAreaCode(strAreaCode)) {
                     editAreaCode.setError(getString(R.string.error_invalid_area_code));
                     focusView = editAreaCode;
                     cancel = true;
+                    return;
                 }
             }
 
@@ -603,6 +608,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 focusView = citizenship;
                 cancel = true;
                 utils.toast(2, 2, getString(R.string.select_country));
+                return;
             }
 
          /*   if (TextUtils.isEmpty(strAddress)) {
@@ -618,6 +624,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     editConfirmPass.setError(getString(R.string.error_confirm_password));
                     focusView = editConfirmPass;
                     cancel = true;
+                    return;
                 }
             }
 
@@ -625,33 +632,39 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 editConfirmPass.setError(getString(R.string.error_field_required));
                 focusView = editConfirmPass;
                 cancel = true;
+                return;
             }
 
             if (TextUtils.isEmpty(strPass)) {
                 editPass.setError(getString(R.string.error_field_required));
                 focusView = editPass;
                 cancel = true;
+                return;
             }
 
             if (TextUtils.isEmpty(strDate)) {
                 editTextDate.setError(getString(R.string.error_field_required));
                 focusView = editTextDate;
                 cancel = true;
+                return;
             }
             if (TextUtils.isEmpty(strName)) {
                 editName.setError(getString(R.string.error_field_required));
                 focusView = editName;
                 cancel = true;
+                return;
             }
 
             if (TextUtils.isEmpty(strEmail)) {
                 editEmail.setError(getString(R.string.error_field_required));
                 focusView = editEmail;
                 cancel = true;
+                return;
             } else if (!utils.isEmailValid(strEmail)) {
                 editEmail.setError(getString(R.string.error_invalid_email));
                 focusView = editEmail;
                 cancel = true;
+                return;
             }
 
 
@@ -706,15 +719,15 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                     //
 
-                    if(idregisterflag==0)
+                    if (idregisterflag == 0)
                         createUser();
 
 
-                    if(idregisterflag==1)
+                    if (idregisterflag == 1)
                         uploadImage();
 
 
-                    if(idregisterflag==2)
+                    if (idregisterflag == 2)
                         uploadData();
 
 
@@ -831,6 +844,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             }
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);

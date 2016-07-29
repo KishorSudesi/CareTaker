@@ -268,10 +268,14 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             buttonSync.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadingPanel.setVisibility(View.VISIBLE);
-                    Intent in = new Intent(DashboardActivity.this, UpdateService.class);
-                    in.putExtra("updateAll", true);
-                    startService(in);
+                    if(utils.isConnectingToInternet()) {
+                        loadingPanel.setVisibility(View.VISIBLE);
+                        Intent in = new Intent(DashboardActivity.this, UpdateService.class);
+                        in.putExtra("updateAll", true);
+                        startService(in);
+                    }else {
+                        utils.toast(2,2,getString(R.string.warning_internet));
+                    }
                 }
             });
         }

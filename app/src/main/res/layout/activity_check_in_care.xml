@@ -368,7 +368,8 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="40dp">
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dip">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -390,25 +391,22 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:background="@drawable/bottom_border_grey"
-                        >
+                        android:layout_marginTop="40dp">
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-
-                            android:background="@drawable/table_row_item"
-                            android:layout_gravity="center">
+                            android:layout_gravity="center"
+                            android:background="@drawable/table_row">
 
                             <TextView
                                 android:id="@+id/tvMaidServices"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="5dp"
                                 android:drawablePadding="10dp"
                                 android:drawableRight="@drawable/tick"
+                                android:padding="5dp"
                                 android:text="Maid Services"
                                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -428,8 +426,8 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_marginBottom="5dp"
-                        android:layout_height="40dp">
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -451,8 +449,7 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        >
+                        android:layout_marginTop="40dp">
 
                         <TableRow
                             android:layout_width="match_parent"
@@ -464,10 +461,10 @@
                                 android:id="@+id/tvElectronics"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/table_row_item"
                                 android:layout_weight="1"
-                                android:padding="5dp"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick"
+                                android:padding="5dp"
                                 android:text="Electronics"
                                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -475,10 +472,10 @@
                                 android:id="@+id/tvAutomobiles"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/table_row_item"
                                 android:layout_weight="1"
-                                android:padding="5dp"
+                                android:background="@drawable/table_row_item"
                                 android:drawableRight="@drawable/tick"
+                                android:padding="5dp"
                                 android:text="Automobiles"
                                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -486,17 +483,16 @@
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:background="@drawable/table_row"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/table_row">
 
                             <TextView
                                 android:id="@+id/tvHomeAppliances"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:padding="5dp"
-                                android:background="@drawable/table_row_item"
                                 android:drawablePadding="10dp"
                                 android:drawableRight="@drawable/tick_red"
+                                android:padding="5dp"
                                 android:text="Home Appliances"
                                 android:textAppearance="?android:attr/textAppearanceSmall" />
 

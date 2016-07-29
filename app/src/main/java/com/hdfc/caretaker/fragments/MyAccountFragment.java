@@ -493,8 +493,7 @@ public class MyAccountFragment extends Fragment {
 //    }
 
 
-
-//    public class BackgroundThread extends Thread {
+    //    public class BackgroundThread extends Thread {
 //        @Override
 //        public void run() {
 //            try {
@@ -516,7 +515,7 @@ public class MyAccountFragment extends Fragment {
             try {
                 //if(Config.customerModel!=null) {
                 File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
-                System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
+                System.out.println("TOTAL SPACE : " + f.getTotalSpace() + " " + " USABLE SPACE : " + f.getUsableSpace());
                 bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 //}
 
