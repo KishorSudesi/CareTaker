@@ -22,6 +22,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.adapters.MileStoneAdapter;
@@ -390,6 +391,7 @@ public class CompletedActivity extends AppCompatActivity {
                 .load(url)
                 .asBitmap()
                 .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .transform(new CropCircleTransformation(context))
                 .placeholder(R.drawable.person_icon)
                 .into(target);

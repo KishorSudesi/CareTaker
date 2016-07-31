@@ -373,6 +373,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
 //                        }
 //                    });
 
+        } else if (!sessionManager.getServiceCustomer()) {
+            utils.toast(2, 2, getString(R.string.network_required));
         }
 
 

@@ -43,7 +43,7 @@ public class CheckInCareActivity extends AppCompatActivity {
     private Button buttonHall, buttonKitchen, buttonWashroom, buttonBed;
     private TextView utilityBill, water, gas, electricity, phone, kitchenItems, grocery,
             maidServices, electronics, automobiles, homeAppliances, homeStatus, domesticStatus, workingStatus,
-            photoStatus, tvmediaComment;
+            photoStatus, tvmediaComment, tvActivityByName;
     private String subActivityName, status, dueStatus, dueDate, utilityName, imageUrl, imageDescription, imageTime;
     private int homeEssCount = 0, domesticHelp = 0, equipmentStatus = 0, utilityBills = 0, imageCount = 0;
     private Utils utils;
@@ -80,6 +80,7 @@ public class CheckInCareActivity extends AppCompatActivity {
         domesticStatus = (TextView) findViewById(R.id.tvDomesticStatus);
         photoStatus = (TextView) findViewById(R.id.tvPhotosStatus);
         tvmediaComment = (TextView) findViewById(R.id.tvMediaComment);
+        tvActivityByName = (TextView) findViewById(R.id.tvName);
         linearImages.setVisibility(View.GONE);
         activities.setVisibility(View.GONE);
 
@@ -92,6 +93,13 @@ public class CheckInCareActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //picture = Config.roomtypeName.get(position).getImageModels();
+                try {
+                    int iPosition = Config.strProviderIds.indexOf(Config.checkInCareActivityNames.get(position).getStrProviderID());
+                    String providerName = Config.providerModels.get(iPosition).getStrName();
+                    tvActivityByName.setText(providerName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 String mediaComment = Config.checkInCareActivityNames.get(position).getStrMediaComment();
                 tvmediaComment.setText(mediaComment);
                 activity = Config.checkInCareActivityNames.get(position).getCheckInCareActivityModels();
@@ -275,11 +283,16 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 buttonHall.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
-                                        Bundle b = new Bundle();
-                                        b.putSerializable("Pass", (Serializable) hallImageModel);
-                                        intent.putExtras(b);
-                                        startActivity(intent);
+                                        if (hallImageModel != null && hallImageModel.size() > 0) {
+                                            Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                            Bundle b = new Bundle();
+                                            b.putSerializable("Pass", (Serializable) hallImageModel);
+                                            b.putString("name", "Hall Check-In Service Images");
+                                            intent.putExtras(b);
+                                            startActivity(intent);
+                                        } else {
+                                            utils.toast(2, 2, getString(R.string.no_photo));
+                                        }
                                     }
                                 });
                             } else {
@@ -296,11 +309,16 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 buttonKitchen.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
-                                        Bundle b = new Bundle();
-                                        b.putSerializable("Pass", (Serializable) kitchenImageModel);
-                                        intent.putExtras(b);
-                                        startActivity(intent);
+                                        if (kitchenImageModel != null && kitchenImageModel.size() > 0) {
+                                            Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                            Bundle b = new Bundle();
+                                            b.putSerializable("Pass", (Serializable) kitchenImageModel);
+                                            b.putString("name", "Kitchen Check-In Service Images");
+                                            intent.putExtras(b);
+                                            startActivity(intent);
+                                        } else {
+                                            utils.toast(2, 2, getString(R.string.no_photo));
+                                        }
                                     }
                                 });
                             } else {
@@ -317,11 +335,16 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 buttonWashroom.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
-                                        Bundle b = new Bundle();
-                                        b.putSerializable("Pass", (Serializable) washImageModel);
-                                        intent.putExtras(b);
-                                        startActivity(intent);
+                                        if (washImageModel != null && washImageModel.size() > 0) {
+                                            Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                            Bundle b = new Bundle();
+                                            b.putSerializable("Pass", (Serializable) washImageModel);
+                                            b.putString("name", "Washroom Check-In Service Images");
+                                            intent.putExtras(b);
+                                            startActivity(intent);
+                                        } else {
+                                            utils.toast(2, 2, getString(R.string.no_photo));
+                                        }
                                     }
                                 });
                             } else {
@@ -339,11 +362,16 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 buttonBed.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
-                                        Bundle b = new Bundle();
-                                        b.putSerializable("Pass", (Serializable) bedImageModel);
-                                        intent.putExtras(b);
-                                        startActivity(intent);
+                                        if (bedImageModel != null && bedImageModel.size() > 0) {
+                                            Intent intent = new Intent(CheckInCareActivity.this, CheckInImage.class);
+                                            Bundle b = new Bundle();
+                                            b.putSerializable("Pass", (Serializable) bedImageModel);
+                                            b.putString("name", "Bedroom Check-In Service Images");
+                                            intent.putExtras(b);
+                                            startActivity(intent);
+                                        } else {
+                                            utils.toast(2, 2, getString(R.string.no_photo));
+                                        }
                                     }
                                 });
                             } else {
@@ -363,7 +391,6 @@ public class CheckInCareActivity extends AppCompatActivity {
 
 
                 activities.setVisibility(View.VISIBLE);
-
 
 
             }

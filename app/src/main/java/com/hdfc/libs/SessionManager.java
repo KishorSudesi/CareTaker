@@ -127,6 +127,7 @@ public class SessionManager {
         editor.remove(KEY_SERVICE_CUSTOMER);
         editor.remove(KEY_PROVIDERS_IDS);
         editor.remove(KEY_PROVIDER_SAVED);
+        editor.remove(KEY_CHECKIN_CARE_STATUS);
         editor.clear();
         editor.commit();
 

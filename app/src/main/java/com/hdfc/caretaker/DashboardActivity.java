@@ -126,7 +126,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
                 Utils.iActivityCount = 0;
                 Utils.iProviderCount = 0;
-
+                if (utils == null) {
+                    utils = new Utils(DashboardActivity.this);
+                }
                 utils.fetchDependents(Config.customerModel.getStrCustomerID(),
                         progressDialog, 0);
 
@@ -137,7 +139,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            if (DashboardActivity.loadingPanel.getVisibility() == View.VISIBLE) {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -268,13 +272,13 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             buttonSync.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(utils.isConnectingToInternet()) {
+                    if (utils.isConnectingToInternet()) {
                         loadingPanel.setVisibility(View.VISIBLE);
                         Intent in = new Intent(DashboardActivity.this, UpdateService.class);
                         in.putExtra("updateAll", true);
                         startService(in);
-                    }else {
-                        utils.toast(2,2,getString(R.string.warning_internet));
+                    } else {
+                        utils.toast(2, 2, getString(R.string.warning_internet));
                     }
                 }
             });

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.caretaker.R;
@@ -201,6 +202,7 @@ public class UpcomingFragment extends Fragment {
                 .centerCrop()
                 .transform(new CropCircleTransformation(mContext))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 

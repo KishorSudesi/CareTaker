@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.adapters.DependAdapter;
@@ -199,13 +200,21 @@ public class MyAccountFragment extends Fragment {
                 final Dialog dialog = new Dialog(context);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_change_password);
-
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
                 editTextOldPassword = (EditText) dialog.findViewById(R.id.editOldPassword);
                 editTextPassword = (EditText) dialog.findViewById(R.id.editPassword);
                 editTextConfirmPassword = (EditText) dialog.findViewById(R.id.editConfirmPassword);
-                Button dialogButton = (Button) dialog.findViewById(R.id.btndialogOk);
+                Button OkButton = (Button) dialog.findViewById(R.id.btndialogOk);
+                Button cancelButton = (Button) dialog.findViewById(R.id.btndialogCancel);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
                 // if button is clicked, close the custom dialog
-                dialogButton.setOnClickListener(new View.OnClickListener() {
+                OkButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -255,10 +264,11 @@ public class MyAccountFragment extends Fragment {
                         } else {
 
                             if (utils.isConnectingToInternet()) {
-
-                        /*progressDialog.setMessage(getActivity().getString(R.string.uploading));
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();*/
+                                if (progressDialog != null && !progressDialog.isShowing()) {
+                                    progressDialog.setMessage(getActivity().getString(R.string.uploading));
+                                    progressDialog.setCancelable(false);
+                                    progressDialog.show();
+                                }
 
                                 // DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
@@ -301,32 +311,46 @@ public class MyAccountFragment extends Fragment {
                                                                             sessionManager.saveOldPassword(strOldPass);
                                                                         }
                                                                         utils.toast(1, 1, "Password Change Successfully");
+                                                                        if (progressDialog != null) {
+                                                                            progressDialog.dismiss();
+                                                                        }
                                                                         dialog.dismiss();
                                                                     }
 
                                                                     @Override
                                                                     public void onException(Exception e) {
                                                                         // progressDialog.dismiss();
-                                                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
                                                                         try {
                                                                             JSONObject jsonObject = new JSONObject(e.getMessage());
                                                                             JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                                                             String strMess = jsonObjectError.getString("details");
 
                                                                             utils.toast(2, 2, strMess);
+
                                                                         } catch (JSONException e1) {
                                                                             e1.printStackTrace();
+                                                                        }
+
+                                                                        if (progressDialog != null) {
+                                                                            progressDialog.dismiss();
                                                                         }
                                                                     }
                                                                 });
 
-                                                    } else
+                                                    } else {
                                                         utils.toast(2, 2, getString(R.string.warning_internet));
-
+                                                        if (progressDialog != null) {
+                                                            progressDialog.dismiss();
+                                                        }
+                                                    }
                                                 } else {
                                                     // progressDialog.dismiss();
                                                     // DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                                     utils.toast(1, 1, "Enter Password ");
+                                                    if (progressDialog != null) {
+                                                        progressDialog.dismiss();
+                                                    }
 
                                                 }
                                             }
@@ -336,6 +360,9 @@ public class MyAccountFragment extends Fragment {
                                                 //progressDialog.dismiss();
                                                 // DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                                 utils.toast(2, 2, e.getMessage());
+                                                if (progressDialog != null) {
+                                                    progressDialog.dismiss();
+                                                }
                                             }
                                         });
 
@@ -446,6 +473,7 @@ public class MyAccountFragment extends Fragment {
                 .centerCrop()
                 .transform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.caretaker.R;
@@ -169,7 +170,7 @@ public class ActivitiesAdapter extends BaseAdapter {
                         .centerCrop()
                         .transform(new CropCircleTransformation(_context))
                         .placeholder(R.drawable.person_icon)
-
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

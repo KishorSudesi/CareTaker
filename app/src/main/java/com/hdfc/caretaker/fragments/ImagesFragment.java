@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -73,6 +74,8 @@ public class ImagesFragment extends Fragment {
                     .bitmapTransform(new CropCircleTransformation(getActivity()))
                     .placeholder(R.drawable.person_icon)
                     .crossFade()
+                    .override(Config.intWidth,Config.intHeight)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView);
 
             //imageLoader.displayImage(Config.dependentModels.get(intPosition).getStrImageUrl(), imageView, CareTaker.defaultOptions);

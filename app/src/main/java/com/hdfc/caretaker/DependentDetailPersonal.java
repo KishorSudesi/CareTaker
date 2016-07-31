@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -648,6 +649,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
                 .override(Config.intWidth,Config.intHeight)
                 .transform(new CropCircleTransformation(DependentDetailPersonal.this))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 
@@ -659,6 +661,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
                 .centerCrop()
                 .override(Config.intWidth,Config.intHeight)
                 .transform(new CropCircleTransformation(DependentDetailPersonal.this))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.person_icon)
                 .into(target);
     }

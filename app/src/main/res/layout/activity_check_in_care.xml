@@ -37,6 +37,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="2">
+        <TextView
+            android:id="@+id/textViewLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_general"
+            android:gravity="center"
+            android:padding="@dimen/padding_general"
+            android:text="@string/check_in_care"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/blue"
+            android:visibility="visible" />
 
         <ListView
             android:id="@+id/listCheckInCare"
@@ -98,11 +109,39 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true">
-
                     <LinearLayout
-                        android:id="@+id/linearPhoto"
+                        android:id="@+id/linearActivityBy"
                         android:layout_width="match_parent"
                         android:layout_height="40dp">
+
+                        <TextView
+                            android:id="@+id/tvActivityBy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="Activity Assisted By : "
+                            android:textColor="@android:color/black"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                        <TextView
+                            android:id="@+id/tvName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:layout_margin="5dp"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textColor="@android:color/black" />
+
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_below="@+id/linearActivityBy"
+                        android:id="@+id/linearPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/tvPhotos"
@@ -133,7 +172,8 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
+
+                        android:layout_below="@+id/linearPhoto"
                         android:background="@drawable/bottom_border_grey"
                         android:padding="@dimen/padding_general">
 

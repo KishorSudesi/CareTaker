@@ -31,7 +31,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_general"
-                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:textColor="@color/blue"
@@ -61,7 +60,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_general"
-                    android:layout_marginTop="10dp"
                     android:padding="@dimen/padding_general"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
@@ -74,7 +72,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_general"
-                    android:layout_marginTop="10dp"
                     android:padding="@dimen/padding_general"
                     android:text="@string/rating"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -118,6 +115,7 @@
         android:id="@+id/personImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center" />

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.hdfc.adapters.CheckInImageAdapter;
 import com.hdfc.models.ImageModelCheck;
@@ -13,6 +14,8 @@ import com.hdfc.models.ImageModelCheck;
 import java.util.List;
 
 public class CheckInImage extends AppCompatActivity {
+
+    private TextView tvLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +32,12 @@ public class CheckInImage extends AppCompatActivity {
         });
 
         GridView gridView = (GridView) findViewById(R.id.gridImage);
+        tvLabel = (TextView) findViewById(R.id.textViewLabel);
         Intent intent = getIntent();
 
         Bundle data = intent.getExtras();
 
+        tvLabel.setText(data.getString("name"));
         List<ImageModelCheck> imageModelChecks = (List<ImageModelCheck>) data.getSerializable("Pass");
 
         CheckInImageAdapter checkInImageAdapter = new CheckInImageAdapter(CheckInImage.this, imageModelChecks);

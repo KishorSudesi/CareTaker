@@ -1720,14 +1720,6 @@ public class Utils {
                     Config.strNotificationIds.add(strDocumentId);
                     Config.dependentModels.get(Config.intSelectedDependent).
                             setNotificationModels(notificationModel);
-                } else {
-                    int iPosition = Config.strNotificationIds.indexOf(notificationModel.getStrNotificationID());
-
-                    if (iPosition > -1 && iPosition < Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().size()) {
-                        Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().set(iPosition, notificationModel);
-                    } else {
-
-                    }
                 }
             }
 
@@ -1918,7 +1910,7 @@ public class Utils {
             iActivityCount = 0;
             iProviderCount = 0;
         }
-        this.progressDialog=progressDialog;
+        this.progressDialog = progressDialog;
 
         try {
             if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
@@ -2243,7 +2235,7 @@ public class Utils {
                             @Override
                             public void onFindDocFailed(App42Exception ex) {
                                 try {
-                                    if (progressDialog!=null && progressDialog.isShowing())
+                                    if (progressDialog != null && progressDialog.isShowing())
                                         progressDialog.dismiss();
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -2282,7 +2274,7 @@ public class Utils {
                         });
             } else {
                 try {
-                    if (progressDialog!=null && progressDialog.isShowing())
+                    if (progressDialog != null && progressDialog.isShowing())
                         progressDialog.dismiss();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2570,47 +2562,46 @@ public class Utils {
                 if (!Config.strDependentIds.contains(strDependentDocId)) {
                     Config.strDependentIds.add(strDependentDocId);
                     sessionManager.saveDependentsIds(Config.strDependentIds);
-                }
-                if (!Config.dependentNames.contains(jsonObjectDependent.getString("dependent_contact_no"))) {
+
+
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_contact_no"));
-                }
 
-                dependentModel = new DependentModel();
 
-                dependentModel.setStrIllness(jsonObjectDependent.
-                        optString("dependent_illness"));
-                dependentModel.setIntHealthBp(jsonObjectDependent.optInt("health_bp"));
-                dependentModel.setIntHealthHeartRate(jsonObjectDependent.
-                        optInt("health_heart_rate"));
+                    dependentModel = new DependentModel();
 
-                dependentModel.setStrRelation(jsonObjectDependent.
-                        optString("dependent_relation"));
-                dependentModel.setStrAddress(jsonObjectDependent.
-                        optString("dependent_address"));
-                dependentModel.setStrNotes(jsonObjectDependent.optString("dependent_notes"));
-                dependentModel.setStrContacts(jsonObjectDependent.
-                        optString("dependent_contact_no"));
-                dependentModel.setStrName(jsonObjectDependent.optString("dependent_name"));
+                    dependentModel.setStrIllness(jsonObjectDependent.
+                            optString("dependent_illness"));
+                    dependentModel.setIntHealthBp(jsonObjectDependent.optInt("health_bp"));
+                    dependentModel.setIntHealthHeartRate(jsonObjectDependent.
+                            optInt("health_heart_rate"));
 
-                dependentModel.setStrDob(jsonObjectDependent.getString("dependent_dob"));
+                    dependentModel.setStrRelation(jsonObjectDependent.
+                            optString("dependent_relation"));
+                    dependentModel.setStrAddress(jsonObjectDependent.
+                            optString("dependent_address"));
+                    dependentModel.setStrNotes(jsonObjectDependent.optString("dependent_notes"));
+                    dependentModel.setStrContacts(jsonObjectDependent.
+                            optString("dependent_contact_no"));
+                    dependentModel.setStrName(jsonObjectDependent.optString("dependent_name"));
 
-                if (jsonObjectDependent.has("dependent_profile_url")) {
-                    dependentModel.setStrImageUrl(jsonObjectDependent.
-                            optString("dependent_profile_url"));
-                }
+                    dependentModel.setStrDob(jsonObjectDependent.getString("dependent_dob"));
 
-                dependentModel.setStrEmail(jsonObjectDependent.optString("dependent_email"));
-                dependentModel.setStrAge(jsonObjectDependent.optString("dependent_age"));
+                    if (jsonObjectDependent.has("dependent_profile_url")) {
+                        dependentModel.setStrImageUrl(jsonObjectDependent.
+                                optString("dependent_profile_url"));
+                    }
 
-                dependentModel.setStrCustomerID(jsonObjectDependent.optString("customer_id"));
+                    dependentModel.setStrEmail(jsonObjectDependent.optString("dependent_email"));
+                    dependentModel.setStrAge(jsonObjectDependent.optString("dependent_age"));
 
-                dependentModel.setStrDependentID(strDependentDocId);
-                if (!Config.dependentNames.contains(jsonObjectDependent.optString("dependent_name"))) {
+                    dependentModel.setStrCustomerID(jsonObjectDependent.optString("customer_id"));
+
+                    dependentModel.setStrDependentID(strDependentDocId);
+
                     Config.dependentNames.add(jsonObjectDependent.optString("dependent_name"));
-                }
 
 
-                //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
+                    //ArrayList<ServiceModel> serviceModels = new ArrayList<>();
 
                     /*if (jsonObjectDependent.has("services")) {
 
@@ -2642,21 +2633,16 @@ public class Utils {
                         }
                     }*/
 
-                int iPosition = Config.strDependentIds.indexOf(dependentModel.getStrDependentID());
 
-                if (iPosition > -1 && iPosition < Config.dependentModels.size()) {
-                    Config.dependentModels.set(iPosition, dependentModel);
-                } else {
                     Config.dependentModels.add(dependentModel);
+
+
+                    ClientModel clientModel = new ClientModel();
+                    clientModel.setDependentModels(Config.dependentModels);
+
+                    Config.fileModels.add(new FileModel(strDependentDocId,
+                            dependentModel.getStrImageUrl(), "IMAGE"));
                 }
-
-
-                ClientModel clientModel = new ClientModel();
-                clientModel.setDependentModels(Config.dependentModels);
-
-                Config.fileModels.add(new FileModel(strDependentDocId,
-                        dependentModel.getStrImageUrl(), "IMAGE"));
-                //}
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -2676,6 +2662,7 @@ public class Utils {
             //
             checkInCareModel.setStrName(jsonObjectCheck.optString("check_in_care_name"));
             checkInCareModel.setStrMediaComment(jsonObjectCheck.optString("media_comment"));
+            checkInCareModel.setStrProviderID(jsonObjectCheck.optString("provider_id"));
             JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
             JSONArray picture = jsonObjectCheck.optJSONArray("picture");
 
@@ -3744,7 +3731,7 @@ public class Utils {
 
         try {
             try {
-                if (progressDialog!=null && progressDialog.isShowing())
+                if (progressDialog != null && progressDialog.isShowing())
                     progressDialog.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -4472,7 +4459,7 @@ public class Utils {
         @Override
         public void run() {
             try {
-                //loadAllFiles();
+                loadAllFiles();
 
             } catch (Exception e) {
                 e.printStackTrace();

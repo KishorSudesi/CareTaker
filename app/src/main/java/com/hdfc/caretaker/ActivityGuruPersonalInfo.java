@@ -158,9 +158,13 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR,2000);
+                Date date = new Date();
+                date.setTime(cal.getTimeInMillis());
                 new SlideDateTimePicker.Builder(ActivityGuruPersonalInfo.this.getSupportFragmentManager())
                         .setListener(listener)
-                        .setInitialDate(new Date())
+                        .setInitialDate(date)
                         .build()
                         .show();
             }
