@@ -107,64 +107,79 @@ public class NotificationFragment extends Fragment {
 
                 if (ActivityFragment.activitiesModelArrayList != null && ActivityFragment.activitiesModelArrayList.size() > 0) {
 
-                    for (int j = 0; j < ActivityFragment.activitiesModelArrayList.size(); j++) {
+                    if (Config.intSelectedDependent > -1
+                            && Config.intSelectedDependent < Config.dependentModels.size()) {
+                        for (int j = 0; j < ActivityFragment.activitiesModelArrayList.size(); j++) {
 
-                        if (ActivityFragment.activitiesModelArrayList.get(j).getStrActivityID().equalsIgnoreCase(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId())) {
-                            activityModel = ActivityFragment.activitiesModelArrayList.get(j);
-                            break;
+                            if (position > -1 && position < Config.dependentModels.get
+                                    (Config.intSelectedDependent).getNotificationModels().size()) {
+                                if (ActivityFragment.activitiesModelArrayList.get(j).getStrActivityID().
+                                        equalsIgnoreCase(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId())) {
+                                    if (j < ActivityFragment.activitiesModelArrayList.size()) {
+                                        activityModel = ActivityFragment.activitiesModelArrayList.get(j);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
 
                 } else {
-                    String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId() + "'";
+                    if (Config.intSelectedDependent > -1 &&
+                            Config.intSelectedDependent < Config.dependentModels.size()) {
+                        String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '"
+                                + Config.collectionActivity + "' AND " + DbHelper.COLUMN_OBJECT_ID
+                                + " = '" + Config.dependentModels.get(Config.intSelectedDependent).
+                                getNotificationModels().get(position).getStrActivityId() + "'";
 
-                    Cursor cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
-                    Cursor cursorMilestone = null;
+                        Cursor cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
+                        Cursor cursorMilestone = null;
 
-                    if (cursor != null && cursor.getCount() > 0) {
-                        Log.i("TAG", "cursor count:" + cursor.getCount());
-                        cursor.moveToFirst();
-                        do {
+                        if (cursor != null && cursor.getCount() > 0) {
+                            Log.i("TAG", "cursor count:" + cursor.getCount());
+                            cursor.moveToFirst();
+                            do {
 
-                            try {
-                                //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
-                                // WHERE clause arguments
-                                //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
-                                String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "'";
+                                try {
+                                    //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
+                                    // WHERE clause arguments
+                                    //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
+                                    String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "'";
 
-                                //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
-                                cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
-                                JSONArray jArray = new JSONArray();
-                                int index = 0;
-                                if (cursorMilestone != null && cursorMilestone.getCount() > 0) {
-                                    cursorMilestone.moveToFirst();
-                                    do {
+                                    //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
+                                    cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
+                                    JSONArray jArray = new JSONArray();
+                                    int index = 0;
+                                    if (cursorMilestone != null && cursorMilestone.getCount() > 0) {
+                                        cursorMilestone.moveToFirst();
+                                        do {
 
-                                        String strDocument = cursorMilestone.getString(cursorMilestone.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
-                                        JSONObject jsonObjectActivity = new JSONObject(strDocument);
+                                            String strDocument = cursorMilestone.getString(cursorMilestone.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
+                                            JSONObject jsonObjectActivity = new JSONObject(strDocument);
 
 
-                                        jArray.put(index, jsonObjectActivity);
-                                        index++;
+                                            jArray.put(index, jsonObjectActivity);
+                                            index++;
+                                        }
+                                        while (cursorMilestone.moveToNext());
+
+
                                     }
-                                    while (cursorMilestone.moveToNext());
-
-
+                                    if (cursorMilestone != null) {
+                                        cursorMilestone.close();
+                                    }
+                                    activityModel = createActivityModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)), 1, jArray);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    CareTaker.dbCon.closeCursor(cursorMilestone);
                                 }
-                                if (cursorMilestone != null) {
-                                    cursorMilestone.close();
-                                }
-                                activityModel = createActivityModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)), 1, jArray);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } finally {
-                                CareTaker.dbCon.closeCursor(cursorMilestone);
-                            }
 
 
-                        } while (cursor.moveToNext());
-                    } else {
-                        activityModel = getActivityModel(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId());
+                            } while (cursor.moveToNext());
+                        } else {
+                            activityModel = getActivityModel(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId());
+                        }
                     }
                 }
 

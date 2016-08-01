@@ -249,7 +249,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
             Query finalQuery;
             Query q1 = QueryBuilder.build("customer_id", Config.customerModel.getStrCustomerID(), QueryBuilder.Operator.EQUALS);
             if (sessionManager.getServiceCustomer()) {
-                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                 finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
             } else {
@@ -570,7 +570,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                     boolean hasChild = false;
                                     Object aObj = jsonObjectField.get("child");
                                     if (aObj instanceof Integer) {
-                                        hasChild = jsonObjectField.getInt("child") == 1 ? true : false;
+                                        hasChild = jsonObjectField.getInt("child") == 1;
 
                                     } else if (aObj instanceof Boolean) {
                                         hasChild = jsonObjectField.getBoolean("child");

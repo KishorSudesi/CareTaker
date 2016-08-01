@@ -23,7 +23,6 @@ import com.shephertz.app42.paas.sdk.android.user.UserService;
 
 import org.json.JSONObject;
 
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class AsyncApp42ServiceApi {
@@ -46,18 +45,19 @@ public class AsyncApp42ServiceApi {
                 apiKey = AESCrypt.decrypt(Config.string, "a3tEVMM63P40VdMvybYAHvhjdR91k6uRHnBoRIjQq7bEYH0jWh22DnT6eYLCPv+3X0UrhjF4nwresW4BA1bKBXvUIl2/Z2cqfdtY5la00U4=");
                 apiSecret = AESCrypt.decrypt(Config.string, "TizgBe+sjPzxHZKp7eQwwgd78xjELdu3+NLfNqFZvVNStxezaFr1xkkYHRr2FJDYDsd46xK1UxeC9tlHG5kf9xkUc8n9Ompf5sr1DQaxbmQ=");
             }
-        } catch (GeneralSecurityException e) {
+
+            App42API.initialize(context, apiKey, apiSecret);
+            App42CacheManager.setPolicy(App42CacheManager.Policy.NETWORK_FIRST);
+            //App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
+
+            this.userService = App42API.buildUserService();
+            this.storageService = App42API.buildStorageService();
+            this.uploadService = App42API.buildUploadService();
+            this.pushNotificationService = App42API.buildPushNotificationService();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        App42API.initialize(context, apiKey, apiSecret);
-        App42CacheManager.setPolicy(App42CacheManager.Policy.NETWORK_FIRST);
-        //App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
-
-        this.userService = App42API.buildUserService();
-        this.storageService = App42API.buildStorageService();
-        this.uploadService = App42API.buildUploadService();
-        this.pushNotificationService = App42API.buildPushNotificationService();
     }
 
    /* public void sendPush(){

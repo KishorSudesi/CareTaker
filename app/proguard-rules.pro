@@ -147,12 +147,17 @@
     public *;
   }
 
-   #glide circle
-   -dontwarn jp.wasabeef.**
-   -keep class com.jp.wasabeef.** { *; }
-   -keep interface jp.wasabeef.** { *; }
+#glide circle
+-dontwarn jp.wasabeef.**
+-keep class com.jp.wasabeef.** { *; }
+-keep interface jp.wasabeef.** { *; }
 
 #sql cipher
 #-dontwarn net.sqlcipher.**
 #-keep class net.sqlcipher.** { *; }
 #-keep interface net.sqlcipher.** { *; }
+
+#permission helper
+-dontwarn com.ayz4sci.androidfactory.**
+-keep class com.ayz4sci.androidfactory.** { *; }
+-keep interface com.ayz4sci.androidfactory.** { *; }

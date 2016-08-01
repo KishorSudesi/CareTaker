@@ -147,6 +147,7 @@
     <string name="rating_added">Rating Added</string>
     <string name="activity_deleted">Activity Deleted</string>
     <string name="network_required">Facility available only in Online Mode</string>
+
     <!--Process Strings-->
     <string name="uploading">Uploading…</string>
     <string name="uploading_image">Preparing Images…</string>

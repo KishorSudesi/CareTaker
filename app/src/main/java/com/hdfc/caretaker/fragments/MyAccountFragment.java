@@ -74,6 +74,16 @@ public class MyAccountFragment extends Fragment {
     private EditText editTextOldPassword, editTextPassword, editTextConfirmPassword;
     private Utils utils;
     private SessionManager sessionManager;
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            roundedImageView.setImageBitmap(bitmap);
+            loadingPanel.setVisibility(View.GONE);
+        }
+    };
 
     public static MyAccountFragment newInstance() {
         MyAccountFragment fragment = new MyAccountFragment();
@@ -432,7 +442,7 @@ public class MyAccountFragment extends Fragment {
                 builder.setPositiveButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Utils.logout();
+                        Utils.logout(getActivity());
                     }
                 });
                 builder.setNegativeButton(getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -461,17 +471,6 @@ public class MyAccountFragment extends Fragment {
 
         return view;
     }
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            roundedImageView.setImageBitmap(bitmap);
-            loadingPanel.setVisibility(View.GONE);
-        }
-    };
 
     private void loadImageSimpleTarget() {
 

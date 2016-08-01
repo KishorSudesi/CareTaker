@@ -64,11 +64,12 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     //private static String strSelectedCarla;
     private static int iUpdateFlag = 0;
     private static String strInsertedDocumentId;
+    private static String strProviderId;
     private EditText editTextDate, editTextMessage;
     private TextView textView6, textView7;
     private Utils utils;
     private String strCarlaImagepath, _strDate, strDate, strAlert;
-    private String getStrSelectedCarla, strProviderId, strPushMessage;
+    private String getStrSelectedCarla, strPushMessage;
     private SessionManager sessionManager;
     private Context mContext;
     private Date selectedDate = null;
@@ -243,7 +244,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
     }
 
-    public void goBack() {
+    private void goBack() {
 
         if (iUpdateFlag < iActivityCreated) {
             Intent newIntent = new Intent(AddNewActivityStep2Activity.this, AddNewActivityActivity.class);
@@ -272,7 +273,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (jsonObjectCarla == null) {
+        if (jsonObjectCarla == null || strProviderId == null ||
+                (strProviderId != null && strProviderId.equalsIgnoreCase(""))) {
             progressDialog.setMessage(getResources().getString(R.string.loading));
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -354,6 +356,20 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         public void onUpdateDocFailed(App42Exception ex) {
                         }
                     });
+        } else {
+            try {
+                textView6.setText(jsonObjectCarla.getString("provider_name"));
+                textView7.setText(jsonObjectCarla.getString("provider_email"));
+                //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
+                strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
+
+                loadImageSimpleTarget(strCarlaImagepath);
+                //strProviderId = jsonObjectCarla.getString("provider_id").trim();
+                Utils.log(strProviderId, " strProviderId ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

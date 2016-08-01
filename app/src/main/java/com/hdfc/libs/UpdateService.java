@@ -58,6 +58,10 @@ public class UpdateService extends Service {
     public int onStartCommand(final Intent intent, int flags, int startId) {
 
         try {
+            utils = new Utils(UpdateService.this);
+            sessionManager = new SessionManager(UpdateService.this);
+            mContext = this;
+
             try {
                 if (intent != null && intent.hasExtra("message")) {
                     String message = intent.getStringExtra("message");
@@ -86,59 +90,6 @@ public class UpdateService extends Service {
         return super.onStartCommand(intent, flags, startId);
 
     }
-
-    public class UpdateTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-
-
-                if (CareTaker.dbCon == null) {
-                    CareTaker.dbCon = DbCon.getInstance(UpdateService.this);
-                }
-
-                Config.strUserName = sessionManager.getEmail();
-                if (Config.customerModel != null) {
-                    Config.customerModel.setStrCustomerID(sessionManager.getCustomerId());
-                }
-                strCustomerId = sessionManager.getCustomerId();
-
-                if (Config.strDependentIds == null || Config.strDependentIds.size() < 0) {
-                    Config.strDependentIds.addAll(sessionManager.getDependentsIds());
-
-                }
-
-                if (Config.strProviderIds == null || Config.strProviderIds.size() < 0) {
-                    Config.strProviderIds.addAll(sessionManager.getProvidersIds());
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            try {
-                //updateCustomers();
-                //updateDependents();
-                //updateProviders();
-                if (updateAll) {
-                    updateCustomers();
-                } else {
-
-                    updateActivities();
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     @Nullable
     @Override
@@ -238,7 +189,7 @@ public class UpdateService extends Service {
                 Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
                 // Build query q2
                 if (sessionManager.getDependentsStatus()) {
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
                 } else {
@@ -383,7 +334,7 @@ public class UpdateService extends Service {
                             defaultDate = Utils.defaultDate;
                         }
 
-                        Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                        Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
                         q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
                     } else {
 
@@ -569,7 +520,7 @@ public class UpdateService extends Service {
                 Query finalQuery;
                 Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
                 if (sessionManager.getServiceCustomer()) {
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
                 } else {
@@ -639,7 +590,6 @@ public class UpdateService extends Service {
         }
     }
 
-
     public void updateProviders() {
         try {
             if (utils.isConnectingToInternet()) {
@@ -663,7 +613,7 @@ public class UpdateService extends Service {
                         QueryBuilder.Operator.INLIST);
                 if (sessionManager.getProviderStatus()) {
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(query, QueryBuilder.Operator.AND, q2);
 
@@ -777,7 +727,7 @@ public class UpdateService extends Service {
                 Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
                 if (sessionManager.getCheckInCareStatus()) {
                     // Build query q2
-                    Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
                     q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
                 }
 
@@ -862,7 +812,7 @@ public class UpdateService extends Service {
                     storageService = new StorageService(UpdateService.this);
                     q1 = QueryBuilder.build("user_id", notificationModel.getStrUserID(), QueryBuilder.Operator.EQUALS);
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
 
@@ -931,7 +881,7 @@ public class UpdateService extends Service {
                     q1 = QueryBuilder.build("user_id", Config.strDependentIds, QueryBuilder.Operator.INLIST);
 
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
 
@@ -1012,7 +962,6 @@ public class UpdateService extends Service {
 
     }
 
-
     private void dismissDialog() {
         try {
             Log.i("TAG", "In dissmiss dialog");
@@ -1030,6 +979,58 @@ public class UpdateService extends Service {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public class UpdateTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+
+                if (CareTaker.dbCon == null) {
+                    CareTaker.dbCon = DbCon.getInstance(UpdateService.this);
+                }
+
+                Config.strUserName = sessionManager.getEmail();
+                if (Config.customerModel != null) {
+                    Config.customerModel.setStrCustomerID(sessionManager.getCustomerId());
+                }
+                strCustomerId = sessionManager.getCustomerId();
+
+                if (Config.strDependentIds == null || Config.strDependentIds.size() < 0) {
+                    Config.strDependentIds.addAll(sessionManager.getDependentsIds());
+
+                }
+
+                if (Config.strProviderIds == null || Config.strProviderIds.size() < 0) {
+                    Config.strProviderIds.addAll(sessionManager.getProvidersIds());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            try {
+                //updateCustomers();
+                //updateDependents();
+                //updateProviders();
+                if (updateAll) {
+                    updateCustomers();
+                } else {
+
+                    updateActivities();
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

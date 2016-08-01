@@ -263,7 +263,7 @@ public class App42GCMService extends IntentService {
                 Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
                 // Build query q2
                 if (sessionManager.getDependentsStatus()) {
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
                 } else {
@@ -576,7 +576,7 @@ public class App42GCMService extends IntentService {
                 Query finalQuery;
                 Query q1 = QueryBuilder.build("customer_id", Config.customerModel.getStrCustomerID(), QueryBuilder.Operator.EQUALS);
                 if (sessionManager.getServiceCustomer()) {
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
                 } else {
@@ -671,7 +671,7 @@ public class App42GCMService extends IntentService {
                         QueryBuilder.Operator.INLIST);
                 if (sessionManager.getProviderStatus()) {
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(query, QueryBuilder.Operator.AND, q2);
 
@@ -765,7 +765,7 @@ public class App42GCMService extends IntentService {
                     defaultDate = Utils.defaultDate;
                 }
                 // Build query q2
-                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                 finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
             } else {

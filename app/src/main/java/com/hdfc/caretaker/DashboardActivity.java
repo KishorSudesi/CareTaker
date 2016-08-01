@@ -103,6 +103,49 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     }
 
+    private static void setMenu() {
+        buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity));
+        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+        buttonNotifications.setImageDrawable(context.getResources().getDrawable(R.mipmap.notification));
+        buttonAccount.setImageDrawable(context.getResources().getDrawable(R.mipmap.my_account));
+
+        textViewAccount.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
+        textViewNotifications.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
+        textViewSeniors.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
+        txtViewActivity.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
+    }
+
+    public static void goToAccount() {
+        //if (Config.intSelectedMenu != Config.intAccountScreen) {
+        try {
+            Config.intSelectedMenu = Config.intAccountScreen;
+            MyAccountFragment fragment = MyAccountFragment.newInstance();
+            FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+
+            setMenu();
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+            buttonAccount.setImageDrawable(context.getResources().getDrawable(R.mipmap.my_account_active));
+            textViewAccount.setTextColor(context.getResources().getColor(R.color.blue));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //}
+    }
+
+    public static void updateActivityIconMenu() {
+        try {
+            setMenu();
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+            buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity_active));
+            txtViewActivity.setTextColor(context.getResources().getColor(R.color.blue));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void refreshActivityView() {
         try {
 
@@ -133,7 +176,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 Utils.iActivityCount = 0;
                 Utils.iProviderCount = 0;
                 if (utils == null) {
-                    utils = new Utils(context);
+                    utils = new Utils(DashboardActivity.this);
                 }
                 utils.fetchDependents(Config.customerModel.getStrCustomerID(),
                         progressDialog, 0);
@@ -154,18 +197,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         }
     }
 
-    private static void setMenu() {
-        buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity));
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
-        buttonNotifications.setImageDrawable(context.getResources().getDrawable(R.mipmap.notification));
-        buttonAccount.setImageDrawable(context.getResources().getDrawable(R.mipmap.my_account));
-
-        textViewAccount.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
-        textViewNotifications.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
-        textViewSeniors.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
-        txtViewActivity.setTextColor(context.getResources().getColor(R.color.colorAccentDark));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,6 +215,14 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
 
         buttonSync = (ImageButton) findViewById(R.id.buttonSync);
+
+        loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
+        utils = new Utils(DashboardActivity.this);
+        progressDialog = new ProgressDialog(DashboardActivity.this);
+
+        utils.setStatusBarColor("#2196f3");
+
+        appCompatActivity = DashboardActivity.this;
 
         context = this;
 
@@ -307,16 +346,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             // Config.intSelectedMenu = 0;
             goToNotifications();
         }*/
-
-
-
-        loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
-        utils = new Utils(this);
-        progressDialog = new ProgressDialog(DashboardActivity.this);
-
-        utils.setStatusBarColor("#2196f3");
-
-        appCompatActivity = DashboardActivity.this;
 
 
         if (Config.customerModel != null) {
@@ -454,26 +483,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         }
     }
 
-    public static void goToAccount() {
-        //if (Config.intSelectedMenu != Config.intAccountScreen) {
-        try {
-            Config.intSelectedMenu = Config.intAccountScreen;
-            MyAccountFragment fragment = MyAccountFragment.newInstance();
-            FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_dashboard, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-            setMenu();
-            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
-            buttonAccount.setImageDrawable(context.getResources().getDrawable(R.mipmap.my_account_active));
-            textViewAccount.setTextColor(context.getResources().getColor(R.color.blue));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //}
-    }
-
     public void goToRecipints() {
         //if (Config.intSelectedMenu != Config.intAccountScreen) {
         Config.intSelectedMenu = Config.intRecipientScreen;
@@ -488,17 +497,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         buttonAccount.setImageDrawable(getResources().getDrawable(R.mipmap.my_account_active));
         textViewAccount.setTextColor(getResources().getColor(R.color.blue));
         //}
-    }
-
-    public static void updateActivityIconMenu() {
-        try {
-            setMenu();
-            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
-            buttonActivity.setImageDrawable(context.getResources().getDrawable(R.mipmap.activity_active));
-            txtViewActivity.setTextColor(context.getResources().getColor(R.color.blue));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void goToActivity(boolean bReload) {
@@ -571,7 +569,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                         CareTaker.dbCon.close();
                     }*/
                     //
-                    Utils.logout();
+                    Utils.logout(DashboardActivity.this);
                 }
             });
             builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -595,7 +593,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         super.onResume();
 
         if (Config.customerModel == null || Config.customerModel.getStrName() == null) {
-            Utils.logout();
+            Utils.logout(DashboardActivity.this);
         } else {
 
             try {

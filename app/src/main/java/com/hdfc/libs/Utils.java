@@ -122,44 +122,32 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
-    private boolean showCheckInButton = false;
     public static String defaultDate = "2016-01-01T06:04:57.691Z";
     //application specific
     public static Locale locale = Locale.ENGLISH;
-
     public final static SimpleDateFormat readFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
-
     public final static SimpleDateFormat readFormatDB =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
-
     public final static SimpleDateFormat readFormatDate =
             new SimpleDateFormat("yyyy-MM-dd", locale);
-
     public final static SimpleDateFormat writeFormatMonth =
             new SimpleDateFormat("MMM yyyy", locale);
-
     public final static SimpleDateFormat writeFormat =
             new SimpleDateFormat("kk:mm dd MMM yyyy", locale);
-
     public final static SimpleDateFormat writeFormatDateDB = new
             SimpleDateFormat("yyyy-MM-dd", locale);
-
-    /*   public final static SimpleDateFormat writeFormatActivity =
-               new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
-
     public final static SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd", locale);
 
+    /*   public final static SimpleDateFormat writeFormatActivity =
+               new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
     public final static SimpleDateFormat writeFormatActivityYear =
             new SimpleDateFormat("dd/MM/yyyy", locale);
-
     private final static SimpleDateFormat queryFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
-
     private final static SimpleDateFormat queryFormatDB =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
-
     public static Uri customerImageUri = null;
     public static int iProviderCount = 0;
     public static Bitmap noBitmap;
@@ -173,15 +161,16 @@ public class Utils {
         System.loadLibrary("stringGen");
     }
 
+    private boolean showCheckInButton = false;
     private boolean isUpdateServer = false;
     private Date dat;
     private List<String> dependentsIdsList;
 
     public Utils(Context context) {
         _ctxt = context;
-        sessionManager = new SessionManager(_ctxt);
+        sessionManager = new SessionManager(context);
         dat = new Date();
-        WindowManager wm = (WindowManager) _ctxt.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
@@ -694,12 +683,13 @@ public class Utils {
             v.setBackground(drw);
     }
 
-    public static void logout() {
+    public static void logout(Context context) {
         try {
             CareTaker.dbCon.delete(DbHelper.strTableNameCollection, null, null);
             //todo clear shared pref.
+            SessionManager sessionManager = new SessionManager(context);
             sessionManager.logoutUser();
-            sessionManager = null;
+            //sessionManager = null;
             Config.intSelectedMenu = 0;
             //Config.intDependentsCount = 0;
 
@@ -733,12 +723,12 @@ public class Utils {
             File fileImage = createFileInternal("images/");
             deleteAllFiles(fileImage);
 
-            Intent dashboardIntent = new Intent(_ctxt, LoginActivity.class);
+            Intent dashboardIntent = new Intent(context, LoginActivity.class);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            _ctxt.startActivity(dashboardIntent);
-            ((Activity) _ctxt).finish();
+            context.startActivity(dashboardIntent);
+            ((Activity) context).finish();
 
 
         } catch (Exception e) {
@@ -1081,13 +1071,7 @@ public class Utils {
             return false;
         } else {
 
-            if (number.length() > 1) {
-                return true;
-
-
-            } else {
-                return false;
-            }
+            return number.length() > 1;
         }
 
     }
@@ -1573,7 +1557,7 @@ public class Utils {
                         defaultDate = Utils.defaultDate;
                     }
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
                 } else {
@@ -1914,7 +1898,7 @@ public class Utils {
             iActivityCount = 0;
             iProviderCount = 0;
         }
-        this.progressDialog = progressDialog;
+        Utils.progressDialog = progressDialog;
 
         try {
             if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
@@ -3160,8 +3144,11 @@ public class Utils {
                         dependentsIdsList = new ArrayList<>();
                         dependentsIdsList.clear();
                         dependentsIdsList.addAll(sessionManager.getUpdateDependent());
-                        if (isConnectingToInternet() && dependentsIdsList.contains(dependentModel.getStrDependentID())) {
-                            updateDependentsDetailOnServer(dependentModel);
+                        if (dependentModel != null && dependentModel.getStrDependentID() != null) {
+                            if (isConnectingToInternet() && dependentsIdsList.
+                                    contains(dependentModel.getStrDependentID())) {
+                                updateDependentsDetailOnServer(dependentModel);
+                            }
                         }
 
                     } while (cursor.moveToNext());
@@ -3195,7 +3182,7 @@ public class Utils {
             Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
             // Build query q2
             if (sessionManager.getDependentsStatus()) {
-                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                 finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
             } else {
@@ -3558,7 +3545,7 @@ public class Utils {
                         QueryBuilder.Operator.INLIST);
                 if (sessionManager.getProviderStatus()) {
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(query, QueryBuilder.Operator.AND, q2);
 
@@ -4175,7 +4162,7 @@ public class Utils {
                     defaultDate = Utils.defaultDate;
                 }
 
-                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
                 q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
             } else {
 
@@ -4479,36 +4466,6 @@ public class Utils {
         return "";
     }
 
-    public class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-
-            /*if (progressDialog != null && progressDialog.isShowing())
-                progressDialog.dismiss();*/
-
-            if (Config.intSelectedMenu == Config.intDashboardScreen) {
-                DashboardActivity.goToDashboard();
-            }
-
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-
-
-        }
-    }
-
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                loadAllFiles();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            threadHandler.sendEmptyMessage(0);
-        }
-    }
-
     public boolean fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
 
         //iMonth = iMonth; // - 1
@@ -4586,7 +4543,7 @@ public class Utils {
             Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
             if (sessionManager.getCheckInCareStatus()) {
                 // Build query q2
-                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
                 q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
             }
 
@@ -4656,6 +4613,36 @@ public class Utils {
             );
         }
         return showCheckInButton;
+    }
+
+    public class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+            /*if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();*/
+
+            if (Config.intSelectedMenu == Config.intDashboardScreen) {
+                DashboardActivity.goToDashboard();
+            }
+
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                loadAllFiles();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            threadHandler.sendEmptyMessage(0);
+        }
     }
 
 }

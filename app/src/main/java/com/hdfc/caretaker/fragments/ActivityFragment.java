@@ -119,6 +119,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
 
         LinearLayout dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
+        utils = new Utils(getActivity());
 
         //Context _context = getActivity();
 
@@ -156,8 +157,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
                 toggleActivityView();
             }
         });
-
-        utils = new Utils(getActivity());
 
         ImageView addActivity = (ImageView) view.findViewById(R.id.addActivity);
 

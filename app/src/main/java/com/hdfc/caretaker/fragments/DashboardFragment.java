@@ -131,13 +131,8 @@ public class DashboardFragment extends Fragment {
         checkInCare = (Button) rootView.findViewById(R.id.buttonCheckInCare);
 
         sessionManager = new SessionManager(getActivity());
-        Calendar c = Calendar.getInstance();
-        String iyear = String.valueOf(c.get(Calendar.YEAR));
-        String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
 
         checkInCare.setVisibility(View.GONE);
-
-        fetchLatestCheckInCare(imonth, iyear, Config.customerModel.getStrCustomerID());
 
         adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
 
@@ -343,7 +338,7 @@ public class DashboardFragment extends Fragment {
             Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
             if (sessionManager.getCheckInCareStatus()) {
                 // Build query q2
-                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
                 q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
             }
 
@@ -469,6 +464,11 @@ public class DashboardFragment extends Fragment {
             // Set margin for pages as a negative number, so a part of next and
             // previous pages will be showed
             // pager.setPageMargin(-110); //-200
+
+            Calendar c = Calendar.getInstance();
+            String iyear = String.valueOf(c.get(Calendar.YEAR));
+            String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
+            fetchLatestCheckInCare(imonth, iyear, Config.customerModel.getStrCustomerID());
 
         }
     }

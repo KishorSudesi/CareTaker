@@ -8,7 +8,6 @@ import android.app.SearchableInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,9 +17,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -45,8 +41,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
@@ -263,7 +257,6 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     }
 
 
-
     private void validateDependant() {
         editName.setError(null);
         editContactNo.setError(null);
@@ -472,24 +465,24 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         }
     }
 
-    @OnShowRationale({Manifest.permission.READ_CONTACTS})
+   /* @OnShowRationale({Manifest.permission.READ_CONTACTS})
     void showRationaleForContact(PermissionRequest request) {
         // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
         showRationaleDialog(R.string.permission_contact_rationale, request);
     }
+*/
 
-
-    @Override
+   /* @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
         DependentDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this,
                 requestCode, grantResults);
-    }
+    }*/
 
-    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
+  /*  private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
         new AlertDialog.Builder(this)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -506,7 +499,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setMessage(messageResId)
                 .show();
-    }
+    }*/
 
     public void readContacts(Intent intent) {
 

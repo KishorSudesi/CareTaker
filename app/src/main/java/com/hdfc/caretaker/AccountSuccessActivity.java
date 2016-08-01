@@ -89,7 +89,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
         Config.strUserName = "";
      //   Config.customerModel = null;
         Config.dependentModels.clear();
-        Utils.logout();
+        Utils.logout(AccountSuccessActivity.this);
     }
 
     public void moveFiles() {

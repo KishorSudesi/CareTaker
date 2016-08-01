@@ -15,62 +15,51 @@ import java.util.Set;
 public class SessionManager {
 
 
-    // Shared Preferences
-    SharedPreferences pref;
-
-    // Editor for Shared preferences
-    SharedPreferences.Editor editor;
-
-    // Context
-    Context _context;
-
-    // Shared pref mode
-    int PRIVATE_MODE = 0;
-
-    // Sharedpref file name
-    private static final String PREF_NAME = "CareTaker";
-
-    // All Shared Preferences Keys
-    private static final String IS_LOGIN = "IsLoggedIn";
-
     // User password (make variable public to access from outside)
     public static final String KEY_PASSWORD = "password";
-
     // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
-
     // customer id (make variable public to access from outside)
     public static final String KEY_CUST_ID = "customerId";
     // service saved (make variable public to access from outside)
     public static final String KEY_SERVICE_SAVED = "service_saved";
-
     // notification saved (make variable public to access from outside)
     public static final String KEY_NOTIFICATION_SAVED = "notification_saved";
-
     // dependents saved (make variable public to access from outside)
     public static final String KEY_DEPENDENTS_SAVED = "dependents_saved";
     // service customer saved (make variable public to access from outside)
     public static final String KEY_SERVICE_CUSTOMER = "service_customer";
-
     // provider saved (make variable public to access from outside)
     public static final String KEY_PROVIDER_SAVED = "provider_saved";
-
     // activity saved (make variable public to access from outside)
     public static final String KEY_ACTIVITY_SAVED = "activity_saved";
-
-
+    // Sharedpref file name
+    private static final String PREF_NAME = "CareTaker";
+    // All Shared Preferences Keys
+    private static final String IS_LOGIN = "IsLoggedIn";
     public final String KEY_DEPENDENTS_IDS = "dependents_ids";
     public final String KEY_PROVIDERS_IDS = "providers_ids";
     public final String KEY_OLD_PASSWORD = "old_password";
-
     public final String KEY_UPDATED_DEPENDENTS = "updated_dependents";
     public final String KEY_CHECKIN_CARE_STATUS = "checkin_care_status";
+    // Shared Preferences
+    SharedPreferences pref;
+    // Editor for Shared preferences
+    SharedPreferences.Editor editor;
+    // Context
+    Context _context;
+    // Shared pref mode
+    int PRIVATE_MODE = 0;
 
     // Constructor
     public SessionManager(Context context) {
-        this._context = context;
-        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        editor = pref.edit();
+        try {
+            this._context = context;
+            pref = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+            editor = pref.edit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -49,6 +49,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     public static AdditionalServicesAdapter additionalServicesAdapter;
     public static RelativeLayout loadingPanel;
+    public static ArrayList<String> serviceIds = new ArrayList<String>();
     private static ProgressDialog progressDialog;
     private static StorageService storageService;
     //private static LinearLayout dynamicUserTab;
@@ -56,11 +57,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     private static boolean isUpdating;
     private Utils utils;
     private Button buttonContinue;
-
     private List<String> listDataHeader = new ArrayList<>();
     private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
-    public static ArrayList<String> serviceIds = new ArrayList<String>();
-
     private ExpandableListView listView;
     private SessionManager sessionManager;
     private byte INSERT = 0, UPDATE = 1;
@@ -277,7 +275,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();*/
 
-        loadingPanel.setVisibility(View.VISIBLE);
+
         Log.i("TAG", "Session manager" + sessionManager.getServiceStatus() + " list size :" + Config.categoryServiceModels.size());
         if (sessionManager.getServiceStatus()) {
             try {
@@ -297,7 +295,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                     StorageService storageService = new StorageService(AdditionalServicesActivity.this);
 
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
                     storageService.findDocsByQuery(Config.collectionService, q2,
                             new App42CallBack() {
 
@@ -362,6 +360,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
 
         } else if (utils.isConnectingToInternet()) {
+
+            loadingPanel.setVisibility(View.VISIBLE);
 
             StorageService storageService = new StorageService(AdditionalServicesActivity.this);
 
