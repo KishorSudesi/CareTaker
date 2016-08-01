@@ -861,7 +861,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                         Utils.log(o.toString(), "LOG");
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
-
+                                        Config.customerModel.setCustomerRegistered(true);
 
                                         DependentDetailPersonalActivity.dependentModel = null;
                                         Intent next = new Intent(DependentDetailsMedicalActivity.this, SignupActivity.class);

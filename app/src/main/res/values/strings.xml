@@ -135,6 +135,7 @@
     <string name="create_activity">Create a Acitvity</string>
     <string name="check_in_care">Check-In Services</string>
     <string name="no_photo">Photos not available</string>
+    <string name="text_description">Description:</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
@@ -197,6 +198,7 @@
     <string name="warning_internet">Please check your internet connection and try again</string>
     <string name="select_rating">Select a Rating</string>
     <string name="activity_not_completed">Activity is not completed</string>
+    <string name="no_recipients">Add Care Recipients.</string>
 
     <!--Permission Strings-->
     <string name="permission_contact_rationale">We need access to Contacts to Proceed Further</string>

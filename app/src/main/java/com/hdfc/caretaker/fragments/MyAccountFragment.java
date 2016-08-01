@@ -446,7 +446,15 @@ public class MyAccountFragment extends Fragment {
         });
 
 
+        try {
+            if (Config.customerModel!=null && !Config.customerModel.isCustomerRegistered() && Config.dependentModels.size()==0) {
+                utils.toast(2, 2, getString(R.string.no_recipients));
+            } else {
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();*/

@@ -122,7 +122,7 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
-
+    private boolean showCheckInButton = false;
     public static String defaultDate = "2016-01-01T06:04:57.691Z";
     //application specific
     public static Locale locale = Locale.ENGLISH;
@@ -1019,15 +1019,19 @@ public class Utils {
     }
 
     public boolean isConnectingToInternet() {
-        ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null)
-                for (NetworkInfo anInfo : info)
-                    if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
-                        return true;
-                    }
+        try {
+            ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(
+                    Context.CONNECTIVITY_SERVICE);
+            if (connectivity != null) {
+                NetworkInfo[] info = connectivity.getAllNetworkInfo();
+                if (info != null)
+                    for (NetworkInfo anInfo : info)
+                        if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
+                            return true;
+                        }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -2006,6 +2010,42 @@ public class Utils {
 
     }
 
+    public void updateCustomerRegistrationDetailOnServer(boolean status) {
+        StorageService storageService = new StorageService(_ctxt);
+
+        JSONObject jsonToUpdate = new JSONObject();
+
+        try {
+            jsonToUpdate.put("customer_register", status);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        storageService.updateDocs(jsonToUpdate,
+                Config.customerModel.getStrCustomerID(),
+                Config.collectionCustomer, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+
+                        try {
+                            Config.customerModel.setCustomerRegistered(true);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        //progressDialog.dismiss();
+                    }
+                });
+
+    }
+
     private JSONObject createJson(JSONObject jsonDep, DependentModel dependentMod) {
 
 
@@ -2311,6 +2351,7 @@ public class Utils {
                     strDocumentId, "");
 
             //System.out.println("2nd Part of obj : "+jsonObject.toString());
+
             Config.customerModel.setStrDob(jsonObject.getString("customer_dob"));
             Config.customerModel.setStrCountryCode(jsonObject.getString("customer_country"));
             Config.customerModel.setStrCountryIsdCode(jsonObject.getString("customer_country_code"));
@@ -2323,7 +2364,7 @@ public class Utils {
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);*/
             Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
-
+            Config.customerModel.setCustomerRegistered(jsonObject.optBoolean("customer_register"));
             if (isUpdateServer && isConnectingToInternet()) {
                 updateCustomerDetailOnServer();
             }
@@ -4467,4 +4508,154 @@ public class Utils {
             threadHandler.sendEmptyMessage(0);
         }
     }
+
+    public boolean fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
+
+        //iMonth = iMonth; // - 1
+        Config.checkInCareActivityNames.clear();
+        showCheckInButton = false;
+        if (sessionManager.getCheckInCareStatus()) {
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
+            Cursor cursor = null;
+            try {
+
+                // WHERE   clause
+                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+                // WHERE clause arguments
+                String[] selectionArgs = {Config.collectionCheckInCare};
+                cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                Log.i("TAG", "Cursor count:" + cursor.getCount());
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    do {
+
+                        String strDocument = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
+                        String strActivityId = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID));
+                        //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+
+                        createCheckInCareModel(strActivityId, strDocument);
+                    } while (cursor.moveToNext());
+
+                    showCheckInButton = true;
+                }/* else {
+
+                }*/
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                if (cursor != null)
+                    cursor.close();
+            }
+        }
+
+        if (isConnectingToInternet()) {
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
+            String defaultDate = null;
+            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
+            if (cursorData != null && cursorData.getCount() > 0) {
+                cursorData.moveToFirst();
+                defaultDate = cursorData.getString(0);
+                cursorData.close();
+            } else {
+                defaultDate = Utils.defaultDate;
+            }
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            Query q1 = QueryBuilder.build("year", iYear, QueryBuilder.
+                    Operator.EQUALS);
+            Query q2 = QueryBuilder.build("month", iMonth, QueryBuilder.
+                    Operator.EQUALS);
+            Query q3 = QueryBuilder.build("customer_id", CustomerId, QueryBuilder.
+                    Operator.EQUALS);
+
+            // Build query q1 for key1 equal to name and value1 equal to Nick
+
+            // Build query q2 for key2 equal to age and value2
+
+            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+            Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
+            if (sessionManager.getCheckInCareStatus()) {
+                // Build query q2
+                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+            }
+
+            storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q5, 3000, 0, "created_date", 1, new App42CallBack() {
+                        @Override
+                        public void onSuccess(Object o) {
+
+
+                            Storage response = (Storage) o;
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                            if (response != null) {
+
+                                Utils.log(response.toString(), " S ");
+                                Utils.log("Size : " + response.getJsonDocList().size(), " S ");
+                                if (response.getJsonDocList().size() > 0) {
+                                    try {
+                                        try {
+                                            for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                                Storage.JSONDocument jsonDocument = response.
+                                                        getJsonDocList().get(i);
+
+                                                String strDocument = jsonDocument.getJsonDoc();
+                                                String strActivityId = jsonDocument.getDocId();
+                                                //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+                                                String values[] = {strActivityId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionCheckInCare, "", "1", "", ""};
+
+                                                if (sessionManager.getCheckInCareStatus()) {
+                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgs = {strActivityId};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+
+                                                } else {
+
+                                                    CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                    createCheckInCareModel(strActivityId, strDocument);
+
+                                                }
+
+
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        if (!sessionManager.getCheckInCareStatus()) {
+                                            sessionManager.saveCheckInCareStatus(true);
+                                            showCheckInButton = true;
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                        }
+                    }
+            );
+        }
+        return showCheckInButton;
+    }
+
 }

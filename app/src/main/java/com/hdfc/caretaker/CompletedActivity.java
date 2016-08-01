@@ -247,7 +247,7 @@ public class CompletedActivity extends AppCompatActivity {
 
                 }
                 if (txtViewMSG != null) {
-                    txtViewMSG.setText(activityModel.getStrActivityDesc());
+                    txtViewMSG.setText(getString(R.string.text_description) + activityModel.getStrActivityDesc());
                 }
 
                 strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
@@ -710,10 +710,10 @@ public class CompletedActivity extends AppCompatActivity {
             smileyMessage.setText("Something went wrong-Tell us more.");
         }
         if (iRating == 4) {
-            smileyMessage.setVisibility(View.INVISIBLE);
+            smileyMessage.setVisibility(View.GONE);
         }
         if (iRating == 5) {
-            smileyMessage.setVisibility(View.INVISIBLE);
+            smileyMessage.setVisibility(View.GONE);
         }
 
         if (previousViewButton != null)

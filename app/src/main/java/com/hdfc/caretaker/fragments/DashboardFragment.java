@@ -135,7 +135,7 @@ public class DashboardFragment extends Fragment {
         String iyear = String.valueOf(c.get(Calendar.YEAR));
         String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
 
-        checkInCare.setVisibility(View.INVISIBLE);
+        checkInCare.setVisibility(View.GONE);
 
         fetchLatestCheckInCare(imonth, iyear, Config.customerModel.getStrCustomerID());
 

@@ -744,95 +744,98 @@ public class UpdateService extends Service {
     }
 
     public void updateCheckInCare() {
-        if (utils.isConnectingToInternet()) {
+        try {
+            if (utils.isConnectingToInternet()) {
 
-            Calendar c = Calendar.getInstance();
-            String iyear = String.valueOf(c.get(Calendar.YEAR));
-            String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
-            String defaultDate = null;
-            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
-            if (cursorData != null && cursorData.getCount() > 0) {
-                cursorData.moveToFirst();
-                defaultDate = cursorData.getString(0);
-                cursorData.close();
-            } else {
-                defaultDate = Utils.defaultDate;
-            }
+                Calendar c = Calendar.getInstance();
+                String iyear = String.valueOf(c.get(Calendar.YEAR));
+                String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
+                String defaultDate = null;
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    cursorData.close();
+                } else {
+                    defaultDate = Utils.defaultDate;
+                }
 
-            StorageService storageService = new StorageService(UpdateService.this);
+                StorageService storageService = new StorageService(UpdateService.this);
 
-            Query q1 = QueryBuilder.build("year", iyear, QueryBuilder.
-                    Operator.EQUALS);
-            Query q2 = QueryBuilder.build("month", imonth, QueryBuilder.
-                    Operator.EQUALS);
-            Query q3 = QueryBuilder.build("customer_id", Config.customerModel.getStrCustomerID(), QueryBuilder.
-                    Operator.EQUALS);
+                Query q1 = QueryBuilder.build("year", iyear, QueryBuilder.
+                        Operator.EQUALS);
+                Query q2 = QueryBuilder.build("month", imonth, QueryBuilder.
+                        Operator.EQUALS);
+                Query q3 = QueryBuilder.build("customer_id", Config.customerModel.getStrCustomerID(), QueryBuilder.
+                        Operator.EQUALS);
 
-            // Build query q1 for key1 equal to name and value1 equal to Nick
+                // Build query q1 for key1 equal to name and value1 equal to Nick
 
-            // Build query q2 for key2 equal to age and value2
+                // Build query q2 for key2 equal to age and value2
 
-            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
-            Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
-            if (sessionManager.getCheckInCareStatus()) {
-                // Build query q2
-                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
-                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
-            }
+                Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+                Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
+                if (sessionManager.getCheckInCareStatus()) {
+                    // Build query q2
+                    Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+                }
 
-            storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q5, 3000, 0, "created_date", 1, new App42CallBack() {
-                        @Override
-                        public void onSuccess(Object o) {
+                storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q5, 3000, 0, "created_date", 1, new App42CallBack() {
+                            @Override
+                            public void onSuccess(Object o) {
 
 
-                            Storage response = (Storage) o;
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                Storage response = (Storage) o;
 
-                            if (response != null) {
+                                if (response != null) {
 
-                                Utils.log(response.toString(), " S ");
-                                Utils.log("Size : " + response.getJsonDocList().size(), " S ");
-                                if (response.getJsonDocList().size() > 0) {
-                                    try {
+                                    Utils.log(response.toString(), " S ");
+                                    Utils.log("Size : " + response.getJsonDocList().size(), " S ");
+                                    if (response.getJsonDocList().size() > 0) {
                                         try {
-                                            for (int i = 0; i < response.getJsonDocList().size(); i++) {
+                                            try {
+                                                for (int i = 0; i < response.getJsonDocList().size(); i++) {
 
-                                                Storage.JSONDocument jsonDocument = response.
-                                                        getJsonDocList().get(i);
+                                                    Storage.JSONDocument jsonDocument = response.
+                                                            getJsonDocList().get(i);
 
-                                                String strDocument = jsonDocument.getJsonDoc();
-                                                String strActivityId = jsonDocument.getDocId();
-                                                //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+                                                    String strDocument = jsonDocument.getJsonDoc();
+                                                    String strActivityId = jsonDocument.getDocId();
+                                                    //JSONObject jsonObjectActivity = new JSONObject(strDocument);
 
-                                                String values[] = {strActivityId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionCheckInCare, "", "1", "", ""};
+                                                    String values[] = {strActivityId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionCheckInCare, "", "1", "", ""};
 
 
-                                                String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 
-                                                // WHERE clause arguments
-                                                String[] selectionArgs = {strActivityId};
-                                                CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgs = {strActivityId};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
 
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
+
+
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
                                 }
+                                updateNotifications();
                             }
-                            updateNotifications();
-                        }
 
-                        @Override
-                        public void onException(Exception e) {
-                            updateNotifications();
+                            @Override
+                            public void onException(Exception e) {
+                                updateNotifications();
+                            }
                         }
-                    }
-            );
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

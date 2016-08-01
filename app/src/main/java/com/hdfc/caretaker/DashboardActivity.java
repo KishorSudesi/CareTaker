@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +48,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     private static TextView txtViewActivity, textViewNotifications, textViewAccount, textViewSeniors;
 
     private static Context context;
+    private static boolean isSync = false;
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -81,18 +83,22 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     private Utils utils;
 
     public static void goToDashboard() {
-        //if (Config.intSelectedMenu != Config.intDashboardScreen) {
-        Config.intSelectedMenu = Config.intDashboardScreen;
-        setMenu();
+        if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
+            goToAccount();
+        } else {
+            //if (Config.intSelectedMenu != Config.intDashboardScreen) {
+            Config.intSelectedMenu = Config.intDashboardScreen;
+            setMenu();
 
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior_active));
-        textViewSeniors.setTextColor(context.getResources().getColor(R.color.blue));
-        DashboardFragment newFragment = DashboardFragment.newInstance();
-        FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, newFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-        //}
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior_active));
+            textViewSeniors.setTextColor(context.getResources().getColor(R.color.blue));
+            DashboardFragment newFragment = DashboardFragment.newInstance();
+            FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            //}
+        }
 
 
     }
@@ -127,10 +133,11 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 Utils.iActivityCount = 0;
                 Utils.iProviderCount = 0;
                 if (utils == null) {
-                    utils = new Utils(DashboardActivity.this);
+                    utils = new Utils(context);
                 }
                 utils.fetchDependents(Config.customerModel.getStrCustomerID(),
                         progressDialog, 0);
+
 
             } else {
                 //Config.intSelectedMenu = 0;
@@ -139,6 +146,8 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             if (DashboardActivity.loadingPanel.getVisibility() == View.VISIBLE) {
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
             }
@@ -263,6 +272,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 @Override
                 public void onClick(View v) {
                     //Config.intSelectedMenu = 0;
+
                     goToDashboardMenu();
                 }
             });
@@ -272,13 +282,17 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             buttonSync.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (utils.isConnectingToInternet()) {
-                        loadingPanel.setVisibility(View.VISIBLE);
-                        Intent in = new Intent(DashboardActivity.this, UpdateService.class);
-                        in.putExtra("updateAll", true);
-                        startService(in);
-                    } else {
-                        utils.toast(2, 2, getString(R.string.warning_internet));
+                    try {
+                        if (utils.isConnectingToInternet()) {
+                            loadingPanel.setVisibility(View.VISIBLE);
+                            Intent in = new Intent(DashboardActivity.this, UpdateService.class);
+                            in.putExtra("updateAll", true);
+                            startService(in);
+                        } else if (!utils.isConnectingToInternet()) {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -294,20 +308,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             goToNotifications();
         }*/
 
-        if (Config.intSelectedMenu == Config.intAccountScreen) {
-            //Config.intSelectedMenu = 0;
-            goToAccount();
-        }
 
-        if (Config.intSelectedMenu == Config.intRecipientScreen) {
-            //Config.intSelectedMenu = 0;
-            goToRecipints();
-        }
-        if (Config.intSelectedMenu == Config.intActivityScreen ||
-                Config.intSelectedMenu == Config.intListActivityScreen) {
-            // Config.intSelectedMenu = 0;
-            goToActivity(bReloadActivity);
-        }
 
         loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
         utils = new Utils(this);
@@ -330,7 +331,24 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             }
         }
 
+        if (Config.intSelectedMenu == Config.intAccountScreen) {
+            //Config.intSelectedMenu = 0;
+            goToAccount();
+        }
+
+        if (Config.intSelectedMenu == Config.intRecipientScreen) {
+            //Config.intSelectedMenu = 0;
+            goToRecipints();
+        }
+        if (Config.intSelectedMenu == Config.intActivityScreen ||
+                Config.intSelectedMenu == Config.intListActivityScreen) {
+            // Config.intSelectedMenu = 0;
+            goToActivity(bReloadActivity);
+        }
+
         try {
+
+
             if (!AccountSuccessActivity.isCreatedNow &&
                     Config.intSelectedMenu == Config.intDashboardScreen) {
 
@@ -354,8 +372,13 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             } else {
                 //Config.intSelectedMenu = 0;
                 if (Config.intSelectedMenu == Config.intDashboardScreen)
-                    goToDashboard();
+                    if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
+                        goToAccount();
+                    } else {
+                        goToDashboard();
+                    }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -363,6 +386,13 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     }
 
+    public void goToAddRecipient() {
+        AddCareRecipientsFragment addRecipientFragment = AddCareRecipientsFragment.newInstance();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_dashboard, addRecipientFragment);
+        ft.commit();
+    }
 
     @Override
     public void onError(String var1) {
@@ -386,12 +416,16 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     protected void onStart() {
         super.onStart();
 
-        if (App42GCMController.isPlayServiceAvailable(this)) {
-            App42GCMController.getRegistrationId(DashboardActivity.this,
-                    Config.strAppId, this);//prod. - 272065924531
-        } else {
-            /*Log.i("App42PushNotification",
-                    "No valid Google Play Services APK found.");*/
+        try {
+            if (App42GCMController.isPlayServiceAvailable(this)) {
+                App42GCMController.getRegistrationId(DashboardActivity.this,
+                        Config.strAppId, this);//prod. - 272065924531
+            } else {
+                /*Log.i("App42PushNotification",
+                        "No valid Google Play Services APK found.");*/
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -401,34 +435,42 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     }
 
     public void goToNotifications() {
-        //if (Config.intSelectedMenu != Config.intNotificationScreen) {
-        Config.intSelectedMenu = Config.intNotificationScreen;
-        NotificationFragment fragment = NotificationFragment.newInstance();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
+            utils.toast(2, 2, getString(R.string.no_recipients));
+        } else {
+            //if (Config.intSelectedMenu != Config.intNotificationScreen) {
+            Config.intSelectedMenu = Config.intNotificationScreen;
+            NotificationFragment fragment = NotificationFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
-        setMenu();
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
-        buttonNotifications.setImageDrawable(getResources().getDrawable(R.mipmap.notification_active));
-        textViewNotifications.setTextColor(getResources().getColor(R.color.blue));
-        // }
+            setMenu();
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+            buttonNotifications.setImageDrawable(getResources().getDrawable(R.mipmap.notification_active));
+            textViewNotifications.setTextColor(getResources().getColor(R.color.blue));
+            // }
+        }
     }
 
-    public void goToAccount() {
+    public static void goToAccount() {
         //if (Config.intSelectedMenu != Config.intAccountScreen) {
-        Config.intSelectedMenu = Config.intAccountScreen;
-        MyAccountFragment fragment = MyAccountFragment.newInstance();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        try {
+            Config.intSelectedMenu = Config.intAccountScreen;
+            MyAccountFragment fragment = MyAccountFragment.newInstance();
+            FragmentTransaction transaction = appCompatActivity.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
-        setMenu();
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
-        buttonAccount.setImageDrawable(getResources().getDrawable(R.mipmap.my_account_active));
-        textViewAccount.setTextColor(getResources().getColor(R.color.blue));
+            setMenu();
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+            buttonAccount.setImageDrawable(context.getResources().getDrawable(R.mipmap.my_account_active));
+            textViewAccount.setTextColor(context.getResources().getColor(R.color.blue));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //}
     }
 
@@ -460,40 +502,47 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     }
 
     private void goToActivity(boolean bReload) {
+        if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
+            utils.toast(2, 2, getString(R.string.no_recipients));
+        } else {
+            //if (Config.intSelectedMenu == Config.intListActivityScreen ||
+            //Config.intSelectedMenu == Config.intActivityScreen) {
+            // Config.intSelectedMenu = Config.intActivityScreen;
+            ActivityFragment fragment = ActivityFragment.newInstance(bReload);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
 
-        //if (Config.intSelectedMenu == Config.intListActivityScreen ||
-        //Config.intSelectedMenu == Config.intActivityScreen) {
-        // Config.intSelectedMenu = Config.intActivityScreen;
-        ActivityFragment fragment = ActivityFragment.newInstance(bReload);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-        setMenu();
-        buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
-        buttonActivity.setImageDrawable(getResources().getDrawable(R.mipmap.activity_active));
-        txtViewActivity.setTextColor(getResources().getColor(R.color.blue));
-        //}
+            setMenu();
+            buttonSeniors.setImageDrawable(context.getResources().getDrawable(R.mipmap.senior));
+            buttonActivity.setImageDrawable(getResources().getDrawable(R.mipmap.activity_active));
+            txtViewActivity.setTextColor(getResources().getColor(R.color.blue));
+            //}
+        }
     }
 
     private void goToDashboardMenu() {
-        //if (Config.intSelectedMenu != Config.intDashboardScreen) {
-        Config.intSelectedMenu = Config.intDashboardScreen;
+        if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
+            utils.toast(2, 2, getString(R.string.no_recipients));
+        } else {
+            //if (Config.intSelectedMenu != Config.intDashboardScreen) {
+            Config.intSelectedMenu = Config.intDashboardScreen;
         /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();*/
 
-        setMenu();
-        buttonSeniors.setImageDrawable(getResources().getDrawable(R.mipmap.senior_active));
-        textViewSeniors.setTextColor(getResources().getColor(R.color.blue));
+            setMenu();
+            buttonSeniors.setImageDrawable(getResources().getDrawable(R.mipmap.senior_active));
+            textViewSeniors.setTextColor(getResources().getColor(R.color.blue));
 
 
-        loadingPanel.setVisibility(View.VISIBLE);
-        Utils.iActivityCount = 0;
-        Utils.iProviderCount = 0;
+            loadingPanel.setVisibility(View.VISIBLE);
+            Utils.iActivityCount = 0;
+            Utils.iProviderCount = 0;
 
-        utils.fetchDependents(Config.customerModel.getStrCustomerID(), progressDialog, 0);
+            utils.fetchDependents(Config.customerModel.getStrCustomerID(), progressDialog, 0);
+        }
         //}
     }
 

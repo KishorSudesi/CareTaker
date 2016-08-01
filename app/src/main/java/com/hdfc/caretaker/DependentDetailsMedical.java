@@ -62,7 +62,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dependent_details_medical);
-        jsonDependant=new JSONObject();
+        jsonDependant = new JSONObject();
         utils = new Utils(DependentDetailsMedical.this);
         utils.setStatusBarColor("#2196f3");
         editregisterflag = 0;
@@ -164,8 +164,8 @@ public class DependentDetailsMedical extends AppCompatActivity {
         Intent selection = new Intent(DependentDetailsMedical.this,
                 DependentDetailPersonal.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean("editflag",true);
-        bundle.putInt("childposition",mPosition);
+        bundle.putBoolean("editflag", true);
+        bundle.putInt("childposition", mPosition);
         selection.putExtras(bundle);
         startActivity(selection);
         finish();
@@ -299,7 +299,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                     String updatedAt = Utils.readFormat.format(c.getTime());
 
-                    String values[] = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), updatedAt, strDocument, Config.collectionDependent, "", "1", "",""};
+                    String values[] = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), updatedAt, strDocument, Config.collectionDependent, "", "1", "", ""};
                     try {
                         //Config.jsonCustomer = new JSONObject(strDocument);
 
@@ -680,6 +680,10 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                     Utils.log(response.toString(), "message");
 
                                     if (response.isResponseSuccess()) {
+                                        if (!Config.customerModel.isCustomerRegistered()) {
+                                            Config.customerModel.setCustomerRegistered(true);
+                                            utils.updateCustomerRegistrationDetailOnServer(true);
+                                        }
                                         //
                                         Storage.JSONDocument jsonDocument = response.
                                                 getJsonDocList().
@@ -716,6 +720,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                         Config.intSelectedMenu = Config.intRecipientScreen;
                                         startActivity(next);
                                         finish();
+
 
                                       /*  if (SignupActivity.dependentModels.size() == 2) {
                                             confirmRegister();
@@ -1038,6 +1043,10 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                     Utils.log(o.toString(), "LOG");
 
                                     updateDependentDataInDb();
+                                    if (!Config.customerModel.isCustomerRegistered()) {
+                                        Config.customerModel.setCustomerRegistered(true);
+                                        utils.updateCustomerRegistrationDetailOnServer(true);
+                                    }
                                 } else {
 
                                 }

@@ -19,6 +19,7 @@ public class CustomerModel {
     private String strCountryIsdCode = "";
     private String strCountryAreaCode = "";
     private String strLandLine = "";
+    private boolean isCustomerRegistered=false;
 
     private String strCustomerID="";
 
@@ -36,6 +37,14 @@ public class CustomerModel {
         this.strEmail = strEmail;
         this.strCustomerID = strCustomerID;
         this.strImgPath = strImgPath;
+    }
+
+    public boolean isCustomerRegistered() {
+        return isCustomerRegistered;
+    }
+
+    public void setCustomerRegistered(boolean customerRegistered) {
+        isCustomerRegistered = customerRegistered;
     }
 
     public String getStrCity() {
