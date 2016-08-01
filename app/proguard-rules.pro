@@ -139,7 +139,20 @@
      public static final ** CREATOR;
  }
 
+  #Glide
+  -dontwarn com.bumptech.glide.**
+  -keep public class * implements com.bumptech.glide.module.GlideModule
+  -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+    **[] $VALUES;
+    public *;
+  }
+
+   #glide circle
+   -dontwarn jp.wasabeef.**
+   -keep class com.jp.wasabeef.** { *; }
+   -keep interface jp.wasabeef.** { *; }
+
 #sql cipher
--dontwarn net.sqlcipher.**
--keep class net.sqlcipher.** { *; }
--keep interface net.sqlcipher.** { *; }
+#-dontwarn net.sqlcipher.**
+#-keep class net.sqlcipher.** { *; }
+#-keep interface net.sqlcipher.** { *; }
