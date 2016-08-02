@@ -398,7 +398,7 @@ public class UpdateService extends Service {
                                     if (updateAll) {
                                         updateServices();
                                     } else {
-                                        updateNotifications();
+                                        updateCheckInCare();
                                     }
 
                                 }
@@ -408,7 +408,7 @@ public class UpdateService extends Service {
                                     if (updateAll) {
                                         updateServices();
                                     } else {
-                                        updateNotifications();
+                                        updateCheckInCare();
                                     }
 
                                 }

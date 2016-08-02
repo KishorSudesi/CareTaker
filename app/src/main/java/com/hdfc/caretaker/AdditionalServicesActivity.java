@@ -87,6 +87,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         serviceIds.clear();
 
         isUpdating = false;
+        buttonContinue.setEnabled(true);
         buttonContinue.setTextColor(getResources().getColor(R.color.colorBlackDark));
 
         if (buttonContinue != null) {
@@ -95,7 +96,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if (selectedServiceModels.size() > 0) {
+                    if (selectedServiceModels.size() > 0 || selectedServiceHistoryModels.size() > 0) {
 
                         if (!isUpdating) {
 
@@ -198,10 +199,8 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                         }
 
                         if (selectedServiceModels.size() > 0 || selectedServiceHistoryModels.size() > 0) {
-                            buttonContinue.setEnabled(true);
                             buttonContinue.setTextColor(getResources().getColor(R.color.colorWhite));
                         } else {
-                            buttonContinue.setEnabled(false);
                             buttonContinue.setTextColor(getResources().getColor(R.color.colorBlackDark));
                         }
 
