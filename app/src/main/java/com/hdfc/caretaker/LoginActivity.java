@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
         ImageButton reloadCaptcha = (ImageButton) promptsView.findViewById(R.id.reloadCaptcha);
 
 
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(measuredwidth/2, measuredheight/5);
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(measuredwidth/2, measuredheight/4);
         checkView.setLayoutParams(parms);
 
         res = checkView.getValidataAndSetImage();

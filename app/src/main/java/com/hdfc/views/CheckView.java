@@ -82,7 +82,7 @@ public class CheckView extends ImageView {
         Canvas canvas = new Canvas(sourceBitmap);
         canvas.drawColor(Color.WHITE);
         Paint numPaint = new Paint();
-        numPaint.setTextSize(mContext.getResources().getDimension(R.dimen.text_size));
+        numPaint.setTextSize(50);
         numPaint.setFakeBoldText(true);
         numPaint.setColor(Color.BLACK);
 
