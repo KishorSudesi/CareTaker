@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -9,6 +9,7 @@
         android:id="@+id/toplayout"
         android:layout_width="match_parent"
         android:layout_height="120dp"
+        android:layout_alignParentTop="true"
         android:background="@drawable/header_background"
         android:gravity="center">
 
@@ -20,6 +21,8 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:layout_below="@+id/toplayout"
+        android:layout_above="@+id/includeFooterMenu"
         android:id="@+id/fragment_dashboard"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -31,10 +34,10 @@
         style="@style/GenericProgressBackground"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:padding="5dp"
-        android:visibility="gone">
+        android:layout_above="@+id/includeFooterMenu"
+        android:visibility="visible">
 
         <ProgressBar style="@style/GenericProgressIndicator" />
     </RelativeLayout>
@@ -42,7 +45,8 @@
     <include
         android:id="@+id/includeFooterMenu"
         layout="@layout/dashboard_footer_menu"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="75dp" />
 
-</LinearLayout>
+</RelativeLayout>

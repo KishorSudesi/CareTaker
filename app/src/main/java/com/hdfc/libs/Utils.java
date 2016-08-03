@@ -715,6 +715,12 @@ public class Utils {
 
             Config.fileModels.clear();
 
+            try {
+                ActivityFragment.activitiesModelArrayList.clear();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (CareTaker.dbCon != null) {
                 //CareTaker.dbCon.close();
             }
@@ -2708,11 +2714,14 @@ public class Utils {
 
                             JSONArray imageDetails = jsonObject.optJSONArray("pictures_details");
                             for (int k = 0; k < imageDetails.length(); k++) {
-                                JSONObject jsonObjectImage = imageDetails.getJSONObject(k);
+                                JSONObject jsonObjectImage = imageDetails.optJSONObject(k);
+                                if (jsonObjectImage.has("0") && jsonObjectImage.optString("0").equalsIgnoreCase("empty")) {
 
-                                ImageModelCheck imageModelCheck = new ImageModelCheck(jsonObjectImage.optString("image_url"),
-                                        jsonObjectImage.optString("description"), jsonObjectImage.optString("date_time"));
-                                imageModels.add(imageModelCheck);
+                                } else {
+                                    ImageModelCheck imageModelCheck = new ImageModelCheck(jsonObjectImage.optString("image_url"),
+                                            jsonObjectImage.optString("description"), jsonObjectImage.optString("date_time"));
+                                    imageModels.add(imageModelCheck);
+                                }
                             }
 
                             pictureModel.setImageModels(imageModels);
@@ -3513,14 +3522,12 @@ public class Utils {
                     e.printStackTrace();
                 }
 
+                if (Config.intSelectedMenu == Config.intDashboardScreen) {
+                    DashboardActivity.goToDashboard();
+                }
+
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 // toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                if (iFlag == 0)
-                    loadImages();
-                if (iFlag == 1)
-                    refreshNotificationsImages();
-                if (iFlag == 2)
-                    loadImagesActivityMonth();
             }
 
 
@@ -3632,13 +3639,15 @@ public class Utils {
                                     Utils.log(e.getMessage(), " Response Failure");
 
                                     if (e != null) {
-                                        if (iFlag == 0)
-                                            loadImages();
-                                        if (iFlag == 1)
-                                            refreshNotificationsImages();
-                                        if (iFlag == 2)
-                                            loadImagesActivityMonth();
-                                    } else if (!sessionManager.getProviderStatus()) {
+                                        if (!sessionManager.getProviderStatus()) {
+                                            if (iFlag == 0)
+                                                loadImages();
+                                            if (iFlag == 1)
+                                                refreshNotificationsImages();
+                                            if (iFlag == 2)
+                                                loadImagesActivityMonth();
+                                        }
+                                    } else {
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
                                 } catch (Exception e1) {
@@ -4148,25 +4157,25 @@ public class Utils {
 
             Query q5 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
 
-            if (sessionManager.getActivityStatus()) {
-                String defaultDate = null;
-                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionActivity);
-                if (cursorData != null && cursorData.getCount() > 0) {
-                    cursorData.moveToFirst();
-                    defaultDate = cursorData.getString(0);
-                    if (defaultDate == null || defaultDate.length() == 0) {
-                        defaultDate = Utils.defaultDate;
-                    }
-                    cursorData.close();
-                } else {
-                    defaultDate = Utils.defaultDate;
-                }
-
-                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
-                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
-            } else {
-
-            }
+//            if (sessionManager.getActivityStatus()) {
+//                String defaultDate = null;
+//                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionActivity);
+//                if (cursorData != null && cursorData.getCount() > 0) {
+//                    cursorData.moveToFirst();
+//                    defaultDate = cursorData.getString(0);
+//                    if (defaultDate == null || defaultDate.length() == 0) {
+//                        defaultDate = Utils.defaultDate;
+//                    }
+//                    cursorData.close();
+//                } else {
+//                    defaultDate = Utils.defaultDate;
+//                }
+//
+//                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
+//                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+//            } else {
+//
+//            }
 
            /* int max = 1;
             int offset = 0;

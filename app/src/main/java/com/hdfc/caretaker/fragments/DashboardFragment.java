@@ -309,7 +309,6 @@ public class DashboardFragment extends Fragment {
 
         if (utils.isConnectingToInternet()) {
 
-            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
             String defaultDate = null;
             Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
@@ -387,10 +386,11 @@ public class DashboardFragment extends Fragment {
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
                                         if (!sessionManager.getCheckInCareStatus()) {
                                             sessionManager.saveCheckInCareStatus(true);
                                             checkInCare.setVisibility(View.VISIBLE);
+                                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                         }
 
                                     } catch (Exception e) {

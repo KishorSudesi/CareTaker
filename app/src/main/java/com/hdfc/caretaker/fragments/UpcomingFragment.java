@@ -35,7 +35,7 @@ public class UpcomingFragment extends Fragment {
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
     private static ProgressDialog progressDialog;
-    private static String strCarlaImageUrl,imageUrl;
+    private static String strCarlaImageUrl, imageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName, strNo = "";
     private Utils utils;
@@ -65,7 +65,7 @@ public class UpcomingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
-        mContext=getActivity();
+        mContext = getActivity();
         txtViewHeader = (TextView) view.findViewById(R.id.header);
         txtViewMSG = (TextView) view.findViewById(R.id.textViewMSG);
         txtViewDate = (TextView) view.findViewById(R.id.textViewDate);
@@ -83,20 +83,24 @@ public class UpcomingFragment extends Fragment {
 
         if (activityModel != null) {
             txtViewHead2.setText(activityModel.getStrActivityName());
+            if (Config.strProviderIdsAdded.size() > 0) {
+                int iPosition = Config.strProviderIdsAdded.indexOf(activityModel.getStrProviderID());
+            }
+            ProviderModel providerModel = null;
+            if (iPosition > -1 && Config.providerModels.size() > 0) {
+                providerModel = Config.providerModels.get(iPosition);
+            }
+            if (providerModel != null) {
+                String strHead = providerModel.getStrName() + getActivity().getResources().getString(R.string.will_assist);
+                txtViewHead1.setText(strHead);
+                String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
+                txtViewDate.setText(strDate);
+                txtViewMSG.setText(activityModel.getStrActivityDesc());
 
-            int iPosition = Config.strProviderIdsAdded.indexOf(activityModel.getStrProviderID());
-
-            ProviderModel providerModel = Config.providerModels.get(iPosition);
-
-            String strHead = providerModel.getStrName() + getActivity().getResources().getString(R.string.will_assist);
-            txtViewHead1.setText(strHead);
-            String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
-            txtViewDate.setText(strDate);
-            txtViewMSG.setText(activityModel.getStrActivityDesc());
-
-            strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
-            strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
-            imageUrl=providerModel.getStrImgUrl();
+                strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
+                strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
+                imageUrl = providerModel.getStrImgUrl();
+            }
         }
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
@@ -117,9 +121,18 @@ public class UpcomingFragment extends Fragment {
 //            }
 //        });
 
-        if (activityModel != null && activityModel.getStrProviderID() != null) {
-            iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
-            strNo = Config.providerModels.get(iPosition).getStrContacts();
+        try {
+            iPosition = -1;
+            if (activityModel != null && activityModel.getStrProviderID() != null) {
+                if (Config.strProviderIds.size() > 0) {
+                    iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+                }
+                if (Config.providerModels.size() > 0 && iPosition > -1) {
+                    strNo = Config.providerModels.get(iPosition).getStrContacts();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         msg.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +162,7 @@ public class UpcomingFragment extends Fragment {
                             "0000000000");
                     callIntent.setData(Uri.parse(_strNo));
                     startActivity(callIntent);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -185,7 +198,7 @@ public class UpcomingFragment extends Fragment {
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
             // do something with the bitmap
             // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg=bitmap;
+            bitmapImg = bitmap;
 
             progressDialog.dismiss();
 
