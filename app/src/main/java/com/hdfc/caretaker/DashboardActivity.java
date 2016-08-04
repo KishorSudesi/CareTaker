@@ -517,6 +517,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             buttonActivity.setImageDrawable(getResources().getDrawable(R.mipmap.activity_active));
             txtViewActivity.setTextColor(getResources().getColor(R.color.blue));
             //}
+
+            if (!bReload)
+                loadingPanel.setVisibility(View.GONE);
         }
     }
 

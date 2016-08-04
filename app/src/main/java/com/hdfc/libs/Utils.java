@@ -4019,6 +4019,7 @@ public class Utils {
     public void fetchLatestActivitiesByMonth(int iMonth, int iYear,
                                              final ProgressDialog progressDialog) {
 
+
         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
         iMonth = iMonth; // - 1
 
