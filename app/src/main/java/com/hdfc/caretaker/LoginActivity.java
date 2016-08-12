@@ -17,14 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
-import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.CheckView;
 import com.scottyab.aescrypt.AESCrypt;
@@ -174,10 +172,6 @@ public class LoginActivity extends AppCompatActivity {
         forgotpasswordUserName = (EditText) promptsView.findViewById(R.id.editTextUserName);
         ImageButton reloadCaptcha = (ImageButton) promptsView.findViewById(R.id.reloadCaptcha);
 
-
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(measuredwidth/2, measuredheight/4);
-        checkView.setLayoutParams(parms);
-
         res = checkView.getValidataAndSetImage();
 
         reloadCaptcha.setOnClickListener(new View.OnClickListener() {
@@ -232,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (utils.isConnectingToInternet()) {
 
-            progressDialog.setMessage(getString(R.string.verify_identity_password));
+            progressDialog.setMessage(getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -463,7 +457,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (utils.isConnectingToInternet()) {
 
-                progressDialog.setMessage(getString(R.string.process_login));
+                progressDialog.setMessage(getString(R.string.text_loader_processing));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
 
@@ -506,9 +500,8 @@ public class LoginActivity extends AppCompatActivity {
                             //todo check rolelist
                             //Utils.log(String.valueOf(roleList.size()), " ROLE ");
                             //roleList.size()>0 && roleList.get(0).equalsIgnoreCase("provider");
-                            SessionManager sessionManager = new SessionManager(LoginActivity.this);
-                            utils.fetchCustomer(progressDialog, 1);
-                            sessionManager.createLoginSession(password, userName);
+                            utils.fetchCustomer(progressDialog, 1,password,userName);
+
 
                         } else {
                             if (progressDialog.isShowing())

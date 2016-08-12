@@ -172,6 +172,7 @@ public class DashboardFragment extends Fragment {
                 if (Config.checkInCareActivityNames.size() > 0) {
 
                     Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
+                    intent.putExtra(Config.KEY_START_FROM,Config.START_FROM_DASHBOARD);
                     startActivity(intent);
                 }
 
@@ -265,12 +266,12 @@ public class DashboardFragment extends Fragment {
 
         //iMonth = iMonth; // - 1
         Config.checkInCareActivityNames.clear();
-
+        Cursor cursor = null;
         if (sessionManager.getCheckInCareStatus()) {
 
             DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
-            Cursor cursor=null;
+
             try {
 
                 // WHERE   clause
@@ -278,7 +279,7 @@ public class DashboardFragment extends Fragment {
 
                 // WHERE clause arguments
                 String[] selectionArgs = {Config.collectionCheckInCare};
-                 cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
                 Log.i("TAG", "Cursor count:" + cursor.getCount());
                 if (cursor != null) {
                     cursor.moveToFirst();
@@ -302,12 +303,12 @@ public class DashboardFragment extends Fragment {
                 e.printStackTrace();
             } finally {
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                if(cursor!=null)
-                cursor.close();
+                if (cursor != null)
+                    cursor.close();
             }
         }
 
-        if (utils.isConnectingToInternet()) {
+        if (utils.isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
 
 
             String defaultDate = null;

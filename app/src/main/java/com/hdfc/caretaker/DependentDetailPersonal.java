@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import permissions.dispatcher.NeedsPermission;
@@ -79,7 +80,8 @@ public class DependentDetailPersonal extends AppCompatActivity {
     public static String strDependantName = "";
     public static String dependantImgName = "";
     public static ArrayList<String> dependentNames = new ArrayList<>();
-
+    private Context mContext;
+    private boolean isSelected = false;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -92,8 +94,15 @@ public class DependentDetailPersonal extends AppCompatActivity {
             String strDate = Utils.writeFormatActivityYear.format(date);
             //String _strDate = Utils.readFormat.format(date);
             // DependentDetailsMedical.date = date;
-            editTextDate.setText(strDate);
 
+            int strAge = Integer.parseInt(utils.getAge(date));
+            if (utils.ageValidationDependents(strAge)) {
+                // String _strDate = Utils.readFormat.format(date);
+                editTextDate.setText(strDate);
+            } else {
+                editTextDate.setText("");
+                utils.toast(2, 2, mContext.getString(R.string.validation_age_dependnets));
+            }
            /* iDate = date.getDate();
             iMonth = date.getMonth();
             iYear = date.getYear();*/
@@ -112,18 +121,24 @@ public class DependentDetailPersonal extends AppCompatActivity {
 
         utils = new Utils(DependentDetailPersonal.this);
         utils.setStatusBarColor("#2196f3");
-
+        isSelected = false;
         editName = (EditText) findViewById(R.id.editDependName);
         editContactNo = (EditText) findViewById(R.id.editContNo);
         editAddress = (EditText) findViewById(R.id.editAddr);
         editTextDate = (EditText) findViewById(R.id.editDateofbirth);
-
+        mContext = this;
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Calendar cal = GregorianCalendar.getInstance();
+                cal.setTime(new Date());
+                cal.add(Calendar.YEAR, -60);
+                Date daysBeforeDate = cal.getTime();
                 new SlideDateTimePicker.Builder(getSupportFragmentManager())
                         .setListener(listener)
-                        .setInitialDate(new Date())
+                        .setMaxDate(new Date())
+                        .setInitialDate(daysBeforeDate)
                         .build()
                         .show();
             }
@@ -262,12 +277,25 @@ public class DependentDetailPersonal extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
-       /* if (strImageName != null && TextUtils.isEmpty(strImageName) && dependentModel == null) {
+        strImageName = strImageName.trim();
+        if (TextUtils.isEmpty(strImageName) && dependentModel == null) {
             utils.toast(2, 2, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
-        }*/
+        }
+        if (editflag && mPosition > -1) {
 
+        } else {
+            if (TextUtils.isEmpty(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_field_required));
+                focusView = editContactNo;
+                cancel = true;
+            } else if (!utils.validateMobile(strContactNo)) {
+                editContactNo.setError(getString(R.string.error_invalid_contact_no));
+                focusView = editContactNo;
+                cancel = true;
+            }
+        }
         if (TextUtils.isEmpty(relation) || relation.equalsIgnoreCase("Select a Relation")) {
                 /*editRelation.setError(getString(R.string.error_field_required));
                 focusView = editRelation;*/
@@ -323,7 +351,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
             try {
                 // if (utils.isConnectingToInternet()) {
 
-                mProgress.setMessage(getResources().getString(R.string.loading));
+                mProgress.setMessage(getResources().getString(R.string.text_loader_processing));
                 mProgress.setCancelable(false);
                 mProgress.show();
 
@@ -388,8 +416,8 @@ public class DependentDetailPersonal extends AppCompatActivity {
                     Intent selection = new Intent(DependentDetailPersonal.this,
                             DependentDetailsMedical.class);
                     Bundle bundle = new Bundle();
-                    bundle.putBoolean("editflag",true);
-                    bundle.putInt("childposition",mPosition);
+                    bundle.putBoolean("editflag", true);
+                    bundle.putInt("childposition", mPosition);
                     selection.putExtras(bundle);
                     startActivity(selection);
                     finish();
@@ -534,7 +562,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
 
                 if (image_uri != null) {
                     try {
-                        mProgress.setMessage(getString(R.string.loading));
+                        mProgress.setMessage(getString(R.string.text_loader_processing));
                         mProgress.show();
                         uri = Uri.parse(image_uri);
                         backgroundThreadHandler = new BackgroundThreadHandler();
@@ -583,8 +611,8 @@ public class DependentDetailPersonal extends AppCompatActivity {
         //Utils.log(strImageName, " strImageName 1 ");
 
 
-        if (!Config.customerModel.getStrName().equalsIgnoreCase("")
-                && dependentModel != null) {
+        if (Config.customerModel != null && !Config.customerModel.getStrName().equalsIgnoreCase("")
+                && dependentModel != null && !isSelected) {
             //&& !strDependantName.equalsIgnoreCase("")
 
             editName.setText(dependentModel.getStrName());
@@ -604,10 +632,16 @@ public class DependentDetailPersonal extends AppCompatActivity {
             //
             spinnerRelation.setSelection(Config.strRelationsList.indexOf(dependentModel.getStrRelation()));
             //
+            strImageName = dependentModel.getStrImagePath();
+            if (strImageName == null || strImageName.length() == 0 || strImageName.equalsIgnoreCase("")) {
+                loadImageSimpleTarget(dependentModel.getStrImageUrl());
+            } else {
+                loadImageSimpleTarget(strImageName);
+            }
 
             //!strDependantName.equalsIgnoreCase("") &&
             if (!isCamera) {
-                loadImageSimpleTarget(dependentModel.getStrImageUrl());
+
 //                File fileImage = utils.getInternalFileImages(dependentModel.getStrDependentID());
 //
 //                strImageName = fileImage.getAbsolutePath();
@@ -646,7 +680,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
                 .load(url)
                 .asBitmap()
                 .centerCrop()
-                .override(Config.intWidth,Config.intHeight)
+                .override(Config.intWidth, Config.intHeight)
                 .transform(new CropCircleTransformation(DependentDetailPersonal.this))
                 .placeholder(R.drawable.person_icon)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -659,7 +693,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
                 .load(url)
                 .asBitmap()
                 .centerCrop()
-                .override(Config.intWidth,Config.intHeight)
+                .override(Config.intWidth, Config.intHeight)
                 .transform(new CropCircleTransformation(DependentDetailPersonal.this))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.person_icon)
@@ -673,11 +707,12 @@ public class DependentDetailPersonal extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
-                mProgress.setMessage(getString(R.string.loading));
+                mProgress.setMessage(getString(R.string.text_loader_processing));
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
                         strImageName = Utils.customerImageUri.getPath();
+                        isSelected = true;
                         showImageUsingCamera();
 //                        backgroundThreadHandler = new BackgroundThreadHandler();
 //                        backgroundThreadCamera = new BackgroundThreadCamera();
@@ -687,6 +722,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
                     case Config.START_GALLERY_REQUEST_CODE:
                         if (intent.getData() != null) {
                             uri = intent.getData();
+                            isSelected = true;
                             showImageUsingGallery();
 //                            backgroundThreadHandler = new BackgroundThreadHandler();
 //                            backgroundThread = new BackgroundThread();
@@ -724,8 +760,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
         }
     }
 
-    public void showImageUsingGallery()
-    {
+    public void showImageUsingGallery() {
         try {
             if (uri != null) {
                 Calendar calendar = Calendar.getInstance();
@@ -763,8 +798,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
         }
     }
 
-    public void showImageUsingCamera()
-    {
+    public void showImageUsingCamera() {
         try {
             if (strImageName != null && !strImageName.equalsIgnoreCase("")) {
                 utils.compressImageFromPath(strImageName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);

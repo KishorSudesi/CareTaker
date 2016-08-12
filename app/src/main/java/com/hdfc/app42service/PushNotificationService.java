@@ -16,6 +16,15 @@ public class PushNotificationService {
     public void sendPushToUser(String strUserName, String strMessage, App42CallBack app42CallBack) {
         asyncService.sendPushToUser(strUserName, strMessage, app42CallBack);
     }
+    public void removeUserDevice(String strUserName, String strToken, App42CallBack app42CallBack) {
+        asyncService.removeDevice(strUserName, strToken, app42CallBack);
+    }
 
+    public void deleteUserDevice(String strUserName, String strToken, App42CallBack app42CallBack) {
+        asyncService.deleteDeviceToken(strUserName, strToken, app42CallBack);
+    }
 
+    public void deleteUserDevice(String strUserName, App42CallBack app42CallBack) {
+        asyncService.deleteDevice(strUserName,app42CallBack);
+    }
 }

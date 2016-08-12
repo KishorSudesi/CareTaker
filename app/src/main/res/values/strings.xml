@@ -55,9 +55,14 @@
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
     <string name="list">List</string>
     <string name="read_more">read more...</string>
-
+    <string name="text_check_in_service">Home Inspection As a Pre-Added Service</string>
+    <string name="validation_age_customer">You are Minor,not Eligible.</string>
+    <string name="validation_age_dependnets">min age required is 60.</string>
+    <string name="text_terms_condition">Terms &amp; Condition</string>
+    <string name="text_agree">Agree</string>
+    <string name="warning_agree_terms_condition">Please tick terms and condition.</string>
     <!--Info/App Specific Strings-->
-    <string name="account_success_message">Welcome to care services of New Zeal (an HDFC Life initiative). View Dashboard to view your account.</string>
+    <string name="account_success_message">Welcome to Care Services of New Zeal.\n(A CSR initiative by HDFC Life)</string>
     <string name="take_me_in">Take Me In</string>
     <string name="tasks">Tasks</string>
     <string name="register">Register</string>
@@ -95,7 +100,7 @@
     <string name="dpndnt_details_saved">Care Recipient Details Saved</string>
     <string name="delete_info">All your Information will be Deleted, OK to Proceed?</string>
     <string name="account_updated">Account updated successfully</string>
-    <string name="confirm_logout">Are you sure want to Logout !?</string>
+    <string name="confirm_logout">Are you sure want to Logout ?</string>
     <string name="confirm_reset_update">Previous Transaction was not Successful, Are you sure to Reset?</string>
     <string name="not_found">NOT FOUND</string>
     <string name="upcoming_activity">Upcoming Activity</string>
@@ -156,7 +161,8 @@
     <string name="verify_identity">Taking you In…</string>
     <string name="verify_identity_password">Verifying…</string>
     <string name="uploading_profile_pic">Setting Profile Images…</string>
-
+    <string name="text_loader_processing">Processing...</string>
+    <string name="text_notification_header">New Zeal</string>
     <!--Error Strings-->
     <string name="dpndnt_details_not_saved">Care Recipient Not Saved. Check Mobile Number</string>
     <string name="error_confirm_password">Invalid Confirm Password</string>
@@ -193,6 +199,7 @@
     <string name="menu_notification">Status</string>
     <string name="menu_account">My Account</string>
     <string name="menu_sync">Sync</string>
+    <string name="text_notification">Notification</string>
 
     <!--Warning Strings-->
     <string name="warning_profile_pic">We need a Profile Picture</string>

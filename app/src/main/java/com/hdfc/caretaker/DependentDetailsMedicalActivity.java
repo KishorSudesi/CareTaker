@@ -214,6 +214,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
     private void createJson() {
         DependentModel dependentModel = DependentDetailPersonalActivity.dependentModel;
         //
+
         jsonDependant = new JSONObject();
         try {
 
@@ -256,7 +257,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
         if (DependentDetailPersonalActivity.dependentModel != null) {
 
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -360,7 +361,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
         if (DependentDetailPersonalActivity.dependentModel != null) {
 
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -752,6 +753,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                             SignupActivity.dependentModels.remove(DependentDetailPersonalActivity.dependentModel);
                                             Config.dependentModel = null;
                                         }*/
+                                        DependentDetailPersonalActivity.dependentModel.setStrCustomerID(Config.customerModel.getStrCustomerID());
                                         SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
                                         if (SignupActivity.dependentModels.size() == 2) {

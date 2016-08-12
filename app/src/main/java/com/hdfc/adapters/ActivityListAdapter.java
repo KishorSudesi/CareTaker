@@ -118,7 +118,7 @@ public class ActivityListAdapter extends BaseAdapter {
             String strMonthYear = "", strFullTimeStamp = "";
             try {
                 Date fullDate = utils.convertStringToDate(strTimeStamp);
-                strFullTimeStamp = utils.convertDateToStringFormat(fullDate, Utils.writeFormat);
+                strFullTimeStamp = utils.convertDateToStringFormat(fullDate, Utils.writeFormatTime);
 
 
                 date = Utils.readFormatDate.parse(strTimeStamp.substring(0, 10));

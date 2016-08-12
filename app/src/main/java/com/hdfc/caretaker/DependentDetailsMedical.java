@@ -339,7 +339,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
         if (DependentDetailPersonal.dependentModel != null) {
 
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -405,7 +405,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
         if (DependentDetailPersonal.dependentModel != null) {
 
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -714,6 +714,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                         idregisterflag = 3;
 
                                         Config.dependentModels.add(DependentDetailPersonal.dependentModel);
+
 
                                         DependentDetailPersonal.dependentModel = null;
                                         Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);

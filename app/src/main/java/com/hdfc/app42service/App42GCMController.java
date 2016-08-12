@@ -65,7 +65,14 @@ public class App42GCMController {
     }
 
     private static SharedPreferences getGCMPreferences(Context context) {
-        return context.getSharedPreferences("App42PushSample", 0);
+        return context.getSharedPreferences("App42CareTakerPushSample", 0);
+    }
+
+    public static void clearPref(Context context) {
+        SharedPreferences prefs = getGCMPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.commit();
     }
 
     private static int getAppVersion(Context context) {
@@ -102,6 +109,8 @@ public class App42GCMController {
     public static void getRegistrationId(Context context, String googleProjectNo, App42GCMController.App42GCMListener callBack) {
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         String regid = getRegistrationId(context);
+        if (regid != null)
+            regid = regid.trim();
         if (regid.isEmpty()) {
             registeronGCM(context, googleProjectNo, gcm, callBack);
         } else {
@@ -110,6 +119,7 @@ public class App42GCMController {
         Log.i("TAG", "Reg id :" + regid);
 
     }
+
 
     public static void registeronGCM(Context context, final String googleProjectNo, final GoogleCloudMessaging gcm, final App42GCMController.App42GCMListener callback) {
         final Handler callingThreadHandler = new Handler();

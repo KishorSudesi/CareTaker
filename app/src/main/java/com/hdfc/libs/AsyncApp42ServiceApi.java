@@ -919,6 +919,8 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
+
+
     public void sendPushToUser(final String userName, final String strMessage,
                                final App42CallBack callBack) {
 
@@ -949,7 +951,101 @@ public class AsyncApp42ServiceApi {
             }
         }.start();
     }
+    //todo get token and remove device in logout
+    public void removeDevice(final String userName, final String strToken,
+                             final App42CallBack callBack) {
 
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = pushNotificationService.unsubscribeDevice(
+                            userName, strToken);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    //todo get token and remove device in logout
+    public void deleteDeviceToken(final String userName, final String strToken,
+                             final App42CallBack callBack) {
+
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = pushNotificationService.deleteDeviceToken(
+                            userName, strToken);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    //todo get token and remove device in logout
+    public void deleteDevice(final String userName,
+                             final App42CallBack callBack) {
+
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = pushNotificationService.deleteAllDevices(
+                            userName);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
 
 
    /* public interface App42UserServiceListener {

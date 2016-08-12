@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.caretaker.CheckInCareActivity;
 import com.hdfc.caretaker.CompletedActivity;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
@@ -46,7 +47,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * <p>
+ * <p/>
  * to handle interaction events.
  * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -104,90 +105,97 @@ public class NotificationFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ActivityModel activityModel = null;
+//
+//                if (ActivityFragment.activitiesModelArrayList != null && ActivityFragment.activitiesModelArrayList.size() > 0) {
+//
+//                    if (Config.intSelectedDependent > -1
+//                            && Config.intSelectedDependent < Config.dependentModels.size()) {
+//                        for (int j = 0; j < ActivityFragment.activitiesModelArrayList.size(); j++) {
+//
+//                            if (position > -1 && position < Config.dependentModels.get
+//                                    (Config.intSelectedDependent).getNotificationModels().size()) {
+//                                if (ActivityFragment.activitiesModelArrayList.get(j).getStrActivityID().
+//                                        equalsIgnoreCase(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId())) {
+//                                    if (j < ActivityFragment.activitiesModelArrayList.size()) {
+//                                        activityModel = ActivityFragment.activitiesModelArrayList.get(j);
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                } else {
 
-                if (ActivityFragment.activitiesModelArrayList != null && ActivityFragment.activitiesModelArrayList.size() > 0) {
+                if (Config.dependentModels.get(Config.intSelectedDependent).
+                        getNotificationModels().get(position).isCheckincare() && Config.checkInCareActivityNames.size() > 0) {
+                    Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
+                    intent.putExtra(Config.KEY_START_FROM,Config.START_FROM_NOTIFICATION);
+                    startActivity(intent);
 
-                    if (Config.intSelectedDependent > -1
-                            && Config.intSelectedDependent < Config.dependentModels.size()) {
-                        for (int j = 0; j < ActivityFragment.activitiesModelArrayList.size(); j++) {
+                } else if (Config.intSelectedDependent > -1 &&
+                        Config.intSelectedDependent < Config.dependentModels.size()) {
+                    String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '"
+                            + Config.collectionActivity + "' AND " + DbHelper.COLUMN_OBJECT_ID
+                            + " = '" + Config.dependentModels.get(Config.intSelectedDependent).
+                            getNotificationModels().get(position).getStrActivityId() + "'";
 
-                            if (position > -1 && position < Config.dependentModels.get
-                                    (Config.intSelectedDependent).getNotificationModels().size()) {
-                                if (ActivityFragment.activitiesModelArrayList.get(j).getStrActivityID().
-                                        equalsIgnoreCase(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId())) {
-                                    if (j < ActivityFragment.activitiesModelArrayList.size()) {
-                                        activityModel = ActivityFragment.activitiesModelArrayList.get(j);
-                                        break;
+                    Cursor cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
+                    Cursor cursorMilestone = null;
+
+                    if (cursor != null && cursor.getCount() > 0) {
+                        Log.i("TAG", "cursor count:" + cursor.getCount());
+                        cursor.moveToFirst();
+                        do {
+
+                            try {
+                                //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
+                                // WHERE clause arguments
+                                //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
+                                String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "'";
+
+                                //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
+                                cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
+                                JSONArray jArray = new JSONArray();
+                                int index = 0;
+                                if (cursorMilestone != null && cursorMilestone.getCount() > 0) {
+                                    cursorMilestone.moveToFirst();
+                                    do {
+
+                                        String strDocument = cursorMilestone.getString(cursorMilestone.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
+                                        JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+
+                                        jArray.put(index, jsonObjectActivity);
+                                        index++;
                                     }
+                                    while (cursorMilestone.moveToNext());
+
+
                                 }
+                                if (cursorMilestone != null) {
+                                    cursorMilestone.close();
+                                }
+                                activityModel = createActivityModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)), 1, jArray);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } finally {
+                                CareTaker.dbCon.closeCursor(cursorMilestone);
                             }
-                        }
-                    }
-
-                } else {
-                    if (Config.intSelectedDependent > -1 &&
-                            Config.intSelectedDependent < Config.dependentModels.size()) {
-                        String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '"
-                                + Config.collectionActivity + "' AND " + DbHelper.COLUMN_OBJECT_ID
-                                + " = '" + Config.dependentModels.get(Config.intSelectedDependent).
-                                getNotificationModels().get(position).getStrActivityId() + "'";
-
-                        Cursor cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
-                        Cursor cursorMilestone = null;
-
-                        if (cursor != null && cursor.getCount() > 0) {
-                            Log.i("TAG", "cursor count:" + cursor.getCount());
-                            cursor.moveToFirst();
-                            do {
-
-                                try {
-                                    //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
-                                    // WHERE clause arguments
-                                    //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
-                                    String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "'";
-
-                                    //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
-                                    cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
-                                    JSONArray jArray = new JSONArray();
-                                    int index = 0;
-                                    if (cursorMilestone != null && cursorMilestone.getCount() > 0) {
-                                        cursorMilestone.moveToFirst();
-                                        do {
-
-                                            String strDocument = cursorMilestone.getString(cursorMilestone.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
-                                            JSONObject jsonObjectActivity = new JSONObject(strDocument);
 
 
-                                            jArray.put(index, jsonObjectActivity);
-                                            index++;
-                                        }
-                                        while (cursorMilestone.moveToNext());
-
-
-                                    }
-                                    if (cursorMilestone != null) {
-                                        cursorMilestone.close();
-                                    }
-                                    activityModel = createActivityModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)), 1, jArray);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    CareTaker.dbCon.closeCursor(cursorMilestone);
-                                }
-
-
-                            } while (cursor.moveToNext());
-                        } else {
-                            activityModel = getActivityModel(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId());
-                        }
+                        } while (cursor.moveToNext());
+                    } else {
+                        activityModel = getActivityModel(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId());
                     }
                 }
+                // }
 
                 if (activityModel != null) {
                     if (activityModel.getStrActivityStatus().equalsIgnoreCase("new")) {
 
                         DashboardActivity.updateActivityIconMenu();
-                        UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
+                        UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel,Config.START_FROM_NOTIFICATION);
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().
                                 beginTransaction();
                         ft.replace(R.id.fragment_dashboard, completedFragment);
@@ -200,6 +208,7 @@ public class NotificationFragment extends Fragment {
                         args.putSerializable("ACTIVITY", activityModel);
                         args.putBoolean("WHICH_SCREEN", true);
                         args.putInt("ACTIVITY_POSITION", position);
+                        args.putByte(Config.KEY_START_FROM,Config.START_FROM_NOTIFICATION);
                         intent.putExtras(args);
                         startActivity(intent);
                     }

@@ -65,8 +65,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private static int iUpdateFlag = 0;
     private static String strInsertedDocumentId;
     private static String strProviderId;
-    private EditText editTextDate, editTextMessage;
-    private TextView textView6, textView7;
+    private EditText editTextMessage;
+    private TextView textView6, textView7, editTextDate;
     private Utils utils;
     private String strCarlaImagepath, _strDate, strDate, strAlert;
     private String getStrSelectedCarla, strPushMessage;
@@ -121,7 +121,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.buttonBack);
         Button submitButtton = (Button) findViewById(R.id.button);
         editTextMessage = (EditText) findViewById(R.id.editText2);
-        editTextDate = (EditText) findViewById(R.id.editTextDate);
+        editTextDate = (TextView) findViewById(R.id.editTextDate);
 
         textView6 = (TextView) findViewById(R.id.textView6);
         textView7 = (TextView) findViewById(R.id.textView7);
@@ -161,6 +161,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             e.printStackTrace();
         }
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
+//Date lastSeelectedDate=Utils.writeFormat.parse
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,7 +228,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                             storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-                            progressDialog.setMessage(getString(R.string.loading));
+                            progressDialog.setMessage(getString(R.string.text_loader_processing));
                             progressDialog.setCancelable(false);
                             progressDialog.show();
 
@@ -275,7 +276,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         super.onResume();
         if (jsonObjectCarla == null || strProviderId == null ||
                 (strProviderId != null && strProviderId.equalsIgnoreCase(""))) {
-            progressDialog.setMessage(getResources().getString(R.string.loading));
+            progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -319,7 +320,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 //                                    backgroundThread.start();
                                         loadImageSimpleTarget(strCarlaImagepath);
 
-                                        progressDialog.setMessage(getResources().getString(R.string.uploading_image));
+                                        progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
                                         progressDialog.setCancelable(false);
                                         progressDialog.show();
 
@@ -556,7 +557,11 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                                         try {
                                             Date dateNow = calendar.getTime();
-                                            strEndDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T23:59:59.999Z";
+                                            Calendar cal = Calendar.getInstance();
+                                            cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+
+                                            Date lastDayOfMonth = cal.getTime();
+                                            strEndDateCopy = Utils.writeFormatDateDB.format(lastDayOfMonth) + "T23:59:59.999Z";
                                             strStartDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T00:00:00.000Z";
                                             activityDate = utils.convertStringToDate(_strDate);
 
@@ -569,22 +574,29 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                                             CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
                                             sessionManager.saveActivityStatus(true);
+                                            Storage.JSONDocument jsonDocument = response.
+                                                    getJsonDocList().get(0);
+
+                                            String strDocument = jsonDocument.getJsonDoc();
+                                            String strActivityId = jsonDocument.getDocId();
+                                            JSONObject jsonObjectActivity =
+                                                    new JSONObject(strDocument);
+                                            JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                            jsonObjectActivity.remove("milestones");
+                                            strDocument = jsonObjectActivity.toString();
+                                            for (int j = 0; j < jArray.length(); j++) {
+                                                JSONObject jObj = jArray.optJSONObject(j);
+                                                String strDocumentMilestone = jObj.toString();
+
+                                                String valuesMilestone[] = {strActivityId, response.getJsonDocList().get(0).getUpdatedAt(), strDocumentMilestone, Config.collectionMilestones, jObj.optString("id"), "1", jObj.optString("date")};
+                                                CareTaker.dbCon.insert(DbHelper.strTableNameCollection, valuesMilestone, Config.names_collection_table);
+                                            }
                                             if (activityDate.before(endDate) && activityDate.after(startDate)) {
-                                                Storage.JSONDocument jsonDocument = response.
-                                                        getJsonDocList().get(0);
-
-                                                String strDocument = jsonDocument.getJsonDoc();
-                                                String strActivityId = jsonDocument.getDocId();
-                                                JSONObject jsonObjectActivity =
-                                                        new JSONObject(strDocument);
-                                                JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
-                                                jsonObjectActivity.remove("milestones");
-                                                strDocument = jsonObjectActivity.toString();
-
                                                 utils.createActivityModel(
                                                         strActivityId,
                                                         strDocument, 1,
                                                         jArray);
+
                                             }
 
                                         } catch (Exception e) {

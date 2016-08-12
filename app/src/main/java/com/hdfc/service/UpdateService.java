@@ -1,4 +1,4 @@
-package com.hdfc.libs;
+package com.hdfc.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -8,15 +8,17 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 
 import com.hdfc.app42service.StorageService;
-import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
 import com.hdfc.dbconfig.DbHelper;
+import com.hdfc.libs.AsyncApp42ServiceApi;
+import com.hdfc.libs.SessionManager;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.NotificationModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -290,15 +292,10 @@ public class UpdateService extends Service {
                 strStartDate = utils.convertDateToStringQuery(utils.convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
                 //
                 strToDate = utils.getMonthLastDate(strMonthDate);
-
-
                 strEndDate = utils.convertDateToStringQuery(utils.convertStringToDateQuery(strToDate + "T23:59:59.999"));
 
                 String key2 = "dependent_id";
-
-
                 if (utils.isConnectingToInternet()) {
-
 
                     StorageService storageService = new StorageService(UpdateService.this);
 
@@ -307,19 +304,19 @@ public class UpdateService extends Service {
 
                     Query q1 = QueryBuilder.build(key2, Config.strDependentIds, QueryBuilder.Operator.INLIST);
 
-                    Query q2 = QueryBuilder.build("activity_date", strStartDate, QueryBuilder.
-                            Operator.GREATER_THAN_EQUALTO);
-
-                    // Build query q1 for key1 equal to name and value1 equal to Nick
-
-                    // Build query q2 for key2 equal to age and value2
-
-                    Query q3 = QueryBuilder.build("activity_date", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
-
-                    Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
-
-                    Query q5 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
-
+//                    Query q2 = QueryBuilder.build("activity_date", strStartDate, QueryBuilder.
+//                            Operator.GREATER_THAN_EQUALTO);
+//
+//                    // Build query q1 for key1 equal to name and value1 equal to Nick
+//
+//                    // Build query q2 for key2 equal to age and value2
+//
+//                    Query q3 = QueryBuilder.build("activity_date", strEndDate, QueryBuilder.Operator.LESS_THAN_EQUALTO);
+//
+//                    Query q4 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q3);
+//
+//                    Query q5 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
+                    Query q2 = null;
                     if (sessionManager.getActivityStatus()) {
                         String defaultDate = null;
                         Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionActivity);
@@ -334,13 +331,13 @@ public class UpdateService extends Service {
                             defaultDate = Utils.defaultDate;
                         }
 
-                        Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
-                        q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+                        q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
+                        q1 = QueryBuilder.compoundOperator(q2, QueryBuilder.Operator.AND, q1);
                     } else {
 
                     }
 
-                    storageService.findDocsByQueryOrderBy(Config.collectionActivity, q5, 3000, 0,
+                    storageService.findDocsByQueryOrderBy(Config.collectionActivity, q1, 3000, 0,
                             "activity_date", 1, new App42CallBack() {
 
                                 @Override
@@ -716,7 +713,7 @@ public class UpdateService extends Service {
                         Operator.EQUALS);
                 Query q2 = QueryBuilder.build("month", imonth, QueryBuilder.
                         Operator.EQUALS);
-                Query q3 = QueryBuilder.build("customer_id", Config.customerModel.getStrCustomerID(), QueryBuilder.
+                Query q3 = QueryBuilder.build("customer_id",strCustomerId, QueryBuilder.
                         Operator.EQUALS);
 
                 // Build query q1 for key1 equal to name and value1 equal to Nick
@@ -962,24 +959,24 @@ public class UpdateService extends Service {
 
     }
 
-    private void dismissDialog() {
-        try {
-            Log.i("TAG", "In dissmiss dialog");
-            if (DashboardActivity.loadingPanel != null && DashboardActivity.loadingPanel.getVisibility() == View.VISIBLE && updateAll) {
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            }
+    // Send an Intent with an action named "custom-event-name". The Intent sent should
+// be received by the ReceiverActivity.
+    private void sendMessage() {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent(Config.viewRefreshAction);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
-            try {
-                if (updateAll) {
-                    DashboardActivity activity = new DashboardActivity();
-                    activity.refreshActivityView();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    private void dismissDialog() {
+
+        Log.i("TAG", "In dissmiss dialog");
+        try {
+            sendMessage();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
     public class UpdateTask extends AsyncTask<Void, Void, Void> {
@@ -998,12 +995,12 @@ public class UpdateService extends Service {
                 }
                 strCustomerId = sessionManager.getCustomerId();
 
-                if (Config.strDependentIds == null || Config.strDependentIds.size() < 0) {
+                if (Config.strDependentIds == null || Config.strDependentIds.size() <= 0) {
                     Config.strDependentIds.addAll(sessionManager.getDependentsIds());
 
                 }
 
-                if (Config.strProviderIds == null || Config.strProviderIds.size() < 0) {
+                if (Config.strProviderIds == null || Config.strProviderIds.size() <=0) {
                     Config.strProviderIds.addAll(sessionManager.getProvidersIds());
                 }
 

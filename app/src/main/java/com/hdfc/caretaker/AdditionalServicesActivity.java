@@ -38,6 +38,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -278,10 +280,24 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         Log.i("TAG", "Session manager" + sessionManager.getServiceStatus() + " list size :" + Config.categoryServiceModels.size());
         if (sessionManager.getServiceStatus()) {
             try {
+                // WHERE clause
+                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
 
+                // WHERE clause arguments
+                String[] selectionArgs = {Config.collectionService};
+                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    do {
+                        JSONObject jsonObjectServcies = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                        utils.createServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
+                    } while (cursor.moveToNext());
+                    refreshAdapter();
+                    cursor.close();
+                }
 
                 String defaultDate = null;
-                if (utils.isConnectingToInternet()) {
+                if (utils.isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
                     Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionService);
                     if (cursorData != null && cursorData.getCount() > 0) {
                         cursorData.moveToFirst();
@@ -295,6 +311,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
                     // Build query q2
                     Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
+
                     storageService.findDocsByQuery(Config.collectionService, q2,
                             new App42CallBack() {
 
@@ -333,23 +350,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
                             }
 
                     );
-                }
-
-
-                // WHERE clause
-                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
-
-                // WHERE clause arguments
-                String[] selectionArgs = {Config.collectionService};
-                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    do {
-                        JSONObject jsonObjectServcies = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
-                        utils.createServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
-                    } while (cursor.moveToNext());
-                    refreshAdapter();
-                    cursor.close();
                 }
 
 
@@ -473,6 +473,21 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         }
     }
 
+    /*Comparator for sorting the list by service Name*/
+    private Comparator<CategoryServiceModel> ServiceNameComparator = new Comparator<CategoryServiceModel>() {
+
+        public int compare(CategoryServiceModel s1, CategoryServiceModel s2) {
+            String serviceName1 = s1.getStrCategoryName().toUpperCase();
+            String serviceName2 = s2.getStrCategoryName().toUpperCase();
+
+            //ascending order
+            return serviceName1.compareTo(serviceName2);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
+
     public void refreshAdapter() {
 
         try {
@@ -481,7 +496,9 @@ public class AdditionalServicesActivity extends AppCompatActivity {
             loadingPanel.setVisibility(View.GONE);
 
             if (listView != null) {
-
+                if (Config.categoryServiceModels.size() > 0) {
+                    Collections.sort(Config.categoryServiceModels,ServiceNameComparator);
+                }
                 listDataHeader.clear();
                 listDataChild.clear();
 

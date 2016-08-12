@@ -7,147 +7,150 @@
     <include
         android:id="@+id/include"
         layout="@layout/header_white" />
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@+id/include"
-    android:orientation="vertical">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-        <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_below="@+id/include"
+        android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <android.support.v7.widget.SearchView
-                android:id="@+id/searchView"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="40dp"
-                android:background="@color/blue"
-                android:focusableInTouchMode="true"
-                android:queryHint="@string/search_contacts" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="40dp"
+                    android:background="@color/blue"
+                    android:focusableInTouchMode="true"
+                    android:queryHint="@string/search_contacts" />
 
 
-            <com.hdfc.views.RoundedImageView
-                android:id="@+id/imageButtonCamera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="40dp"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/camera" />
+                <com.hdfc.views.RoundedImageView
+                    android:id="@+id/imageButtonCamera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/camera" />
 
-            <EditText
-                android:id="@+id/editDependantName"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="40dp"
-                android:drawableLeft="@drawable/username"
-                android:drawablePadding="10dp"
-                android:hint="@string/dependent_name"
-                android:inputType="textPersonName"
-                android:padding="10dp" />
+                <EditText
+                    android:id="@+id/editDependantName"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="40dp"
+                    android:drawableLeft="@drawable/username"
+                    android:drawablePadding="10dp"
+                    android:hint="@string/dependent_name"
+                    android:inputType="textPersonName"
+                    android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/editDependantEmail"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:drawableLeft="@drawable/mail_icon_32"
-                android:drawablePadding="10dp"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:padding="10dp" />
+                <EditText
+                    android:id="@+id/editDependantEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="25dp"
+                    android:drawableLeft="@drawable/mail_icon_32"
+                    android:drawablePadding="10dp"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/editDOB"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:drawableLeft="@drawable/add_new_activity"
-                android:drawablePadding="10dp"
-                android:focusableInTouchMode="false"
-                android:hint="@string/DOB"
-                android:inputType="textPersonName"
-                android:padding="10dp" />
+                <EditText
+                    android:id="@+id/editDOB"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="25dp"
+                    android:drawableLeft="@drawable/add_new_activity"
+                    android:drawablePadding="10dp"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/DOB"
+                    android:inputType="textPersonName"
+                    android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/editContactNo"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:drawableLeft="@drawable/contact"
-                android:drawablePadding="10dp"
-                android:hint="@string/number"
-                android:inputType="number"
-                android:padding="10dp" />
+                <EditText
+                    android:id="@+id/editContactNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="25dp"
+                    android:drawableLeft="@drawable/contact"
+                    android:drawablePadding="10dp"
+                    android:maxLength="10"
+                    android:hint="@string/hint_number"
+                    android:inputType="number"
+                    android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/editAddress"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:drawableLeft="@drawable/location"
-                android:drawablePadding="10dp"
-                android:hint="@string/address"
-                android:inputType="textPostalAddress"
-                android:padding="10dp" />
+                <EditText
+                    android:id="@+id/editAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="25dp"
+                    android:drawableLeft="@drawable/location"
+                    android:drawablePadding="10dp"
+                    android:hint="@string/address"
+                    android:inputType="textPostalAddress"
+                    android:padding="10dp" />
 
-            <Spinner
-                android:id="@+id/editRelation"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="25dp"
-                android:drawableLeft="@drawable/relationship"
-                android:drawablePadding="10dp"
-                android:hint="@string/relation"
-                android:inputType="text"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp" />
+                <Spinner
+                    android:id="@+id/editRelation"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="25dp"
+                    android:drawableLeft="@drawable/relationship"
+                    android:drawablePadding="10dp"
+                    android:hint="@string/relation"
+                    android:inputType="text"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
 
-            <Button
-                android:id="@+id/buttonContinue"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="@dimen/edit_text_margin"
-                android:layout_marginRight="@dimen/edit_text_margin"
-                android:layout_marginTop="35dp"
-                android:background="@drawable/button_blue_white_border"
-                android:text="@string/string_continue"
-                android:textAllCaps="false"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/colorWhite" />
+                <Button
+                    android:id="@+id/buttonContinue"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="@dimen/edit_text_margin"
+                    android:layout_marginRight="@dimen/edit_text_margin"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/button_blue_white_border"
+                    android:text="@string/string_continue"
+                    android:textAllCaps="false"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorWhite" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
-
-
-</LinearLayout>
     </ScrollView>
 </RelativeLayout>

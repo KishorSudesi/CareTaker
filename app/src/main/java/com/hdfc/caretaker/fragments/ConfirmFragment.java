@@ -136,7 +136,7 @@ public class ConfirmFragment extends Fragment {
 
                     //uploadDependentImages();
 
-                    progressDialog.setMessage(getActivity().getResources().getString(R.string.uploading));
+                    progressDialog.setMessage(getActivity().getResources().getString(R.string.text_loader_processing));
                     progressDialog.setCancelable(false);
                     progressDialog.show();
 

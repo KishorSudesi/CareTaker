@@ -1,9 +1,12 @@
 package com.hdfc.caretaker;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,14 +15,19 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -42,8 +50,11 @@ import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -76,6 +87,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     private Spinner citizenship;
     private String strCustomerImageUrl = "";
     private String strAreaCode = "";
+    private Context mContext;
+    private CheckBox checked_terms_conditions;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -86,8 +99,21 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             // the date and time that the user has selected.
 
             strDate = Utils.writeFormatActivityYear.format(date);
-            // String _strDate = Utils.readFormat.format(date);
-            editTextDate.setText(strDate);
+
+
+            try {
+                date = Utils.writeFormatActivityYear.parse(strDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int strAge = Integer.parseInt(utils.getAge(date));
+            if (utils.ageValidationCustomer(strAge)) {
+                // String _strDate = Utils.readFormat.format(date);
+                editTextDate.setText(strDate);
+            } else {
+                editTextDate.setText("");
+                utils.toast(2, 2, mContext.getString(R.string.validation_age_customer));
+            }
         }
 
         @Override
@@ -108,7 +134,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         utils = new Utils(ActivityGuruPersonalInfo.this);
 
         back = (ImageButton) findViewById(R.id.buttonBack);
-
+        checked_terms_conditions = (CheckBox) findViewById(R.id.checked_terms_conditions);
         imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);
 
         editName = (EditText) findViewById(R.id.editName);
@@ -119,7 +145,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         editAreaCode = (EditText) findViewById(R.id.editAreaCode);
         editCountryCode = (EditText) findViewById(R.id.editCountryCode);
 
-
+        mContext = this;
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,6 +167,15 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             }
         });
 
+        checked_terms_conditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checked_terms_conditions.setChecked(false);
+                showDialogForTermsAndConditions();
+
+            }
+        });
+
        /* editAreaCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,11 +194,12 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.YEAR,2000);
+                cal.set(Calendar.YEAR, 2000);
                 Date date = new Date();
                 date.setTime(cal.getTimeInMillis());
                 new SlideDateTimePicker.Builder(ActivityGuruPersonalInfo.this.getSupportFragmentManager())
                         .setListener(listener)
+                        .setMaxDate(new Date())
                         .setInitialDate(date)
                         .build()
                         .show();
@@ -212,6 +248,55 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void showDialogForTermsAndConditions() {
+
+        final Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setContentView(R.layout.dialog_terms_condition);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        Button btnClose = (Button) dialog.findViewById(R.id.btnClose);
+        Button btnAgree = (Button) dialog.findViewById(R.id.btnAgree);
+        WebView webView = (WebView) dialog.findViewById(R.id.webView);
+
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        try {
+            AssetManager assetManager = mContext.getAssets();
+            InputStream stream = assetManager.open("g8u0DU9v.html");
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder total = new StringBuilder();
+            String line;
+            while ((line = r.readLine()) != null) {
+                total.append(line).append("\n");
+            }
+            webView.loadDataWithBaseURL(null, total.toString(), "text/html", "UTF-8", null);
+        } catch (Exception xxx) {
+            Log.e("TAG", "Load assets/page.html", xxx);
+        }
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checked_terms_conditions.setChecked(false);
+                dialog.dismiss();
+            }
+        });
+
+        btnAgree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checked_terms_conditions.setChecked(true);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
+        dialog.show();
     }
 
     public void uploadImage() {
@@ -306,7 +391,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         boolean isRegistered = prepareData(strCustomerImageUrl);
 
-        mProgress.setMessage(ActivityGuruPersonalInfo.this.getResources().getString(R.string.uploading));
+        mProgress.setMessage(ActivityGuruPersonalInfo.this.getResources().getString(R.string.text_loader_processing));
         mProgress.setCancelable(false);
         mProgress.show();
 
@@ -670,7 +755,12 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 cancel = true;
                 return;
             }
-
+            if (!checked_terms_conditions.isChecked()) {
+                utils.toast(2, 2, mContext.getString(R.string.warning_agree_terms_condition));
+                focusView = checked_terms_conditions;
+                cancel = true;
+                return;
+            }
 
         }
 
@@ -681,7 +771,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 //
                 if (utils.isConnectingToInternet()) {
 
-                    mProgress.setMessage(getResources().getString(R.string.loading));
+                    mProgress.setMessage(getResources().getString(R.string.text_loader_processing));
                     mProgress.setCancelable(false);
                     mProgress.show();
 
@@ -856,7 +946,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
 
-                mProgress.setMessage(getString(R.string.loading));
+                mProgress.setMessage(getString(R.string.text_loader_processing));
                 mProgress.setCancelable(false);
                 mProgress.show();
                 switch (requestCode) {

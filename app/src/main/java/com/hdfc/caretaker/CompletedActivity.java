@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -30,7 +31,9 @@ import com.hdfc.adapters.RatingCompletedAdapter;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
@@ -86,6 +89,7 @@ public class CompletedActivity extends AppCompatActivity {
     private TextView tvTasks;
     private TextView smileyMessage;
     private LinearLayout linearLayoutRatingAdd;
+    private byte START_FROM = 0;
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
@@ -113,6 +117,9 @@ public class CompletedActivity extends AppCompatActivity {
                 bWhichScreen = extras.getBoolean("WHICH_SCREEN", false);
                 activityModel = (ActivityModel) extras.getSerializable("ACTIVITY");
                 iActivityPosition = extras.getInt("ACTIVITY_POSITION", -1);
+                if (getIntent().hasExtra(Config.KEY_START_FROM)) {
+                    START_FROM = getIntent().getByteExtra(Config.KEY_START_FROM, (byte) 0);
+                }
             }
 
             Button backButton = (Button) findViewById(R.id.buttonBack);
@@ -305,38 +312,42 @@ public class CompletedActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             //checked = checkReport.isChecked();
 
-                            boolean b = true;
+                            try {
+                                boolean b = true;
 
-                            editFeedBack.setError(null);
+                                editFeedBack.setError(null);
 
-                            if (!activityModel.getStrActivityStatus().
-                                    equalsIgnoreCase("completed")) { //
-                                b = false;
-                                utils.toast(2, 2, getString(R.string.activity_not_completed));
-
-                            } else {
-                                if (iRating == 0) {
+                                if (!activityModel.getStrActivityStatus().
+                                        equalsIgnoreCase("completed")) { //
                                     b = false;
-                                    utils.toast(2, 2, getString(R.string.select_rating));
+                                    utils.toast(2, 2, getString(R.string.activity_not_completed));
 
-                                } else if (iRating <= 3) {
-                                    //b = false;
-                                    //utils.toast(2, 2, getString(R.string.select_rating));
-
-                                    if (TextUtils.isEmpty(editFeedBack.getText().toString())) {
+                                } else {
+                                    if (iRating == 0) {
                                         b = false;
-                                        editFeedBack.setError(getString(R.string.error_field_required));
-                                        utils.toast(2, 2, getString(R.string.validation_feedback));
+                                        utils.toast(2, 2, getString(R.string.select_rating));
+
+                                    } else if (iRating <= 3) {
+                                        //b = false;
+                                        //utils.toast(2, 2, getString(R.string.select_rating));
+
+                                        if (TextUtils.isEmpty(editFeedBack.getText().toString())) {
+                                            b = false;
+                                            editFeedBack.setError(getString(R.string.error_field_required));
+                                            utils.toast(2, 2, getString(R.string.validation_feedback));
+                                        }
                                     }
                                 }
-                            }
 
 
-                            if (b) {
-                                textViewAddRating.setVisibility(View.GONE);
-                                linearLayoutRatingAdd.setVisibility(View.GONE);
-                                smileyMessage.setVisibility(View.GONE);
-                                uploadCheckBox();
+                                if (b) {
+                                    textViewAddRating.setVisibility(View.GONE);
+                                    linearLayoutRatingAdd.setVisibility(View.GONE);
+                                    smileyMessage.setVisibility(View.GONE);
+                                    uploadCheckBox();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                         }
@@ -387,204 +398,247 @@ public class CompletedActivity extends AppCompatActivity {
 
     private void loadImageSimpleTarget(String url) {
 
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .transform(new CropCircleTransformation(context))
-                .placeholder(R.drawable.person_icon)
-                .into(target);
+        try {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .transform(new CropCircleTransformation(context))
+                    .placeholder(R.drawable.person_icon)
+                    .into(target);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     private void uploadCheckBox() {
 
-        if (utils.isConnectingToInternet()) {
+        try {
+            if (utils.isConnectingToInternet()) {
 
-            loadingPanel.setVisibility(View.VISIBLE);
+                loadingPanel.setVisibility(View.VISIBLE);
 
-            Date doneDate = new Date();
+                Date doneDate = new Date();
 
-            final String strDoneDate = utils.convertDateToString(doneDate);
+                final String strDoneDate = utils.convertDateToString(doneDate);
 
-            final StorageService storageService = new StorageService(context);
+                final StorageService storageService = new StorageService(context);
 
-            JSONObject jsonObjectFeedback = new JSONObject();
+                JSONObject jsonObjectFeedback = new JSONObject();
 
-            try {
+                try {
 
-                JSONObject jsonObjectFeedbacks;
+                    JSONObject jsonObjectFeedbacks;
 
-                JSONArray jsonArrayFeedback = new JSONArray();
+                    JSONArray jsonArrayFeedback = new JSONArray();
 
-                for (FeedBackModel feedBackModel : activityModel.getFeedBackModels()) {
+                    for (FeedBackModel feedBackModel : activityModel.getFeedBackModels()) {
 
-                    jsonObjectFeedbacks = new JSONObject();
+                        jsonObjectFeedbacks = new JSONObject();
 
-                    jsonObjectFeedbacks.put("feedback_message", feedBackModel.getStrFeedBackMessage());
-                    jsonObjectFeedbacks.put("feedback_rating", feedBackModel.getIntFeedBackRating());
-                    jsonObjectFeedbacks.put("feedback_by", feedBackModel.getStrFeedBackBy());
-                    jsonObjectFeedbacks.put("feedback_report", feedBackModel.getBoolFeedBackReport());
-                    jsonObjectFeedbacks.put("feedback_time", feedBackModel.getStrFeedBackTime());
-                    jsonObjectFeedbacks.put("feedback_by_type", feedBackModel.getStrFeedBackByType());
+                        jsonObjectFeedbacks.put("feedback_message", feedBackModel.getStrFeedBackMessage());
+                        jsonObjectFeedbacks.put("feedback_rating", feedBackModel.getIntFeedBackRating());
+                        jsonObjectFeedbacks.put("feedback_by", feedBackModel.getStrFeedBackBy());
+                        jsonObjectFeedbacks.put("feedback_report", feedBackModel.getBoolFeedBackReport());
+                        jsonObjectFeedbacks.put("feedback_time", feedBackModel.getStrFeedBackTime());
+                        jsonObjectFeedbacks.put("feedback_by_type", feedBackModel.getStrFeedBackByType());
 
-                    jsonArrayFeedback.put(jsonObjectFeedbacks);
+                        jsonArrayFeedback.put(jsonObjectFeedbacks);
+                    }
+
+                    JSONObject sJsonObjectFeedback = new JSONObject();
+
+                    sJsonObjectFeedback.put("feedback_message", editFeedBack.getText().toString().trim());
+                    sJsonObjectFeedback.put("feedback_rating", iRating);
+                    sJsonObjectFeedback.put("feedback_by", Config.customerModel.getStrCustomerID());
+                    sJsonObjectFeedback.put("feedback_report", "0"); //String.valueOf(checked)
+                    sJsonObjectFeedback.put("feedback_time", strDoneDate);
+                    sJsonObjectFeedback.put("feedback_by_type", "customer");
+
+                    jsonArrayFeedback.put(sJsonObjectFeedback);
+
+                    jsonObjectFeedback.put("feedbacks", jsonArrayFeedback);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
-                JSONObject sJsonObjectFeedback = new JSONObject();
+                storageService.updateDocs(jsonObjectFeedback, activityModel.getStrActivityID(),
+                        Config.collectionActivity, new App42CallBack() {
+                            @Override
+                            public void onSuccess(Object o) {
 
-                sJsonObjectFeedback.put("feedback_message", editFeedBack.getText().toString().trim());
-                sJsonObjectFeedback.put("feedback_rating", iRating);
-                sJsonObjectFeedback.put("feedback_by", Config.customerModel.getStrCustomerID());
-                sJsonObjectFeedback.put("feedback_report", "0"); //String.valueOf(checked)
-                sJsonObjectFeedback.put("feedback_time", strDoneDate);
-                sJsonObjectFeedback.put("feedback_by_type", "customer");
+                                if (o != null) {
 
-                jsonArrayFeedback.put(sJsonObjectFeedback);
+                                    try {
 
-                jsonObjectFeedback.put("feedbacks", jsonArrayFeedback);
+                                        Storage storage = (Storage) o;
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                                        if (storage.getJsonDocList().size() > 0) {
 
-            storageService.updateDocs(jsonObjectFeedback, activityModel.getStrActivityID(),
-                    Config.collectionActivity, new App42CallBack() {
-                        @Override
-                        public void onSuccess(Object o) {
+                                            Storage.JSONDocument jsonDocList = storage.getJsonDocList().get(0);
 
-                            if (o != null) {
+                                            JSONObject jsonObject = new JSONObject(jsonDocList.getJsonDoc());
 
-                                try {
+                                            if (jsonObject.has("feedbacks")) {
 
-                                    Storage storage = (Storage) o;
+                                                try {
+                                                    Storage.JSONDocument jsonDocument = storage.getJsonDocList().get(0);
 
-                                    if (storage.getJsonDocList().size() > 0) {
+                                                    String strDocument = jsonDocument.getJsonDoc();
+                                                    String strActivityId = jsonDocument.getDocId();
+                                                    JSONObject jsonObjectActivity =
+                                                            new JSONObject(strDocument);
+                                                    JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                                    jsonObjectActivity.remove("milestones");
+                                                    strDocument = jsonObjectActivity.toString();
+                                                    String values[] = {strActivityId, storage.getJsonDocList().get(0).getUpdatedAt(), strDocument, Config.collectionActivity, "", "1", jsonObjectActivity.optString("activity_date"), ""};
+                                                    Log.i("TAG", "Date :" + jsonObjectActivity.optString("activity_date"));
 
-                                        Storage.JSONDocument jsonDocList = storage.getJsonDocList().get(0);
+                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_COLLECTION_NAME + " = ?";
 
-                                        JSONObject jsonObject = new JSONObject(jsonDocList.getJsonDoc());
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgs = {strActivityId, Config.collectionActivity};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                    for (int j = 0; j < jArray.length(); j++) {
+                                                        JSONObject jObj = jArray.optJSONObject(j);
+                                                        strDocument = jObj.toString();
+                                                        selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_COLLECTION_NAME + " =? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
 
-                                        if (jsonObject.has("feedbacks")) {
+                                                        // WHERE clause arguments
+                                                        String[] selectionArgsMile = {strActivityId, Config.collectionMilestones, jObj.optString("id")};
+                                                        String valuesMilestone[] = {strActivityId, storage.getJsonDocList().get(0).getUpdatedAt(), strDocument, Config.collectionMilestones, jObj.optString("id"), "1", jObj.optString("date")};
+                                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, valuesMilestone, Config.names_collection_table, selectionArgsMile);
 
-                                            JSONArray jsonArrayFeedback = jsonObject.
-                                                    getJSONArray("feedbacks");
 
-                                            activityModel.getFeedBackModels().clear();
-
-                                          /*  Config.dependentModels.get(Config.intSelectedDependent).
-                                                    getMonthActivityModel().get(iActivityPosition).clearFeedBackModel();*/
-
-                                            for (int k = 0; k < jsonArrayFeedback.length(); k++) {
-
-                                                JSONObject jsonObjectFeedback =
-                                                        jsonArrayFeedback.getJSONObject(k);
-
-                                                if (jsonObjectFeedback.has("feedback_message")) {
-
-                                                    FeedBackModel feedBackModel = new FeedBackModel(
-                                                            jsonObjectFeedback.getString("feedback_message"),
-                                                            jsonObjectFeedback.getString("feedback_by"),
-                                                            jsonObjectFeedback.getInt("feedback_rating"),
-                                                            false, // jsonObjectFeedback.getBoolean("feedback_report")
-                                                            jsonObjectFeedback.getString("feedback_time"),
-                                                            jsonObjectFeedback.getString("feedback_by_type"));
-
-                                                    activityModel.setFeedBackModel(feedBackModel);
-                                                    if (feedBackModel.getStrFeedBackByType().equalsIgnoreCase("customer") &&
-                                                            feedBackModel.getStrFeedBackBy().equalsIgnoreCase(activityModel.getStrustomerID())) {
-                                                        activityModel.setRatingAddedByCutsm(true);
                                                     }
-
-                                                   /* Config.dependentModels.get(Config.intSelectedDependent).
-                                                            getActivityModels().get(iActivityPosition).setFeedBackModel(feedBackModel);*/
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
                                                 }
+
+
+                                                JSONArray jsonArrayFeedback = jsonObject.
+                                                        getJSONArray("feedbacks");
+
+                                                activityModel.getFeedBackModels().clear();
+
+                                              /*  Config.dependentModels.get(Config.intSelectedDependent).
+                                                        getMonthActivityModel().get(iActivityPosition).clearFeedBackModel();*/
+
+                                                for (int k = 0; k < jsonArrayFeedback.length(); k++) {
+
+                                                    JSONObject jsonObjectFeedback =
+                                                            jsonArrayFeedback.getJSONObject(k);
+
+                                                    if (jsonObjectFeedback.has("feedback_message")) {
+
+                                                        FeedBackModel feedBackModel = new FeedBackModel(
+                                                                jsonObjectFeedback.getString("feedback_message"),
+                                                                jsonObjectFeedback.getString("feedback_by"),
+                                                                jsonObjectFeedback.getInt("feedback_rating"),
+                                                                false, // jsonObjectFeedback.getBoolean("feedback_report")
+                                                                jsonObjectFeedback.getString("feedback_time"),
+                                                                jsonObjectFeedback.getString("feedback_by_type"));
+
+                                                        activityModel.setFeedBackModel(feedBackModel);
+                                                        if (feedBackModel.getStrFeedBackByType().equalsIgnoreCase("customer") &&
+                                                                feedBackModel.getStrFeedBackBy().equalsIgnoreCase(activityModel.getStrustomerID())) {
+                                                            activityModel.setRatingAddedByCutsm(true);
+                                                        }
+
+                                                       /* Config.dependentModels.get(Config.intSelectedDependent).
+                                                                getActivityModels().get(iActivityPosition).setFeedBackModel(feedBackModel);*/
+                                                    }
+                                                }
+
+
+
+                                              /*  int iActivityPos = Config.strActivityIds.indexOf(activityModel.getStrActivityID());
+
+                                                if(iActivityPos>-1)
+                                                    Config.dependentModels
+    */
+
+                                                int iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+                                                strUserName = Config.providerModels.get(iPosition).getStrEmail();
+
+
+                                                String strPushMessage = Config.customerModel.getStrName() + getString(R.string.has_given_feedback) +
+                                                        activityModel.getStrActivityName() + getString(R.string.dated) +
+                                                        utils.convertStringToDate(activityModel.getStrActivityDate());
+
+                                                /* +
+                                                        getString(R.string.on) + strDoneDate;*/
+
+                                                //
+                                                String strDateNow = "";
+                                                Calendar calendar = Calendar.getInstance();
+                                                Date dateNow = calendar.getTime();
+                                                strDateNow = utils.convertDateToString(dateNow);
+
+                                                jsonObjectMess = new JSONObject();
+
+                                                try {
+
+                                                    jsonObjectMess.put("created_by", Config.customerModel.getStrCustomerID());
+                                                    jsonObjectMess.put("time", strDateNow);
+                                                    jsonObjectMess.put("user_type", "provider");
+                                                    jsonObjectMess.put("user_id", activityModel.getStrProviderID());
+                                                    jsonObjectMess.put("activity_id", activityModel.getStrActivityID());//todo add to care taker
+                                                    jsonObjectMess.put("created_by_type", "customer");
+                                                    jsonObjectMess.put(App42GCMService.ExtraMessage, strPushMessage);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                //
+
+                                                insertNotification();
                                             }
-
-
-
-                                          /*  int iActivityPos = Config.strActivityIds.indexOf(activityModel.getStrActivityID());
-
-                                            if(iActivityPos>-1)
-                                                Config.dependentModels
-*/
-
-                                            int iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
-                                            strUserName = Config.providerModels.get(iPosition).getStrEmail();
-
-
-                                            String strPushMessage = Config.customerModel.getStrName() + getString(R.string.has_given_feedback) +
-                                                    activityModel.getStrActivityName() + getString(R.string.dated) +
-                                                    utils.convertStringToDate(activityModel.getStrActivityDate());
-
-                                            /* +
-                                                    getString(R.string.on) + strDoneDate;*/
-
-                                            //
-                                            String strDateNow = "";
-                                            Calendar calendar = Calendar.getInstance();
-                                            Date dateNow = calendar.getTime();
-                                            strDateNow = utils.convertDateToString(dateNow);
-
-                                            jsonObjectMess = new JSONObject();
-
-                                            try {
-
-                                                jsonObjectMess.put("created_by", Config.customerModel.getStrCustomerID());
-                                                jsonObjectMess.put("time", strDateNow);
-                                                jsonObjectMess.put("user_type", "provider");
-                                                jsonObjectMess.put("user_id", activityModel.getStrProviderID());
-                                                jsonObjectMess.put("activity_id", activityModel.getStrActivityID());//todo add to care taker
-                                                jsonObjectMess.put("created_by_type", "customer");
-                                                jsonObjectMess.put(App42GCMService.ExtraMessage, strPushMessage);
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                            //
-
-                                            insertNotification();
+                                        } else {
+                                           /* if (progressDialog.isShowing())
+                                                progressDialog.dismiss();*/
+                                            loadingPanel.setVisibility(View.GONE);
+                                            utils.toast(2, 2, getString(R.string.error));
                                         }
-                                    } else {
-                                       /* if (progressDialog.isShowing())
+
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                      /*  if (progressDialog.isShowing())
                                             progressDialog.dismiss();*/
                                         loadingPanel.setVisibility(View.GONE);
                                         utils.toast(2, 2, getString(R.string.error));
                                     }
-
-                                } catch (Exception e1) {
-                                    e1.printStackTrace();
-                                  /*  if (progressDialog.isShowing())
+                                } else {
+                                   /* if (progressDialog.isShowing())
                                         progressDialog.dismiss();*/
                                     loadingPanel.setVisibility(View.GONE);
-                                    utils.toast(2, 2, getString(R.string.error));
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
-                            } else {
-                               /* if (progressDialog.isShowing())
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+                                /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
                                 loadingPanel.setVisibility(View.GONE);
-                                utils.toast(2, 2, getString(R.string.warning_internet));
+                                Utils.log(e.getMessage(), " RESP ");
+                                if (e != null) {
+                                    utils.toast(2, 2, getString(R.string.error));
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
                             }
                         }
-
-                        @Override
-                        public void onException(Exception e) {
-                            /*if (progressDialog.isShowing())
-                                progressDialog.dismiss();*/
-                            loadingPanel.setVisibility(View.GONE);
-                            Utils.log(e.getMessage(), " RESP ");
-                            if (e != null) {
-                                utils.toast(2, 2, getString(R.string.error));
-                            } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
-                        }
-                    }
-            );
+                );
 
 
-        } else {
-            utils.toast(2, 2, getString(R.string.warning_internet));
+            } else {
+                utils.toast(2, 2, getString(R.string.warning_internet));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -611,6 +665,7 @@ public class CompletedActivity extends AppCompatActivity {
             populateFeedbacks();
         }
     }
+
 
     ///////////////////////
     private void insertNotification() {
@@ -740,7 +795,9 @@ public class CompletedActivity extends AppCompatActivity {
 
                     if (activityModel.getMilestoneModels().size() - 1 == i) {
                         for (int j = 0; j < activityModel.getMilestoneModels().get(i).getFieldModels().size(); j++) {
-                            if (activityModel.getMilestoneModels().get(i).getFieldModels().size() - 1 == j) {
+                            int index = j > 0 ? j - 1 : 0;
+                            if (activityModel.getMilestoneModels().get(i).getFieldModels().size() - 1 == j &&
+                                    activityModel.getMilestoneModels().get(i).getFieldModels().get(index).getStrFieldData().equalsIgnoreCase("SuccessFul")) {
                                 activityModel.getMilestoneModels().get(i).getFieldModels().remove(j);
                             }
                         }
@@ -763,20 +820,27 @@ public class CompletedActivity extends AppCompatActivity {
     private void goBack() {
         Intent dashboardIntent = new Intent(CompletedActivity.this,
                 DashboardActivity.class);
+        if (START_FROM == Config.START_FROM_NOTIFICATION) {
 
-        Bundle args = new Bundle();
-        args.putBoolean(Config.strReload, bReload);
-        dashboardIntent.putExtras(args);
+            Config.intSelectedMenu = Config.intNotificationScreen;
 
-        if (bWhichScreen)
-            Config.intSelectedMenu = Config.intListActivityScreen;
-        else
-            Config.intSelectedMenu = Config.intActivityScreen;
+        } else {
 
-        //dashboardIntent.putExtra("RELOAD", true);//todo may relaod for refreshing feedback
 
+            Bundle args = new Bundle();
+            args.putBoolean(Config.strReload, bReload);
+            dashboardIntent.putExtras(args);
+
+            if (bWhichScreen)
+                Config.intSelectedMenu = Config.intListActivityScreen;
+            else
+                Config.intSelectedMenu = Config.intActivityScreen;
+
+            //dashboardIntent.putExtra("RELOAD", true);//todo may relaod for refreshing feedback
+        }
         startActivity(dashboardIntent);
         finish();
+
     }
 
     @Override

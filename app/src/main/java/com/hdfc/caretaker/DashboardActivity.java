@@ -1,18 +1,22 @@
 package com.hdfc.caretaker;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -26,10 +30,12 @@ import com.hdfc.caretaker.fragments.DashboardFragment;
 import com.hdfc.caretaker.fragments.MyAccountEditFragment;
 import com.hdfc.caretaker.fragments.MyAccountFragment;
 import com.hdfc.caretaker.fragments.NotificationFragment;
+import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
+import com.hdfc.dbconfig.DbCon;
 import com.hdfc.libs.SessionManager;
-import com.hdfc.libs.UpdateService;
 import com.hdfc.libs.Utils;
+import com.hdfc.service.UpdateService;
 import com.shephertz.app42.paas.sdk.android.App42API;
 
 import java.util.Calendar;
@@ -56,31 +62,52 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                     .getStringExtra(App42GCMService.ExtraMessage);
             /*Log.i("mBroadcastReceiver", "" + " : "
                     + message);*/
+            sessionManager = sessionManager == null ? new SessionManager(context) : sessionManager;
+            utils = utils == null ? new Utils(context) : utils;
+            isSync = true;
+            try {
+                if (message != null && !message.equalsIgnoreCase("")) {
+                    if (Config.intSelectedMenu != Config.intNotificationScreen)
+                        showPushDialog(message);
 
-            if (message != null && !message.equalsIgnoreCase("")) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
-                builder.setTitle(getString(R.string.app_name));
-                builder.setMessage(message);
-                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-               /* builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });*/
-                builder.show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         }
     };
+
+
+    private final BroadcastReceiver mBroadcastReceiverToUpdate = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshView(context);
+        }
+    };
     private SessionManager sessionManager;
     private Utils utils;
+
+    private void showPushDialog(final String strMessage) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage(strMessage);
+        builder.setPositiveButton(getString(R.string.text_notification), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                goToNotifications();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
 
     public static void goToDashboard() {
         if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
@@ -146,13 +173,13 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         }
     }
 
-    public void refreshActivityView() {
+    public void refreshView(Context context) {
         try {
 
             if (Config.intSelectedMenu == Config.intActivityScreen ||
                     Config.intSelectedMenu == Config.intListActivityScreen) {
                 // Config.intSelectedMenu = 0;
-                Log.i("TAG", "In refreshActivityView");
+                Log.i("TAG", "In refreshView");
                 Calendar calendar = Calendar.getInstance(Locale.getDefault());
                 int month = calendar.get(Calendar.MONTH) + 1;
                 int year = calendar.get(Calendar.YEAR);
@@ -176,10 +203,23 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 Utils.iActivityCount = 0;
                 Utils.iProviderCount = 0;
                 if (utils == null) {
-                    utils = new Utils(DashboardActivity.this);
+                    if (context == null) {
+                        context = this;
+                    }
+                    utils = new Utils(context);
                 }
-                utils.fetchDependents(Config.customerModel.getStrCustomerID(),
-                        progressDialog, 0);
+                try {
+                    if (utils == null) {
+                        if (Config.intSelectedMenu == Config.intDashboardScreen)
+                            goToDashboard();
+                    } else {
+                        utils.fetchDependents(Config.customerModel.getStrCustomerID(),
+                                progressDialog, 0);
+                    }
+                } catch (Exception e) {
+                    if (Config.intSelectedMenu == Config.intDashboardScreen)
+                        goToDashboard();
+                }
 
 
             } else {
@@ -342,21 +382,38 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             goToDashboard();
         }*/
 
-       /* if (Config.intSelectedMenu == Config.intNotificationScreen) {
-            // Config.intSelectedMenu = 0;
-            goToNotifications();
-        }*/
-
 
         if (Config.customerModel != null) {
             Config.strUserName = sessionManager.getEmail();
             if (Config.customerModel.getStrEmail() == null || Config.customerModel.getStrEmail().length() == 0 || Config.customerModel.getStrEmail().equalsIgnoreCase("")) {
-
-
                 App42API.setLoggedInUser(sessionManager.getEmail());
             } else {
 
                 App42API.setLoggedInUser(Config.customerModel.getStrEmail());
+            }
+        } else {
+// this case will run when we click on notification and activity is in kill state, then new instance will be launched ..starting from DashBoard Activity
+            try {
+                if (CareTaker.dbCon == null) {
+                    CareTaker.dbCon = DbCon.getInstance(getApplicationContext());
+                }
+                try {
+
+                    if (sessionManager.isLoggedIn()) {
+                        Config.strDependentIds.clear();
+                        Config.strProviderIds.clear();
+                        Config.strUserName = sessionManager.getEmail();
+                        utils.fetchCustomer(new ProgressDialog(context), 4, sessionManager.getPassword(), sessionManager.getEmail());
+                        App42API.setLoggedInUser(sessionManager.getEmail());
+                        isSync = true;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                }
+                //exportDB();
+            } catch (Exception e) {
+                e.getMessage();
             }
         }
 
@@ -373,6 +430,10 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 Config.intSelectedMenu == Config.intListActivityScreen) {
             // Config.intSelectedMenu = 0;
             goToActivity(bReloadActivity);
+        }
+        if (Config.intSelectedMenu == Config.intNotificationScreen) {
+            // Config.intSelectedMenu = 0;
+            goToNotifications();
         }
 
         try {
@@ -400,12 +461,19 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
             } else {
                 //Config.intSelectedMenu = 0;
-                if (Config.intSelectedMenu == Config.intDashboardScreen)
+                if (Config.intSelectedMenu == Config.intDashboardScreen) {
                     if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
                         goToAccount();
                     } else {
-                        goToDashboard();
+                        if (Config.dependentModels.size() == 0) {
+                            utils.fetchDependents(Config.customerModel.getStrCustomerID(),
+                                    progressDialog, 0);
+                        } else {
+                            utils.fetchProviders(progressDialog, 0);
+                        }
+
                     }
+                }
             }
 
         } catch (Exception e) {
@@ -432,13 +500,14 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     public void onGCMRegistrationId(String gcmRegId) {
         //Log.e("Registr" , gcmRegId);
         App42GCMController.storeRegistrationId(this, gcmRegId);
-        if (!App42GCMController.isApp42Registerd(DashboardActivity.this))
+        if (!App42GCMController.isApp42Registerd(DashboardActivity.this)) {
             App42GCMController.registerOnApp42(App42API.getLoggedInUser(), gcmRegId, this);
+            sessionManager.setDeviceToken(gcmRegId);
+        }
     }
 
     @Override
     public void onApp42Response(String var1) {
-
     }
 
     @Override
@@ -547,6 +616,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         //}
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
@@ -562,26 +632,33 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
-            builder.setTitle(getString(R.string.confirm_logout));
-            builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    ///
+            if (utils.isConnectingToInternet()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View view = inflater.inflate(R.layout.alert_dialog_text, null);
+                builder.setCustomTitle(view);
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ///
                    /* if (CareTaker.dbCon != null) {
                         CareTaker.dbCon.close();
                     }*/
-                    //
-                    Utils.logout(DashboardActivity.this);
-                }
-            });
-            builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.show();
+                        //
+                        Utils.logout(DashboardActivity.this);
+
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            } else {
+                utils.toast(1, 1, context.getString(R.string.warning_internet));
+            }
         }
 
 
@@ -595,25 +672,42 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     protected void onResume() {
         super.onResume();
 
-        if (Config.customerModel == null || Config.customerModel.getStrName() == null) {
-            Utils.logout(DashboardActivity.this);
-        } else {
+        try {
+            if (Config.customerModel != null && Config.customerModel.getStrName() != null && !(Config.customerModel.getStrName().equalsIgnoreCase(""))) {
+                try {
+                    IntentFilter filter = new IntentFilter(
+                            App42GCMService.DisplayMessageAction);
+                    filter.setPriority(2);
+                    registerReceiver(mBroadcastReceiver, filter);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            try {
-                IntentFilter filter = new IntentFilter(
-                        App42GCMService.DisplayMessageAction);
-                filter.setPriority(2);
-                registerReceiver(mBroadcastReceiver, filter);
-            } catch (Exception e) {
-                e.printStackTrace();
+                try {
+                    LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiverToUpdate,
+                            new IntentFilter(Config.viewRefreshAction));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Utils.logout(DashboardActivity.this);
+
+
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        try {
+            if (mBroadcastReceiverToUpdate != null)
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiverToUpdate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -621,7 +715,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         super.onDestroy();
 
         try {
-            unregisterReceiver(mBroadcastReceiver);
+            if (mBroadcastReceiver != null)
+                unregisterReceiver(mBroadcastReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (mBroadcastReceiverToUpdate != null)
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiverToUpdate);
         } catch (Exception e) {
             e.printStackTrace();
         }

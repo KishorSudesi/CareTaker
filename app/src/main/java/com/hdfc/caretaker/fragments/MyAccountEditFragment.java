@@ -715,7 +715,7 @@ public class MyAccountEditFragment extends Fragment {
 
                                                             if (o != null) {
                                                                 Config.customerModel.setStrImgUrl(url);
-                                                                utils.updateorInsertCustomerData(2);
+                                                                utils.updateorInsertCustomerData(2, sessionManager.getPassword(), sessionManager.getEmail());
 //                                                                String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", ""};
 //                                                                try {
 //                                                                    //Config.jsonCustomer = new JSONObject(strDocument);

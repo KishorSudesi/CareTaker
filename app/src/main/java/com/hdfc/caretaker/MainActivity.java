@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
+import com.hdfc.app42service.StorageService;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 //            e.getMessage();
 //        }
         try {
+
 
             sessionManager = new SessionManager(MainActivity.this);
             if (sessionManager.isLoggedIn()) {
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent selection = new Intent(MainActivity.this, ActivityGuruPersonalInfo.class);
         startActivity(selection);
+        finish();
     }
 
     @Override
@@ -194,12 +197,13 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 if (sessionManager.isLoggedIn()) {
-
+                    StorageService storageService = new StorageService(MainActivity.this);
                     Config.strUserName = sessionManager.getEmail();
-                    utils.fetchCustomer(new ProgressDialog(MainActivity.this), 1);
+                    utils.fetchCustomer(new ProgressDialog(MainActivity.this), 1, sessionManager.getPassword(), sessionManager.getEmail());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally {
             }
 
         }

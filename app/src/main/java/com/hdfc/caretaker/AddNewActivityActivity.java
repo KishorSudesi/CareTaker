@@ -1,6 +1,7 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +58,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
     private ActivityServicesAdapter activityServicesAdapter;
     private int previousChildPosition = -1, previouGroupPosition = -1;
     private SessionManager sessionManager = null;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +71,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
         ImageButton imageButtonBuyServices = (ImageButton) findViewById(R.id.imageButtonBuyServices);
         //ImageButton buttonBack = (ImageButton) findViewById(R.id.buttonBack);
-
+        mContext = this;
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
         sessionManager = new SessionManager(this);
         strServcieIds.clear();
@@ -93,7 +97,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     View v1;
 
                     View v2 = parent.getChildAt(groupPosition);*/
-                    if (!(listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getStrServiceName().equalsIgnoreCase("All Check-In Services are Scheduled"))) {
+                    if (!(listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getStrServiceName().equalsIgnoreCase(mContext.getString(R.string.text_check_in_service))) && !(listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getiServiceNo() == 601)) {
                         if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected()) {
                             listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(false);
                         } else {
@@ -201,7 +205,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
 
         //
-        progressDialog.setMessage(getResources().getString(R.string.loading));
+        progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
         progressDialog.setCancelable(false);
         progressDialog.show();
         if (sessionManager.getServiceCustomer()) {
@@ -237,13 +241,15 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
         if (utils.isConnectingToInternet()) {
             String defaultDate = null;
-            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionServiceCustomer);
-            if (cursorData != null && cursorData.getCount() > 0) {
-                cursorData.moveToFirst();
-                defaultDate = cursorData.getString(0);
-                cursorData.close();
-            } else {
-                defaultDate = Utils.defaultDate;
+            if (CareTaker.dbCon != null) {
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionServiceCustomer);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    cursorData.close();
+                } else {
+                    defaultDate = Utils.defaultDate;
+                }
             }
             StorageService storageService = new StorageService(AddNewActivityActivity.this);
             Query finalQuery;
@@ -391,6 +397,21 @@ public class AddNewActivityActivity extends AppCompatActivity {
         finish();
     }
 
+    /*Comparator for sorting the list by service Name*/
+    private Comparator<CategoryServiceModel> ServiceNameComparator = new Comparator<CategoryServiceModel>() {
+
+        public int compare(CategoryServiceModel s1, CategoryServiceModel s2) {
+            String serviceName1 = s1.getStrCategoryName().toUpperCase();
+            String serviceName2 = s2.getStrCategoryName().toUpperCase();
+
+            //ascending order
+            return serviceName1.compareTo(serviceName2);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
+
     public void refreshAdapter() {
 
         try {
@@ -399,6 +420,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
             if (listView != null) {
 
+                if (categoryServiceModels.size() > 0) {
+                    Collections.sort(categoryServiceModels, ServiceNameComparator);
+                }
                 listDataHeader.clear();
                 listDataChild.clear();
 

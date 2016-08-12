@@ -192,6 +192,7 @@
                     android:layout_weight="0.5"
                     android:drawablePadding="10dp"
                     android:hint="@string/area_code"
+                    android:maxLength="6"
                     android:inputType="number"
                     android:padding="10dp" />
 
@@ -204,6 +205,7 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="1.1"
+                    android:maxLength="10"
                     android:drawablePadding="10dp"
                     android:hint="@string/contact_number"
                     android:inputType="number"

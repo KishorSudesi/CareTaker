@@ -41,13 +41,14 @@ public class UpcomingFragment extends Fragment {
     private Utils utils;
     private int iPosition;
     private Context mContext;
-
+    private byte START_FROM = 0;
 //    private ImageButton buttonCancel;
 
-    public static UpcomingFragment newInstance(ActivityModel activityModel) {
+    public static UpcomingFragment newInstance(ActivityModel activityModel, byte statusFrom) {
         UpcomingFragment fragment = new UpcomingFragment();
         Bundle args = new Bundle();
         args.putSerializable("ACTIVITY", activityModel);
+        args.putByte(Config.KEY_START_FROM, statusFrom);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,7 +81,9 @@ public class UpcomingFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
 
         final ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
-
+        if (this.getArguments().containsKey(Config.KEY_START_FROM)) {
+            START_FROM = this.getArguments().getByte(Config.KEY_START_FROM, (byte) 0);
+        }
         if (activityModel != null) {
             txtViewHead2.setText(activityModel.getStrActivityName());
             if (Config.strProviderIdsAdded.size() > 0) {
@@ -171,11 +174,21 @@ public class UpcomingFragment extends Fragment {
     }
 
     public void goToList() {
-        ActivityFragment fragment = ActivityFragment.newInstance(false);
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+
+        if (START_FROM == Config.START_FROM_NOTIFICATION) {
+            NotificationFragment fragment = NotificationFragment.newInstance();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            ActivityFragment fragment = ActivityFragment.newInstance(false);
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
     }
 
     @Override

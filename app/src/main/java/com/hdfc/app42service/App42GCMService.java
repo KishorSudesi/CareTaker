@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -20,6 +21,7 @@ import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.SessionManager;
+import com.hdfc.service.UpdateService;
 import com.hdfc.libs.Utils;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
@@ -31,11 +33,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Random;
+
+import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
 /**
  * Created by Admin on 1/22/2016.
@@ -43,11 +47,12 @@ import java.util.Locale;
 public class App42GCMService extends IntentService {
 
 
-    public static final String DisplayMessageAction = "com.example.app42sample.DisplayMessage";
+    public static final String DisplayMessageAction = "com.hdfc.careTaker.DashboardActivity";
     public static final String ExtraMessage = "message";
     private static final String App42GeoTag = "app42_geoBase";
     private static final String Alert = "alert";
     public static GoogleCloudMessaging gcm = null;
+    private final static String GROUP_KEY = "activity";
     // public static final String ExtraMessage = "message";
     private static int msgCount = 0;
     private Utils utils;
@@ -57,34 +62,33 @@ public class App42GCMService extends IntentService {
         super("GcmIntentService");
     }
 
-    public static void unRegisterGcm() {
-        try {
-            if (gcm != null)
-                gcm.unregister();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     protected void onHandleIntent(Intent intent) {
-        Bundle extras = intent.getExtras();
-        gcm = GoogleCloudMessaging.getInstance(this);
-        utils = new Utils(this);
-        sessionManager = new SessionManager(this);
-        String messageType = gcm.getMessageType(intent);
-        if (!extras.isEmpty()) {
-            if ("send_error".equals(messageType)) {
-                //App42Log.debug("Send error: " + extras.toString());
-                App42GCMReceiver.completeWakefulIntent(intent);
-            } else if ("deleted_messages".equals(messageType)) {
-                //App42Log.debug("Deleted messages on server: " + extras.toString());
-                App42GCMReceiver.completeWakefulIntent(intent);
-            } else if ("gcm".equals(messageType)) {
-                String message = intent.getExtras().getString("message");
-                //App42Log.debug("Received: " + extras.toString());
-                //App42Log.debug("Message: " + message);
-                this.validatePushIfRequired(message, intent);
+        try {
+            Bundle extras = intent.getExtras();
+            gcm = GoogleCloudMessaging.getInstance(this);
+            utils = new Utils(this);
+            sessionManager = new SessionManager(this);
+            String messageType = gcm.getMessageType(intent);
+            if (!extras.isEmpty()) {
+                if ("send_error".equals(messageType)) {
+                    //App42Log.debug("Send error: " + extras.toString());
+                    App42GCMReceiver.completeWakefulIntent(intent);
+                } else if ("deleted_messages".equals(messageType)) {
+                    //App42Log.debug("Deleted messages on server: " + extras.toString());
+                    App42GCMReceiver.completeWakefulIntent(intent);
+                } else if ("gcm".equals(messageType)) {
+                    SessionManager sessionManager = new SessionManager(App42GCMService.this);
+                    if (sessionManager.isLoggedIn()) {
+                        String message = intent.getExtras().getString("message");
+                        //App42Log.debug("Received: " + extras.toString());
+                        //App42Log.debug("Message: " + message);
+                        this.validatePushIfRequired(message, intent);
+                    }
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -97,9 +101,13 @@ public class App42GCMService extends IntentService {
         String dt = dateTime.format(date);
         db.createNotification(title, message, dt);
         db.close();*/
-        this.broadCastMessage(message);
-        this.sendNotification(message);
-        App42GCMReceiver.completeWakefulIntent(intent);
+        try {
+            this.broadCastMessage(message);
+            this.sendNotification(message);
+            App42GCMReceiver.completeWakefulIntent(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //
@@ -117,11 +125,15 @@ public class App42GCMService extends IntentService {
                     e.printStackTrace();
                 }
 
-               /* Intent in=new Intent(App42GCMService.this,UpdateService.class);
-                in.putExtra("message",message);
-                startService(in);
-                showNotification(strMessage, intent);*/
-
+                try {
+                    Intent in = new Intent(App42GCMService.this, UpdateService.class);
+                    in.putExtra("message", message);
+                    in.putExtra("updateAll", false);
+                    startService(in);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                showNotification(strMessage, intent);
             } else {
 
                 final String geoBaseType = jsonObject.optString(App42GeoTag, null);
@@ -137,7 +149,7 @@ public class App42GCMService extends IntentService {
                 }
             }
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             //Log.e("HDFC", "2");
             showNotification(message, intent);
@@ -145,32 +157,67 @@ public class App42GCMService extends IntentService {
     }
 
     private void sendNotification(String msg) {
-        //check wth vinay
+
         try {
             long when = System.currentTimeMillis();
-            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            NotificationManager mNotificationManager = (NotificationManager) this.
+                    getSystemService(Context.NOTIFICATION_SERVICE);
 
             Intent notificationIntent;
+
             notificationIntent = new Intent(this, DashboardActivity.class);
 
             notificationIntent.putExtra("message_delivered", true);
-            notificationIntent.putExtra("message", msg);
-            notificationIntent.setFlags(603979776);//603979776 Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP
+            notificationIntent.putExtra(ExtraMessage, msg);
+            notificationIntent.putExtra("LOAD", false);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            //
+            // The stack builder object will contain an artificial back stack for the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(DashboardActivity.class);
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(notificationIntent);
+            //
+
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-            //
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
 
-            String title = "NewZeal";
-            mBuilder.setSmallIcon(R.mipmap.ic_launcher).setContentTitle(title).setContentText(msg).setWhen(when).setNumber(++msgCount).setAutoCancel(true)
+            mBuilder.setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.text_notification_header)).
+                    setContentText(msg).setWhen(when).setNumber(++msgCount)
                     .setDefaults(1).setDefaults(2)
                     .setLights(Notification.DEFAULT_LIGHTS, 5000, 5000)
                     .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                    .setAutoCancel(true)
+                    .setGroup(GROUP_KEY) //GROUP_KEY strClientId
+                    .setVisibility(VISIBILITY_PUBLIC)
                     .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            //String[] events = msg.split(""); //new String[6]
+            // Sets a title for the Inbox in expanded layout
+            inboxStyle.setBigContentTitle(getString(R.string.app_name));
+
+            // Moves events into the expanded layout
+       /* for (String event : events) {
+            inboxStyle.addLine(event);
+        }*/
+            // Moves the expanded layout object into the notification object.
+            inboxStyle.addLine(msg);
+            mBuilder.setStyle(inboxStyle);
 
             mBuilder.setContentIntent(contentIntent);
 
-            mNotificationManager.notify(1, mBuilder.build());
+            Random random = new Random();
+            int m = random.nextInt(9999 - 1000) + 1000;
+            Config.intSelectedMenu =Config.intDashboardScreen;
+            mNotificationManager.notify(m, mBuilder.build());
         } catch (Exception e) {
             e.printStackTrace();
         }

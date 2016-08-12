@@ -174,6 +174,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
                 /*if(simpleTooltip!=null&&simpleTooltip.isShowing())
                     simpleTooltip.dismiss();*/
                 Intent newIntent = new Intent(getActivity(), AddNewActivityActivity.class);
+
                 startActivity(newIntent);
             }
         });

@@ -1,5 +1,7 @@
 package com.hdfc.caretaker.fragments;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -7,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -275,7 +278,7 @@ public class MyAccountFragment extends Fragment {
 
                             if (utils.isConnectingToInternet()) {
                                 if (progressDialog != null && !progressDialog.isShowing()) {
-                                    progressDialog.setMessage(getActivity().getString(R.string.uploading));
+                                    progressDialog.setMessage(getActivity().getString(R.string.text_loader_processing));
                                     progressDialog.setCancelable(false);
                                     progressDialog.show();
                                 }
@@ -320,7 +323,7 @@ public class MyAccountFragment extends Fragment {
                                                                         } else {
                                                                             sessionManager.saveOldPassword(strOldPass);
                                                                         }
-                                                                        utils.toast(1, 1, "Password Change Successfully");
+                                                                        utils.toast(1, 1, "Password Changed Successfully");
                                                                         if (progressDialog != null) {
                                                                             progressDialog.dismiss();
                                                                         }
@@ -433,31 +436,37 @@ public class MyAccountFragment extends Fragment {
         });
 
         textViewLogout.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
+                if (utils.isConnectingToInternet()) {
 
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(getActivity().getString(R.string.confirm_logout));
-                builder.setPositiveButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Utils.logout(getActivity());
-                    }
-                });
-                builder.setNegativeButton(getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+                    View view = inflater.inflate(R.layout.alert_dialog_text, null);
+                    builder.setCustomTitle(view);
+                    builder.setPositiveButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Utils.logout(getActivity());
+                        }
+                    });
+                    builder.setNegativeButton(getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    utils.toast(1, 1, context.getString(R.string.warning_internet));
+                }
             }
         });
 
 
         try {
-            if (Config.customerModel!=null && !Config.customerModel.isCustomerRegistered() && Config.dependentModels.size()==0) {
+            if (Config.customerModel != null && !Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
                 utils.toast(2, 2, getString(R.string.no_recipients));
             } else {
 

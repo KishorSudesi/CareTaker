@@ -25,7 +25,11 @@ import java.util.TimeZone;
 public class Config {
 
     public static final String dbName = "newzeal";
+    public static byte START_FROM_DASHBOARD = 0;
+    public static byte START_FROM_NOTIFICATION = 1;
+    public static byte START_FROM_ACTIVITY = 3;
 
+    public static final String KEY_START_FROM = "start_from";
     public static final String collectionService = "service";
     public static final String collectionServiceHistory = "servicehistory";
     public static final String collectionServiceCustomer = "servicecustomer";
@@ -191,9 +195,9 @@ public class Config {
     public static int intSelectedDependent = 0;
     public static boolean boolIsLoggedIn = false;
     public static CustomerModel customerModel = null;
-   /* public static ConfirmDependentModel confirmDependentModel = null;
-    public static ConfirmCustomerModel confirmCustomerModel = null;*/
-   public static DependentModel dependentModel = null;
+    /* public static ConfirmDependentModel confirmDependentModel = null;
+     public static ConfirmCustomerModel confirmCustomerModel = null;*/
+    public static DependentModel dependentModel = null;
     public static ArrayList<DependentModel> dependentModels = new ArrayList<>();
     //public static ClientModel clientModels = new ClientModel();
     //public static ArrayList<CustomerModel> customerModels = new ArrayList<>();
@@ -207,6 +211,9 @@ public class Config {
     public static List<PictureModel> roomtypeName = new ArrayList<>();
 
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
+
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
+
+    public static final String viewRefreshAction = "action.refresh.view";
 
 }

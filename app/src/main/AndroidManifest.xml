@@ -16,9 +16,8 @@
 
     <uses-sdk tools:overrideLibrary="com.ayz4sci.androidfactory.permissionhelper" />
 
-    <permission
-        android:name="com.hdfc.caretaker.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+    <permission android:name="com.hdfc.caretaker.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
 
     <supports-screens
         android:anyDensity="true"
@@ -102,17 +101,17 @@
             android:name=".ActivityGuruPersonalInfo"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
         <activity
             android:name=".DependentDetailPersonal"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <activity
             android:name=".DependentDetailsMedical"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan" />
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <activity
             android:name=".AddNewActivityActivity"
             android:screenOrientation="portrait"
@@ -183,7 +182,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
-        <service android:name="com.hdfc.libs.UpdateService" />
+        <service android:name="com.hdfc.service.UpdateService" />
 
     </application>
 

@@ -37,11 +37,12 @@ public class SessionManager {
     private static final String PREF_NAME = "CareTaker";
     // All Shared Preferences Keys
     private static final String IS_LOGIN = "IsLoggedIn";
-    public final String KEY_DEPENDENTS_IDS = "dependents_ids";
-    public final String KEY_PROVIDERS_IDS = "providers_ids";
-    public final String KEY_OLD_PASSWORD = "old_password";
-    public final String KEY_UPDATED_DEPENDENTS = "updated_dependents";
-    public final String KEY_CHECKIN_CARE_STATUS = "checkin_care_status";
+    private final String KEY_DEPENDENTS_IDS = "dependents_ids";
+    private final String KEY_PROVIDERS_IDS = "providers_ids";
+    private final String KEY_OLD_PASSWORD = "old_password";
+    private final String KEY_UPDATED_DEPENDENTS = "updated_dependents";
+    private final String KEY_CHECKIN_CARE_STATUS = "checkin_care_status";
+   private static final String KEY_DEVICE_TOKEN = "DEVICE_TOKEN";
     // Shared Preferences
     SharedPreferences pref;
     // Editor for Shared preferences
@@ -98,29 +99,61 @@ public class SessionManager {
         return pref.getString(KEY_EMAIL, "");
     }
 
+    public String getPassword(){return pref.getString(KEY_PASSWORD,"");}
     /**
      * Clear session details
      */
     public void logoutUser() {
         // Clearing all data from Shared Preferences
-        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        editor = pref.edit();
-        editor.remove(KEY_SERVICE_SAVED);
-        editor.remove(KEY_CHECKIN_CARE_STATUS);
-        editor.remove(KEY_UPDATED_DEPENDENTS);
-        editor.remove(KEY_ACTIVITY_SAVED);
-        editor.remove(KEY_CUST_ID);
-        editor.remove(KEY_DEPENDENTS_IDS);
-        editor.remove(KEY_DEPENDENTS_SAVED);
-        editor.remove(KEY_NOTIFICATION_SAVED);
-        editor.remove(KEY_SERVICE_CUSTOMER);
-        editor.remove(KEY_PROVIDERS_IDS);
-        editor.remove(KEY_PROVIDER_SAVED);
-        editor.remove(KEY_CHECKIN_CARE_STATUS);
-        editor.clear();
+        try {
+            editor.remove(KEY_SERVICE_SAVED);
+            editor.remove(KEY_CHECKIN_CARE_STATUS);
+            editor.remove(KEY_UPDATED_DEPENDENTS);
+            editor.remove(KEY_ACTIVITY_SAVED);
+            editor.remove(KEY_CUST_ID);
+            editor.remove(KEY_DEPENDENTS_IDS);
+            editor.remove(KEY_DEPENDENTS_SAVED);
+            editor.remove(KEY_NOTIFICATION_SAVED);
+            editor.remove(KEY_SERVICE_CUSTOMER);
+            editor.remove(KEY_PROVIDERS_IDS);
+            editor.remove(KEY_PROVIDER_SAVED);
+            editor.remove(KEY_CHECKIN_CARE_STATUS);
+            editor.remove(KEY_EMAIL);
+            editor.remove(KEY_PASSWORD);
+            editor.remove(IS_LOGIN);
+            editor.remove(KEY_DEVICE_TOKEN);
+            editor.clear();
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public String getDeviceToken() {
+
+        String strDeviceToken;
+
+        try {
+            strDeviceToken = pref.getString(KEY_DEVICE_TOKEN, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            strDeviceToken = "";
+        }
+        return strDeviceToken;
+    }
+
+    public void setDeviceToken(String strToken) {
+        try {
+
+            editor.putString(KEY_DEVICE_TOKEN, strToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // commit changes
         editor.commit();
-
-
     }
 
     /**
