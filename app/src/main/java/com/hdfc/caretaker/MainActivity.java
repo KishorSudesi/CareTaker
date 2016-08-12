@@ -1,6 +1,5 @@
 package com.hdfc.caretaker;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -159,11 +158,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        //getString(R.string.permission_contact_rationale) Manifest.permission.READ_CONTACTS
+
         permissionHelper.verifyPermission(
-                new String[]{getString(R.string.permission_storage_rationale),
-                        getString(R.string.permission_contact_rationale)},
-                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_CONTACTS},
+                new String[]{getString(R.string.permission_storage_rationale)},
+                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 new PermissionCallback() {
                     @Override
                     public void permissionGranted() {

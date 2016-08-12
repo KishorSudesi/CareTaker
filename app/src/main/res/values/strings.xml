@@ -191,6 +191,8 @@
     <string name="select_relation">Select a Relation</string>
     <string name="no_push_actiity_added">Activity Added. Not able to Notify the Carla</string>
     <string name="enter_captcha">Valid Captcha required</string>
+    <string name="enter_captcha_label">Enter Captcha</string>
+    <string name="case_captcha">*Captcha is case sensitive</string>
 
     <!--Dashboard Menu Strings-->
     <string name="menu_activities">Activities</string>

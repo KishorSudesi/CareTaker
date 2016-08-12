@@ -7,7 +7,6 @@ import android.app.SearchableInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -17,9 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -50,29 +46,14 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by Admin on 24-06-2016.
  */
 
 public class DependentDetailPersonal extends AppCompatActivity {
-    private static SearchView searchView;
-    private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
-    private Spinner spinnerRelation;
     public static RoundedImageView imgButtonCamera;
-    Button buttonContinue;
-    private Utils utils;
-    private String strRelation;
-    private static ProgressDialog mProgress = null;
-    static Boolean editflag = false;
-    static int mPosition = -1;
     public static DependentModel dependentModel = null;
-    private static boolean isCamera = false;
-    private static Thread backgroundThread, backgroundThreadCamera;
-    private static Handler backgroundThreadHandler;
     public static Uri uri;
     public static String strImageName = "";
     public static Bitmap bitmapImg = null;
@@ -80,6 +61,18 @@ public class DependentDetailPersonal extends AppCompatActivity {
     public static String strDependantName = "";
     public static String dependantImgName = "";
     public static ArrayList<String> dependentNames = new ArrayList<>();
+    static Boolean editflag = false;
+    static int mPosition = -1;
+    private static SearchView searchView;
+    private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
+    private static ProgressDialog mProgress = null;
+    private static boolean isCamera = false;
+    private static Thread backgroundThread, backgroundThreadCamera;
+    private static Handler backgroundThreadHandler;
+    Button buttonContinue;
+    private Spinner spinnerRelation;
+    private Utils utils;
+    private String strRelation;
     private Context mContext;
     private boolean isSelected = false;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
@@ -111,6 +104,20 @@ public class DependentDetailPersonal extends AppCompatActivity {
         @Override
         public void onDateTimeCancel() {
             // Overriding onDateTimeCancel() is optional.
+        }
+    };
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+            mProgress.dismiss();
+
+            //Utils.log(strImageName, " strImageName 0 ");
+            if (bitmap != null)
+                imgButtonCamera.setImageBitmap(bitmap);
+
         }
     };
 
@@ -434,7 +441,6 @@ public class DependentDetailPersonal extends AppCompatActivity {
         }
     }
 
-
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) findViewById(R.id.searchView1);
@@ -452,7 +458,6 @@ public class DependentDetailPersonal extends AppCompatActivity {
         handleIntent(intent);
     }
 
-    @NeedsPermission(android.Manifest.permission.READ_CONTACTS)
     protected void handleIntent(Intent intent) {
 
         if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
@@ -464,42 +469,6 @@ public class DependentDetailPersonal extends AppCompatActivity {
             String query = intent.getStringExtra(SearchManager.QUERY);
             editName.setText(getResources().getString(R.string.search_contacts));
         }
-    }
-
-    @OnShowRationale({android.Manifest.permission.READ_CONTACTS})
-    void showRationaleForContact(PermissionRequest request) {
-        // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
-        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-        showRationaleDialog(R.string.permission_contact_rationale, request);
-    }
-
-
-    /* @Override
-     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                            @NonNull int[] grantResults) {
-         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-         // NOTE: delegate the permission handling to generated method
-         DependentDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this,
-                 requestCode, grantResults);
-     }
- */
-    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
-        new AlertDialog.Builder(this)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .setCancelable(false)
-                .setMessage(messageResId)
-                .show();
     }
 
     public void readContacts(Intent intent) {
@@ -658,22 +627,6 @@ public class DependentDetailPersonal extends AppCompatActivity {
 
     }
 
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
-            mProgress.dismiss();
-
-            //Utils.log(strImageName, " strImageName 0 ");
-            if (bitmap != null)
-                imgButtonCamera.setImageBitmap(bitmap);
-
-        }
-    };
-
     private void loadImageSimpleTarget(String url) {
 
         Glide.with(DependentDetailPersonal.this)
@@ -736,6 +689,39 @@ public class DependentDetailPersonal extends AppCompatActivity {
         }
     }
 
+    public void showImageUsingGallery() {
+        try {
+            if (uri != null) {
+                Calendar calendar = Calendar.getInstance();
+                String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+
+                File galleryFile = utils.createFileInternalImage(strFileName);
+                strImageName = galleryFile.getAbsolutePath();
+                InputStream is = getContentResolver().openInputStream(uri);
+                utils.copyInputStreamToFile(is, galleryFile);
+//                utils.compressImageFromPath(strImageName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
+//                bitmapImg = utils.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
+
+                loadImageSimpleTarget(uri);
+            }
+
+        } catch (IOException ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showImageUsingCamera() {
+        try {
+            if (strImageName != null && !strImageName.equalsIgnoreCase("")) {
+                utils.compressImageFromPath(strImageName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
+                loadImageSimpleTarget(strImageName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public class BackgroundThread extends Thread {
         @Override
         public void run() {
@@ -760,28 +746,6 @@ public class DependentDetailPersonal extends AppCompatActivity {
         }
     }
 
-    public void showImageUsingGallery() {
-        try {
-            if (uri != null) {
-                Calendar calendar = Calendar.getInstance();
-                String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-
-                File galleryFile = utils.createFileInternalImage(strFileName);
-                strImageName = galleryFile.getAbsolutePath();
-                InputStream is = getContentResolver().openInputStream(uri);
-                utils.copyInputStreamToFile(is, galleryFile);
-//                utils.compressImageFromPath(strImageName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
-//                bitmapImg = utils.getBitmapFromFile(strImageName, Config.intWidth, Config.intHeight);
-
-                loadImageSimpleTarget(uri);
-            }
-
-        } catch (IOException ignored) {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public class BackgroundThreadCamera extends Thread {
         @Override
         public void run() {
@@ -795,17 +759,6 @@ public class DependentDetailPersonal extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void showImageUsingCamera() {
-        try {
-            if (strImageName != null && !strImageName.equalsIgnoreCase("")) {
-                utils.compressImageFromPath(strImageName, Config.intCompressWidth, Config.intCompressHeight, Config.iQuality);
-                loadImageSimpleTarget(strImageName);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

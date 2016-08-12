@@ -48,9 +48,9 @@
 #-keep interface org.apache.commons.codec.** { *; }
 
 #Permission Dispatcher
--dontwarn com.github.hotchemi.**
--keep class com.github.hotchemi.** { *; }
--keep interface com.github.hotchemi.** { *; }
+#-dontwarn com.github.hotchemi.**
+#-keep class com.github.hotchemi.** { *; }
+#-keep interface com.github.hotchemi.** { *; }
 
 #AES
 -dontwarn com.scottyab.**

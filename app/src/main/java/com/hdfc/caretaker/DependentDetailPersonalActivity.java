@@ -1,6 +1,5 @@
 package com.hdfc.caretaker;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -41,10 +40,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-
-@RuntimePermissions
 public class DependentDetailPersonalActivity extends AppCompatActivity {
 
     public static RoundedImageView imgButtonCamera;
@@ -462,7 +457,6 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         handleIntent(intent);
     }
 
-    @NeedsPermission(Manifest.permission.READ_CONTACTS)
     protected void handleIntent(Intent intent) {
 
         if (ContactsContract.Intents.SEARCH_SUGGESTION_CLICKED.equals(intent.getAction())) {
@@ -475,42 +469,6 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             editName.setText(getResources().getString(R.string.search_contacts));
         }
     }
-
-   /* @OnShowRationale({Manifest.permission.READ_CONTACTS})
-    void showRationaleForContact(PermissionRequest request) {
-        // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
-        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-        showRationaleDialog(R.string.permission_contact_rationale, request);
-    }
-*/
-
-   /* @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        DependentDetailPersonalActivityPermissionsDispatcher.onRequestPermissionsResult(this,
-                requestCode, grantResults);
-    }*/
-
-  /*  private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
-        new AlertDialog.Builder(this)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .setCancelable(false)
-                .setMessage(messageResId)
-                .show();
-    }*/
 
     public void readContacts(Intent intent) {
 

@@ -13,6 +13,7 @@
 
         <Button
             android:id="@+id/btnAgree"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -20,11 +21,11 @@
             android:gravity="center"
             android:padding="@dimen/padding_general"
             android:text="@string/text_agree"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorWhite" />
 
         <Button
             android:id="@+id/btnClose"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -32,16 +33,15 @@
             android:gravity="center"
             android:padding="@dimen/padding_general"
             android:text="@string/close"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorWhite" />
 
     </LinearLayout>
 
     <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/margin_general"
-        android:id="@+id/webView" />
+        android:layout_marginTop="@dimen/margin_general" />
 
 
 </LinearLayout>
