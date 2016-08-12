@@ -52,6 +52,7 @@
 
                 <EditText
                     android:id="@+id/editDiseasesdepend"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
                     android:layout_centerHorizontal="true"
@@ -87,6 +88,7 @@
 
                 <EditText
                     android:id="@+id/editNotesdepend"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_centerHorizontal="true"
@@ -105,6 +107,7 @@
 
             <Button
                 android:id="@+id/btnContinuedepend"
+                style="@style/ButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_centerHorizontal="true"

@@ -33,9 +33,9 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="40dp"
                     android:background="@color/blue"
-                    android:visibility="gone"
                     android:focusableInTouchMode="true"
-                    android:queryHint="@string/search_contacts" />
+                    android:queryHint="@string/search_contacts"
+                    android:visibility="gone" />
 
 
                 <com.hdfc.views.RoundedImageView
@@ -49,6 +49,7 @@
 
                 <EditText
                     android:id="@+id/editDependName"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -63,6 +64,7 @@
 
                 <EditText
                     android:id="@+id/editDependEmail"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -77,6 +79,7 @@
 
                 <EditText
                     android:id="@+id/editDateofbirth"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -93,6 +96,7 @@
 
                 <EditText
                     android:id="@+id/editContNo"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -101,13 +105,14 @@
                     android:layout_marginTop="25dp"
                     android:drawableLeft="@drawable/contact"
                     android:drawablePadding="10dp"
-                    android:maxLength="10"
                     android:hint="@string/hint_number"
                     android:inputType="number"
+                    android:maxLength="10"
                     android:padding="10dp" />
 
                 <EditText
                     android:id="@+id/editAddr"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -137,6 +142,7 @@
 
                 <Button
                     android:id="@+id/btn1continue"
+                    style="@style/ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"

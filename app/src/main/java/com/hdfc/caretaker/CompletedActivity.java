@@ -254,7 +254,9 @@ public class CompletedActivity extends AppCompatActivity {
 
                 }
                 if (txtViewMSG != null) {
-                    txtViewMSG.setText(getString(R.string.text_description) + activityModel.getStrActivityDesc());
+                    String strTemp = getString(R.string.text_description) + activityModel.
+                            getStrActivityDesc();
+                    txtViewMSG.setText(strTemp);
                 }
 
                 strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());

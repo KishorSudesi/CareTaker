@@ -29,27 +29,26 @@
 
             <TextView
                 android:id="@+id/textViewName"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="abcd"
                 android:textStyle="bold" />
 
 
             <TextView
                 android:id="@+id/textViewAddress"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
                 />
 
             <TextView
                 android:id="@+id/textViewContact"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
                 />
         </LinearLayout>
 

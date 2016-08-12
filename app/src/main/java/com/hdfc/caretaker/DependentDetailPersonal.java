@@ -282,12 +282,16 @@ public class DependentDetailPersonal extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
-        strImageName = strImageName.trim();
         if (TextUtils.isEmpty(strImageName) && dependentModel == null) {
             utils.toast(2, 2, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
         }
+
+        if (strImageName != null && !strImageName.equalsIgnoreCase("")) {
+            strImageName = strImageName.trim();
+        }
+
         if (editflag && mPosition > -1) {
 
         } else {

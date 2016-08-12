@@ -31,26 +31,26 @@
 
                 <TextView
                     android:id="@+id/textView18"
+                    style="@style/TextViewStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="90dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/blue" />
 
                 <TextView
                     android:id="@+id/textViewEmail"
+                    style="@style/TextViewStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textView18"
                     android:layout_centerHorizontal="true"
                     android:drawableLeft="@drawable/mail_icon_32"
-                    android:drawablePadding="5dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:drawablePadding="5dp" />
 
                 <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_below="@+id/textViewEmail"
                     android:layout_marginTop="30dp"
                     android:orientation="vertical"
@@ -58,6 +58,7 @@
 
                     <EditText
                         android:id="@+id/editTextGuruName"
+                        style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_gravity="center_horizontal"
@@ -72,6 +73,7 @@
 
                     <EditText
                         android:id="@+id/editDob"
+                        style="@style/EditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:layout_centerHorizontal="true"
@@ -143,6 +145,7 @@
 
                         <RadioButton
                             android:id="@+id/radioMobile"
+                            style="@style/RadioButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -150,6 +153,7 @@
 
                         <RadioButton
                             android:id="@+id/radioLandline"
+                            style="@style/RadioButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -168,6 +172,7 @@
 
                 <EditText
                     android:id="@+id/editCountryCode"
+                    style="@style/EditTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -183,6 +188,7 @@
 
                 <EditText
                     android:id="@+id/editAreaCode"
+                    style="@style/EditTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -192,12 +198,13 @@
                     android:layout_weight="0.5"
                     android:drawablePadding="10dp"
                     android:hint="@string/area_code"
-                    android:maxLength="6"
                     android:inputType="number"
+                    android:maxLength="6"
                     android:padding="10dp" />
 
                 <EditText
                     android:id="@+id/editContactNo"
+                    style="@style/EditTextStyle"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -205,16 +212,17 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="1.1"
-                    android:maxLength="10"
                     android:drawablePadding="10dp"
                     android:hint="@string/contact_number"
                     android:inputType="number"
+                    android:maxLength="10"
                     android:padding="10dp" />
 
                     </LinearLayout>
 
                     <Button
                         android:id="@+id/buttonSaveSetting"
+                        style="@style/ButtonStyle"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_gravity="center_horizontal"
@@ -226,7 +234,6 @@
                         android:background="@drawable/button_success"
                         android:text="@string/save_text"
                         android:textAllCaps="false"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/colorWhite" />
 
 

@@ -51,13 +51,13 @@
 
         <TextView
             android:id="@+id/textViewLabel"
+            style="@style/HeaderStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_general"
             android:gravity="center"
             android:padding="@dimen/padding_general"
             android:text="@string/add_new_activity"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/blue"
             android:visibility="visible" />
 
@@ -90,6 +90,7 @@
 
     <Button
         android:id="@+id/buttonContinue"
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -100,7 +101,6 @@
         android:text="Continue"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="gone" />
     </RelativeLayout>
 

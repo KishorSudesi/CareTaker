@@ -43,26 +43,26 @@
 
         <TextView
             android:id="@+id/txtActivityTitle"
+            style="@style/TextViewSmallStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/blue"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtActivityDetails"
+            style="@style/TextViewSmallStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_general"
             android:clickable="false"
             android:focusable="false"
-            android:visibility="gone"
             android:focusableInTouchMode="false"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorBlackDark"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

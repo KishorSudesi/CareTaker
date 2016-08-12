@@ -8,10 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -47,7 +45,6 @@ import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -95,12 +92,12 @@ public class MyAccountFragment extends Fragment {
         return fragment;
     }
 
-    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+    /*public static Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
-    }
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

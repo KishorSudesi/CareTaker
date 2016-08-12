@@ -36,22 +36,21 @@
 
             <TextView
                 android:id="@+id/textViewText"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:paddingLeft="13dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#333333" />
 
             <TextView
                 android:id="@+id/textReadMore"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="13dp"
                 android:text="@string/read_more"
                 android:textColor="@color/colorPrimaryDark"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -62,20 +61,20 @@
 
                 <TextView
                     android:id="@+id/textViewName"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="13dp"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textViewTime"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </LinearLayout>

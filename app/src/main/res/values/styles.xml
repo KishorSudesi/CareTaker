@@ -38,7 +38,7 @@
     </style>
 
     <style name="AddRatingStyleLarge" parent="@android:style/Widget.TextView">
-        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
         <item name="android:textStyle">bold|italic</item>
         <item name="android:gravity">left</item>
         <item name="android:background">@color/blue</item>
@@ -63,11 +63,19 @@
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
+    <style name="TextViewStyle" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
+    </style>
+
+    <style name="TextViewSmallStyle" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
+    </style>
+
     <style name="LabelStyle" parent="android:Widget.TextView">
         <item name="android:textAppearance">@android:style/TextAppearance.Medium</item>
     </style>
 
-    <style name="ButtonStyle" parent="android:Widget.TextView">
+    <style name="ButtonStyle" parent="android:Widget.Button">
         <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
     </style>
 

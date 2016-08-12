@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutLogin"
-    android:background="@android:color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
     <!--
         <ImageView
             android:id="@+id/imageBg"
@@ -51,13 +51,13 @@
 
         <TextView
             android:id="@+id/txtAdditionalServices"
+            style="@style/HeaderStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorWhite"
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/completed_activity"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/colorPrimary" />
 
         <RelativeLayout
@@ -113,19 +113,19 @@
 
                         <TextView
                             android:id="@+id/textViewHead1"
+                            style="@style/TextViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_general"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/textViewHead2"
+                            style="@style/TextViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_general"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold" />
 
@@ -135,6 +135,7 @@
 
                 <TextView
                     android:id="@+id/textViewDate"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="28dp"
@@ -143,7 +144,6 @@
                     android:drawableLeft="@drawable/add_new_activity"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/add_new_activity"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#000000" />
 
                 <TextView
@@ -160,6 +160,7 @@
 
                 <TextView
                     android:id="@+id/tvTasks"
+                    style="@style/HeaderStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_general"
@@ -168,8 +169,6 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:text="@string/tasks"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-
                     android:textColor="@android:color/black" />
 
                 <ExpandableListView
@@ -178,6 +177,7 @@
                     android:layout_height="300dp" />
 
                 <TextView
+                    style="@style/HeaderStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_general"
@@ -186,8 +186,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:text="@string/attachments"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@android:color/black"></TextView>
+                    android:textColor="@android:color/black" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -307,6 +306,7 @@
 
                             <EditText
                                 android:id="@+id/editFeedBack"
+                                style="@style/EditTextStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
@@ -320,8 +320,7 @@
                                 android:minLines="4"
                                 android:paddingTop="10dp"
                                 android:scrollbarStyle="insideInset"
-                                android:scrollbars="vertical"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                android:scrollbars="vertical" />
                         </RelativeLayout>
 
                         <!--    <CheckBox
@@ -338,6 +337,7 @@
 
                         <Button
                             android:id="@+id/btnSubmit"
+                            style="@style/ButtonStyle"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginBottom="10dp"
@@ -345,7 +345,6 @@
                             android:background="@drawable/button_success"
                             android:text="@string/submit_feedback"
                             android:textAllCaps="false"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:textColor="@color/colorWhite" />
 
 
@@ -355,6 +354,7 @@
 
 
                 <TextView
+                    style="@style/HeaderStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_general"
@@ -363,8 +363,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:text="@string/ratings"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@android:color/black"></TextView>
+                    android:textColor="@android:color/black" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -393,8 +392,8 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:background="@android:color/transparent"
-                    android:layout_height="30dip" />
+                    android:layout_height="30dip"
+                    android:background="@android:color/transparent" />
             </LinearLayout>
 
         </ScrollView>

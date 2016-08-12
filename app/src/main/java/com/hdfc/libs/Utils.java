@@ -162,6 +162,20 @@ public class Utils {
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
     private static SessionManager sessionManager;
+    /*Comparator for sorting the list by service Name*/
+    private static Comparator<NotificationModel> notificationDataComparator = new Comparator<NotificationModel>() {
+
+        public int compare(NotificationModel s1, NotificationModel s2) {
+            String date1 = s1.getStrDateTime().toUpperCase();
+            String date2 = s2.getStrDateTime().toUpperCase();
+
+            //ascending order
+            return date2.compareTo(date1);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
 
     static {
         System.loadLibrary("stringGen");
@@ -239,11 +253,6 @@ public class Utils {
         return scaledBitmap;
     }
 
-    public static boolean isImageFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && mimeType.indexOf("image") == 0;
-    }
-
     /*
     public static boolean isVideoFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
@@ -283,6 +292,11 @@ public class Utils {
 
         return true;
     }*/
+
+    public static boolean isImageFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.indexOf("image") == 0;
+    }
 
     //
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
@@ -390,11 +404,6 @@ public class Utils {
         //for crop
         //return new Rect(0, 0, dstWidth, dstHeight);
 
-    }
-
-    public static boolean externalMemoryAvailable() {
-        return android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
     }
 
    /* public static void hideSoftKeyboard(Activity activity) {
@@ -508,9 +517,9 @@ public class Utils {
         mRecorder.start();
     }*/
 
-    public static String getDeviceID(Activity activity) {
-        return Settings.Secure.getString(activity.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+    public static boolean externalMemoryAvailable() {
+        return android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED);
     }
 
     /*public static String encrypt(String Data) {
@@ -592,6 +601,11 @@ public class Utils {
         return json;
     }*/
 
+    public static String getDeviceID(Activity activity) {
+        return Settings.Secure.getString(activity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
+
     public static void log(String message, String tag) {
 
         if ((tag == null || tag.equalsIgnoreCase("")) && _ctxt != null)
@@ -613,19 +627,6 @@ public class Utils {
         return isEmpty;
     }
 
-    public static File createFileInternal(String strFileName) {
-
-        File file = null;
-        try {
-            file = new File(_ctxt.getFilesDir(), strFileName);
-            file.getParentFile().mkdirs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
    /* public String getUUID() {
         final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -639,6 +640,39 @@ public class Utils {
         String deviceId = deviceUuid.toString();
 
         return deviceId;
+    }*/
+
+    public static File createFileInternal(String strFileName) {
+
+        File file = null;
+        try {
+            file = new File(_ctxt.getFilesDir(), strFileName);
+            file.getParentFile().mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+   /* public void createFolder(String path) {
+        File root = new File(path);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+    }*/
+
+   /* public void setExifData(String pathName) throws Exception {
+
+        try {
+            //working for Exif defined attributes
+            ExifInterface exif = new ExifInterface(pathName);
+            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
+            exif.saveAttributes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }*/
 
     public static boolean deleteAllFiles(File directory) {
@@ -667,26 +701,6 @@ public class Utils {
 
         return true;
     }
-
-   /* public void createFolder(String path) {
-        File root = new File(path);
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-    }*/
-
-   /* public void setExifData(String pathName) throws Exception {
-
-        try {
-            //working for Exif defined attributes
-            ExifInterface exif = new ExifInterface(pathName);
-            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
-            exif.saveAttributes();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     public static void setDrawable(View v, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
@@ -786,6 +800,27 @@ public class Utils {
         }
     }
 
+    /*public void setupUI(View view) {
+        //Set up touch listener for non-text box views to hide keyboard.
+        //if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard((Activity) _ctxt);
+                    return false;
+                }
+            });
+        // }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
+    }*/
+
     private static void unregisterGcm(final Context _context) {
 
         Thread thread = new Thread(new Runnable() {
@@ -810,42 +845,6 @@ public class Utils {
         });
         thread.start();
     }
-
-    /*public void setupUI(View view) {
-        //Set up touch listener for non-text box views to hide keyboard.
-        //if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    hideSoftKeyboard((Activity) _ctxt);
-                    return false;
-                }
-            });
-        // }
-
-        //If a layout container, iterate over children and seed recursion.
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                View innerView = ((ViewGroup) view).getChildAt(i);
-                setupUI(innerView);
-            }
-        }
-    }*/
-
-    /*Comparator for sorting the list by service Name*/
-    private static Comparator<NotificationModel> notificationDataComparator = new Comparator<NotificationModel>() {
-
-        public int compare(NotificationModel s1, NotificationModel s2) {
-            String date1 = s1.getStrDateTime().toUpperCase();
-            String date2 = s2.getStrDateTime().toUpperCase();
-
-            //ascending order
-            return date2.compareTo(date1);
-
-            //descending order
-            //return StudentName2.compareTo(StudentName1);
-        }
-    };
 
     public static void refreshNotifications() {
 
@@ -1570,7 +1569,8 @@ public class Utils {
             bt.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             bt.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
             // bt.setTextColor(Color.parseColor("white"));
-            bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
+            bt.setTextAppearance(_ctxt, R.style.HeaderStyle);
+            //android.R.style.TextAppearance_Medium
 
             if (i == 0)
                 bt.setBackgroundResource(R.drawable.tab_selected);
@@ -4753,6 +4753,25 @@ public class Utils {
         return showCheckInButton;
     }
 
+    public void deleteUserFromPush(String email, Context context) {
+        PushNotificationService pushNotificationService = new PushNotificationService(
+                context);
+
+        pushNotificationService.deleteUserDevice(email,
+                new App42CallBack() {
+
+                    @Override
+                    public void onSuccess(Object o) {
+                        Log.i("TAG", "success" + o.toString());
+                    }
+
+                    @Override
+                    public void onException(Exception ex) {
+                        Log.i("TAG", "Exception" + ex.getMessage());
+                    }
+                });
+    }
+
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -4781,25 +4800,6 @@ public class Utils {
             }
             threadHandler.sendEmptyMessage(0);
         }
-    }
-
-    public void deleteUserFromPush(String email, Context context) {
-        PushNotificationService pushNotificationService = new PushNotificationService(
-                context);
-
-        pushNotificationService.deleteUserDevice(email,
-                new App42CallBack() {
-
-                    @Override
-                    public void onSuccess(Object o) {
-                        Log.i("TAG", "success" + o.toString());
-                    }
-
-                    @Override
-                    public void onException(Exception ex) {
-                        Log.i("TAG", "Exception" + ex.getMessage());
-                    }
-                });
     }
 
 }

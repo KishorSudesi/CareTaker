@@ -99,7 +99,7 @@
                 android:gravity="center"
                 android:text="@string/menu_seniors"
                 android:textColor="@color/colorHeaderGradientStart"
-                android:textSize="9sp" />
+                android:textSize="12sp" />
 
 
             <TextView
@@ -109,7 +109,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_activities"
-                android:textSize="9sp" />
+                android:textSize="12sp" />
 
             <!-- <TextView
                  android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_notification"
-                android:textSize="9sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textViewAccount"
@@ -136,7 +136,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_account"
-                android:textSize="9sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/textViewSync"
@@ -145,7 +145,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_sync"
-                android:textSize="9sp" />
+                android:textSize="12sp" />
 
         </TableRow>
 

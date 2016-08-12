@@ -43,8 +43,8 @@
             android:layout_below="@+id/logo"
             android:layout_centerHorizontal="true"
             android:text="@string/who_needs_care"
-            android:textColor="@color/blue"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/blue" />
 
         <ImageView
             android:id="@+id/imageSenior"
@@ -56,6 +56,7 @@
 
         <Button
             android:id="@+id/buttonMyself"
+            style="@style/ButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@+id/imageSenior"
@@ -66,12 +67,12 @@
             android:background="@drawable/button_white"
             android:onClick="selectedMyself"
             android:text="@string/myself"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textAllCaps="false"
             android:textColor="@color/blue" />
 
         <Button
             android:id="@+id/buttonLovedOne"
+            style="@style/ButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@+id/buttonMyself"
@@ -83,7 +84,6 @@
             android:onClick="selectedLovedOne"
             android:text="@string/loved_one"
             android:textAllCaps="false"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorWhite" />
     </RelativeLayout>
 

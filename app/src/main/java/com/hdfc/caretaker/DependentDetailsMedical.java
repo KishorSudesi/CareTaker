@@ -43,17 +43,17 @@ import java.util.List;
  */
 public class DependentDetailsMedical extends AppCompatActivity {
 
-    private Utils utils;
     public static Date date;
+    public static JSONObject jsonDependant;
+    public static int uploadSize, uploadingCount = 0;
+    private static int idregisterflag = 0;
+    private static int editregisterflag = 0;
+    private Utils utils;
     private EditText editAge, editDiseases, editNotes;
     private String strAge, strDiseases, strNotes;
     private ProgressDialog progressDialog;
     private Button buttonContinue;
-    public static JSONObject jsonDependant;
     private int iDependentCount = 0;
-    private static int idregisterflag = 0;
-    private static int editregisterflag = 0;
-    public static int uploadSize, uploadingCount = 0;
     private SessionManager sessionManager;
     private int mPosition;
 
@@ -285,7 +285,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
             // WHERE clause arguments
             String[] selectionArgs = {Config.collectionDependent, DependentDetailPersonal.dependentModel.getStrDependentID()};
             Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
-            if (cursor != null) {
+            if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
 

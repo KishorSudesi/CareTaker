@@ -36,13 +36,13 @@
 
                 <TextView
                     android:id="@+id/textViewName"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_general"
                     android:layout_marginRight="@dimen/margin_general"
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/blue"
                     android:textStyle="bold" />
 
@@ -52,11 +52,11 @@
 
                 <TextView
                     android:id="@+id/dateTimeRating"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="@dimen/padding_general"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/colorBlackDark"
                     android:textStyle="bold" />
 
@@ -66,12 +66,11 @@
 
                 <TextView
                     android:id="@+id/feedBack"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_general"
                     android:padding="@dimen/padding_general"
-
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
             </TableRow>
@@ -79,14 +78,14 @@
             <TableRow android:gravity="center">
 
                 <TextView
+                    style="@style/HeaderStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_general"
                     android:layout_marginLeft="@dimen/margin_general"
                     android:layout_marginRight="@dimen/margin_general"
                     android:padding="@dimen/padding_general"
-                    android:text="@string/rating"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:text="@string/rating" />
 
                 <ImageView
                     android:id="@+id/smileyImage"

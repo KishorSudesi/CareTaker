@@ -15,8 +15,8 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/blue"
-        android:layout_below="@+id/includerecipient"/>
+        android:layout_below="@+id/includerecipient"
+        android:background="@color/blue" />
 
     <ListView
         android:id="@+id/addrecipientlistview"
@@ -32,8 +32,10 @@
 
     <Button
         android:id="@+id/btnaddrecipient"
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
@@ -42,7 +44,5 @@
         android:background="@drawable/button_success"
         android:text="@string/add_recipient"
         android:textAllCaps="false"
-        android:textSize="20sp"
-        android:layout_alignParentBottom="true"
         android:textColor="@color/colorWhite" />
 </RelativeLayout>
