@@ -40,9 +40,8 @@ public class CheckInCareActivity extends AppCompatActivity {
     private List<ImageModelCheck> image = new ArrayList<>();
     private ScrollView activities;
     private ImageButton backButton;
-    private Button buttonHall, buttonKitchen, buttonWashroom, buttonBed;
-    private TextView utilityBill, water, gas, electricity, phone, kitchenItems, grocery,
-            maidServices, electronics, automobiles, homeAppliances, homeStatus, domesticStatus, workingStatus,
+    private Button buttonHall, buttonKitchen, buttonWashroom, buttonBed, water, gas, electricity, phone, kitchenItems, groceryItems, maidServices, electronics, automobiles, homeAppliances;
+    private TextView utilityBill, domesticStatus, workingStatus, homeStatus,
             photoStatus, tvmediaComment, tvActivityByName, utilityBilsStatus, kitchenItemsStatus, groceryStatus, tvDriverStatus;
     private String subActivityName, status, dueStatus, dueDate, utilityName, imageUrl, imageDescription, imageTime;
     private int homeEssCount = 0, domesticHelp = 0, equipmentStatus = 0, utilityBills = 0, imageCount = 0;
@@ -71,16 +70,16 @@ public class CheckInCareActivity extends AppCompatActivity {
         dialogLinear = (LinearLayout) findViewById(R.id.dialogLinear);
         linearImages = (LinearLayout) findViewById(R.id.LinearImages);
         utilityBill = (TextView) findViewById(R.id.tvUtilityBillStatus);
-        water = (TextView) findViewById(R.id.tvWaterBill);
-        gas = (TextView) findViewById(R.id.tvGasBill);
-        electricity = (TextView) findViewById(R.id.tvElectricityBill);
-        phone = (TextView) findViewById(R.id.tvPhoneBill);
-        kitchenItems = (TextView) findViewById(R.id.tvKitchenItems);
-        grocery = (TextView) findViewById(R.id.tvGrocery);
-        maidServices = (TextView) findViewById(R.id.tvMaidServices);
-        electronics = (TextView) findViewById(R.id.tvElectronics);
-        automobiles = (TextView) findViewById(R.id.tvAutomobiles);
-        homeAppliances = (TextView) findViewById(R.id.tvHomeAppliances);
+        water = (Button) findViewById(R.id.tvWaterBill);
+        gas = (Button) findViewById(R.id.tvGasBill);
+        electricity = (Button) findViewById(R.id.tvElectricityBill);
+        phone = (Button) findViewById(R.id.tvPhoneBill);
+        kitchenItems = (Button) findViewById(R.id.tvKitchenItems);
+        groceryItems = (Button) findViewById(R.id.tvGroceryItems);
+        maidServices = (Button) findViewById(R.id.tvMaidServices);
+        electronics = (Button) findViewById(R.id.tvElectronics);
+        automobiles = (Button) findViewById(R.id.tvAutomobiles);
+        homeAppliances = (Button) findViewById(R.id.tvHomeAppliances);
         homeStatus = (TextView) findViewById(R.id.tvHomeStatus);
         workingStatus = (TextView) findViewById(R.id.tvEquipmentStatus);
         domesticStatus = (TextView) findViewById(R.id.tvDomesticStatus);
@@ -90,7 +89,7 @@ public class CheckInCareActivity extends AppCompatActivity {
         utilityBilsStatus = (TextView) findViewById(R.id.tvUtilityBills_Status);
         kitchenItemsStatus = (TextView) findViewById(R.id.tvKitchenItemsStatus);
         groceryStatus = (TextView) findViewById(R.id.tvGroceryStatus);
-        tvDriverStatus = (TextView) findViewById(R.id.tvDriverStatus);
+        tvDriverStatus = (Button) findViewById(R.id.tvDriverStatus);
         linearImages.setVisibility(View.GONE);
         activities.setVisibility(View.GONE);
 
@@ -181,18 +180,22 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 if (subActivityName.equalsIgnoreCase("kitchen_equipments") && checkBoxStatus) {
                                     homeEssCount++;
                                     kitchenItemsStatus.setText("Done");
+                                    kitchenItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_checkin), null);
                                     kitchenItems.setTag(status);
                                 } else if (subActivityName.equalsIgnoreCase("kitchen_equipments") && !checkBoxStatus) {
                                     kitchenItemsStatus.setText("Pending");
+                                    kitchenItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_disable_checkin), null);
                                     kitchenItems.setTag(status);
                                 }
                                 if (subActivityName.equalsIgnoreCase("grocery") && checkBoxStatus) {
                                     homeEssCount++;
                                     groceryStatus.setText("Done");
-                                    grocery.setTag(status);
+                                    groceryItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_checkin), null);
+                                    groceryItems.setTag(status);
                                 } else if (subActivityName.equalsIgnoreCase("grocery") && !checkBoxStatus) {
                                     groceryStatus.setText("Pending");
-                                    grocery.setTag(status);
+                                    groceryItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_disable_checkin), null);
+                                    groceryItems.setTag(status);
                                 }
                             }
                             if (homeEssCount == subActivityModels.size()) {
@@ -495,10 +498,10 @@ public class CheckInCareActivity extends AppCompatActivity {
                 DialogStatusDueDate((String) phone.getTag());
             }
         });
-        grocery.setOnClickListener(new View.OnClickListener() {
+        groceryItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogStatus((String) grocery.getTag());
+                DialogStatus((String) groceryItems.getTag());
             }
         });
         kitchenItems.setOnClickListener(new View.OnClickListener() {
@@ -531,7 +534,8 @@ public class CheckInCareActivity extends AppCompatActivity {
         kitchenItemsStatus.setText("Pending");
 
         groceryStatus.setText("Pending");
-
+        kitchenItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_disable_checkin), null);
+        groceryItems.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_disable_checkin), null);
 
         maidServices.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_disable_checkin), null);
         tvDriverStatus.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_disable_checkin), null);
@@ -556,10 +560,17 @@ public class CheckInCareActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(CheckInCareActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom);
-
+        TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
         TextView textView = (TextView) dialog.findViewById(R.id.tvCustom);
         Button buttonOk = (Button) dialog.findViewById(R.id.btnCustom);
-        textView.setText(message);
+        message = message.trim();
+        if (message != null && message.length() != 0 && !(message.equalsIgnoreCase(""))) {
+            tvTitle.setVisibility(View.VISIBLE);
+            textView.setText(message);
+        } else {
+            tvTitle.setVisibility(View.GONE);
+            textView.setText(getString(R.string.text_no_comments));
+        }
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

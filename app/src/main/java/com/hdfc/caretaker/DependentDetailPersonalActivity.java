@@ -3,8 +3,6 @@ package com.hdfc.caretaker;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +15,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -57,7 +54,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static Thread backgroundThread, backgroundThreadCamera, backgroundThreadGallery;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
-    private static SearchView searchView;
+   // private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private static ProgressDialog mProgress = null;
     public String drawable;
@@ -242,10 +239,10 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            searchView.setIconified(true);
-        }
+//        if (!searchView.isIconified()) {
+//            searchView.setIconified(true);
+//            searchView.setIconified(true);
+//        }
     }
 
     public void backToSelection() {
@@ -441,13 +438,13 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     }
 
     private void setupSearchView() {
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) findViewById(R.id.searchView);
-
-        ComponentName cn = new ComponentName(this, DependentDetailPersonalActivity.class);
-
-        SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
-        searchView.setSearchableInfo(searchableInfo);
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) findViewById(R.id.searchView);
+//
+//        ComponentName cn = new ComponentName(this, DependentDetailPersonalActivity.class);
+//
+//        SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
+//        searchView.setSearchableInfo(searchableInfo);
     }
 
     @Override
@@ -559,11 +556,11 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             editContactNo.setText(phone);
             editDependantEmail.setText(emailContact);
 
-            searchView.setFocusable(false);
-            searchView.clearFocus();
-
-            searchView.setIconified(true);
-            searchView.setIconified(true);
+//            searchView.setFocusable(false);
+//            searchView.clearFocus();
+//
+//            searchView.setIconified(true);
+//            searchView.setIconified(true);
 
             editName.requestFocus();
 

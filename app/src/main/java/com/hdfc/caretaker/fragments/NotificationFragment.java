@@ -126,7 +126,7 @@ public class NotificationFragment extends Fragment {
 //                    }
 //
 //                } else {
-
+                //2016-08-12T05:36:54.520Z
                 if (Config.dependentModels.get(Config.intSelectedDependent).
                         getNotificationModels().get(position).isCheckincare() && Config.checkInCareActivityNames.size() > 0) {
                     Intent intent = new Intent(getActivity(), CheckInCareActivity.class);

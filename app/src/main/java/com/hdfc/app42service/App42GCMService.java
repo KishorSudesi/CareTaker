@@ -15,14 +15,15 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hdfc.caretaker.DashboardActivity;
+import com.hdfc.caretaker.MainActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.SessionManager;
-import com.hdfc.service.UpdateService;
 import com.hdfc.libs.Utils;
+import com.hdfc.service.UpdateService;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Query;
@@ -163,10 +164,16 @@ public class App42GCMService extends IntentService {
 
             NotificationManager mNotificationManager = (NotificationManager) this.
                     getSystemService(Context.NOTIFICATION_SERVICE);
+            Class classToCall = null;
+            if (Config.customerModel != null && Config.dependentModels.size() > 0) {
+                classToCall = DashboardActivity.class;
+            } else {
+                classToCall = MainActivity.class;
+            }
 
             Intent notificationIntent;
 
-            notificationIntent = new Intent(this, DashboardActivity.class);
+            notificationIntent = new Intent(this, classToCall);
 
             notificationIntent.putExtra("message_delivered", true);
             notificationIntent.putExtra(ExtraMessage, msg);
@@ -180,7 +187,7 @@ public class App42GCMService extends IntentService {
             // your application to the Home screen.
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
             // Adds the back stack for the Intent (but not the Intent itself)
-            stackBuilder.addParentStack(DashboardActivity.class);
+            stackBuilder.addParentStack(classToCall);
             // Adds the Intent that starts the Activity to the top of the stack
             stackBuilder.addNextIntent(notificationIntent);
             //
@@ -202,7 +209,7 @@ public class App42GCMService extends IntentService {
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             //String[] events = msg.split(""); //new String[6]
             // Sets a title for the Inbox in expanded layout
-            inboxStyle.setBigContentTitle(getString(R.string.app_name));
+            inboxStyle.setBigContentTitle(getString(R.string.text_notification_header));
 
             // Moves events into the expanded layout
        /* for (String event : events) {
@@ -216,7 +223,7 @@ public class App42GCMService extends IntentService {
 
             Random random = new Random();
             int m = random.nextInt(9999 - 1000) + 1000;
-            Config.intSelectedMenu =Config.intDashboardScreen;
+            Config.intSelectedMenu = Config.intDashboardScreen;
             mNotificationManager.notify(m, mBuilder.build());
         } catch (Exception e) {
             e.printStackTrace();

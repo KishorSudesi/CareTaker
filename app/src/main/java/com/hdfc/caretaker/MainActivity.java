@@ -36,7 +36,10 @@ public class MainActivity extends AppCompatActivity {
         Button btnLovedOne = (Button) findViewById(R.id.buttonLovedOne);
         Button btnGoToWho = (Button) findViewById(R.id.buttonGoToWho);
 
-
+        if (getIntent().hasExtra("message_delivered")) {
+            Config.strDependentIds.clear();
+            Config.strProviderIds.clear();
+        }
         //CrashLogger.getInstance().init(MainActivity.this);
 //        try {
 //            CareTaker.dbCon = DbCon.getInstance(getApplicationContext());
@@ -202,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
             }
 
         }

@@ -90,7 +90,7 @@
             android:name=".ActivityGuruPersonalInfo"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize|adjustPan" />
 
         <activity
             android:name=".DependentDetailPersonal"

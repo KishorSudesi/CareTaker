@@ -2,7 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="77dp"
+    android:layout_height="wrap_content"
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
@@ -13,9 +13,10 @@
         android:background="@color/blue">
 
     </RelativeLayout>
+
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/line">
 
         <TableRow
@@ -98,8 +99,7 @@
                 android:gravity="center"
                 android:text="@string/menu_seniors"
                 android:textColor="@color/colorHeaderGradientStart"
-                android:textSize="9sp"
-                 />
+                android:textSize="9sp" />
 
 
             <TextView
@@ -109,8 +109,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_activities"
-                android:textSize="9sp"
-                />
+                android:textSize="9sp" />
 
             <!-- <TextView
                  android:layout_width="wrap_content"
@@ -128,8 +127,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_notification"
-                android:textSize="9sp"
-                />
+                android:textSize="9sp" />
 
             <TextView
                 android:id="@+id/textViewAccount"

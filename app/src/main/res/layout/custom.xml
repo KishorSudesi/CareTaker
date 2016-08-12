@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/header_gradient"
@@ -21,14 +22,16 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        android:layout_marginTop="@dimen/margin_general"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
         android:id="@+id/btnCustom"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_blue_white_border"
         android:gravity="center"
+        android:layout_marginTop="@dimen/margin_general"
         android:padding="20dp"
         android:text="OK" />
 

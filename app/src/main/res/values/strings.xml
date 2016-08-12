@@ -3,6 +3,7 @@
     <string name="app_code_name">NewZeal</string>
 
     <!--Common Strings-->
+    <string name="text_no_comments">No Comments</string>
     <string name="back">Back</string>
     <string name="skip">Skip</string>
     <string name="ok">OK</string>
@@ -59,7 +60,8 @@
     <string name="validation_age_customer">You are Minor,not Eligible.</string>
     <string name="validation_age_dependnets">min age required is 60.</string>
     <string name="text_terms_condition">Terms &amp; Condition</string>
-    <string name="text_agree">Agree</string>
+    <string name="text_agree">Accept</string>
+    <string name="text_decline">Decline</string>
     <string name="warning_agree_terms_condition">Please tick terms and condition.</string>
     <!--Info/App Specific Strings-->
     <string name="account_success_message">Welcome to Care Services of New Zeal.\n(A CSR initiative by HDFC Life)</string>
@@ -193,6 +195,7 @@
     <string name="enter_captcha">Valid Captcha required</string>
     <string name="enter_captcha_label">Enter Captcha</string>
     <string name="case_captcha">*Captcha is case sensitive</string>
+
 
     <!--Dashboard Menu Strings-->
     <string name="menu_activities">Activities</string>

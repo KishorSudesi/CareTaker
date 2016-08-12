@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.hdfc.app42service.App42GCMController;
 import com.hdfc.app42service.App42GCMService;
+import com.hdfc.app42service.StorageService;
 import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.caretaker.fragments.AddCareRecipientsFragment;
 import com.hdfc.caretaker.fragments.DashboardFragment;
@@ -403,6 +404,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                         Config.strDependentIds.clear();
                         Config.strProviderIds.clear();
                         Config.strUserName = sessionManager.getEmail();
+                        StorageService storageService = new StorageService(context);
                         utils.fetchCustomer(new ProgressDialog(context), 4, sessionManager.getPassword(), sessionManager.getEmail());
                         App42API.setLoggedInUser(sessionManager.getEmail());
                         isSync = true;

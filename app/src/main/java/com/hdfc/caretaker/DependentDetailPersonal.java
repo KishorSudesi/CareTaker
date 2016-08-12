@@ -3,8 +3,6 @@ package com.hdfc.caretaker;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -258,11 +256,11 @@ public class DependentDetailPersonal extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!searchView.isIconified()) {
-            searchView.setIconified(true);
-            searchView.setIconified(true);
-
-        }
+//        if (!searchView.isIconified()) {
+//            searchView.setIconified(true);
+//            searchView.setIconified(true);
+//
+//        }
         goBack();
 
     }
@@ -442,13 +440,13 @@ public class DependentDetailPersonal extends AppCompatActivity {
     }
 
     private void setupSearchView() {
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) findViewById(R.id.searchView1);
-
-        ComponentName cn = new ComponentName(this, DependentDetailPersonal.class);
-
-        SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
-        searchView.setSearchableInfo(searchableInfo);
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView = (SearchView) findViewById(R.id.searchView1);
+//
+//        ComponentName cn = new ComponentName(this, DependentDetailPersonal.class);
+//
+//        SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
+//        searchView.setSearchableInfo(searchableInfo);
     }
 
     @Override
@@ -560,11 +558,11 @@ public class DependentDetailPersonal extends AppCompatActivity {
             editContactNo.setText(phone);
             editDependantEmail.setText(emailContact);
 
-            searchView.setFocusable(false);
-            searchView.clearFocus();
-
-            searchView.setIconified(true);
-            searchView.setIconified(true);
+//            searchView.setFocusable(false);
+//            searchView.clearFocus();
+//
+//            searchView.setIconified(true);
+//            searchView.setIconified(true);
 
             editName.requestFocus();
 
@@ -603,6 +601,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
             //
             strImageName = dependentModel.getStrImagePath();
             if (strImageName == null || strImageName.length() == 0 || strImageName.equalsIgnoreCase("")) {
+                strImageName = "";
                 loadImageSimpleTarget(dependentModel.getStrImageUrl());
             } else {
                 loadImageSimpleTarget(strImageName);

@@ -96,4 +96,8 @@
 
     </style>
 
+    <style name="LabelStyle_Small" parent="android:Widget.TextView">
+        <item name="android:textAppearance">@android:style/TextAppearance.DeviceDefault.Small</item>
+    </style>
+
 </resources>

@@ -1329,11 +1329,15 @@ public class Utils {
     }
 
     public void setStatusBarColor(String strColor) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = ((Activity) _ctxt).getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor(strColor));
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = ((Activity) _ctxt).getWindow();
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(Color.parseColor(strColor));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -4182,11 +4186,10 @@ public class Utils {
                     do {
 
                         try {
-                            //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
-                            // WHERE clause arguments
-                            //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
-                            String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDateDB + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDateDB + "')";
+                            // old query removed date parameter
 
+                           // String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDateDB + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDateDB + "')";
+                            String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))+"'";
                             //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
                             Cursor cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
                             JSONArray jArray = new JSONArray();
