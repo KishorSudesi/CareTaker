@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.caretaker.CheckInCareActivity;
 import com.hdfc.caretaker.CompletedActivity;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.R;
@@ -54,7 +55,8 @@ import java.util.ArrayList;
 public class NotificationFragment extends Fragment {
     public static ListView listViewActivities;
     public static NotificationAdapter notificationAdapter;
-    private Utils utils;
+    public static LinearLayout dynamicUserTab;
+    private static Utils utils;
     private SessionManager sessionManager;
     private ActivityModel activityModel = null;
 
@@ -67,6 +69,14 @@ public class NotificationFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void refreshNotification() {
+        try {
+            utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -83,7 +93,7 @@ public class NotificationFragment extends Fragment {
 
         listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivity);
         TextView emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
-        LinearLayout dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
+        dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
 
         utils = new Utils(getActivity());
         sessionManager = new SessionManager(getActivity());
@@ -95,21 +105,43 @@ public class NotificationFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ActivityModel activityModel = null;
+//
+//                if (ActivityFragment.activitiesModelArrayList != null && ActivityFragment.activitiesModelArrayList.size() > 0) {
+//
+//                    if (Config.intSelectedDependent > -1
+//                            && Config.intSelectedDependent < Config.dependentModels.size()) {
+//                        for (int j = 0; j < ActivityFragment.activitiesModelArrayList.size(); j++) {
+//
+//                            if (position > -1 && position < Config.dependentModels.get
+//                                    (Config.intSelectedDependent).getNotificationModels().size()) {
+//                                if (ActivityFragment.activitiesModelArrayList.get(j).getStrActivityID().
+//                                        equalsIgnoreCase(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId())) {
+//                                    if (j < ActivityFragment.activitiesModelArrayList.size()) {
+//                                        activityModel = ActivityFragment.activitiesModelArrayList.get(j);
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                } else {
+                //2016-08-12T05:36:54.520Z
+                if (Config.dependentModels.get(Config.intSelectedDependent).
+                        getNotificationModels().get(position).isCheckincare() && Config.checkInCareActivityNames.size() > 0) {
+                    Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
+                    intent.putExtra(Config.KEY_START_FROM,Config.START_FROM_NOTIFICATION);
+                    startActivity(intent);
 
-                if (ActivityFragment.activitiesModelArrayList != null && ActivityFragment.activitiesModelArrayList.size() > 0) {
-
-                    for (int j = 0; j < ActivityFragment.activitiesModelArrayList.size(); j++) {
-
-                        if (ActivityFragment.activitiesModelArrayList.get(j).getStrActivityID().equalsIgnoreCase(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId())) {
-                            activityModel = ActivityFragment.activitiesModelArrayList.get(j);
-                            break;
-                        }
-                    }
-
-                } else {
-                    String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId() + "'";
+                } else if (Config.intSelectedDependent > -1 &&
+                        Config.intSelectedDependent < Config.dependentModels.size()) {
+                    String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '"
+                            + Config.collectionActivity + "' AND " + DbHelper.COLUMN_OBJECT_ID
+                            + " = '" + Config.dependentModels.get(Config.intSelectedDependent).
+                            getNotificationModels().get(position).getStrActivityId() + "'";
 
                     Cursor cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
+                    Cursor cursorMilestone = null;
 
                     if (cursor != null && cursor.getCount() > 0) {
                         Log.i("TAG", "cursor count:" + cursor.getCount());
@@ -123,7 +155,7 @@ public class NotificationFragment extends Fragment {
                                 String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "'";
 
                                 //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
-                                Cursor cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
+                                cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
                                 JSONArray jArray = new JSONArray();
                                 int index = 0;
                                 if (cursorMilestone != null && cursorMilestone.getCount() > 0) {
@@ -147,6 +179,8 @@ public class NotificationFragment extends Fragment {
                                 activityModel = createActivityModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)), 1, jArray);
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            } finally {
+                                CareTaker.dbCon.closeCursor(cursorMilestone);
                             }
 
 
@@ -155,12 +189,13 @@ public class NotificationFragment extends Fragment {
                         activityModel = getActivityModel(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels().get(position).getStrActivityId());
                     }
                 }
+                // }
 
                 if (activityModel != null) {
                     if (activityModel.getStrActivityStatus().equalsIgnoreCase("new")) {
 
                         DashboardActivity.updateActivityIconMenu();
-                        UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
+                        UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel,Config.START_FROM_NOTIFICATION);
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().
                                 beginTransaction();
                         ft.replace(R.id.fragment_dashboard, completedFragment);
@@ -173,6 +208,7 @@ public class NotificationFragment extends Fragment {
                         args.putSerializable("ACTIVITY", activityModel);
                         args.putBoolean("WHICH_SCREEN", true);
                         args.putInt("ACTIVITY_POSITION", position);
+                        args.putByte(Config.KEY_START_FROM,Config.START_FROM_NOTIFICATION);
                         intent.putExtras(args);
                         startActivity(intent);
                     }
@@ -187,10 +223,9 @@ public class NotificationFragment extends Fragment {
         return rootView;
     }
 
-
     public ActivityModel getActivityModel(String activityId) {
         try {
-            activityModel =null;
+            activityModel = null;
             // storageService.findDocsByQuery(Config.collectionActivity, q5, //1 for descending
             //new App42CallBack()
             Query q3 = QueryBuilder.build("docId", activityId, QueryBuilder.Operator.EQUALS);
@@ -250,7 +285,7 @@ public class NotificationFragment extends Fragment {
                     }
             );
         } catch (Exception e) {
-            activityModel=null;
+            activityModel = null;
         }
         return activityModel;
     }

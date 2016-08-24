@@ -3,7 +3,6 @@ package com.hdfc.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.caretaker.R;
@@ -77,12 +77,12 @@ public class RatingCompletedAdapter extends BaseAdapter {
             viewHolder.dateTime = (TextView) convertView.findViewById(R.id.dateTimeRating);
             viewHolder.personName = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.feedback = (TextView) convertView.findViewById(R.id.feedBack);
-
+            viewHolder.personImage_copy = (ImageView) convertView.findViewById(R.id.personImage_copy);
             viewHolder.personImage = (ImageView) convertView.findViewById(R.id.personImage);
             viewHolder.smiley = (ImageView) convertView.findViewById(R.id.smileyImage);
 
             try {
-                viewHolder.linearLayoutRoot = (LinearLayout) convertView.findViewById(R.id.confirmLayoutRoot);
+                // viewHolder.linearLayoutRoot = (LinearLayout) convertView.findViewById(R.id.confirmLayoutRoot);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -95,7 +95,14 @@ public class RatingCompletedAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            String strTimeStamp = _ctx.getString(R.string.at) + " " + utils.formatDate(data.get(position).getStrFeedBackTime());
+            String strTimeStamp = _ctx.getString(R.string.at);
+
+            try {
+                strTimeStamp += " " + utils.formatDate(data.get(position).getStrFeedBackTime());
+            } catch (Exception e) {
+                e.printStackTrace();
+                strTimeStamp += " " + data.get(position).getStrFeedBackTime();
+            }
 
             viewHolder.dateTime.setText(strTimeStamp);
 
@@ -149,26 +156,35 @@ public class RatingCompletedAdapter extends BaseAdapter {
                         .load(strUrl)
                         .asBitmap()
                         .centerCrop()
+                        .override(Config.intWidth, Config.intHeight)
                         .transform(new CropCircleTransformation(_ctx))
                         .placeholder(R.drawable.person_icon)
-
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
 
                                 int intImgHeight = resource.getHeight();
+                                int sampleSize = utils.calculateSampleSize(resource.getWidth(), intImgHeight,
+                                        Config.intWidth, Config.intHeight);
+                                intImgHeight = intImgHeight / sampleSize;
+                                int height = intImgHeight - 180;
+                                if (height < 130 && intImgHeight <180) {
+                                    height = 130;
+                                }
 
-                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                viewHolder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
-
-                                if (Build.VERSION.SDK_INT <= 16)
-                                    viewHolder.linearLayoutRoot.setBackgroundDrawable(_ctx.getResources().getDrawable(R.drawable.confirm_view));
-                                else
-                                    viewHolder.linearLayoutRoot.setBackground(_ctx.getResources().getDrawable(R.drawable.confirm_view));
-
-                                layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
-                                viewHolder.linearLayoutRoot.setLayoutParams(layoutParams);
+                                viewHolder.personImage_copy.getLayoutParams().height = height;
+//                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+//                                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                                viewHolder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
+//
+//                                if (Build.VERSION.SDK_INT <= 16)
+//                                    viewHolder.linearLayoutRoot.setBackgroundDrawable(_ctx.getResources().getDrawable(R.drawable.confirm_view));
+//                                else
+//                                    viewHolder.linearLayoutRoot.setBackground(_ctx.getResources().getDrawable(R.drawable.confirm_view));
+//
+//                                layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
+//                                viewHolder.linearLayoutRoot.setLayoutParams(layoutParams);
 
                                 viewHolder.personImage.setImageBitmap(resource);
                             }
@@ -193,7 +209,7 @@ public class RatingCompletedAdapter extends BaseAdapter {
 
     public class ViewHolder {
         public LinearLayout linearLayoutRoot;
-        ImageView personImage;
+        ImageView personImage, personImage_copy;
         ImageView smiley;
         TextView feedback;
         TextView personName;

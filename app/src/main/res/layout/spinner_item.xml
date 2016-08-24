@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_general"
-    android:padding="@dimen/padding_general"
-    android:textAppearance="?android:attr/textAppearanceMedium" />
+    android:padding="@dimen/padding_general" /><!--
+    style="@style/SpinnerStyle" -->
 

@@ -34,7 +34,17 @@
             android:foregroundGravity="center" />
 
     </RelativeLayout>
-
+    <TextView
+        android:id="@+id/textViewLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_general"
+        android:gravity="center"
+        android:padding="@dimen/padding_general"
+        android:text="@string/check_in_care"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/blue"
+        android:visibility="visible" />
 
     <GridView
         android:id="@+id/gridImage"

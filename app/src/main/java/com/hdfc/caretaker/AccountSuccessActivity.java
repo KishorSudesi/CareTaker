@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hdfc.config.Config;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 
 import java.io.File;
@@ -22,6 +23,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private Utils utils;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
         utils = new Utils(AccountSuccessActivity.this);
         progressDialog = new ProgressDialog(AccountSuccessActivity.this);
+        sessionManager = new SessionManager(AccountSuccessActivity.this);
 
         try {
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
@@ -56,6 +59,9 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
             Config.dependentModels = SignupActivity.dependentModels;
 
+            sessionManager.createLoginSession(SignupActivity.strCustomerPass, Config.customerModel.getStrEmail());
+            sessionManager.saveCustomerId(Config.customerModel.getStrCustomerID());
+
             SignupActivity.strCustomerPass = "";
             Config.strUserName = Config.customerModel.getStrEmail();
 
@@ -68,10 +74,18 @@ public class AccountSuccessActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();*/
 
-            threadHandler = new ThreadHandler();
-            Thread backgroundThread = new BackgroundThread();
-            backgroundThread.start();
+//            threadHandler = new ThreadHandler();
+//            Thread backgroundThread = new BackgroundThread();
+//            backgroundThread.start();
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
 
+            Intent dashboardIntent = new Intent(AccountSuccessActivity.this, DashboardActivity.class);
+            Config.intSelectedMenu = Config.intDashboardScreen;
+            Config.boolIsLoggedIn = true;
+            isCreatedNow = true;
+            startActivity(dashboardIntent);
+            finish();
         } catch (Exception e) {
             logout();
         }
@@ -79,9 +93,9 @@ public class AccountSuccessActivity extends AppCompatActivity {
 
     public void logout() {
         Config.strUserName = "";
-     //   Config.customerModel = null;
+        //   Config.customerModel = null;
         Config.dependentModels.clear();
-        Utils.logout();
+        Utils.logout(AccountSuccessActivity.this);
     }
 
     public void moveFiles() {

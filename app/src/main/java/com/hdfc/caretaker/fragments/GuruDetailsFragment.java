@@ -380,7 +380,7 @@ public class GuruDetailsFragment extends Fragment {
                 //
                 if (utils.isConnectingToInternet()) {
 
-                    mProgress.setMessage(getResources().getString(R.string.loading));
+                    mProgress.setMessage(getResources().getString(R.string.text_loader_processing));
                     mProgress.setCancelable(false);
                     mProgress.show();
 
@@ -610,7 +610,7 @@ public class GuruDetailsFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
 
-                mProgress.setMessage(getString(R.string.loading));
+                mProgress.setMessage(getString(R.string.text_loader_processing));
                 mProgress.setCancelable(false);
                 mProgress.show();
                 switch (requestCode) {

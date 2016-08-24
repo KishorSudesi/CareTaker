@@ -3,6 +3,7 @@ package com.hdfc.caretaker.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -44,8 +46,6 @@ import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.upload.Upload;
 import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
-
-import net.sqlcipher.Cursor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -289,10 +289,12 @@ public class MyAccountEditFragment extends Fragment {
                     number.setError(getString(R.string.error_field_required));
                     focusView = number;
                     cancel = true;
+                    return;
                 } else if (!utils.validCellPhone(strContactNo)) {
                     number.setError(getString(R.string.error_invalid_contact_no));
                     focusView = number;
                     cancel = true;
+                    return;
                 }
 
                 if (editAreaCode.getVisibility() == View.VISIBLE) {
@@ -301,7 +303,7 @@ public class MyAccountEditFragment extends Fragment {
                         editAreaCode.setError(getString(R.string.error_field_required));
                         focusView = editAreaCode;
                         cancel = true;
-                    } else if (!utils.validCellPhone(strAreaCode)) {
+                    } else if (!utils.isValidAreaCode(strAreaCode)) {
                         editAreaCode.setError(getString(R.string.error_invalid_area_code));
                         focusView = editAreaCode;
                         cancel = true;
@@ -327,6 +329,7 @@ public class MyAccountEditFragment extends Fragment {
                     editDob.setError(getString(R.string.error_field_required));
                     focusView = editDob;
                     cancel = true;
+                    return;
                 }
 
 
@@ -334,6 +337,7 @@ public class MyAccountEditFragment extends Fragment {
                     name.setError(getString(R.string.error_field_required));
                     focusView = name;
                     cancel = true;
+                    return;
                 }
 
                 if (cancel) {
@@ -541,6 +545,7 @@ public class MyAccountEditFragment extends Fragment {
                 .centerCrop()
                 .transform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 
@@ -552,6 +557,7 @@ public class MyAccountEditFragment extends Fragment {
                 .centerCrop()
                 .transform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 
@@ -709,7 +715,7 @@ public class MyAccountEditFragment extends Fragment {
 
                                                             if (o != null) {
                                                                 Config.customerModel.setStrImgUrl(url);
-                                                                utils.updateorInsertCustomerData(2);
+                                                                utils.updateorInsertCustomerData(2, sessionManager.getPassword(), sessionManager.getEmail());
 //                                                                String values[] = {jsonDocument.getDocId(), jsonDocument.getUpdatedAt(), strDocument, Config.collectionCustomer, "", "1", ""};
 //                                                                try {
 //                                                                    //Config.jsonCustomer = new JSONObject(strDocument);

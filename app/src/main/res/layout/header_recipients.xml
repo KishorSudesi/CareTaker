@@ -8,13 +8,13 @@
 
     <TextView
         android:id="@+id/header"
+        style="@style/HeaderStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:padding="@dimen/text_padding"
         android:text="@string/dependents"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/blue"
          />
 

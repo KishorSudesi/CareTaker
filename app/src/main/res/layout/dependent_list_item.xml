@@ -29,9 +29,9 @@
 
             <TextView
                 android:id="@+id/txtViewName"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -43,33 +43,33 @@
 
                 <TextView
                     android:id="@+id/txtViewClient_age"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     />
 
                 <TextView
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/years"
-                    android:textSize="15sp" />
+                    android:text="@string/years" />
 
                 <TextView
                     android:id="@+id/txtViewRelation"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/txtViewAdd"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
                  />
         </LinearLayout>
 

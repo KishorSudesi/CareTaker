@@ -14,6 +14,8 @@ public class NotificationModel {
     private String strCreatedByID;
     private String strNotificationID;
     private String strActivityId;
+    private boolean checkincare;
+    private String checkincare_id;
 
     public NotificationModel(String strMessage, String strDateTime, String strUserType,
                              String strCreatedByType, String strUserID, String strCreatedByID,
@@ -25,6 +27,22 @@ public class NotificationModel {
         this.strUserID = strUserID;
         this.strCreatedByID = strCreatedByID;
         this.strNotificationID = strNotificationID;
+    }
+
+    public boolean isCheckincare() {
+        return checkincare;
+    }
+
+    public void setCheckincare(boolean checkincare) {
+        this.checkincare = checkincare;
+    }
+
+    public String getCheckincare_id() {
+        return checkincare_id;
+    }
+
+    public void setCheckincare_id(String checkincare_id) {
+        this.checkincare_id = checkincare_id;
     }
 
     public String getStrActivityId() {

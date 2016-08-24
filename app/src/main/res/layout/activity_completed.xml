@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutLogin"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
     <!--
         <ImageView
             android:id="@+id/imageBg"
@@ -50,13 +51,13 @@
 
         <TextView
             android:id="@+id/txtAdditionalServices"
+            style="@style/HeaderStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorWhite"
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/completed_activity"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/colorPrimary" />
 
         <RelativeLayout
@@ -112,19 +113,19 @@
 
                         <TextView
                             android:id="@+id/textViewHead1"
+                            style="@style/TextViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_general"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/textViewHead2"
+                            style="@style/TextViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/margin_general"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold" />
 
@@ -134,6 +135,7 @@
 
                 <TextView
                     android:id="@+id/textViewDate"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="28dp"
@@ -142,7 +144,6 @@
                     android:drawableLeft="@drawable/add_new_activity"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/add_new_activity"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#000000" />
 
                 <TextView
@@ -150,20 +151,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:paddingLeft="65dp"
-                    android:paddingStart="65dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:padding="@dimen/padding_general"
+                    android:paddingLeft="15dp"
+                    android:paddingStart="15dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvTasks"
-                    android:layout_width="match_parent"
+                    style="@style/HeaderStyle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="left|right"
+                    android:layout_margin="@dimen/margin_general"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/edit_text"
+                    android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:text="@string/tasks"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@android:color/black" />
 
                 <ExpandableListView
                     android:id="@+id/listViewAdditionalServices"
@@ -171,14 +177,16 @@
                     android:layout_height="300dp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    style="@style/HeaderStyle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="left|right"
+                    android:layout_margin="@dimen/margin_general"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/edit_text"
+                    android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:text="@string/attachments"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@android:color/black" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -201,7 +209,7 @@
                     style="@style/AddRatingStyleLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="@dimen/margin_general"
                     android:layout_marginRight="@dimen/margin_general"
                     android:padding="10dp"
@@ -211,10 +219,10 @@
                     android:id="@+id/smileyMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/red"
                     android:textAlignment="center"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    />
+                    android:textColor="@color/red"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/linearLayoutRatingAdd"
@@ -228,13 +236,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp"
-                        android:layout_marginTop="50dp"
+                        android:layout_marginTop="20dp"
                         android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="70dp"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/edit_text"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding_general">
 
                             <ImageView
                                 android:layout_width="wrap_content"
@@ -281,7 +291,7 @@
                         <RelativeLayout
                             android:id="@+id/relative1"
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
+                            android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_marginLeft="@dimen/edit_text_margin"
                             android:layout_marginRight="@dimen/edit_text_margin"
@@ -296,8 +306,9 @@
 
                             <EditText
                                 android:id="@+id/editFeedBack"
+                                style="@style/EditTextStyle"
                                 android:layout_width="match_parent"
-                                android:layout_height="150dp"
+                                android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
                                 android:layout_toEndOf="@+id/image1"
                                 android:layout_toRightOf="@+id/image1"
@@ -309,7 +320,6 @@
                                 android:minLines="4"
                                 android:paddingTop="10dp"
                                 android:scrollbarStyle="insideInset"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:scrollbars="vertical" />
                         </RelativeLayout>
 
@@ -327,14 +337,14 @@
 
                         <Button
                             android:id="@+id/btnSubmit"
+                            style="@style/ButtonStyle"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:layout_marginBottom="30dp"
+                            android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:background="@drawable/button_success"
                             android:text="@string/submit_feedback"
                             android:textAllCaps="false"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
                             android:textColor="@color/colorWhite" />
 
 
@@ -344,14 +354,16 @@
 
 
                 <TextView
-                    android:layout_width="match_parent"
+                    style="@style/HeaderStyle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="left|right"
+                    android:layout_margin="@dimen/margin_general"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/edit_text"
+                    android:gravity="center"
                     android:padding="@dimen/padding_general"
                     android:text="@string/ratings"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@android:color/black" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -378,6 +390,10 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dip"
+                    android:background="@android:color/transparent" />
             </LinearLayout>
 
         </ScrollView>

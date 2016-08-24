@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -25,6 +26,7 @@ import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
+import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbHelper;
@@ -63,13 +65,16 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     //private static String strSelectedCarla;
     private static int iUpdateFlag = 0;
     private static String strInsertedDocumentId;
-    private EditText editTextDate, editTextMessage;
-    private TextView textView6, textView7;
+    private static String strProviderId;
+    private EditText editTextMessage;
+    private TextView textView6, textView7, editTextDate;
     private Utils utils;
     private String strCarlaImagepath, _strDate, strDate, strAlert;
-    private String getStrSelectedCarla, strProviderId, strPushMessage;
+    private String getStrSelectedCarla, strPushMessage;
     private SessionManager sessionManager;
     private Context mContext;
+    private Date selectedDate = null;
+    private Date lastSelectedDate=null;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -78,7 +83,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             // date.getTime();
             // Do something with the date. This Date object contains
             // the date and time that the user has selected.
-
+            selectedDate = date;
             strDate = Utils.writeFormat.format(date);
             _strDate = Utils.readFormat.format(date);
             editTextDate.setText(strDate);
@@ -109,7 +114,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_activity_step2);
 
         iUpdateFlag = 0;
-        mContext=this;
+        mContext = this;
 
         utils = new Utils(AddNewActivityStep2Activity.this);
         progressDialog = new ProgressDialog(AddNewActivityStep2Activity.this);
@@ -118,7 +123,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         ImageButton cancelButton = (ImageButton) findViewById(R.id.buttonBack);
         Button submitButtton = (Button) findViewById(R.id.button);
         editTextMessage = (EditText) findViewById(R.id.editText2);
-        editTextDate = (EditText) findViewById(R.id.editTextDate);
+        editTextDate = (TextView) findViewById(R.id.editTextDate);
 
         textView6 = (TextView) findViewById(R.id.textView6);
         textView7 = (TextView) findViewById(R.id.textView7);
@@ -159,13 +164,20 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
+        try {
+             lastSelectedDate = Utils.readFormat.parse(ActivityFragment.activitiesModelArrayList.get(ActivityFragment.activitiesModelArrayList.size()-1).getStrActivityDate());
+        } catch (Exception e) {
+            e.printStackTrace();
+            lastSelectedDate=new Date();
+        }
+
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 new SlideDateTimePicker.Builder(getSupportFragmentManager())
                         .setListener(listener)
-                        .setInitialDate(new Date())
+                        .setInitialDate(lastSelectedDate)
                         .build()
                         .show();
             }
@@ -198,12 +210,22 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         editTextMessage.setError(getString(R.string.error_field_required));
                         focusView = editTextMessage;
                         cancel = true;
+                        return;
                     }
 
                     if (TextUtils.isEmpty(time)) {
                         editTextDate.setError(getString(R.string.error_field_required));
                         focusView = editTextDate;
                         cancel = true;
+                        return;
+                    }
+
+
+                    if (new Date().after(selectedDate)) {
+                        editTextDate.setError(getString(R.string.error_wrong_date));
+                        focusView = editTextDate;
+                        cancel = true;
+                        return;
                     }
 
                     if (cancel) {
@@ -214,7 +236,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                             storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-                            progressDialog.setMessage(getString(R.string.loading));
+                            progressDialog.setMessage(getString(R.string.text_loader_processing));
                             progressDialog.setCancelable(false);
                             progressDialog.show();
 
@@ -231,7 +253,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
     }
 
-    public void goBack() {
+    private void goBack() {
 
         if (iUpdateFlag < iActivityCreated) {
             Intent newIntent = new Intent(AddNewActivityStep2Activity.this, AddNewActivityActivity.class);
@@ -260,88 +282,104 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (jsonObjectCarla == null || strProviderId == null ||
+                (strProviderId != null && strProviderId.equalsIgnoreCase(""))) {
+            progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
 
-        progressDialog.setMessage(getResources().getString(R.string.loading));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+            StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-        StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
+            storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email",
+                    getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                        }
 
-        storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email",
-                getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                    @Override
-                    public void onDocumentInserted(Storage response) {
-                    }
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
 
-                    @Override
-                    public void onUpdateDocSuccess(Storage response) {
-                    }
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
 
-                    @Override
-                    public void onFindDocSuccess(Storage response) {
+                            if (response != null) {
 
-                        if (response != null) {
+                                if (response.getJsonDocList().size() > 0) {
 
-                            if (response.getJsonDocList().size() > 0) {
+                                    Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                                    String strDocument = jsonDocument.getJsonDoc();
 
-                                Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-                                String strDocument = jsonDocument.getJsonDoc();
+                                    try {
+                                        jsonObjectCarla = new JSONObject(strDocument);
+                                        textView6.setText(jsonObjectCarla.getString("provider_name"));
+                                        textView7.setText(jsonObjectCarla.getString("provider_email"));
+                                        //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                                        //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
+                                        strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
-                                try {
-                                    jsonObjectCarla = new JSONObject(strDocument);
-                                    textView6.setText(jsonObjectCarla.getString("provider_name"));
-                                    textView7.setText(jsonObjectCarla.getString("provider_email"));
-                                    //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
-                                    //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
-                                    strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
+                                        strProviderId = jsonDocument.getDocId();
 
-                                    strProviderId = jsonDocument.getDocId();
-
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
 
 //                                    threadHandler = new ThreadHandler();
 //                                    Thread backgroundThread = new BackgroundThread();
 //                                    backgroundThread.start();
-                                    loadImageSimpleTarget(strCarlaImagepath);
+                                        loadImageSimpleTarget(strCarlaImagepath);
 
-                                    progressDialog.setMessage(getResources().getString(R.string.uploading_image));
-                                    progressDialog.setCancelable(false);
-                                    progressDialog.show();
+                                        progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
+                                        progressDialog.setCancelable(false);
+                                        progressDialog.show();
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
+
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                utils.toast(2, 2, getString(R.string.warning_internet));
                             }
 
-                        } else {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
-                            utils.toast(2, 2, getString(R.string.warning_internet));
+
+                            if (ex != null) {
+                                utils.toast(2, 2, ex.getMessage());
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
                         }
 
-                    }
-
-                    @Override
-                    public void onInsertionFailed(App42Exception ex) {
-                    }
-
-                    @Override
-                    public void onFindDocFailed(App42Exception ex) {
-                        if (progressDialog.isShowing())
-                            progressDialog.dismiss();
-
-                        if (ex != null) {
-                            utils.toast(2, 2, ex.getMessage());
-                        } else {
-                            utils.toast(2, 2, getString(R.string.warning_internet));
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
                         }
-                    }
+                    });
+        } else {
+            try {
+                textView6.setText(jsonObjectCarla.getString("provider_name"));
+                textView7.setText(jsonObjectCarla.getString("provider_email"));
+                //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
+                strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
-                    @Override
-                    public void onUpdateDocFailed(App42Exception ex) {
-                    }
-                });
+                loadImageSimpleTarget(strCarlaImagepath);
+                //strProviderId = jsonObjectCarla.getString("provider_id").trim();
+                Utils.log(strProviderId, " strProviderId ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -527,7 +565,11 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                                         try {
                                             Date dateNow = calendar.getTime();
-                                            strEndDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T23:59:59.999Z";
+                                            Calendar cal = Calendar.getInstance();
+                                            cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+
+                                            Date lastDayOfMonth = cal.getTime();
+                                            strEndDateCopy = Utils.writeFormatDateDB.format(lastDayOfMonth) + "T23:59:59.999Z";
                                             strStartDateCopy = Utils.writeFormatDateDB.format(dateNow) + "T00:00:00.000Z";
                                             activityDate = utils.convertStringToDate(_strDate);
 
@@ -535,27 +577,34 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                             startDate = utils.convertStringToDate(strStartDateCopy);
 
                                             Utils.log(String.valueOf(endDate + " ! " + startDate + " ! " + activityDate), " CRATED ");
-                                            String values[] = {strInsertedDocumentId, response.getJsonDocList().get(0).getUpdatedAt(), strDoc, Config.collectionActivity,"", "1", _strDate,""};
+                                            String values[] = {strInsertedDocumentId, response.getJsonDocList().get(0).getUpdatedAt(), strDoc, Config.collectionActivity, "", "1", _strDate, ""};
 
 
                                             CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
                                             sessionManager.saveActivityStatus(true);
+                                            Storage.JSONDocument jsonDocument = response.
+                                                    getJsonDocList().get(0);
+
+                                            String strDocument = jsonDocument.getJsonDoc();
+                                            String strActivityId = jsonDocument.getDocId();
+                                            JSONObject jsonObjectActivity =
+                                                    new JSONObject(strDocument);
+                                            JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
+                                            jsonObjectActivity.remove("milestones");
+                                            strDocument = jsonObjectActivity.toString();
+                                            for (int j = 0; j < jArray.length(); j++) {
+                                                JSONObject jObj = jArray.optJSONObject(j);
+                                                String strDocumentMilestone = jObj.toString();
+
+                                                String valuesMilestone[] = {strActivityId, response.getJsonDocList().get(0).getUpdatedAt(), strDocumentMilestone, Config.collectionMilestones, jObj.optString("id"), "1", jObj.optString("date")};
+                                                CareTaker.dbCon.insert(DbHelper.strTableNameCollection, valuesMilestone, Config.names_collection_table);
+                                            }
                                             if (activityDate.before(endDate) && activityDate.after(startDate)) {
-                                                Storage.JSONDocument jsonDocument = response.
-                                                        getJsonDocList().get(0);
-
-                                                String strDocument = jsonDocument.getJsonDoc();
-                                                String strActivityId = jsonDocument.getDocId();
-                                                JSONObject jsonObjectActivity =
-                                                        new JSONObject(strDocument);
-                                                JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
-                                                jsonObjectActivity.remove("milestones");
-                                                strDocument = jsonObjectActivity.toString();
-
                                                 utils.createActivityModel(
                                                         strActivityId,
                                                         strDocument, 1,
                                                         jArray);
+
                                             }
 
                                         } catch (Exception e) {
@@ -944,6 +993,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 .centerCrop()
                 .transform(new CropCircleTransformation(mContext))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 

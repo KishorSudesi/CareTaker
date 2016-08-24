@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -103,6 +104,7 @@ public class CarlaCompletedFragment extends Fragment {
                 .bitmapTransform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.person_icon)
                 .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageViewCarla);
 
         /*progressDialog.setMessage(getResources().getString(R.string.uploading_image));

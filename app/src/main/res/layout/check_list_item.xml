@@ -6,10 +6,10 @@
 
     <TextView
         android:id="@+id/text1"
+        style="@style/TextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:gravity="center_vertical" />
 
 </LinearLayout>

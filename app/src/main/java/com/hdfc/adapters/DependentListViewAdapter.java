@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.DependentDetailPersonal;
 import com.hdfc.caretaker.R;
 import com.hdfc.libs.Utils;
@@ -111,6 +112,7 @@ public class DependentListViewAdapter extends BaseAdapter {
                     .bitmapTransform(new CropCircleTransformation(contxt))
                     .placeholder(R.drawable.person_icon)
                     .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.image);
 
         } catch (Exception e) {

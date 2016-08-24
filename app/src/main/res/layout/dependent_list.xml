@@ -13,22 +13,22 @@
 
     <TextView
         android:id="@+id/textViewRealtion"
+        style="@style/LabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_general"
         android:padding="@dimen/padding_general"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/blue" />
 
     <TextView
         android:id="@+id/textViewName"
+        style="@style/LabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/margin_general"
         android:padding="@dimen/padding_general"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/blue" />
 
 </LinearLayout>

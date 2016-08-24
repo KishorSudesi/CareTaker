@@ -1,14 +1,15 @@
 package com.hdfc.caretaker.fragments;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.adapters.DependAdapter;
@@ -43,7 +45,6 @@ import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -73,6 +74,16 @@ public class MyAccountFragment extends Fragment {
     private EditText editTextOldPassword, editTextPassword, editTextConfirmPassword;
     private Utils utils;
     private SessionManager sessionManager;
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            roundedImageView.setImageBitmap(bitmap);
+            loadingPanel.setVisibility(View.GONE);
+        }
+    };
 
     public static MyAccountFragment newInstance() {
         MyAccountFragment fragment = new MyAccountFragment();
@@ -81,12 +92,12 @@ public class MyAccountFragment extends Fragment {
         return fragment;
     }
 
-    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+    /*public static Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
-    }
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,13 +210,21 @@ public class MyAccountFragment extends Fragment {
                 final Dialog dialog = new Dialog(context);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_change_password);
-
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
                 editTextOldPassword = (EditText) dialog.findViewById(R.id.editOldPassword);
                 editTextPassword = (EditText) dialog.findViewById(R.id.editPassword);
                 editTextConfirmPassword = (EditText) dialog.findViewById(R.id.editConfirmPassword);
-                Button dialogButton = (Button) dialog.findViewById(R.id.btndialogOk);
+                Button OkButton = (Button) dialog.findViewById(R.id.btndialogOk);
+                Button cancelButton = (Button) dialog.findViewById(R.id.btndialogCancel);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
                 // if button is clicked, close the custom dialog
-                dialogButton.setOnClickListener(new View.OnClickListener() {
+                OkButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -255,10 +274,11 @@ public class MyAccountFragment extends Fragment {
                         } else {
 
                             if (utils.isConnectingToInternet()) {
-
-                        /*progressDialog.setMessage(getActivity().getString(R.string.uploading));
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();*/
+                                if (progressDialog != null && !progressDialog.isShowing()) {
+                                    progressDialog.setMessage(getActivity().getString(R.string.text_loader_processing));
+                                    progressDialog.setCancelable(false);
+                                    progressDialog.show();
+                                }
 
                                 // DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
 
@@ -300,33 +320,47 @@ public class MyAccountFragment extends Fragment {
                                                                         } else {
                                                                             sessionManager.saveOldPassword(strOldPass);
                                                                         }
-                                                                        utils.toast(1, 1, "Password Change Successfully");
+                                                                        utils.toast(1, 1, "Password Changed Successfully");
+                                                                        if (progressDialog != null) {
+                                                                            progressDialog.dismiss();
+                                                                        }
                                                                         dialog.dismiss();
                                                                     }
 
                                                                     @Override
                                                                     public void onException(Exception e) {
                                                                         // progressDialog.dismiss();
-                                                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
                                                                         try {
                                                                             JSONObject jsonObject = new JSONObject(e.getMessage());
                                                                             JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
                                                                             String strMess = jsonObjectError.getString("details");
 
                                                                             utils.toast(2, 2, strMess);
+
                                                                         } catch (JSONException e1) {
                                                                             e1.printStackTrace();
+                                                                        }
+
+                                                                        if (progressDialog != null) {
+                                                                            progressDialog.dismiss();
                                                                         }
                                                                     }
                                                                 });
 
-                                                    } else
+                                                    } else {
                                                         utils.toast(2, 2, getString(R.string.warning_internet));
-
+                                                        if (progressDialog != null) {
+                                                            progressDialog.dismiss();
+                                                        }
+                                                    }
                                                 } else {
                                                     // progressDialog.dismiss();
                                                     // DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                                     utils.toast(1, 1, "Enter Password ");
+                                                    if (progressDialog != null) {
+                                                        progressDialog.dismiss();
+                                                    }
 
                                                 }
                                             }
@@ -336,6 +370,9 @@ public class MyAccountFragment extends Fragment {
                                                 //progressDialog.dismiss();
                                                 // DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                                 utils.toast(2, 2, e.getMessage());
+                                                if (progressDialog != null) {
+                                                    progressDialog.dismiss();
+                                                }
                                             }
                                         });
 
@@ -396,47 +433,50 @@ public class MyAccountFragment extends Fragment {
         });
 
         textViewLogout.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
+                if (utils.isConnectingToInternet()) {
 
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(getActivity().getString(R.string.confirm_logout));
-                builder.setPositiveButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Utils.logout();
-                    }
-                });
-                builder.setNegativeButton(getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+                    View view = inflater.inflate(R.layout.alert_dialog_text, null);
+                    builder.setCustomTitle(view);
+                    builder.setPositiveButton(getActivity().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Utils.logout(getActivity());
+                        }
+                    });
+                    builder.setNegativeButton(getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    utils.toast(1, 1, context.getString(R.string.warning_internet));
+                }
             }
         });
 
 
+        try {
+            if (Config.customerModel != null && !Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
+                utils.toast(2, 2, getString(R.string.no_recipients));
+            } else {
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         /*progressDialog.setMessage(getResources().getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();*/
 
         return view;
     }
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            roundedImageView.setImageBitmap(bitmap);
-            loadingPanel.setVisibility(View.GONE);
-        }
-    };
 
     private void loadImageSimpleTarget() {
 
@@ -446,6 +486,7 @@ public class MyAccountFragment extends Fragment {
                 .centerCrop()
                 .transform(new CropCircleTransformation(getActivity()))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 
@@ -493,8 +534,7 @@ public class MyAccountFragment extends Fragment {
 //    }
 
 
-
-//    public class BackgroundThread extends Thread {
+    //    public class BackgroundThread extends Thread {
 //        @Override
 //        public void run() {
 //            try {
@@ -516,7 +556,7 @@ public class MyAccountFragment extends Fragment {
             try {
                 //if(Config.customerModel!=null) {
                 File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
-                System.out.println("TOTAL SPACE : "+f.getTotalSpace()+" "+" USABLE SPACE : "+f.getUsableSpace());
+                System.out.println("TOTAL SPACE : " + f.getTotalSpace() + " " + " USABLE SPACE : " + f.getUsableSpace());
                 bitmap = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
                 //}
 

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
@@ -122,13 +123,14 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 //
 //                if (f.exists())
 //                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);
-                int iPosition = Config.strDependentIds.indexOf(data.get(position).getStrDependentID().trim());
+                int iPosition = Config.strProviderIdsAdded.indexOf(data.get(position).getStrProviderID().trim());
                 Glide.with(_context)
-                        .load(Config.dependentModels.get(iPosition).getStrImageUrl())
+                        .load(Config.providerModels.get(iPosition).getStrImgUrl())
                         .centerCrop()
                         .bitmapTransform(new CropCircleTransformation(_context))
                         .placeholder(R.drawable.person_icon)
                         .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder.imageViewPerson);
 
             } catch (Exception e) {

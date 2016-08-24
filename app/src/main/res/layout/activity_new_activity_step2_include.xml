@@ -12,13 +12,13 @@
           android:background="@color/colorWhite"/>-->
 
     <TextView
+        style="@style/HeaderStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_general"
         android:gravity="center"
         android:padding="@dimen/padding_general"
         android:text="@string/add_new_activity"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/blue"
         android:visibility="visible" />
 
@@ -55,19 +55,19 @@
 
             <TextView
                 android:id="@+id/textView7"
+                style="@style/TextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView6"
+                style="@style/TextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
 
@@ -77,6 +77,7 @@
 
     <TextView
         android:id="@+id/textViewLabel"
+        style="@style/EditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -85,7 +86,6 @@
         android:background="@color/colorWhite"
         android:gravity="center"
         android:padding="@dimen/padding_general"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/blue"
         android:textStyle="bold" />
 
@@ -97,8 +97,9 @@
         android:background="@color/colorWhite"
         android:orientation="vertical">
 
-        <EditText
+        <TextView
             android:id="@+id/editTextDate"
+            style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
@@ -107,14 +108,16 @@
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/add_new_activity"
             android:drawablePadding="@dimen/padding_general"
+            android:gravity="center_vertical"
             android:hint="@string/select_date"
-            android:inputType="datetime"
             android:paddingEnd="20dp"
             android:paddingLeft="20dp"
-            android:paddingStart="20dp" />
+            android:paddingStart="20dp"
+            android:textColor="@android:color/black" />
 
         <EditText
             android:id="@+id/editText2"
+            style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
@@ -128,17 +131,16 @@
 
         <Button
             android:id="@+id/button"
+            style="@style/ButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="15dp"
             android:layout_marginLeft="@dimen/margin_general"
             android:layout_marginRight="@dimen/margin_general"
             android:background="@drawable/button_success"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/submit"
             android:textAllCaps="false"
-            android:textColor="@color/colorWhite"
-            android:textSize="20sp" />
+            android:textColor="@color/colorWhite" />
 
     </LinearLayout>
 

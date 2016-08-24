@@ -10,13 +10,13 @@
 
     <Button
         android:id="@+id/buttonActivity"
+        style="@style/HeaderStyle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_weight="1"
         android:background="@color/colorWhite"
         android:text="@string/list"
         android:textAllCaps="false"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/blue"
          />
 
@@ -40,12 +40,12 @@
 
         <TextView
             android:id="@+id/currentMonth"
+            style="@style/HeaderStyle"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_margin="@dimen/margin_general"
             android:gravity="center"
             android:padding="@dimen/padding_general"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/blue" />
 
         <ImageView

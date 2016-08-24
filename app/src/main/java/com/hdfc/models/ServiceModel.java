@@ -24,6 +24,8 @@ public class ServiceModel {
     private String strServiceHistoryId;
     private String strCustomerId;
     private boolean isSelected = false;
+
+
     private ArrayList<MilestoneModel> milestoneModels = new ArrayList<>();
 
     public ServiceModel() {

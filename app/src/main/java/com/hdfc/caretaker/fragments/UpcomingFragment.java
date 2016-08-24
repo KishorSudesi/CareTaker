@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.caretaker.R;
@@ -34,19 +35,20 @@ public class UpcomingFragment extends Fragment {
     private static Handler threadHandler;
     private static ImageView imageViewCarla;
     private static ProgressDialog progressDialog;
-    private static String strCarlaImageUrl,imageUrl;
+    private static String strCarlaImageUrl, imageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
     private String strCarlaImageName, strNo = "";
     private Utils utils;
     private int iPosition;
     private Context mContext;
-
+    private byte START_FROM = 0;
 //    private ImageButton buttonCancel;
 
-    public static UpcomingFragment newInstance(ActivityModel activityModel) {
+    public static UpcomingFragment newInstance(ActivityModel activityModel, byte statusFrom) {
         UpcomingFragment fragment = new UpcomingFragment();
         Bundle args = new Bundle();
         args.putSerializable("ACTIVITY", activityModel);
+        args.putByte(Config.KEY_START_FROM, statusFrom);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,7 +66,7 @@ public class UpcomingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
-        mContext=getActivity();
+        mContext = getActivity();
         txtViewHeader = (TextView) view.findViewById(R.id.header);
         txtViewMSG = (TextView) view.findViewById(R.id.textViewMSG);
         txtViewDate = (TextView) view.findViewById(R.id.textViewDate);
@@ -79,23 +81,29 @@ public class UpcomingFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
 
         final ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");
-
+        if (this.getArguments().containsKey(Config.KEY_START_FROM)) {
+            START_FROM = this.getArguments().getByte(Config.KEY_START_FROM, (byte) 0);
+        }
         if (activityModel != null) {
             txtViewHead2.setText(activityModel.getStrActivityName());
+            if (Config.strProviderIdsAdded.size() > 0) {
+                int iPosition = Config.strProviderIdsAdded.indexOf(activityModel.getStrProviderID());
+            }
+            ProviderModel providerModel = null;
+            if (iPosition > -1 && Config.providerModels.size() > 0) {
+                providerModel = Config.providerModels.get(iPosition);
+            }
+            if (providerModel != null) {
+                String strHead = providerModel.getStrName() + getActivity().getResources().getString(R.string.will_assist);
+                txtViewHead1.setText(strHead);
+                String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
+                txtViewDate.setText(strDate);
+                txtViewMSG.setText(activityModel.getStrActivityDesc());
 
-            int iPosition = Config.strProviderIdsAdded.indexOf(activityModel.getStrProviderID());
-
-            ProviderModel providerModel = Config.providerModels.get(iPosition);
-
-            String strHead = providerModel.getStrName() + getActivity().getResources().getString(R.string.will_assist);
-            txtViewHead1.setText(strHead);
-            String strDate = getActivity().getResources().getString(R.string.at) + utils.formatDate(activityModel.getStrActivityDate());
-            txtViewDate.setText(strDate);
-            txtViewMSG.setText(activityModel.getStrActivityDesc());
-
-            strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
-            strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
-            imageUrl=providerModel.getStrImgUrl();
+                strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
+                strCarlaImageUrl = utils.replaceSpace(activityModel.getStrProviderID());
+                imageUrl = providerModel.getStrImgUrl();
+            }
         }
 
         txtViewHeader.setText(getActivity().getResources().getString(R.string.upcoming_activity));
@@ -116,9 +124,18 @@ public class UpcomingFragment extends Fragment {
 //            }
 //        });
 
-        if (activityModel != null && activityModel.getStrProviderID() != null) {
-            iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
-            strNo = Config.providerModels.get(iPosition).getStrContacts();
+        try {
+            iPosition = -1;
+            if (activityModel != null && activityModel.getStrProviderID() != null) {
+                if (Config.strProviderIds.size() > 0) {
+                    iPosition = Config.strProviderIds.indexOf(activityModel.getStrProviderID());
+                }
+                if (Config.providerModels.size() > 0 && iPosition > -1) {
+                    strNo = Config.providerModels.get(iPosition).getStrContacts();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         msg.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +165,7 @@ public class UpcomingFragment extends Fragment {
                             "0000000000");
                     callIntent.setData(Uri.parse(_strNo));
                     startActivity(callIntent);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -157,11 +174,21 @@ public class UpcomingFragment extends Fragment {
     }
 
     public void goToList() {
-        ActivityFragment fragment = ActivityFragment.newInstance(false);
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_dashboard, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+
+        if (START_FROM == Config.START_FROM_NOTIFICATION) {
+            NotificationFragment fragment = NotificationFragment.newInstance();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            ActivityFragment fragment = ActivityFragment.newInstance(false);
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_dashboard, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+
     }
 
     @Override
@@ -184,7 +211,7 @@ public class UpcomingFragment extends Fragment {
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
             // do something with the bitmap
             // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg=bitmap;
+            bitmapImg = bitmap;
 
             progressDialog.dismiss();
 
@@ -201,6 +228,7 @@ public class UpcomingFragment extends Fragment {
                 .centerCrop()
                 .transform(new CropCircleTransformation(mContext))
                 .placeholder(R.drawable.person_icon)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(target);
     }
 

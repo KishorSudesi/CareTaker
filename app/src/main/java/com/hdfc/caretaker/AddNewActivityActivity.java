@@ -1,6 +1,7 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -33,20 +34,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddNewActivityActivity extends AppCompatActivity {
 
     public static ServiceModel selectedServiceModel = null;
     private static ProgressDialog progressDialog;
-    private static ArrayList<String> strServcieIds = new ArrayList<>();
-    private static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
-    private static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
+    private static List<String> strServcieIds = new ArrayList<>();
+    private static List<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
+    private static List<String> strServiceCategoryNames = new ArrayList<>();
     private Utils utils;
 
     private List<String> listDataHeader = new ArrayList<>();
-    private HashMap<String, List<ServiceModel>> listDataChild = new HashMap<>();
+    private Map<String, List<ServiceModel>> listDataChild = new HashMap<>();
 
     private Button buttonContinue;
 
@@ -54,6 +58,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
     private ActivityServicesAdapter activityServicesAdapter;
     private int previousChildPosition = -1, previouGroupPosition = -1;
     private SessionManager sessionManager = null;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +71,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
         ImageButton imageButtonBuyServices = (ImageButton) findViewById(R.id.imageButtonBuyServices);
         //ImageButton buttonBack = (ImageButton) findViewById(R.id.buttonBack);
-
+        mContext = this;
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
         sessionManager = new SessionManager(this);
         strServcieIds.clear();
@@ -92,7 +97,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     View v1;
 
                     View v2 = parent.getChildAt(groupPosition);*/
-                    if (!(listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getStrServiceName().equalsIgnoreCase("All Check-In Services are Scheduled"))) {
+                    if (!(listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getStrServiceName().equalsIgnoreCase(mContext.getString(R.string.text_check_in_service))) && !(listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getiServiceNo() == 601)) {
                         if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).isSelected()) {
                             listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setSelected(false);
                         } else {
@@ -132,7 +137,6 @@ public class AddNewActivityActivity extends AppCompatActivity {
                             buttonContinue.setVisibility(View.INVISIBLE);
                         else
                             buttonContinue.setVisibility(View.VISIBLE);
-
 
 
                     } else {
@@ -201,7 +205,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
 
         //
-        progressDialog.setMessage(getResources().getString(R.string.loading));
+        progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
         progressDialog.setCancelable(false);
         progressDialog.show();
         if (sessionManager.getServiceCustomer()) {
@@ -219,9 +223,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     do {
                         JSONObject jsonObjectServcies = new JSONObject(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
 
-                        if (jsonObjectServcies.has("unit")) {
-                            createActivityServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
-                        }
+                        // if (jsonObjectServcies.has("unit")) {
+                        createActivityServiceModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), jsonObjectServcies);
+                        //}
                     } while (cursor.moveToNext());
                     refreshAdapter();
                     cursor.close();
@@ -237,19 +241,21 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
         if (utils.isConnectingToInternet()) {
             String defaultDate = null;
-            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionServiceCustomer);
-            if (cursorData != null && cursorData.getCount() > 0) {
-                cursorData.moveToFirst();
-                defaultDate = cursorData.getString(0);
-                cursorData.close();
-            } else {
-                defaultDate = Utils.defaultDate;
+            if (CareTaker.dbCon != null) {
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionServiceCustomer);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    cursorData.close();
+                } else {
+                    defaultDate = Utils.defaultDate;
+                }
             }
             StorageService storageService = new StorageService(AddNewActivityActivity.this);
             Query finalQuery;
             Query q1 = QueryBuilder.build("customer_id", Config.customerModel.getStrCustomerID(), QueryBuilder.Operator.EQUALS);
             if (sessionManager.getServiceCustomer()) {
-                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                 finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
             } else {
@@ -276,23 +282,23 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                                 try {
                                     JSONObject jsonObjectServcies = new JSONObject(strServices);
-                                    if (jsonObjectServcies.has("unit")) {
-                                        String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", "",""};
-                                        if (sessionManager.getServiceCustomer()) {
-                                            String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+                                    // if (jsonObjectServcies.has("unit")) {
+                                    String values[] = {strDocumentId, jsonDocument.getUpdatedAt(), strServices, Config.collectionServiceCustomer, "", "1", "", ""};
+                                    if (sessionManager.getServiceCustomer()) {
+                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 
-                                            // WHERE clause arguments
-                                            String[] selectionArgs = {strDocumentId};
-                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
-                                        } else {
-                                            createActivityServiceModel(strDocumentId,
-                                                    jsonObjectServcies);
-                                            CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
-
-                                        }
-
+                                        // WHERE clause arguments
+                                        String[] selectionArgs = {strDocumentId};
+                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                    } else {
+                                        createActivityServiceModel(strDocumentId,
+                                                jsonObjectServcies);
+                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
 
                                     }
+
+
+                                    // }
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -373,6 +379,8 @@ public class AddNewActivityActivity extends AppCompatActivity {
 //                        }
 //                    });
 
+        } else if (!sessionManager.getServiceCustomer()) {
+            utils.toast(2, 2, getString(R.string.network_required));
         }
 
 
@@ -389,6 +397,21 @@ public class AddNewActivityActivity extends AppCompatActivity {
         finish();
     }
 
+    /*Comparator for sorting the list by service Name*/
+    private Comparator<CategoryServiceModel> ServiceNameComparator = new Comparator<CategoryServiceModel>() {
+
+        public int compare(CategoryServiceModel s1, CategoryServiceModel s2) {
+            String serviceName1 = s1.getStrCategoryName().toUpperCase();
+            String serviceName2 = s2.getStrCategoryName().toUpperCase();
+
+            //ascending order
+            return serviceName1.compareTo(serviceName2);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
+
     public void refreshAdapter() {
 
         try {
@@ -397,6 +420,9 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
             if (listView != null) {
 
+                if (categoryServiceModels.size() > 0) {
+                    Collections.sort(categoryServiceModels, ServiceNameComparator);
+                }
                 listDataHeader.clear();
                 listDataChild.clear();
 
@@ -532,8 +558,24 @@ public class AddNewActivityActivity extends AppCompatActivity {
 
                             fieldModel.setiFieldID(jsonObjectField.getInt("id"));
 
-                            if (jsonObjectField.has("hide"))
-                                fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+                            if (jsonObjectField.has("hide")) {
+
+                                try {
+                                    fieldModel.setFieldView(jsonObjectField.getBoolean("hide"));
+                                } catch (Exception e) {
+                                    int i;
+                                    try {
+                                        i = jsonObjectField.getInt("hide");
+                                        if (i == 1)
+                                            fieldModel.setFieldView(true);
+                                        else
+                                            fieldModel.setFieldView(false);
+
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            }
 
 //                            fieldModel.setFieldRequired(jsonObjectField.getBoolean("required"));
                             fieldModel.setStrFieldData(jsonObjectField.getString("data"));
@@ -546,27 +588,42 @@ public class AddNewActivityActivity extends AppCompatActivity {
                                         getJSONArray("values")));
                             }
 
-                            if (jsonObjectField.has("child")) {
 
-                                fieldModel.setChild(jsonObjectField.getBoolean("child"));
+                            try {
+                                if (jsonObjectField.has("child")) {
+                                    boolean hasChild = false;
+                                    Object aObj = jsonObjectField.get("child");
+                                    if (aObj instanceof Integer) {
+                                        hasChild = jsonObjectField.getInt("child") == 1;
 
-                                if (jsonObjectField.has("child_type"))
-                                    fieldModel.setStrChildType(utils.jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_type")));
+                                    } else if (aObj instanceof Boolean) {
+                                        hasChild = jsonObjectField.getBoolean("child");
 
-                                if (jsonObjectField.has("child_value"))
-                                    fieldModel.setStrChildValue(utils.jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_value")));
+                                    }
 
-                                if (jsonObjectField.has("child_condition"))
-                                    fieldModel.setStrChildCondition(utils.jsonToStringArray(jsonObjectField.
-                                            getJSONArray("child_condition")));
+                                    fieldModel.setChild(hasChild);
 
-                                if (jsonObjectField.has("child_field"))
-                                    fieldModel.setiChildfieldID(utils.jsonToIntArray(jsonObjectField.
-                                            getJSONArray("child_field")));
-                            }
+
+                                    if (jsonObjectField.has("child_type"))
+                                        fieldModel.setStrChildType(utils.jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_type")));
+
+                                    if (jsonObjectField.has("child_value"))
+                                        fieldModel.setStrChildValue(utils.jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_value")));
+
+                                    if (jsonObjectField.has("child_condition"))
+                                        fieldModel.setStrChildCondition(utils.jsonToStringArray(jsonObjectField.
+                                                getJSONArray("child_condition")));
+
+                                    if (jsonObjectField.has("child_field"))
+                                        fieldModel.setiChildfieldID(utils.jsonToIntArray(jsonObjectField.
+                                                getJSONArray("child_field")));
+                                }
 //
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             if (jsonObjectField.has("array_fields")) {
 
                                 try {

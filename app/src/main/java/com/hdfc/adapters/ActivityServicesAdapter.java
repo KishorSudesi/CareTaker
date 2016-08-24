@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.hdfc.caretaker.R;
 import com.hdfc.models.ServiceModel;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Admin on 2/23/2016.
@@ -23,9 +23,9 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
     private static LayoutInflater inflater = null;
     private Context _context;
     private List<String> _listDataHeader;
-    private HashMap<String, List<ServiceModel>> _listDataChild;
+    private Map<String, List<ServiceModel>> _listDataChild;
 
-    public ActivityServicesAdapter(Context context, HashMap<String, List<ServiceModel>>
+    public ActivityServicesAdapter(Context context, Map<String, List<ServiceModel>>
             listChildData, List<String> listDataHeader) {
         _context = context;
         this._listDataHeader = listDataHeader;

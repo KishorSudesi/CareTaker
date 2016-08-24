@@ -13,8 +13,7 @@
         android:layout_marginTop="10dp"
         android:background="@mipmap/back_arrow"
         android:onClick="backToSelection"
-        android:textAllCaps="false"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAllCaps="false" />
 
     <ImageView
         android:id="@+id/logo"

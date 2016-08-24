@@ -7,17 +7,19 @@
     <include
         android:id="@+id/include"
         layout="@layout/header_white" />
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/include"
+        android:fillViewport="true"
         android:orientation="vertical">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -32,7 +34,8 @@
                     android:layout_marginTop="40dp"
                     android:background="@color/blue"
                     android:focusableInTouchMode="true"
-                    android:queryHint="@string/search_contacts" />
+                    android:queryHint="@string/search_contacts"
+                    android:visibility="gone" />
 
 
                 <com.hdfc.views.RoundedImageView
@@ -46,6 +49,7 @@
 
                 <EditText
                     android:id="@+id/editDependName"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -60,6 +64,7 @@
 
                 <EditText
                     android:id="@+id/editDependEmail"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -74,6 +79,7 @@
 
                 <EditText
                     android:id="@+id/editDateofbirth"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -90,6 +96,7 @@
 
                 <EditText
                     android:id="@+id/editContNo"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -98,12 +105,14 @@
                     android:layout_marginTop="25dp"
                     android:drawableLeft="@drawable/contact"
                     android:drawablePadding="10dp"
-                    android:hint="@string/number"
+                    android:hint="@string/hint_number"
                     android:inputType="number"
+                    android:maxLength="10"
                     android:padding="10dp" />
 
                 <EditText
                     android:id="@+id/editAddr"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
@@ -133,6 +142,7 @@
 
                 <Button
                     android:id="@+id/btn1continue"
+                    style="@style/ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"

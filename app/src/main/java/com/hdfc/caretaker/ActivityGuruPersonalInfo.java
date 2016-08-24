@@ -1,9 +1,12 @@
 package com.hdfc.caretaker;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,14 +15,19 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -42,8 +50,11 @@ import com.shephertz.app42.paas.sdk.android.upload.UploadFileType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,7 +75,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     private static int idregisterflag = 0;
     private static Thread backgroundThreadCamera, backgroundThread;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo, strDate,strCountryCode,strCountry;//,strAddress;
+    private static String strName, strEmail, strConfirmPass, strContactNo, strDate, strCountryCode, strCountry;//,strAddress;
     private static ProgressDialog mProgress = null;
     private static String jsonDocId;
     String strMess = "";
@@ -76,6 +87,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     private Spinner citizenship;
     private String strCustomerImageUrl = "";
     private String strAreaCode = "";
+    private Context mContext;
+    private CheckBox checked_terms_conditions;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -86,8 +99,21 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             // the date and time that the user has selected.
 
             strDate = Utils.writeFormatActivityYear.format(date);
-            // String _strDate = Utils.readFormat.format(date);
-            editTextDate.setText(strDate);
+
+
+            try {
+                date = Utils.writeFormatActivityYear.parse(strDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            int strAge = Integer.parseInt(utils.getAge(date));
+            if (utils.ageValidationCustomer(strAge)) {
+                // String _strDate = Utils.readFormat.format(date);
+                editTextDate.setText(strDate);
+            } else {
+                editTextDate.setText("");
+                utils.toast(2, 2, mContext.getString(R.string.validation_age_customer));
+            }
         }
 
         @Override
@@ -107,23 +133,23 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         utils = new Utils(ActivityGuruPersonalInfo.this);
 
-        back = (ImageButton)findViewById(R.id.buttonBack);
-
+        back = (ImageButton) findViewById(R.id.buttonBack);
+        checked_terms_conditions = (CheckBox) findViewById(R.id.checked_terms_conditions);
         imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);
 
         editName = (EditText) findViewById(R.id.editName);
         editEmail = (EditText) findViewById(R.id.editEmail);
-        editPass = (EditText)  findViewById(R.id.editPassword);
+        editPass = (EditText) findViewById(R.id.editPassword);
         editConfirmPass = (EditText) findViewById(R.id.editConfirmPassword);
         editContactNo = (EditText) findViewById(R.id.editContactNo);
         editAreaCode = (EditText) findViewById(R.id.editAreaCode);
         editCountryCode = (EditText) findViewById(R.id.editCountryCode);
 
-
+        mContext = this;
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    goBack();
+                goBack();
             }
         });
 
@@ -138,6 +164,15 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 } else {
                     editAreaCode.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        checked_terms_conditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checked_terms_conditions.setChecked(false);
+                showDialogForTermsAndConditions();
+
             }
         });
 
@@ -158,9 +193,14 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR, 2000);
+                Date date = new Date();
+                date.setTime(cal.getTimeInMillis());
                 new SlideDateTimePicker.Builder(ActivityGuruPersonalInfo.this.getSupportFragmentManager())
                         .setListener(listener)
-                        .setInitialDate(new Date())
+                        .setMaxDate(new Date())
+                        .setInitialDate(date)
                         .build()
                         .show();
             }
@@ -210,6 +250,55 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
     }
 
+    private void showDialogForTermsAndConditions() {
+
+        final Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setContentView(R.layout.dialog_terms_condition);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        Button btnClose = (Button) dialog.findViewById(R.id.btnClose);
+        Button btnAgree = (Button) dialog.findViewById(R.id.btnAgree);
+        WebView webView = (WebView) dialog.findViewById(R.id.webView);
+
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        try {
+            AssetManager assetManager = mContext.getAssets();
+            InputStream stream = assetManager.open("g8u0DU9v.html");
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder total = new StringBuilder();
+            String line;
+            while ((line = r.readLine()) != null) {
+                total.append(line).append("\n");
+            }
+            webView.loadDataWithBaseURL(null, total.toString(), "text/html", "UTF-8", null);
+        } catch (Exception xxx) {
+            Log.e("TAG", "Load assets/page.html", xxx);
+        }
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checked_terms_conditions.setChecked(false);
+                dialog.dismiss();
+            }
+        });
+
+        btnAgree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checked_terms_conditions.setChecked(true);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
+        dialog.show();
+    }
+
     public void uploadImage() {
 
         try {
@@ -228,8 +317,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                             public void onSuccess(Object response) {
 
-                                Utils.log(response.toString()," TAG ");
-                                if(response!=null) {
+                                Utils.log(response.toString(), " TAG ");
+                                if (response != null) {
                                     Upload upload = (Upload) response;
                                     ArrayList<Upload.File> fileList = upload.getFileList();
 
@@ -240,7 +329,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         Config.customerModel.setStrImgUrl(strCustomerImageUrl);
                                         //checkStorage();
                                         idregisterflag = 2;
-                                            uploadData();
+                                        uploadData();
                                     } else {
                                         if (mProgress.isShowing())
                                             mProgress.dismiss();
@@ -248,7 +337,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         utils.toast(2, 2, ((Upload) response).getStrResponse());
                                         //uploadImage();
                                     }
-                                }else{
+                                } else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
                                     utils.toast(2, 2, getString(R.string.warning_internet));
@@ -258,10 +347,10 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                             @Override
                             public void onException(Exception e) {
 
-                                Utils.log(e.getMessage()," TAG ");
+                                Utils.log(e.getMessage(), " TAG ");
 
 
-                                if(e!=null) {
+                                if (e != null) {
                                     App42Exception exception = (App42Exception) e;
                                     int appErrorCode = exception.getAppErrorCode();
 
@@ -277,7 +366,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                         utils.toast(2, 2, getString(R.string.error));
                                         //uploadImage();
                                     }
-                                }else{
+                                } else {
                                     if (mProgress.isShowing())
                                         mProgress.dismiss();
                                     utils.toast(2, 2, getString(R.string.warning_internet));
@@ -289,7 +378,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     mProgress.dismiss();
                 utils.toast(2, 2, getString(R.string.warning_internet));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             if (mProgress.isShowing())
                 mProgress.dismiss();
@@ -302,7 +391,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         boolean isRegistered = prepareData(strCustomerImageUrl);
 
-        mProgress.setMessage(ActivityGuruPersonalInfo.this.getResources().getString(R.string.uploading));
+        mProgress.setMessage(ActivityGuruPersonalInfo.this.getResources().getString(R.string.text_loader_processing));
         mProgress.setCancelable(false);
         mProgress.show();
 
@@ -319,7 +408,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                             public void onDocumentInserted(Storage response) {
                                 if (mProgress.isShowing())
                                     mProgress.dismiss();
-                                if (response != null){
+                                if (response != null) {
                                     Utils.log(response.toString(), "");
                                     if (response.isResponseSuccess()) {
                                         Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
@@ -349,12 +438,12 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
 
                                     }
-                                }else{
+                                } else {
                                     /*if (mProgress.isShowing())
                                         mProgress.dismiss();*/
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
-                         }
+                            }
 
                             @Override
                             public void onUpdateDocSuccess(Storage response) {
@@ -369,11 +458,11 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                 if (mProgress.isShowing())
                                     mProgress.dismiss();
 
-                                if(ex!=null){
+                                if (ex != null) {
                                     //int appErrorCode = ex.getAppErrorCode();
                                     Utils.log(ex.getMessage(), "");
                                     utils.toast(2, 2, getString(R.string.error_register));
-                                }else{
+                                } else {
                                     utils.toast(2, 2, getString(R.string.warning_internet));
                                 }
                             }
@@ -398,7 +487,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         }
     }
 
-    private void createUser(){
+    private void createUser() {
         UserService userService = new UserService(ActivityGuruPersonalInfo.this);
 
         ArrayList<String> roleList = new ArrayList<>();
@@ -445,7 +534,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                     @Override
                     public void onException(Exception e) {
-                        if(mProgress.isShowing())
+                        if (mProgress.isShowing())
                             mProgress.dismiss();
                         if (e != null) {
 
@@ -453,7 +542,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(e.getMessage());
                                 JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
 
-                                int appErrorCode = ((App42Exception)e).getAppErrorCode();
+                                int appErrorCode = ((App42Exception) e).getAppErrorCode();
 
                                 if (appErrorCode == 2001) {
 
@@ -463,8 +552,9 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                                             .setCancelable(false)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
-                                                    Intent i = new Intent(ActivityGuruPersonalInfo.this,LoginActivity.class);
-                                                    startActivity(i);                                                            }
+                                                    Intent i = new Intent(ActivityGuruPersonalInfo.this, LoginActivity.class);
+                                                    startActivity(i);
+                                                }
                                             })
                                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
@@ -476,7 +566,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
 
 //                                                utils.toast(2,2,getString(R.string.email__already_exists));
-                                }else {
+                                } else {
                                     strMess = jsonObjectError.getString("message");
                                     utils.toast(2, 2, e.getMessage());
                                 }
@@ -566,17 +656,19 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             utils.toast(1, 1, getString(R.string.warning_profile_pic));
             focusView = imgButtonCamera;
             cancel = true;
-
+            return;
         } else {
 
             if (TextUtils.isEmpty(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_field_required));
                 focusView = editContactNo;
                 cancel = true;
+                return;
             } else if (!utils.validCellPhone(strContactNo)) {
                 editContactNo.setError(getString(R.string.error_invalid_contact_no));
                 focusView = editContactNo;
                 cancel = true;
+                return;
             }
 
             if (editAreaCode.getVisibility() == View.VISIBLE) {
@@ -585,10 +677,12 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     editAreaCode.setError(getString(R.string.error_field_required));
                     focusView = editAreaCode;
                     cancel = true;
-                } else if (!utils.validCellPhone(strAreaCode)) {
+                    return;
+                } else if (!utils.isValidAreaCode(strAreaCode)) {
                     editAreaCode.setError(getString(R.string.error_invalid_area_code));
                     focusView = editAreaCode;
                     cancel = true;
+                    return;
                 }
             }
 
@@ -603,6 +697,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 focusView = citizenship;
                 cancel = true;
                 utils.toast(2, 2, getString(R.string.select_country));
+                return;
             }
 
          /*   if (TextUtils.isEmpty(strAddress)) {
@@ -618,6 +713,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     editConfirmPass.setError(getString(R.string.error_confirm_password));
                     focusView = editConfirmPass;
                     cancel = true;
+                    return;
                 }
             }
 
@@ -625,35 +721,46 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 editConfirmPass.setError(getString(R.string.error_field_required));
                 focusView = editConfirmPass;
                 cancel = true;
+                return;
             }
 
             if (TextUtils.isEmpty(strPass)) {
                 editPass.setError(getString(R.string.error_field_required));
                 focusView = editPass;
                 cancel = true;
+                return;
             }
 
             if (TextUtils.isEmpty(strDate)) {
                 editTextDate.setError(getString(R.string.error_field_required));
                 focusView = editTextDate;
                 cancel = true;
+                return;
             }
             if (TextUtils.isEmpty(strName)) {
                 editName.setError(getString(R.string.error_field_required));
                 focusView = editName;
                 cancel = true;
+                return;
             }
 
             if (TextUtils.isEmpty(strEmail)) {
                 editEmail.setError(getString(R.string.error_field_required));
                 focusView = editEmail;
                 cancel = true;
+                return;
             } else if (!utils.isEmailValid(strEmail)) {
                 editEmail.setError(getString(R.string.error_invalid_email));
                 focusView = editEmail;
                 cancel = true;
+                return;
             }
-
+            if (!checked_terms_conditions.isChecked()) {
+                utils.toast(2, 2, mContext.getString(R.string.warning_agree_terms_condition));
+                focusView = checked_terms_conditions;
+                cancel = true;
+                return;
+            }
 
         }
 
@@ -664,7 +771,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                 //
                 if (utils.isConnectingToInternet()) {
 
-                    mProgress.setMessage(getResources().getString(R.string.loading));
+                    mProgress.setMessage(getResources().getString(R.string.text_loader_processing));
                     mProgress.setCancelable(false);
                     mProgress.show();
 
@@ -706,15 +813,15 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                     //
 
-                    if(idregisterflag==0)
+                    if (idregisterflag == 0)
                         createUser();
 
 
-                    if(idregisterflag==1)
+                    if (idregisterflag == 1)
                         uploadImage();
 
 
-                    if(idregisterflag==2)
+                    if (idregisterflag == 2)
                         uploadData();
 
 
@@ -831,6 +938,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             }
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -838,7 +946,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
 
-                mProgress.setMessage(getString(R.string.loading));
+                mProgress.setMessage(getString(R.string.text_loader_processing));
                 mProgress.setCancelable(false);
                 mProgress.show();
                 switch (requestCode) {

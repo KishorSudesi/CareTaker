@@ -38,12 +38,24 @@
         android:orientation="vertical"
         android:weightSum="2">
 
+        <TextView
+            android:id="@+id/textViewLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_general"
+            android:gravity="center"
+            android:padding="@dimen/padding_general"
+            android:text="@string/check_in_care"
+            style="@style/HeaderStyle"
+            android:textColor="@color/blue"
+            android:visibility="visible" />
+
         <ListView
             android:id="@+id/listCheckInCare"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="10dp"
-            android:layout_weight="0.8"
+            android:layout_weight="0.6"
             android:cacheColorHint="@color/colorHightlight"
             android:listSelector="@color/colorHightlight" />
 
@@ -79,11 +91,12 @@
             </HorizontalScrollView>
 
         </LinearLayout>
+
         <ScrollView
             android:id="@+id/scrollCheckInCare"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.2">
+            android:layout_weight="1.4">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -99,9 +112,39 @@
                     android:layout_alignParentTop="true">
 
                     <LinearLayout
+                        android:id="@+id/linearActivityBy"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bottom_border_grey">
+
+                        <TextView
+                            android:id="@+id/tvActivityBy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="Activity Assisted By : "
+                            style="@style/HeaderStyle"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/tvName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text=""
+                            style="@style/LabelStyle"
+                            android:textColor="@android:color/black" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
                         android:id="@+id/linearPhoto"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp">
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/linearActivityBy"
+                        android:layout_marginTop="@dimen/margin_general">
 
                         <TextView
                             android:id="@+id/tvPhotos"
@@ -109,13 +152,14 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:text="Photos"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
+                            style="@style/HeaderStyle" />
 
                         <TextView
                             android:id="@+id/tvPhotosStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="(Pending)"
+                            style="@style/LabelStyle_Small"
                             android:textColor="@color/red" />
 
                         <TextView
@@ -123,7 +167,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            style="@style/LabelStyle"
                             android:textColor="@color/gray_holo_light" />
 
                     </LinearLayout>
@@ -132,13 +176,13 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:background="@drawable/bottom_border_grey"
-                        android:padding="@dimen/padding_general">
+                        android:layout_below="@+id/linearPhoto"
+                        android:background="@drawable/bottom_border_grey">
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
                             <Button
@@ -150,7 +194,7 @@
                                 android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Hall"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                style="@style/ButtonStyle" />
 
                             <Button
                                 android:id="@+id/btnKitchen"
@@ -161,13 +205,14 @@
                                 android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Kitchen"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
                             <Button
@@ -179,7 +224,7 @@
                                 android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Washroom"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                style="@style/ButtonStyle" />
 
                             <Button
                                 android:id="@+id/btnBed"
@@ -190,7 +235,7 @@
                                 android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick_disable"
                                 android:text="Bedroom"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 
@@ -216,142 +261,229 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:text="Home Essentials"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
+                            style="@style/HeaderStyle" />
 
                         <TextView
                             android:id="@+id/tvHomeStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="(Pending)"
+                            style="@style/LabelStyle_Small"
                             android:textColor="@color/red" />
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/homeessentials"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginTop="40dp"
+                        android:background="@drawable/table_row"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tvUtilityBillStatus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_general"
-                            android:layout_weight="1"
-                            android:padding="@dimen/margin_general"
-                            android:text="Utility Bills"
-                            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvUtilityBillStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
+                                android:gravity="center_horizontal"
+                                android:text="Utility Bills"
+                                style="@style/LabelStyle" />
+
+                            <TextView
+                                android:id="@+id/tvUtilityBills_Status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="(Pending)"
+                                android:textSize="@dimen/text_size_small"
+                                android:textColor="@color/red" />
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
 
                     <TableLayout
                         android:id="@+id/table3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/homeessentials"
-                        android:layout_marginTop="2dp"
-                        android:padding="@dimen/padding_general">
+                        android:layout_below="@+id/homeessentials">
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvWaterBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
-                                android:drawableRight="@drawable/tick_disable"
-                                android:padding="@dimen/margin_general"
+                                android:drawablePadding="@dimen/padding_general"
+                                android:drawableRight="@drawable/tick"
                                 android:text="Water"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvGasBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
-                                android:padding="@dimen/margin_general"
+
                                 android:text="Gas"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvElectricityBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
-                                android:drawableRight="@drawable/tick_disable"
-                                android:padding="@dimen/margin_general"
+                                android:drawablePadding="@dimen/padding_general"
+                                android:drawableRight="@drawable/tick"
                                 android:text="Electricity"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvPhoneBill"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
-                                android:padding="@dimen/margin_general"
                                 android:text="Phone"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 
-                    </TableLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:orientation="horizontal">
 
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/table3"
-                        android:layout_marginTop="2dp"
-                        android:background="@drawable/bottom_border_grey"
-                        android:padding="@dimen/padding_general">
+                            <TextView
+                                android:id="@+id/tvKitchenEquip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
+
+                                android:layout_margin="5dp"
+                                android:gravity="center_horizontal"
+
+                                android:text="Kitchen Equipments"
+                                style="@style/LabelStyle" />
+
+                            <TextView
+                                android:id="@+id/tvKitchenItemsStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="(Pending)"
+                                android:textSize="@dimen/text_size_small"
+                                android:textColor="@color/red" />
+
+                        </LinearLayout>
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:weightSum="2">
+                            android:background="@drawable/table_row"
+                            android:weightSum="1">
 
-                            <TextView
+
+                            <Button
                                 android:id="@+id/tvKitchenItems"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
-                                android:padding="@dimen/margin_general"
                                 android:text="Kitchen Items"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                style="@style/ButtonStyle" />
+
+
+                        </TableRow>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/tvGrocery"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
+                                android:gravity="center_horizontal"
+                                android:text="Grocery"
+                                style="@style/LabelStyle" />
+
+                            <TextView
+                                android:id="@+id/tvGroceryStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="(Pending)"
+                                android:textSize="@dimen/text_size_small"
+                                android:textColor="@color/red" />
+
+                        </LinearLayout>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+                            android:background="@drawable/table_row"
+                            android:weightSum="1">
+
+                            <Button
+                                android:id="@+id/tvGroceryItems"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
-                                android:drawableRight="@drawable/tick_disable"
-                                android:padding="@dimen/margin_general"
-                                android:text="Grocery"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                android:drawablePadding="@dimen/padding_general"
+                                android:drawableRight="@drawable/tick"
+
+                                android:text="Grocery Items"
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 
                     </TableLayout>
+
 
                 </RelativeLayout>
 
@@ -365,20 +497,22 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="40dp">
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dip">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:text="Domestic Help"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
+                            style="@style/HeaderStyle" />
 
                         <TextView
                             android:id="@+id/tvDomesticStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="(Done)"
+                            style="@style/LabelStyle_Small"
                             android:textColor="@color/red" />
 
                     </LinearLayout>
@@ -387,25 +521,36 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:background="@drawable/bottom_border_grey"
-                        android:padding="@dimen/padding_general">
+                        android:layout_marginTop="40dp">
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center">
+                            android:background="@drawable/table_row"
+                            android:weightSum="2">
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvMaidServices"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/margin_general"
-                                android:drawablePadding="10dp"
+                                android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Maid Services"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
+
+                            <Button
+                                android:id="@+id/tvDriverStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/margin_general"
+                                android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
+                                android:drawableRight="@drawable/tick"
+                                android:text="Driver Status"
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 
@@ -423,20 +568,22 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="40dp">
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:text="Equipment Status"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
+                            android:text="Equipment/Automobile"
+                            style="@style/HeaderStyle" />
 
                         <TextView
                             android:id="@+id/tvEquipmentStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="(Pending)"
+                            style="@style/LabelStyle_Small"
                             android:textColor="@color/red" />
 
                     </LinearLayout>
@@ -445,49 +592,54 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:padding="@dimen/padding_general">
+                        android:layout_marginTop="40dp">
 
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/table_row"
                             android:weightSum="2">
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvElectronics"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Electronics"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvAutomobiles"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/margin_general"
                                 android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
                                 android:drawableRight="@drawable/tick"
                                 android:text="Automobiles"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 
                         <TableRow
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/table_row">
 
-                            <TextView
+                            <Button
                                 android:id="@+id/tvHomeAppliances"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+
                                 android:layout_margin="@dimen/margin_general"
-                                android:drawablePadding="10dp"
-                                android:drawableRight="@drawable/tick_red"
+                                android:layout_weight="1"
+                                android:drawablePadding="@dimen/padding_general"
+                                android:drawableRight="@drawable/tick"
                                 android:text="Home Appliances"
-                                android:textAppearance="?android:attr/textAppearanceSmall" />
+                                style="@style/ButtonStyle" />
 
                         </TableRow>
 

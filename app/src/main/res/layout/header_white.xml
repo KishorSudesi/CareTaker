@@ -34,6 +34,7 @@
 
     <TextView
         android:id="@+id/header"
+        style="@style/LabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logoLayout"
@@ -42,8 +43,7 @@
         android:layout_weight="2"
         android:padding="@dimen/text_padding"
         android:text="@string/dependent_details"
-        android:textColor="@color/blue"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textColor="@color/blue" />
 
     <!-- <Button
          android:id="@+id/buttonSkip"

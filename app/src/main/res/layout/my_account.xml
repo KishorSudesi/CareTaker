@@ -32,20 +32,20 @@
 
                 <TextView
                     android:id="@+id/textViewName"
+                    style="@style/HeaderStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:layout_centerHorizontal="true" />
 
                 <TextView
                     android:id="@+id/textViewEmail"
+                    style="@style/HeaderStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textViewName"
                     android:layout_centerHorizontal="true"
                     android:drawableLeft="@drawable/mail_icon_32"
-                    android:drawablePadding="10dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:drawablePadding="10dp" />
 
 
             </RelativeLayout>
@@ -60,6 +60,7 @@
 
                 <TextView
                     android:id="@+id/editText3"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
@@ -70,11 +71,11 @@
                     android:drawableLeft="@drawable/contact"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
-                    android:paddingLeft="10dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:id="@+id/editText31"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
@@ -85,11 +86,11 @@
                     android:drawableLeft="@drawable/location"
                     android:drawablePadding="15dp"
                     android:padding="10dp"
-                    android:paddingLeft="10dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:paddingLeft="10dp" />
 
                 <TextView
                     android:id="@+id/txtviewChangePassword"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
@@ -101,12 +102,12 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="Change Password"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:text="Change Password" />
 
 
                 <TextView
                     android:id="@+id/txtviewBuyServices"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
@@ -118,8 +119,7 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="@string/get_services"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:text="@string/get_services" />
 
                 <!--  <LinearLayout
                       android:layout_width="match_parent"
@@ -149,6 +149,7 @@
                   </LinearLayout>-->
                 <TextView
                     android:id="@+id/addreceiption"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
@@ -160,12 +161,12 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="@string/dependents"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:text="@string/dependents" />
 
 
                 <TextView
                     android:id="@+id/logout"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
@@ -177,8 +178,7 @@
                     android:drawablePadding="15dp"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:text="@string/logout"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:text="@string/logout" />
 
             </LinearLayout>
 

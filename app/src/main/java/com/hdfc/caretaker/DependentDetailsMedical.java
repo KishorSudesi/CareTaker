@@ -43,17 +43,17 @@ import java.util.List;
  */
 public class DependentDetailsMedical extends AppCompatActivity {
 
-    private Utils utils;
     public static Date date;
+    public static JSONObject jsonDependant;
+    public static int uploadSize, uploadingCount = 0;
+    private static int idregisterflag = 0;
+    private static int editregisterflag = 0;
+    private Utils utils;
     private EditText editAge, editDiseases, editNotes;
     private String strAge, strDiseases, strNotes;
     private ProgressDialog progressDialog;
     private Button buttonContinue;
-    public static JSONObject jsonDependant;
     private int iDependentCount = 0;
-    private static int idregisterflag = 0;
-    private static int editregisterflag = 0;
-    public static int uploadSize, uploadingCount = 0;
     private SessionManager sessionManager;
     private int mPosition;
 
@@ -62,7 +62,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dependent_details_medical);
-        jsonDependant=new JSONObject();
+        jsonDependant = new JSONObject();
         utils = new Utils(DependentDetailsMedical.this);
         utils.setStatusBarColor("#2196f3");
         editregisterflag = 0;
@@ -164,8 +164,8 @@ public class DependentDetailsMedical extends AppCompatActivity {
         Intent selection = new Intent(DependentDetailsMedical.this,
                 DependentDetailPersonal.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean("editflag",true);
-        bundle.putInt("childposition",mPosition);
+        bundle.putBoolean("editflag", true);
+        bundle.putInt("childposition", mPosition);
         selection.putExtras(bundle);
         startActivity(selection);
         finish();
@@ -285,7 +285,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
             // WHERE clause arguments
             String[] selectionArgs = {Config.collectionDependent, DependentDetailPersonal.dependentModel.getStrDependentID()};
             Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
-            if (cursor != null) {
+            if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
 
@@ -299,7 +299,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                     String updatedAt = Utils.readFormat.format(c.getTime());
 
-                    String values[] = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), updatedAt, strDocument, Config.collectionDependent, "", "1", "",""};
+                    String values[] = {cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), updatedAt, strDocument, Config.collectionDependent, "", "1", "", ""};
                     try {
                         //Config.jsonCustomer = new JSONObject(strDocument);
 
@@ -339,7 +339,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
         if (DependentDetailPersonal.dependentModel != null) {
 
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -405,7 +405,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
         if (DependentDetailPersonal.dependentModel != null) {
 
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(getString(R.string.text_loader_processing));
             progressDialog.setCancelable(false);
             progressDialog.show();
 
@@ -680,6 +680,10 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                     Utils.log(response.toString(), "message");
 
                                     if (response.isResponseSuccess()) {
+                                        if (!Config.customerModel.isCustomerRegistered()) {
+                                            Config.customerModel.setCustomerRegistered(true);
+                                            utils.updateCustomerRegistrationDetailOnServer(true);
+                                        }
                                         //
                                         Storage.JSONDocument jsonDocument = response.
                                                 getJsonDocList().
@@ -711,11 +715,13 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                                         Config.dependentModels.add(DependentDetailPersonal.dependentModel);
 
+
                                         DependentDetailPersonal.dependentModel = null;
                                         Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
                                         Config.intSelectedMenu = Config.intRecipientScreen;
                                         startActivity(next);
                                         finish();
+
 
                                       /*  if (SignupActivity.dependentModels.size() == 2) {
                                             confirmRegister();
@@ -1038,6 +1044,10 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                     Utils.log(o.toString(), "LOG");
 
                                     updateDependentDataInDb();
+                                    if (!Config.customerModel.isCustomerRegistered()) {
+                                        Config.customerModel.setCustomerRegistered(true);
+                                        utils.updateCustomerRegistrationDetailOnServer(true);
+                                    }
                                 } else {
 
                                 }

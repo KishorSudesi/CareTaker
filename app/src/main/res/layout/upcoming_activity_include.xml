@@ -34,19 +34,19 @@
 
             <TextView
                 android:id="@+id/textViewHead1"
+                style="@style/TextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textViewHead2"
+                style="@style/TextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_general"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
 
@@ -56,6 +56,7 @@
 
     <TextView
         android:id="@+id/textViewDate"
+        style="@style/TextViewSmallStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -67,7 +68,6 @@
         android:layout_marginTop="20dp"
         android:drawableLeft="@drawable/add_new_activity"
         android:drawablePadding="5dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#000000" />
 
     <ImageView
@@ -81,6 +81,7 @@
 
     <TextView
         android:id="@+id/textViewMSG"
+        style="@style/TextViewSmallStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textViewDate"
@@ -88,8 +89,7 @@
         android:layout_below="@+id/img1"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
-        android:paddingLeft="40dp"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:paddingLeft="40dp" />
 
     <ImageView
         android:id="@+id/img2"

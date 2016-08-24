@@ -23,7 +23,6 @@ import com.shephertz.app42.paas.sdk.android.user.UserService;
 
 import org.json.JSONObject;
 
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class AsyncApp42ServiceApi {
@@ -46,18 +45,19 @@ public class AsyncApp42ServiceApi {
                 apiKey = AESCrypt.decrypt(Config.string, "a3tEVMM63P40VdMvybYAHvhjdR91k6uRHnBoRIjQq7bEYH0jWh22DnT6eYLCPv+3X0UrhjF4nwresW4BA1bKBXvUIl2/Z2cqfdtY5la00U4=");
                 apiSecret = AESCrypt.decrypt(Config.string, "TizgBe+sjPzxHZKp7eQwwgd78xjELdu3+NLfNqFZvVNStxezaFr1xkkYHRr2FJDYDsd46xK1UxeC9tlHG5kf9xkUc8n9Ompf5sr1DQaxbmQ=");
             }
-        } catch (GeneralSecurityException e) {
+
+            App42API.initialize(context, apiKey, apiSecret);
+            App42CacheManager.setPolicy(App42CacheManager.Policy.NETWORK_FIRST);
+            //App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
+
+            this.userService = App42API.buildUserService();
+            this.storageService = App42API.buildStorageService();
+            this.uploadService = App42API.buildUploadService();
+            this.pushNotificationService = App42API.buildPushNotificationService();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        App42API.initialize(context, apiKey, apiSecret);
-        App42CacheManager.setPolicy(App42CacheManager.Policy.NETWORK_FIRST);
-        //App42CacheManager.setExpiryInMinutes(Config.CACHE_EXPIRE);
-
-        this.userService = App42API.buildUserService();
-        this.storageService = App42API.buildStorageService();
-        this.uploadService = App42API.buildUploadService();
-        this.pushNotificationService = App42API.buildPushNotificationService();
     }
 
    /* public void sendPush(){
@@ -919,6 +919,8 @@ public class AsyncApp42ServiceApi {
         }.start();
     }
 
+
+
     public void sendPushToUser(final String userName, final String strMessage,
                                final App42CallBack callBack) {
 
@@ -949,7 +951,101 @@ public class AsyncApp42ServiceApi {
             }
         }.start();
     }
+    //todo get token and remove device in logout
+    public void removeDevice(final String userName, final String strToken,
+                             final App42CallBack callBack) {
 
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = pushNotificationService.unsubscribeDevice(
+                            userName, strToken);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    //todo get token and remove device in logout
+    public void deleteDeviceToken(final String userName, final String strToken,
+                             final App42CallBack callBack) {
+
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = pushNotificationService.deleteDeviceToken(
+                            userName, strToken);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    //todo get token and remove device in logout
+    public void deleteDevice(final String userName,
+                             final App42CallBack callBack) {
+
+        final Handler callerThreadHandler = new Handler();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final App42Response response = pushNotificationService.deleteAllDevices(
+                            userName);
+
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callBack.onSuccess(response);
+                        }
+                    });
+                } catch (final App42Exception ex) {
+                    callerThreadHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null) {
+                                callBack.onException(ex);
+                            }
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
 
 
    /* public interface App42UserServiceListener {

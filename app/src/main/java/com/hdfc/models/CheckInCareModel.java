@@ -20,6 +20,15 @@ public class CheckInCareModel {
 
     private String strCustomerID;
     private String strDependentID;
+    private String strProviderID;
+
+    public String getStrProviderID() {
+        return strProviderID;
+    }
+
+    public void setStrProviderID(String strProviderID) {
+        this.strProviderID = strProviderID;
+    }
 
     private List<PictureModel> pictureModels = new ArrayList<>();
     private List<ImageModel> imageModels = new ArrayList<>();

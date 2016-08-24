@@ -21,6 +21,7 @@
 
             <EditText
                 android:id="@+id/editAge"
+                style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_centerHorizontal="true"
@@ -52,6 +53,7 @@
 
                 <EditText
                     android:id="@+id/editDiseases"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
                     android:layout_centerHorizontal="true"
@@ -87,6 +89,7 @@
 
                 <EditText
                     android:id="@+id/editNotes"
+                    style="@style/EditTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_centerHorizontal="true"
@@ -105,6 +108,7 @@
 
             <Button
                 android:id="@+id/buttonContinue"
+                style="@style/ButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_centerHorizontal="true"
@@ -115,7 +119,6 @@
                 android:background="@drawable/button_blue_white_border"
                 android:text="@string/skip"
                 android:textAllCaps="false"
-                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/colorWhite" />
 
         </LinearLayout>

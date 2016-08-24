@@ -35,7 +35,7 @@ import java.util.Locale;
 public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     private static final String dateTemplate = "MMMM yyyy";
-    static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
+   public static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     static int month, year;
     private static TextView currentMonth;
     private static Calendar calendar;
@@ -119,6 +119,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
 
         LinearLayout dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
+        utils = new Utils(getActivity());
 
         //Context _context = getActivity();
 
@@ -157,8 +158,6 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        utils = new Utils(getActivity());
-
         ImageView addActivity = (ImageView) view.findViewById(R.id.addActivity);
 
        /* final SimpleTooltip simpleTooltip = new SimpleTooltip.Builder(getActivity())
@@ -175,6 +174,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
                 /*if(simpleTooltip!=null&&simpleTooltip.isShowing())
                     simpleTooltip.dismiss();*/
                 Intent newIntent = new Intent(getActivity(), AddNewActivityActivity.class);
+
                 startActivity(newIntent);
             }
         });

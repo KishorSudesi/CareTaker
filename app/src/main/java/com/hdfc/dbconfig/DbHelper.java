@@ -2,20 +2,17 @@ package com.hdfc.dbconfig;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import com.hdfc.config.Config;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
-import com.scottyab.aescrypt.AESCrypt;
-
-import net.sqlcipher.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Date;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -31,7 +28,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DEPENDENT_ID = "dependent_id";
     public static final String COLUMN_IS_UPDATED = "is_updated";
     static final String strTableNameFiles = "files";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static String dbPass = ""; //"hdfc@12#$";//
     private static DbHelper dbInstance = null;
     private static SQLiteDatabase db;
@@ -52,12 +49,12 @@ public class DbHelper extends SQLiteOpenHelper {
         //utils = new Utils(context);
         originalFile = _ctxt.getDatabasePath(DATABASE_NAME);
 
-        try {
-            dbPass = AESCrypt.decrypt(Config.string, "IqSKDxDO7p2HjCs+8R4Z0A==");
-
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            //dbPass = AESCrypt.decrypt(Config.string, "IqSKDxDO7p2HjCs+8R4Z0A==");
+//
+//        } catch (GeneralSecurityException e) {
+//            e.printStackTrace();
+//        }
     }
 
     static synchronized DbHelper getInstance(Context ctx) {
@@ -71,12 +68,12 @@ public class DbHelper extends SQLiteOpenHelper {
     // Open the database connection.
     public void open() {
         try {
-            SQLiteDatabase.loadLibs(_ctxt);
-            db = this.getWritableDatabase(dbPass);
+            //SQLiteDatabase.loadLibs(_ctxt);
+            db = this.getWritableDatabase();
         } catch (Exception | UnsatisfiedLinkError e1) {
             try {
-                if (originalFile.exists())
-                    encrypt(true);
+//                if (originalFile.exists())
+//                    encrypt(true);
                 e1.printStackTrace();
             } catch (Exception e2) {
                 e2.printStackTrace();
@@ -104,11 +101,21 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        try {
-            encrypt(false);
-        } catch (Exception e) {
-            e.printStackTrace();
+        /*if(db!=null&&db.isOpen())
+db.close();
+
+encrypt(false);*/
+        Log.i("TAG", "in onUpgrade");
+//use ALTER for updating without losing data
+
+        if (oldVersion < newVersion) {
+            dropDb(db);
+            onCreate(db);
+            SessionManager sessionManager=new SessionManager(_ctxt);
+            sessionManager.logoutUser();
+
         }
+
     }
 
     public void dropDb(SQLiteDatabase db) {
@@ -238,45 +245,45 @@ public class DbHelper extends SQLiteOpenHelper {
         return isSuccess;
     }
 
-    private void encrypt(boolean isToOpen) throws IOException {
-
-        if (originalFile.exists()) {
-
-            File newFile = File.createTempFile("database", "_tmp_", _ctxt.getFilesDir());
-
-            String dbPath = originalFile.getAbsolutePath();
-
-            SQLiteDatabase db = SQLiteDatabase.openDatabase(originalFile.getAbsolutePath(), "",
-                    null, SQLiteDatabase.OPEN_READWRITE);
-
-            db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s';",
-                    newFile.getAbsolutePath(), dbPass));
-            db.rawExecSQL("SELECT sqlcipher_export('encrypted')");
-            db.rawExecSQL("DETACH DATABASE encrypted;");
-
-            int version = db.getVersion();
-
-            if (version < DATABASE_VERSION)
-                version = DATABASE_VERSION;
-
-            db.close();
-
-            db = SQLiteDatabase.openDatabase(newFile.getAbsolutePath(),
-                    dbPass, null,
-                    SQLiteDatabase.OPEN_READWRITE);
-            db.setVersion(version);
-            db.close();
-
-            originalFile.delete();
-            newFile.renameTo(originalFile);
-
-            if (isToOpen) {
-                DbHelper.db = SQLiteDatabase.openDatabase(dbPath,
-                        dbPass, null,
-                        SQLiteDatabase.OPEN_READWRITE);
-            }
-        }
-    }
+//    private void encrypt(boolean isToOpen) throws IOException {
+//
+//        if (originalFile.exists()) {
+//
+//            File newFile = File.createTempFile("database", "_tmp_", _ctxt.getFilesDir());
+//
+//            String dbPath = originalFile.getAbsolutePath();
+//
+//            SQLiteDatabase db = SQLiteDatabase.openDatabase(originalFile.getAbsolutePath(), "",
+//                    null, SQLiteDatabase.OPEN_READWRITE);
+//
+//            db.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s';",
+//                    newFile.getAbsolutePath(), dbPass));
+//            db.rawExecSQL("SELECT sqlcipher_export('encrypted')");
+//            db.rawExecSQL("DETACH DATABASE encrypted;");
+//
+//            int version = db.getVersion();
+//
+//            if (version < DATABASE_VERSION)
+//                version = DATABASE_VERSION;
+//
+//            db.close();
+//
+//            db = SQLiteDatabase.openDatabase(newFile.getAbsolutePath(),
+//                    dbPass, null,
+//                    SQLiteDatabase.OPEN_READWRITE);
+//            db.setVersion(version);
+//            db.close();
+//
+//            originalFile.delete();
+//            newFile.renameTo(originalFile);
+//
+//            if (isToOpen) {
+//                DbHelper.db = SQLiteDatabase.openDatabase(dbPath,
+//                        dbPass, null,
+//                        SQLiteDatabase.OPEN_READWRITE);
+//            }
+//        }
+//    }
 
     public void beginDBTransaction() {
         if (db != null && !db.isOpen())
@@ -296,8 +303,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.setTransactionSuccessful();
     }
 
-    public void updateServerStatus(String status)
-    {
+    public void updateServerStatus(String status) {
         if (db != null && !db.isOpen())
             open();
     }

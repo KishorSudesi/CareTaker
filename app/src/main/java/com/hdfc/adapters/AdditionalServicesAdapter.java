@@ -116,8 +116,7 @@ public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if(AdditionalServicesActivity.serviceIds.contains(serviceModel.getStrServiceId()))
-        {
+        if (AdditionalServicesActivity.serviceIds.contains(serviceModel.getStrServiceId())) {
             viewHolder.checkBoxService.setChecked(true);
             viewHolder.checkBoxService.setButtonDrawable(convertView.getResources().getDrawable(R.mipmap.tick));
         } else {
@@ -128,7 +127,11 @@ public class AdditionalServicesAdapter extends BaseExpandableListAdapter {
 
         String strTemp = serviceModel.getStrServiceName();
 
-
+        if ((strTemp.equalsIgnoreCase(_context.getString(R.string.text_check_in_service)))) {
+            viewHolder.checkBoxService.setVisibility(View.GONE);
+        } else {
+            viewHolder.checkBoxService.setVisibility(View.VISIBLE);
+        }
         viewHolder.activityTitle.setText(strTemp);
         viewHolder.activityDetails.setText(serviceModel.getStrServiceName());
 

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.hdfc.adapters.ActivityListAdapter;
 import com.hdfc.caretaker.CompletedActivity;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 import com.hdfc.models.ActivityModel;
 
 
@@ -69,7 +70,7 @@ public class ActivityListFragment extends Fragment {
 
                 if (activityModel.getStrActivityStatus().equalsIgnoreCase("new")) {
 
-                    UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel);
+                    UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel, Config.START_FROM_ACTIVITY);
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().
                             beginTransaction();
                     ft.replace(R.id.fragment_dashboard, completedFragment);

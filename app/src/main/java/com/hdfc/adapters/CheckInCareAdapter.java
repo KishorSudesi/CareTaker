@@ -11,6 +11,7 @@ import com.hdfc.caretaker.R;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CheckInCareModel;
 
+import java.text.DateFormatSymbols;
 import java.util.List;
 
 /**
@@ -61,9 +62,21 @@ public class CheckInCareAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText(data.get(position).getStrName());
+//+ "-" + data.get(position).getStrStatus() this text to be added later
+        viewHolder.name.setText(getMonth(data.get(position).getStrMonth()) + "-" + data.get(position).getStrName());
 
         return convertView;
+    }
+
+    public String getMonth(String month) {
+        int intMonth = 0;
+        try {
+            intMonth = Integer.parseInt(month);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            intMonth = 1;
+        }
+        return new DateFormatSymbols().getMonths()[intMonth - 1];
     }
 
     public class ViewHolder {

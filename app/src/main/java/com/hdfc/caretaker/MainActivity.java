@@ -8,17 +8,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.hdfc.libs.UpdateService;
+import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
+import com.hdfc.app42service.StorageService;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 
+import pl.tajchert.nammu.PermissionCallback;
+
 public class MainActivity extends AppCompatActivity {
 
     private Utils utils;
     private SessionManager sessionManager;
+    private PermissionHelper permissionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +31,15 @@ public class MainActivity extends AppCompatActivity {
 
         utils = new Utils(MainActivity.this);
         utils.setStatusBarColor("#2196f3");
+        permissionHelper = PermissionHelper.getInstance(this);
+
         Button btnLovedOne = (Button) findViewById(R.id.buttonLovedOne);
         Button btnGoToWho = (Button) findViewById(R.id.buttonGoToWho);
 
-
+        if (getIntent().hasExtra("message_delivered")) {
+            Config.strDependentIds.clear();
+            Config.strProviderIds.clear();
+        }
         //CrashLogger.getInstance().init(MainActivity.this);
 //        try {
 //            CareTaker.dbCon = DbCon.getInstance(getApplicationContext());
@@ -38,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 //            e.getMessage();
 //        }
         try {
+
 
             sessionManager = new SessionManager(MainActivity.this);
             if (sessionManager.isLoggedIn()) {
@@ -81,12 +91,31 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }*/
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        permissionHelper.finish();
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     public void goToWho(View v) {
       /*  Intent selection = new Intent(MainActivity.this, CareSelectionActivity.class);
         startActivity(selection);*/
 
         Intent selection = new Intent(MainActivity.this, ActivityGuruPersonalInfo.class);
         startActivity(selection);
+        finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        permissionHelper.onActivityResult(requestCode, resultCode, intent);
     }
 
     /*private void exportDB(){
@@ -128,6 +157,27 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //getString(R.string.permission_contact_rationale) Manifest.permission.READ_CONTACTS
+
+        permissionHelper.verifyPermission(
+                new String[]{getString(R.string.permission_storage_rationale)},
+                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new PermissionCallback() {
+                    @Override
+                    public void permissionGranted() {
+                    }
+
+                    @Override
+                    public void permissionRefused() {
+                    }
+                }
+        );
+    }
+
     private class LoadDataTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -149,22 +199,19 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 if (sessionManager.isLoggedIn()) {
-
+                    StorageService storageService = new StorageService(MainActivity.this);
                     Config.strUserName = sessionManager.getEmail();
-                    utils.fetchCustomer(new ProgressDialog(MainActivity.this), 1);
-                    Intent in=new Intent(MainActivity.this, UpdateService.class);
-                    in.putExtra("updateAll",true);
-                    startService(in);
-                    finish();
+                    utils.fetchCustomer(new ProgressDialog(MainActivity.this), 1, sessionManager.getPassword(), sessionManager.getEmail());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
             }
 
         }
     }
 
-   /* @Override
+    /* @Override
     protected void onDestroy() {
         //super.onDestroy();
 

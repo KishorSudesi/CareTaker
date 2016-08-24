@@ -1,56 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="10dp"
     android:orientation="horizontal">
 
-    <LinearLayout
+
+    <CheckBox
+        android:id="@+id/checkBoxService"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp">
-
-        <CheckBox
-            android:id="@+id/checkBoxService"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:button="@mipmap/tick_disable"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false" />
-
-    </LinearLayout>
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:button="@mipmap/tick_disable"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/checkBoxService"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtActivityTitle"
+            style="@style/TextViewSmallStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/blue" />
 
         <TextView
             android:id="@+id/txtActivityDetails"
+            style="@style/TextViewSmallStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_general"
             android:clickable="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:visibility="gone" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

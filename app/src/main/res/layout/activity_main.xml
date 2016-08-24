@@ -26,17 +26,18 @@
         android:background="@drawable/logo_final" />
 
     <TextView
+        style="@style/LabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageButtonCamera"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="110dp"
         android:text="@string/express_care"
-        android:textColor="@color/colorWhite"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textColor="@color/colorWhite" />
 
     <Button
         android:id="@+id/buttonLovedOne"
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -48,11 +49,11 @@
         android:onClick="goToLogin"
         android:text="@string/take_me_in"
         android:textAllCaps="false"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/blue" />
 
     <Button
         android:id="@+id/buttonGoToWho"
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -63,7 +64,6 @@
         android:onClick="goToWho"
         android:text="@string/im_new_here"
         android:textAllCaps="false"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorWhite" />
 
 

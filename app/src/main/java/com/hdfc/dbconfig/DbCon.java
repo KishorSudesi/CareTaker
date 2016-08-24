@@ -1,9 +1,8 @@
 package com.hdfc.dbconfig;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
-
-import net.sqlcipher.Cursor;
 
 import static com.hdfc.dbconfig.DbHelper.COLUMN_COLLECTION_NAME;
 import static com.hdfc.dbconfig.DbHelper.COLUMN_DEPENDENT_ID;

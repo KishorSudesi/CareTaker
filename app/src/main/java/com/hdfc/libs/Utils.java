@@ -31,6 +31,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -51,8 +52,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hdfc.adapters.NotificationAdapter;
-import com.hdfc.app42service.App42GCMService;
+import com.hdfc.app42service.App42GCMController;
+import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.caretaker.DashboardActivity;
@@ -109,6 +112,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -121,38 +126,34 @@ import java.util.regex.Pattern;
  */
 public class Utils {
 
-
     public static String defaultDate = "2016-01-01T06:04:57.691Z";
     //application specific
     public static Locale locale = Locale.ENGLISH;
-
     public final static SimpleDateFormat readFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
-
+    public final static SimpleDateFormat readFormatDB =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
     public final static SimpleDateFormat readFormatDate =
             new SimpleDateFormat("yyyy-MM-dd", locale);
-
     public final static SimpleDateFormat writeFormatMonth =
             new SimpleDateFormat("MMM yyyy", locale);
-
     public final static SimpleDateFormat writeFormat =
             new SimpleDateFormat("kk:mm dd MMM yyyy", locale);
-
+    public final static SimpleDateFormat writeFormatTime =
+            new SimpleDateFormat("kk:mm", locale);
     public final static SimpleDateFormat writeFormatDateDB = new
             SimpleDateFormat("yyyy-MM-dd", locale);
-
-    /*   public final static SimpleDateFormat writeFormatActivity =
-               new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
-
     public final static SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd", locale);
 
+    /*   public final static SimpleDateFormat writeFormatActivity =
+               new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
     public final static SimpleDateFormat writeFormatActivityYear =
             new SimpleDateFormat("dd/MM/yyyy", locale);
-
     private final static SimpleDateFormat queryFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
-
+    private final static SimpleDateFormat queryFormatDB =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
     public static Uri customerImageUri = null;
     public static int iProviderCount = 0;
     public static Bitmap noBitmap;
@@ -161,32 +162,53 @@ public class Utils {
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
     private static SessionManager sessionManager;
+    /*Comparator for sorting the list by service Name*/
+    private static Comparator<NotificationModel> notificationDataComparator = new Comparator<NotificationModel>() {
+
+        public int compare(NotificationModel s1, NotificationModel s2) {
+            String date1 = s1.getStrDateTime().toUpperCase();
+            String date2 = s2.getStrDateTime().toUpperCase();
+
+            //ascending order
+            return date2.compareTo(date1);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
 
     static {
         System.loadLibrary("stringGen");
     }
 
+    private boolean showCheckInButton = false;
     private boolean isUpdateServer = false;
     private Date dat;
     private List<String> dependentsIdsList;
 
     public Utils(Context context) {
-        _ctxt = context;
-        sessionManager = new SessionManager(_ctxt);
-        dat = new Date();
-        WindowManager wm = (WindowManager) _ctxt.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-        Config.intScreenWidth = metrics.widthPixels;
-        Config.intScreenHeight = metrics.heightPixels;
-
-        readFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        queryFormat.setTimeZone(TimeZone.getDefault());
-
         try {
-            noBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
-        } catch (Exception | OutOfMemoryError e) {
+            _ctxt = context;
+            sessionManager = new SessionManager(context);
+            dat = new Date();
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            if (wm != null) {
+                Display display = wm.getDefaultDisplay();
+                DisplayMetrics metrics = new DisplayMetrics();
+                display.getMetrics(metrics);
+                Config.intScreenWidth = metrics.widthPixels;
+                Config.intScreenHeight = metrics.heightPixels;
+            }
+
+            readFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            queryFormat.setTimeZone(TimeZone.getDefault());
+
+            try {
+                noBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
+            } catch (Exception | OutOfMemoryError e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -231,11 +253,6 @@ public class Utils {
         return scaledBitmap;
     }
 
-    public static boolean isImageFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && mimeType.indexOf("image") == 0;
-    }
-
     /*
     public static boolean isVideoFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
@@ -275,6 +292,11 @@ public class Utils {
 
         return true;
     }*/
+
+    public static boolean isImageFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.indexOf("image") == 0;
+    }
 
     //
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
@@ -382,11 +404,6 @@ public class Utils {
         //for crop
         //return new Rect(0, 0, dstWidth, dstHeight);
 
-    }
-
-    public static boolean externalMemoryAvailable() {
-        return android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
     }
 
    /* public static void hideSoftKeyboard(Activity activity) {
@@ -500,9 +517,9 @@ public class Utils {
         mRecorder.start();
     }*/
 
-    public static String getDeviceID(Activity activity) {
-        return Settings.Secure.getString(activity.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+    public static boolean externalMemoryAvailable() {
+        return android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED);
     }
 
     /*public static String encrypt(String Data) {
@@ -584,6 +601,11 @@ public class Utils {
         return json;
     }*/
 
+    public static String getDeviceID(Activity activity) {
+        return Settings.Secure.getString(activity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
+
     public static void log(String message, String tag) {
 
         if ((tag == null || tag.equalsIgnoreCase("")) && _ctxt != null)
@@ -605,19 +627,6 @@ public class Utils {
         return isEmpty;
     }
 
-    public static File createFileInternal(String strFileName) {
-
-        File file = null;
-        try {
-            file = new File(_ctxt.getFilesDir(), strFileName);
-            file.getParentFile().mkdirs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
    /* public String getUUID() {
         final TelephonyManager tm = (TelephonyManager) _ctxt.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -631,6 +640,39 @@ public class Utils {
         String deviceId = deviceUuid.toString();
 
         return deviceId;
+    }*/
+
+    public static File createFileInternal(String strFileName) {
+
+        File file = null;
+        try {
+            file = new File(_ctxt.getFilesDir(), strFileName);
+            file.getParentFile().mkdirs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+   /* public void createFolder(String path) {
+        File root = new File(path);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+    }*/
+
+   /* public void setExifData(String pathName) throws Exception {
+
+        try {
+            //working for Exif defined attributes
+            ExifInterface exif = new ExifInterface(pathName);
+            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
+            exif.saveAttributes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }*/
 
     public static boolean deleteAllFiles(File directory) {
@@ -660,26 +702,6 @@ public class Utils {
         return true;
     }
 
-   /* public void createFolder(String path) {
-        File root = new File(path);
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-    }*/
-
-   /* public void setExifData(String pathName) throws Exception {
-
-        try {
-            //working for Exif defined attributes
-            ExifInterface exif = new ExifInterface(pathName);
-            exif.setAttribute(ExifInterface.TAG_MAKE, "1000");
-            exif.saveAttributes();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
     public static void setDrawable(View v, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
             v.setBackgroundDrawable(drw);
@@ -687,72 +709,95 @@ public class Utils {
             v.setBackground(drw);
     }
 
-    public static void logout() {
+    public static void logout(final Context context) {
         try {
-            CareTaker.dbCon.delete(DbHelper.strTableNameCollection, null, null);
-            Config.intSelectedMenu = 0;
-            //Config.intDependentsCount = 0;
+            try {
+                final SessionManager sessionManager = new SessionManager(context);
+                try {
+                    PushNotificationService pushNotificationService = new PushNotificationService(
+                            context);
 
-            //Config.serviceModels.clear();
-            Config.dependentNames.clear();
-            Config.dependentModels.clear();
-            Config.strDependentIds.clear();
+                    pushNotificationService.deleteUserDevice(sessionManager.getEmail(),
+                            sessionManager.getDeviceToken(), new App42CallBack() {
 
-            Config.categoryServiceModels.clear();
-            Config.strNotificationIds.clear();
-            Config.strServcieIds.clear();
-            Config.strActivityIds.clear();
-            Config.strProviderIds.clear();
-            Config.strProviderIdsAdded.clear();
+                                @Override
+                                public void onSuccess(Object o) {
+                                    Log.i("TAG", "success" + o.toString());
+                                    App42GCMController.clearPref(context);
+                                    unregisterGcm(context);
+                                    sessionManager.logoutUser();
+                                }
+
+                                @Override
+                                public void onException(Exception ex) {
+                                    Log.i("TAG", "Exception" + ex.getMessage());
+                                    App42GCMController.clearPref(context);
+                                    unregisterGcm(context);
+                                    sessionManager.logoutUser();
+                                }
+                            });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                CareTaker.dbCon.delete(DbHelper.strTableNameCollection, null, null);
+
+                //todo clear shared pref.
 
 
-            Config.intSelectedDependent = 0;
+                //sessionManager = null;
+                Config.intSelectedMenu = 0;
+                //Config.intDependentsCount = 0;
+                Config.customerModel = null;
+                //Config.serviceModels.clear();
+                Config.dependentNames.clear();
+                Config.dependentModels.clear();
+                Config.strDependentIds.clear();
 
-            Config.boolIsLoggedIn = false;
+                Config.categoryServiceModels.clear();
+                Config.strNotificationIds.clear();
+                Config.strServcieIds.clear();
+                Config.strActivityIds.clear();
+                Config.strProviderIds.clear();
+                Config.strProviderIdsAdded.clear();
+                Config.strServiceCategoryNames.clear();
 
-            // Config.customerModel = null;
-            Config.strUserName = "";
+                Config.intSelectedDependent = 0;
 
-            Config.fileModels.clear();
+                Config.boolIsLoggedIn = false;
 
-            //todo clear shared pref.
-            sessionManager.logoutUser();
+                // Config.customerModel = null;
+                Config.strUserName = "";
 
-            if (CareTaker.dbCon != null) {
-                //CareTaker.dbCon.close();
+                Config.fileModels.clear();
+
+                try {
+                    ActivityFragment.activitiesModelArrayList.clear();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (CareTaker.dbCon != null) {
+                    //CareTaker.dbCon.close();
+                }
+
+
+                File fileImage = createFileInternal("images/");
+                deleteAllFiles(fileImage);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            unregisterGcm();
 
-            File fileImage = createFileInternal("images/");
-            deleteAllFiles(fileImage);
-
-
-            Intent dashboardIntent = new Intent(_ctxt, LoginActivity.class);
+            Intent dashboardIntent = new Intent(context, LoginActivity.class);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            _ctxt.startActivity(dashboardIntent);
-            ((Activity) _ctxt).finish();
+            context.startActivity(dashboardIntent);
+            ((Activity) context).finish();
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void unregisterGcm() {
-
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    App42GCMService.unRegisterGcm();
-                } catch (Exception bug) {
-                    bug.printStackTrace();
-                }
-            }
-        });
-        thread.start();
     }
 
     /*public void setupUI(View view) {
@@ -776,9 +821,36 @@ public class Utils {
         }
     }*/
 
+    private static void unregisterGcm(final Context _context) {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(_context);
+
+                    try {
+                        if (gcm != null)
+                            gcm.unregister();
+                        Utils.log(" removed ", " Device Token");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (Exception bug) {
+                    bug.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
     public static void refreshNotifications() {
 
         if (NotificationFragment.listViewActivities != null) {
+            Collections.sort(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels(),notificationDataComparator);
+
             NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
                     Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels());
 
@@ -971,6 +1043,7 @@ public class Utils {
             date = readFormat.parse(strDate);
             //Log.i("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
         } catch (ParseException e) {
+            date = new Date();
             e.printStackTrace();
         }
         return date; //
@@ -1010,16 +1083,55 @@ public class Utils {
         return ageInt.toString();
     }
 
+    /**
+     * Method to check user's age from the entered Date of Birth.
+     *
+     * @return isValid true for valid age>=18.
+     */
+    public boolean ageValidationCustomer(int age) {
+
+        boolean isValid = false;
+
+
+        if (age != 0 && age >= 18) {
+            isValid = true;
+        }
+
+        return isValid;
+    }
+
+    /**
+     * Method to check dependent's age from the entered Date of Birth.
+     *
+     * @return isValid true for valid age>=60.
+     */
+    public boolean ageValidationDependents(int age) {
+
+        boolean isValid = false;
+
+
+        if (age != 0 && age >= 60) {
+            isValid = true;
+        }
+
+        return isValid;
+    }
+
+
     public boolean isConnectingToInternet() {
-        ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null) {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null)
-                for (NetworkInfo anInfo : info)
-                    if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
-                        return true;
-                    }
+        try {
+            ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(
+                    Context.CONNECTIVITY_SERVICE);
+            if (connectivity != null) {
+                NetworkInfo[] info = connectivity.getAllNetworkInfo();
+                if (info != null)
+                    for (NetworkInfo anInfo : info)
+                        if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
+                            return true;
+                        }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -1064,15 +1176,34 @@ public class Utils {
             mFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }*/
+    public boolean isValidAreaCode(String number) {
+        if (number == null) {
+            return false;
+        } else {
+
+            return number.length() > 1;
+        }
+
+    }
+
     public boolean validCellPhone(String number) {
         //return android.util.Patterns.PHONE.matcher(number).matches();
 
         boolean isValid = false;
 
-        if (number.length() >= 6 && number.length() <= 15)
-            isValid = true;
+//        if (number.length() >= 6 && number.length() <= 15)
+//            isValid = true;
 
-        return isValid;
+        if (number == null) {
+            return false;
+        } else {
+            if (number.length() < 6 || number.length() > 13) {
+                return false;
+            } else {
+                return android.util.Patterns.PHONE.matcher(number).matches();
+            }
+        }
+
     }
 
     public boolean validateMobile(String number) {
@@ -1197,11 +1328,15 @@ public class Utils {
     }
 
     public void setStatusBarColor(String strColor) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = ((Activity) _ctxt).getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.parseColor(strColor));
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = ((Activity) _ctxt).getWindow();
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(Color.parseColor(strColor));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1424,16 +1559,18 @@ public class Utils {
 
             Button bt = new Button(_ctxt);
             bt.setId(i);
-            bt.setText(Config.dependentModels.get(i).getStrName());
+            bt.setText((Config.dependentModels.get(i).getStrName()).toUpperCase());
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     tabWidth, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
             params.setMargins(1, 10, 7, 0);
             bt.setLayoutParams(params);
-            bt.setAllCaps(false);
+            bt.setAllCaps(true);
+            bt.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             bt.setTextColor(_ctxt.getResources().getColor(R.color.colorBlackDark));
             // bt.setTextColor(Color.parseColor("white"));
-            bt.setTextAppearance(_ctxt, android.R.style.TextAppearance_Medium);
+            bt.setTextAppearance(_ctxt, R.style.HeaderStyle);
+            //android.R.style.TextAppearance_Medium
 
             if (i == 0)
                 bt.setBackgroundResource(R.drawable.tab_selected);
@@ -1478,178 +1615,184 @@ public class Utils {
 
     public void loadNotifications() {
 
-        final ProgressDialog progressDialog = new ProgressDialog(_ctxt);
-        DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
-
-        if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-
-            try {
-
-                // WHERE  clause
-                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
-
-                // WHERE clause arguments
-                String[] selectionArgs = {Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
-                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, "datetime(" + DbHelper.COLUMN_UPDATE_DATE + ") DESC", null, false, null, null);
-                Log.i("TAG", "Cursor count:" + cursor.getCount());
-                if (cursor != null) {
-                    cursor.moveToFirst();
-
-                    do {
-
-                        createNotificationModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
-                    } while (cursor.moveToNext());
-                    cursor.close();
-                }
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                refreshNotifications();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
         try {
-            if (isConnectingToInternet()) {
-
-
-                /*progressDialog.setMessage(_ctxt.getString(R.string.loading));
-                progressDialog.setCancelable(false);
-                progressDialog.show();*/
-
-                StorageService storageService = new StorageService(_ctxt);
-             /*   storageService.findDocsByKeyValue(Config.collectionNotification,
-                        "user_id",
-                        Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
-                        new AsyncApp42ServiceApi.App42StorageServiceListener()*/
-                Query finalQuery;
-                Query q1 = QueryBuilder.build("user_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), QueryBuilder.Operator.EQUALS);
+            final ProgressDialog progressDialog = new ProgressDialog(_ctxt);
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+            Cursor cursor = null;
+            if (Config.dependentModels != null && Config.dependentModels.size() > 0) {
                 if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                    String defaultDate = null;
-                    Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
-                    if (cursorData != null && cursorData.getCount() > 0) {
-                        cursorData.moveToFirst();
-                        defaultDate = cursorData.getString(0);
-                        cursorData.close();
-                    } else {
-                        defaultDate = Utils.defaultDate;
+
+                    try {
+
+                        // WHERE  clause
+                        String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
+
+                        // WHERE clause arguments
+                        String[] selectionArgs = {Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
+                        cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, "datetime(" + DbHelper.COLUMN_UPDATE_DATE + ") DESC", null, false, null, null);
+                        Log.i("TAG", "Cursor count:" + cursor.getCount());
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+
+                            do {
+
+                                createNotificationModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                            } while (cursor.moveToNext());
+                            cursor.close();
+                        }
+                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                        refreshNotifications();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
 
-                    finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
-                } else {
-                    finalQuery = q1;
                 }
+            }
+            try {
+                if (isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
 
 
-                storageService.findDocsByQueryOrderBy(Config.collectionNotification, finalQuery, 3000, 0,
-                        "time", 1, new App42CallBack() {
+                    /*progressDialog.setMessage(_ctxt.getString(R.string.loading));
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();*/
 
-                            @Override
-                            public void onSuccess(Object o) {
+                    StorageService storageService = new StorageService(_ctxt);
+                 /*   storageService.findDocsByKeyValue(Config.collectionNotification,
+                            "user_id",
+                            Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(),
+                            new AsyncApp42ServiceApi.App42StorageServiceListener()*/
+                    Query finalQuery;
+                    Query q1 = QueryBuilder.build("user_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), QueryBuilder.Operator.EQUALS);
+                    if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                        String defaultDate = null;
+                        Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+                        if (cursorData != null && cursorData.getCount() > 0) {
+                            cursorData.moveToFirst();
+                            defaultDate = cursorData.getString(0);
+                            cursorData.close();
+                        } else {
+                            defaultDate = Utils.defaultDate;
+                        }
+                        // Build query q2
+                        Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
-                                if (o != null) {
-
-                                    Storage storage = (Storage) o;
-
-                                    //Utils.log(storage.toString(), "not ");
-                                    try {
-
-                                        if (storage.getJsonDocList().size() > 0) {
-                                            CareTaker.dbCon.beginDBTransaction();
-                                            ArrayList<Storage.JSONDocument> jsonDocList = storage.
-                                                    getJsonDocList();
-
-                                            for (int i = 0; i < jsonDocList.size(); i++) {
-                                                String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), "1", "", ""};
-                                                if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
-
-                                                    // WHERE clause arguments
-                                                    String[] selectionArgs = {jsonDocList.get(i).getDocId(), Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
-                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
-                                                } else {
+                        finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+                    } else {
+                        finalQuery = q1;
+                    }
 
 
-                                                    CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
-                                                    createNotificationModel(jsonDocList.get(i).getDocId(),
-                                                            jsonDocList.get(i).getJsonDoc());
+                    storageService.findDocsByQueryOrderBy(Config.collectionNotification, finalQuery, 3000, 0,
+                            "time", 1, new App42CallBack() {
+
+                                @Override
+                                public void onSuccess(Object o) {
+
+                                    if (o != null) {
+
+                                        Storage storage = (Storage) o;
+
+                                        //Utils.log(storage.toString(), "not ");
+                                        try {
+
+                                            if (storage.getJsonDocList().size() > 0) {
+                                                CareTaker.dbCon.beginDBTransaction();
+                                                ArrayList<Storage.JSONDocument> jsonDocList = storage.
+                                                        getJsonDocList();
+
+                                                for (int i = 0; i < jsonDocList.size(); i++) {
+                                                    String values[] = {jsonDocList.get(i).getDocId(), jsonDocList.get(i).getUpdatedAt(), jsonDocList.get(i).getJsonDoc(), Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID(), "1", "", ""};
+                                                    if ((sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
+
+                                                        // WHERE clause arguments
+                                                        String[] selectionArgs = {jsonDocList.get(i).getDocId(), Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
+                                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                    } else {
+
+
+                                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                        createNotificationModel(jsonDocList.get(i).getDocId(),
+                                                                jsonDocList.get(i).getJsonDoc());
+                                                    }
+
                                                 }
 
+                                                iProviderCount = 0;
+                                                CareTaker.dbCon.dbTransactionSucessFull();
+
+                                                //fetchProviders(progressDialog, 1);
                                             }
 
-                                            iProviderCount = 0;
-                                            CareTaker.dbCon.dbTransactionSucessFull();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            CareTaker.dbCon.endDBTransaction();
 
-                                            //fetchProviders(progressDialog, 1);
+                                        }
+                                        if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                            List<String> idsList = new ArrayList<String>();
+
+                                            if (sessionManager.getNotificationIds().size() > 0) {
+                                                idsList.addAll(sessionManager.getNotificationIds());
+                                            }
+                                            idsList.add(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+                                            sessionManager.saveNotificationIds(idsList);
+
+                                            refreshNotifications();
                                         }
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    } finally {
-                                        CareTaker.dbCon.endDBTransaction();
+                                    } else {
+                                        /*if (progressDialog.isShowing())
+                                            progressDialog.dismiss();*/
+                                        if (sessionManager.getNotificationIds().size() == 0)
+                                            toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                                    }
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
+                                }
+
+                                @Override
+                                public void onException(Exception e) {
+
+                                      /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                                    if (e != null) {
+                                       /* try {
+                                               *//* JSONObject jsonObject = new JSONObject(ex.getMessage());
+                                                JSONObject jsonObjectError = jsonObject.
+                                                        getJSONObject("app42Fault");
+                                                String strMess = jsonObjectError.getString("details");
+
+                                                toast(2, 2, strMess);*//*
+                                            //toast(2, 2, _ctxt.getString(R.string.error));
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
+                                        }*/
+                                    } else if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
                                     if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                        List<String> idsList = new ArrayList<String>();
-
-                                        if (sessionManager.getNotificationIds().size() > 0) {
-                                            idsList.addAll(sessionManager.getNotificationIds());
-                                        }
-                                        idsList.add(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
-                                        sessionManager.saveNotificationIds(idsList);
-
                                         refreshNotifications();
                                     }
 
-                                } else {
-                                    /*if (progressDialog.isShowing())
-                                        progressDialog.dismiss();*/
-                                    if (sessionManager.getNotificationIds().size() == 0)
-                                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                 }
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            });
 
-                            }
-
-                            @Override
-                            public void onException(Exception e) {
-
-                                  /*if (progressDialog.isShowing())
-                                    progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-
-                                if (e != null) {
-                                   /* try {
-                                           *//* JSONObject jsonObject = new JSONObject(ex.getMessage());
-                                            JSONObject jsonObjectError = jsonObject.
-                                                    getJSONObject("app42Fault");
-                                            String strMess = jsonObjectError.getString("details");
-
-                                            toast(2, 2, strMess);*//*
-                                        //toast(2, 2, _ctxt.getString(R.string.error));
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
-                                    }*/
-                                } else if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                                }
-                                if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                                    refreshNotifications();
-                                }
-
-                            }
-                        });
-
-            } else {
-                /*if (progressDialog.isShowing())
-                    progressDialog.dismiss();*/
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
-                    toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                    refreshNotifications();
+                } else {
+                    /*if (progressDialog.isShowing())
+                        progressDialog.dismiss();*/
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                    if (!(sessionManager.getNotificationIds().contains(Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()))) {
+                        toast(2, 2, _ctxt.getString(R.string.warning_internet));
+                        refreshNotifications();
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1674,6 +1817,9 @@ public class Utils {
                         jsonObjectProvider.getString("created_by"), strDocumentId);
 
                 notificationModel.setStrActivityId(jsonObjectProvider.optString("activity_id"));
+                notificationModel.setCheckincare_id(jsonObjectProvider.optString("checkincare_id"));
+                notificationModel.setCheckincare(jsonObjectProvider.optBoolean("checkincare"));
+
 
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
                     if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by"))) {
@@ -1852,48 +1998,57 @@ public class Utils {
         return password.length() > 1;
     }
 
-    public void fetchCustomerFromDB() {
-
-        String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
-
-        // WHERE clause arguments
-        String[] selectionArgs = {Config.collectionCustomer};
-        Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            do {
-                isUpdateServer = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_IS_UPDATED)));
-                createCustomerModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-
-    }
-
-    public void fetchCustomer(final ProgressDialog progressDialog, final int iFlag) {
-        if (iFlag == 1) {
-            Config.fileModels.clear();
-            iActivityCount = 0;
-            iProviderCount = 0;
-        }
+    public void fetchCustomerFromDB(int iFlag, String password, String userName) {
 
         try {
-            if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
-                fetchCustomerFromDB();
-                if (DashboardActivity.loadingPanel != null) {
-                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                }
-                if (iFlag == 1) {
-                    goToDashboard();
-                }
+            String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+            // WHERE clause arguments
+            String[] selectionArgs = {Config.collectionCustomer};
+            Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                do {
+                    isUpdateServer = Boolean.valueOf(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_IS_UPDATED)));
+                    createCustomerModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+
+            if (!isUpdateServer && isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
+                updateorInsertCustomerData(iFlag, password, userName);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if (!isUpdateServer && isConnectingToInternet()) {
-            updateorInsertCustomerData(iFlag);
+    }
+
+    public void fetchCustomer(final ProgressDialog progressDialog, final int iFlag, String password, String userName) {
+        if (iFlag == 1) {
+            Config.fileModels.clear();
+            iActivityCount = 0;
+            iProviderCount = 0;
         }
+        Utils.progressDialog = progressDialog;
+
+        try {
+            if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
+                fetchCustomerFromDB(iFlag, password, userName);
+
+                if (DashboardActivity.loadingPanel != null && DashboardActivity.loadingPanel.getVisibility() == View.VISIBLE) {
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                }
+                if (iFlag == 1) {
+                    goToDashboard();
+                }
+            } else if (!isUpdateServer && isConnectingToInternet()) {
+                updateorInsertCustomerData(iFlag, password, userName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -1960,6 +2115,42 @@ public class Utils {
                             e.printStackTrace();
                         }
 
+
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        //progressDialog.dismiss();
+                    }
+                });
+
+    }
+
+    public void updateCustomerRegistrationDetailOnServer(boolean status) {
+        StorageService storageService = new StorageService(_ctxt);
+
+        JSONObject jsonToUpdate = new JSONObject();
+
+        try {
+            jsonToUpdate.put("customer_register", status);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        storageService.updateDocs(jsonToUpdate,
+                Config.customerModel.getStrCustomerID(),
+                Config.collectionCustomer, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+
+                        try {
+                            Config.customerModel.setCustomerRegistered(true);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                     }
 
@@ -2078,7 +2269,7 @@ public class Utils {
 
     }
 
-    public void updateorInsertCustomerData(final int iFlag) {
+    public void updateorInsertCustomerData(final int iFlag, final String password, final String userName) {
         try {
             if (isConnectingToInternet()) {
 
@@ -2098,8 +2289,7 @@ public class Utils {
                             @Override
                             public void onFindDocSuccess(Storage response) {
 
-                            /*if (progressDialog.isShowing())
-                                progressDialog.dismiss();*/
+
                                 //                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
 
                                 if (response != null) {
@@ -2108,7 +2298,7 @@ public class Utils {
 
 
                                         boolean mIsRegistered = true;
-
+                                        sessionManager.createLoginSession(password, userName);
                                         Storage.JSONDocument jsonDocument = response.getJsonDocList().
                                                 get(0);
 
@@ -2150,11 +2340,7 @@ public class Utils {
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-                                        if (iFlag == 1) {
-                                            if (DashboardActivity.loadingPanel != null) {
-                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                            }
-                                        }
+
                                         if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
 
                                         } else {
@@ -2167,7 +2353,12 @@ public class Utils {
                                                     //todo add logic for taking to dependent add screen
                                                 }
 
+                                                if (iFlag == 1) {
+                                                    if (DashboardActivity.loadingPanel != null) {
+                                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                                    }
 
+                                                }
                                                 goToDashboard();
                                             }
                                         }
@@ -2199,8 +2390,12 @@ public class Utils {
 
                             @Override
                             public void onFindDocFailed(App42Exception ex) {
-                            /*if (progressDialog.isShowing())
-                                progressDialog.dismiss();*/
+                                try {
+                                    if (progressDialog != null && progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                                 if (iFlag == 1) {
                                     if (DashboardActivity.loadingPanel != null) {
                                         DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -2234,8 +2429,12 @@ public class Utils {
                             }
                         });
             } else {
-                /*if (progressDialog.isShowing())
-                    progressDialog.dismiss();*/
+                try {
+                    if (progressDialog != null && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if (iFlag == 1) {
                     if (DashboardActivity.loadingPanel != null)
                         DashboardActivity.loadingPanel.setVisibility(View.GONE);
@@ -2268,6 +2467,7 @@ public class Utils {
                     strDocumentId, "");
 
             //System.out.println("2nd Part of obj : "+jsonObject.toString());
+
             Config.customerModel.setStrDob(jsonObject.getString("customer_dob"));
             Config.customerModel.setStrCountryCode(jsonObject.getString("customer_country"));
             Config.customerModel.setStrCountryIsdCode(jsonObject.getString("customer_country_code"));
@@ -2280,7 +2480,7 @@ public class Utils {
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);*/
             Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
-
+            Config.customerModel.setCustomerRegistered(jsonObject.optBoolean("customer_register"));
             if (isUpdateServer && isConnectingToInternet()) {
                 updateCustomerDetailOnServer();
             }
@@ -2459,7 +2659,9 @@ public class Utils {
                     Config.categoryServiceModels.add(categoryServiceModel);
                 } else {
                     int iPosition = Config.strServiceCategoryNames.indexOf(jsonObject.optString("category_name"));
-                    Config.categoryServiceModels.get(iPosition).setServiceModels(serviceModel);
+
+                    if (iPosition > 0 && iPosition < Config.categoryServiceModels.size())
+                        Config.categoryServiceModels.get(iPosition).setServiceModels(serviceModel);
                 }
                 //
             }
@@ -2491,6 +2693,14 @@ public class Utils {
 
                     Config.fileModels.add(new FileModel(strDocumentId,
                             jsonObjectProvider.optString("provider_profile_url"), "IMAGE"));
+                } else {
+                    int iPosition = Config.strProviderIdsAdded.indexOf(providerModel.getStrProviderId());
+
+                    if (iPosition > -1 && iPosition < Config.providerModels.size()) {
+                        Config.providerModels.set(iPosition, providerModel);
+                    } else {
+
+                    }
                 }
             }
         } catch (JSONException e) {
@@ -2509,7 +2719,10 @@ public class Utils {
                 if (!Config.strDependentIds.contains(strDependentDocId)) {
                     Config.strDependentIds.add(strDependentDocId);
                     sessionManager.saveDependentsIds(Config.strDependentIds);
+
+
                     Config.dependentNames.add(jsonObjectDependent.getString("dependent_contact_no"));
+
 
                     dependentModel = new DependentModel();
 
@@ -2577,7 +2790,9 @@ public class Utils {
                         }
                     }*/
 
+
                     Config.dependentModels.add(dependentModel);
+
 
                     ClientModel clientModel = new ClientModel();
                     clientModel.setDependentModels(Config.dependentModels);
@@ -2586,7 +2801,7 @@ public class Utils {
                             dependentModel.getStrImageUrl(), "IMAGE"));
                 }
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return dependentModel;
@@ -2604,6 +2819,9 @@ public class Utils {
             //
             checkInCareModel.setStrName(jsonObjectCheck.optString("check_in_care_name"));
             checkInCareModel.setStrMediaComment(jsonObjectCheck.optString("media_comment"));
+            checkInCareModel.setStrProviderID(jsonObjectCheck.optString("provider_id"));
+            checkInCareModel.setStrMonth(jsonObjectCheck.optString("month"));
+            checkInCareModel.setStrStatus(jsonObjectCheck.optString("status"));
             JSONArray subMainactivities = jsonObjectCheck.optJSONArray("activities");
             JSONArray picture = jsonObjectCheck.optJSONArray("picture");
 
@@ -2624,11 +2842,14 @@ public class Utils {
 
                             JSONArray imageDetails = jsonObject.optJSONArray("pictures_details");
                             for (int k = 0; k < imageDetails.length(); k++) {
-                                JSONObject jsonObjectImage = imageDetails.getJSONObject(k);
+                                JSONObject jsonObjectImage = imageDetails.optJSONObject(k);
+                                if (jsonObjectImage.has("0") && jsonObjectImage.optString("0").equalsIgnoreCase("empty")) {
 
-                                ImageModelCheck imageModelCheck = new ImageModelCheck(jsonObjectImage.optString("image_url"),
-                                        jsonObjectImage.optString("description"), jsonObjectImage.optString("date_time"));
-                                imageModels.add(imageModelCheck);
+                                } else {
+                                    ImageModelCheck imageModelCheck = new ImageModelCheck(jsonObjectImage.optString("image_url"),
+                                            jsonObjectImage.optString("description"), jsonObjectImage.optString("date_time"));
+                                    imageModels.add(imageModelCheck);
+                                }
                             }
 
                             pictureModel.setImageModels(imageModels);
@@ -2666,7 +2887,7 @@ public class Utils {
 
                                 SubActivityModel subActivityModel = new SubActivityModel(jsonObjectsubactivity.optString("sub_activity_name"),
                                         jsonObjectsubactivity.optString("status"), jsonObjectsubactivity.optString("due_status"),
-                                        jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("utility_name"));
+                                        jsonObjectsubactivity.optString("due_date"), jsonObjectsubactivity.optString("utility_name"), jsonObjectsubactivity.optBoolean("checkbox_status"));
                                 subActivityModels.add(subActivityModel);
                             }
                             CheckInCareActivityModel checkInCareActivityModel = new CheckInCareActivityModel(jsonObjectsubactivitites.optString("activity_name"), subActivityModels);
@@ -2819,6 +3040,7 @@ public class Utils {
                                     jsonObjectImage.optString("image_description"),
                                     jsonObjectImage.optString("image_taken"));
 
+
                             Config.fileModels.add(new FileModel(jsonObjectImage.optString("image_name"),
                                     jsonObjectImage.optString("image_url"), "IMAGE"));
 
@@ -2877,6 +3099,7 @@ public class Utils {
                                             jsonObjectMsFile.optString("file_desc"),
                                             jsonObjectMsFile.optString("file_path"),
                                             jsonObjectMsFile.optString("file_time"));
+
 
                                     Config.fileModels.add(new FileModel(jsonObjectMsFile.optString("file_name"),
                                             jsonObjectMsFile.optString("file_url"), jsonObjectMsFile.optString("file_type")));
@@ -3040,6 +3263,7 @@ public class Utils {
         } else {
 
         }
+        Cursor cursor = null;
         if (sessionManager.getDependentsStatus()) {
             try {
 
@@ -3048,7 +3272,7 @@ public class Utils {
 
                 // WHERE clause arguments
                 String[] selectionArgs = {Config.collectionDependent};
-                Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
                 Log.i("TAG", "Cursor count:" + cursor.getCount());
                 if (cursor != null) {
                     cursor.moveToFirst();
@@ -3058,8 +3282,11 @@ public class Utils {
                         dependentsIdsList = new ArrayList<>();
                         dependentsIdsList.clear();
                         dependentsIdsList.addAll(sessionManager.getUpdateDependent());
-                        if (isConnectingToInternet() && dependentsIdsList.contains(dependentModel.getStrDependentID())) {
-                            updateDependentsDetailOnServer(dependentModel);
+                        if (dependentModel != null && dependentModel.getStrDependentID() != null) {
+                            if (isConnectingToInternet() && dependentsIdsList.
+                                    contains(dependentModel.getStrDependentID())) {
+                                updateDependentsDetailOnServer(dependentModel);
+                            }
                         }
 
                     } while (cursor.moveToNext());
@@ -3078,7 +3305,7 @@ public class Utils {
         }
 
 
-        if (isConnectingToInternet()) {
+        if (isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
 
             String defaultDate = null;
             Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionDependent);
@@ -3093,7 +3320,7 @@ public class Utils {
             Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
             // Build query q2
             if (sessionManager.getDependentsStatus()) {
-                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                 finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
             } else {
@@ -3396,7 +3623,7 @@ public class Utils {
         sessionManager.getProvidersIds().clear();
         Config.strProviderIds.add("5715c39ee4b0d2aca6fe5d17");
         sessionManager.saveProvidersIds(Config.strProviderIds);
-
+        Cursor cursor = null;
         if (Config.strProviderIds.size() > 0) {
             DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
             if (sessionManager.getProviderStatus()) {
@@ -3407,7 +3634,7 @@ public class Utils {
 
                     // WHERE clause arguments
                     String[] selectionArgs = {Config.collectionProvider};
-                    Cursor cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                    cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
                     Log.i("TAG", "Cursor count:" + cursor.getCount());
                     if (cursor != null) {
                         cursor.moveToFirst();
@@ -3424,18 +3651,16 @@ public class Utils {
                     e.printStackTrace();
                 }
 
+                if (Config.intSelectedMenu == Config.intDashboardScreen) {
+                    DashboardActivity.goToDashboard();
+                }
+
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 // toast(2, 2, _ctxt.getString(R.string.warning_internet));
-                if (iFlag == 0)
-                    loadImages();
-                if (iFlag == 1)
-                    refreshNotificationsImages();
-                if (iFlag == 2)
-                    loadImagesActivityMonth();
             }
 
 
-            if (isConnectingToInternet()) {
+            if (isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
 
               /*  if (!Config.strProviderIdsAdded.contains(Config.strProviderIds.
                         get(iProviderCount))) {*/
@@ -3456,7 +3681,7 @@ public class Utils {
                         QueryBuilder.Operator.INLIST);
                 if (sessionManager.getProviderStatus()) {
                     // Build query q2
-                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
+                    Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(query, QueryBuilder.Operator.AND, q2);
 
@@ -3472,7 +3697,6 @@ public class Utils {
                             public void onSuccess(Object o) {
                                 /*if (progressDialog.isShowing())
                                     progressDialog.dismiss();*/
-                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
                                 try {
                                     if (o != null) {
 
@@ -3543,13 +3767,15 @@ public class Utils {
                                     Utils.log(e.getMessage(), " Response Failure");
 
                                     if (e != null) {
-                                        if (iFlag == 0)
-                                            loadImages();
-                                        if (iFlag == 1)
-                                            refreshNotificationsImages();
-                                        if (iFlag == 2)
-                                            loadImagesActivityMonth();
-                                    } else if (!sessionManager.getProviderStatus()) {
+                                        if (!sessionManager.getProviderStatus()) {
+                                            if (iFlag == 0)
+                                                loadImages();
+                                            if (iFlag == 1)
+                                                refreshNotificationsImages();
+                                            if (iFlag == 2)
+                                                loadImagesActivityMonth();
+                                        }
+                                    } else {
                                         toast(2, 2, _ctxt.getString(R.string.warning_internet));
                                     }
                                 } catch (Exception e1) {
@@ -3669,12 +3895,20 @@ public class Utils {
     public void goToDashboard() {
 
         try {
+            try {
+                if (progressDialog != null && progressDialog.isShowing())
+                    progressDialog.dismiss();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             Config.intSelectedMenu = Config.intDashboardScreen;
 
             toast(1, 1, _ctxt.getString(R.string.success_login));
             Config.boolIsLoggedIn = true;
             Intent intent = new Intent(_ctxt, DashboardActivity.class);
             _ctxt.startActivity(intent);
+            ((Activity) _ctxt).finish();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -3869,6 +4103,20 @@ public class Utils {
         return date; //
     }
 
+    public String convertDateToStringQueryDB(Date dtDate) {
+
+        String date = null;
+
+        try {
+            date = readFormatDB.format(dtDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //log("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
     public Date convertStringToDateQuery(String strDate) {
 
         Date date = null;
@@ -3883,64 +4131,52 @@ public class Utils {
         return date; //
     }
 
+    public Date convertStringToDateQueryDB(String strDate) {
+
+        Date date = null;
+
+        try {
+            date = queryFormatDB.parse(strDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //log("Utils", String.valueOf(date)); //Mon Sep 14 00:00:00 IST 2015
+        return date; //
+    }
+
     public void fetchLatestActivitiesByMonth(int iMonth, int iYear,
                                              final ProgressDialog progressDialog) {
+
 
         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
         iMonth = iMonth; // - 1
 
         String strMonth = String.valueOf(iMonth);
-        String strMonthDate, strStartDate, strToDate, strEndDate;
+        String strMonthDate, strStartDate, strToDate, strEndDate, strEndDateDB, strStartDateDB, strToDateDB;
 
         if (iMonth <= 9)
             strMonth = String.valueOf("0" + iMonth);
+
+        strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
+
+        //String strFromDate = strMonthDate + "T05:30:00.000Z";
+
+        strStartDateDB = convertDateToStringQueryDB(convertStringToDateQueryDB(strMonthDate + "T00:00:00.000"));
+        //
+        strToDateDB = getMonthLastDate(strMonthDate);
+
+        log(strToDateDB, " EDATE ");
+
+        strEndDateDB = convertDateToStringQueryDB(convertStringToDateQueryDB(strToDateDB + "T24:00:00.00"));
+        Cursor cursor = null;
+
         if (sessionManager.getActivityStatus()) {
-            Cursor cursor = null;
+
             try {
 
-                strMonthDate = String.valueOf(iYear + "-" + strMonth + "-" + "01");
-
-                //String strFromDate = strMonthDate + "T05:30:00.000Z";
-                SimpleDateFormat readFormat =
-                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-                SimpleDateFormat queryFormat =
-                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale);
-                Date strDate = (readFormat.parse(strMonthDate + " 00:00:00"));
-
-                strStartDate = queryFormat.format(strDate);
-
-                SimpleDateFormat readFormatDate =
-                        new SimpleDateFormat("yyyy-MM-dd", locale);
-                Date today = null;
-                try {
-                    today = readFormatDate.parse(strMonthDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(today);
-                calendar.add(Calendar.MONTH, 1);
-                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                int month = calendar.get(Calendar.MONTH) + 1;
-                int year = calendar.get(Calendar.YEAR);
-                String mnth = "";
-                if (month <= 9) {
-                    mnth = "0" + month;
-                } else {
-                    mnth = "" + month;
-                }
-                String lastDayOfMonth = year + "-" + mnth + "-01";
-
-                log(strStartDate, " Start Date ");
-
-                today = readFormat.parse(lastDayOfMonth + " 00:00:00");
-
-                strEndDate = queryFormat.format(today);
-                log(strEndDate, "LAST DATE ");
-
                 // WHERE clause
-                String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDate + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDate + "')";
+                String whereClause = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionActivity + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDateDB + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDateDB + "')";
 
                 cursor = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClause);
 
@@ -3950,11 +4186,10 @@ public class Utils {
                     do {
 
                         try {
-                            //String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_OBJECT_ID + " =?";
-                            // WHERE clause arguments
-                            //String selectionArgsMile[] = {Config.collectionMilestones, cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))};
-                            String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDate + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDate + "')";
+                            // old query removed date parameter
 
+                           // String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)) + "' AND " + DbHelper.COLUMN_DOC_DATE + " >= Datetime('" + strStartDateDB + "') and " + DbHelper.COLUMN_DOC_DATE + " <= Datetime('" + strEndDateDB + "')";
+                            String whereClauseMile = " where " + DbHelper.COLUMN_COLLECTION_NAME + " = '" + Config.collectionMilestones + "' AND " + DbHelper.COLUMN_OBJECT_ID + " = '" + cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID))+"'";
                             //Cursor cursorMilestone = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgsMile, DbHelper.COLUMN_DOC_DATE, null, false, null, null);
                             Cursor cursorMilestone = CareTaker.dbCon.fetchFromSelect(DbHelper.strTableNameCollection, whereClauseMile);
                             JSONArray jArray = new JSONArray();
@@ -4003,27 +4238,37 @@ public class Utils {
             }
         }
 
-        strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
-
-        //String strFromDate = strMonthDate + "T05:30:00.000Z";
-
-        strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
-        //
-        strToDate = getMonthLastDate(strMonthDate);
-
-        log(strToDate, " EDATE ");
-
-        strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
+//        strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
+//
+//        //String strFromDate = strMonthDate + "T05:30:00.000Z";
+//
+//        strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
+//        //
+//        strToDate = getMonthLastDate(strMonthDate);
+//
+//        log(strToDate, " EDATE ");
+//
+//        strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
 
         String key2 = "dependent_id";
 
 
-        if (isConnectingToInternet()) {
+        if (isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
 
 
             StorageService storageService = new StorageService(_ctxt);
 
+            strMonthDate = String.valueOf(iYear + "-" + strMonth + "-01");
 
+            //String strFromDate = strMonthDate + "T05:30:00.000Z";
+
+            strStartDate = convertDateToStringQuery(convertStringToDateQuery(strMonthDate + "T00:00:00.000"));
+            //
+            strToDate = getMonthLastDate(strMonthDate);
+
+            log(strToDate, " EDATE ");
+
+            strEndDate = convertDateToStringQuery(convertStringToDateQuery(strToDate + "T23:59:59.999"));
             //String value2 = Config.strDependentIds.get(iActivityCount);
 
             Query q1 = QueryBuilder.build(key2, Config.strDependentIds, QueryBuilder.Operator.INLIST);
@@ -4041,25 +4286,25 @@ public class Utils {
 
             Query q5 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q4);
 
-            if (sessionManager.getActivityStatus()) {
-                String defaultDate = null;
-                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionNotification);
-                if (cursorData != null && cursorData.getCount() > 0) {
-                    cursorData.moveToFirst();
-                    defaultDate = cursorData.getString(0);
-                    if (defaultDate == null || defaultDate.length() == 0) {
-                        defaultDate = Utils.defaultDate;
-                    }
-                    cursorData.close();
-                } else {
-                    defaultDate = Utils.defaultDate;
-                }
-
-                Query q6 = QueryBuilder.build("_$updatedAt", strEndDate, QueryBuilder.Operator.GREATER_THAN_EQUALTO);
-                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
-            } else {
-
-            }
+//            if (sessionManager.getActivityStatus()) {
+//                String defaultDate = null;
+//                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionActivity);
+//                if (cursorData != null && cursorData.getCount() > 0) {
+//                    cursorData.moveToFirst();
+//                    defaultDate = cursorData.getString(0);
+//                    if (defaultDate == null || defaultDate.length() == 0) {
+//                        defaultDate = Utils.defaultDate;
+//                    }
+//                    cursorData.close();
+//                } else {
+//                    defaultDate = Utils.defaultDate;
+//                }
+//
+//                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
+//                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+//            } else {
+//
+//            }
 
            /* int max = 1;
             int offset = 0;
@@ -4359,6 +4604,174 @@ public class Utils {
         return "";
     }
 
+    public boolean fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
+
+        //iMonth = iMonth; // - 1
+        Config.checkInCareActivityNames.clear();
+        showCheckInButton = false;
+        if (sessionManager.getCheckInCareStatus()) {
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
+            Cursor cursor = null;
+            try {
+
+                // WHERE   clause
+                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+                // WHERE clause arguments
+                String[] selectionArgs = {Config.collectionCheckInCare};
+                cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                Log.i("TAG", "Cursor count:" + cursor.getCount());
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    do {
+
+                        String strDocument = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
+                        String strActivityId = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID));
+                        //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+
+                        createCheckInCareModel(strActivityId, strDocument);
+                    } while (cursor.moveToNext());
+
+                    showCheckInButton = true;
+                }/* else {
+
+                }*/
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                if (cursor != null)
+                    cursor.close();
+            }
+        }
+
+        if (isConnectingToInternet()) {
+
+            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
+            String defaultDate = null;
+            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
+            if (cursorData != null && cursorData.getCount() > 0) {
+                cursorData.moveToFirst();
+                defaultDate = cursorData.getString(0);
+                cursorData.close();
+            } else {
+                defaultDate = Utils.defaultDate;
+            }
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            Query q1 = QueryBuilder.build("year", iYear, QueryBuilder.
+                    Operator.EQUALS);
+            Query q2 = QueryBuilder.build("month", iMonth, QueryBuilder.
+                    Operator.EQUALS);
+            Query q3 = QueryBuilder.build("customer_id", CustomerId, QueryBuilder.
+                    Operator.EQUALS);
+
+            // Build query q1 for key1 equal to name and value1 equal to Nick
+
+            // Build query q2 for key2 equal to age and value2
+
+            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+            Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
+            if (sessionManager.getCheckInCareStatus()) {
+                // Build query q2
+                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
+                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+            }
+
+            storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q5, 3000, 0, "created_date", 1, new App42CallBack() {
+                        @Override
+                        public void onSuccess(Object o) {
+
+
+                            Storage response = (Storage) o;
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                            if (response != null) {
+
+                                Utils.log(response.toString(), " S ");
+                                Utils.log("Size : " + response.getJsonDocList().size(), " S ");
+                                if (response.getJsonDocList().size() > 0) {
+                                    try {
+                                        try {
+                                            for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                                Storage.JSONDocument jsonDocument = response.
+                                                        getJsonDocList().get(i);
+
+                                                String strDocument = jsonDocument.getJsonDoc();
+                                                String strActivityId = jsonDocument.getDocId();
+                                                //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+                                                String values[] = {strActivityId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionCheckInCare, "", "1", "", ""};
+
+                                                if (sessionManager.getCheckInCareStatus()) {
+                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                                                    // WHERE clause arguments
+                                                    String[] selectionArgs = {strActivityId};
+                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+
+                                                } else {
+
+                                                    CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                    createCheckInCareModel(strActivityId, strDocument);
+
+                                                }
+
+
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                        if (!sessionManager.getCheckInCareStatus()) {
+                                            sessionManager.saveCheckInCareStatus(true);
+                                            showCheckInButton = true;
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                        }
+                    }
+            );
+        }
+        return showCheckInButton;
+    }
+
+    public void deleteUserFromPush(String email, Context context) {
+        PushNotificationService pushNotificationService = new PushNotificationService(
+                context);
+
+        pushNotificationService.deleteUserDevice(email,
+                new App42CallBack() {
+
+                    @Override
+                    public void onSuccess(Object o) {
+                        Log.i("TAG", "success" + o.toString());
+                    }
+
+                    @Override
+                    public void onException(Exception ex) {
+                        Log.i("TAG", "Exception" + ex.getMessage());
+                    }
+                });
+    }
+
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -4380,7 +4793,7 @@ public class Utils {
         @Override
         public void run() {
             try {
-                //loadAllFiles();
+                loadAllFiles();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -4388,4 +4801,5 @@ public class Utils {
             threadHandler.sendEmptyMessage(0);
         }
     }
+
 }
