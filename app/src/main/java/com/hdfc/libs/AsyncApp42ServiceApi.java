@@ -106,8 +106,12 @@ public class AsyncApp42ServiceApi {
 
     public static AsyncApp42ServiceApi instance(Context context) {
 
-        if (mInstance == null) {
-            mInstance = new AsyncApp42ServiceApi(context);
+        try {
+            if (mInstance == null) {
+                mInstance = new AsyncApp42ServiceApi(context);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return mInstance;

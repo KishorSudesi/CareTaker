@@ -111,73 +111,80 @@ public class DashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        utils = new Utils(getActivity());
+        try {
+            utils = new Utils(getActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //context = getContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View rootView = null;
 
-        //listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivities);
+        try {
+            // Inflate the layout for this fragment
+            rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        pager = (ViewPager) rootView.findViewById(R.id.dpndntCarousel);
+            //listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivities);
 
-        leftNav = (ImageView) rootView.findViewById(R.id.left_nav);
-        rightNav = (ImageView) rootView.findViewById(R.id.right_nav);
-        PAGES = Config.dependentModels.size();
-        checkInCare = (Button) rootView.findViewById(R.id.buttonCheckInCare);
+            pager = (ViewPager) rootView.findViewById(R.id.dpndntCarousel);
 
-        sessionManager = new SessionManager(getActivity());
+            leftNav = (ImageView) rootView.findViewById(R.id.left_nav);
+            rightNav = (ImageView) rootView.findViewById(R.id.right_nav);
+            PAGES = Config.dependentModels.size();
+            checkInCare = (Button) rootView.findViewById(R.id.buttonCheckInCare);
 
-        checkInCare.setVisibility(View.GONE);
+            sessionManager = new SessionManager(getActivity());
 
-        adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
+            checkInCare.setVisibility(View.GONE);
 
-        // Images left navigation
-        leftNav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int tab = pager.getCurrentItem();
-                if (tab > 0) {
-                    tab--;
-                    pager.setCurrentItem(tab);
-                } else if (tab == 0) {
-                    pager.setCurrentItem(tab);
+            adapter = new CarouselPagerAdapter(getActivity(), getChildFragmentManager());
+
+            // Images left navigation
+            leftNav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int tab = pager.getCurrentItem();
+                    if (tab > 0) {
+                        tab--;
+                        pager.setCurrentItem(tab);
+                    } else if (tab == 0) {
+                        pager.setCurrentItem(tab);
+                    }
                 }
-            }
-        });
+            });
 
-        // Images right navigatin
-        rightNav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int tab = pager.getCurrentItem();
-                tab++;
-                pager.setCurrentItem(tab);
+            // Images right navigatin
+            rightNav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int tab = pager.getCurrentItem();
+                    tab++;
+                    pager.setCurrentItem(tab);
 
-            }
-        });
-
-        leftNav.setVisibility(View.GONE);
-        new setAdapterTask().execute();
-
-
-        checkInCare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (Config.checkInCareActivityNames.size() > 0) {
-
-                    Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
-                    intent.putExtra(Config.KEY_START_FROM,Config.START_FROM_DASHBOARD);
-                    startActivity(intent);
                 }
+            });
 
-            }
-        });
+            leftNav.setVisibility(View.GONE);
+            new setAdapterTask().execute();
+
+
+            checkInCare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (Config.checkInCareActivityNames.size() > 0) {
+
+                        Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
+                        intent.putExtra(Config.KEY_START_FROM,Config.START_FROM_DASHBOARD);
+                        startActivity(intent);
+                    }
+
+                }
+            });
 
 
       /*  textView1 = (TextView) rootView.findViewById(R.id.textView1);
@@ -247,7 +254,10 @@ public class DashboardFragment extends Fragment {
                 pager.setCurrentItem(intPosition, true);
             }
         });*/
-        //
+            //
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return rootView;
     }
@@ -265,148 +275,152 @@ public class DashboardFragment extends Fragment {
     public void fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
 
         //iMonth = iMonth; // - 1
-        Config.checkInCareActivityNames.clear();
-        Cursor cursor = null;
-        if (sessionManager.getCheckInCareStatus()) {
-
-            DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
-
-
-            try {
-
-                // WHERE   clause
-                String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
-
-                // WHERE clause arguments
-                String[] selectionArgs = {Config.collectionCheckInCare};
-                cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
-                Log.i("TAG", "Cursor count:" + cursor.getCount());
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    do {
-
-                        String strDocument = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
-                        String strActivityId = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID));
-                        //JSONObject jsonObjectActivity = new JSONObject(strDocument);
-
-
-                        utils.createCheckInCareModel(strActivityId, strDocument);
-                    } while (cursor.moveToNext());
-
-                    checkInCare.setVisibility(View.VISIBLE);
-                }/* else {
-
-                }*/
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                if (cursor != null)
-                    cursor.close();
-            }
-        }
-
-        if (utils.isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
-
-
-            String defaultDate = null;
-            Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
-            if (cursorData != null && cursorData.getCount() > 0) {
-                cursorData.moveToFirst();
-                defaultDate = cursorData.getString(0);
-                cursorData.close();
-            } else {
-                defaultDate = Utils.defaultDate;
-            }
-
-            StorageService storageService = new StorageService(getActivity());
-
-            Query q1 = QueryBuilder.build("year", iYear, QueryBuilder.
-                    Operator.EQUALS);
-            Query q2 = QueryBuilder.build("month", iMonth, QueryBuilder.
-                    Operator.EQUALS);
-            Query q3 = QueryBuilder.build("customer_id", CustomerId, QueryBuilder.
-                    Operator.EQUALS);
-
-            // Build query q1 for key1 equal to name and value1 equal to Nick
-
-            // Build query q2 for key2 equal to age and value2
-
-            Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
-            Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
+        try {
+            Config.checkInCareActivityNames.clear();
+            Cursor cursor = null;
             if (sessionManager.getCheckInCareStatus()) {
-                // Build query q2
-                Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
-                q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+
+                DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
+
+
+                try {
+
+                    // WHERE   clause
+                    String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
+
+                    // WHERE clause arguments
+                    String[] selectionArgs = {Config.collectionCheckInCare};
+                    cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, null, null, false, null, null);
+                    Log.i("TAG", "Cursor count:" + cursor.getCount());
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        do {
+
+                            String strDocument = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT));
+                            String strActivityId = cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID));
+                            //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+
+
+                            utils.createCheckInCareModel(strActivityId, strDocument);
+                        } while (cursor.moveToNext());
+
+                        checkInCare.setVisibility(View.VISIBLE);
+                    }/* else {
+
+                    }*/
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                    if (cursor != null)
+                        cursor.close();
+                }
             }
 
-            storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q5, 3000, 0, "created_date", 1, new App42CallBack() {
-                        @Override
-                        public void onSuccess(Object o) {
+            if (utils.isConnectingToInternet() && (cursor == null || cursor.getCount() <= 0)) {
 
 
-                            Storage response = (Storage) o;
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                String defaultDate = null;
+                Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionCheckInCare);
+                if (cursorData != null && cursorData.getCount() > 0) {
+                    cursorData.moveToFirst();
+                    defaultDate = cursorData.getString(0);
+                    cursorData.close();
+                } else {
+                    defaultDate = Utils.defaultDate;
+                }
 
-                            if (response != null) {
+                StorageService storageService = new StorageService(getActivity());
 
-                                Utils.log(response.toString(), " S ");
-                                Utils.log("Size : " + response.getJsonDocList().size(), " S ");
-                                if (response.getJsonDocList().size() > 0) {
-                                    try {
+                Query q1 = QueryBuilder.build("year", iYear, QueryBuilder.
+                        Operator.EQUALS);
+                Query q2 = QueryBuilder.build("month", iMonth, QueryBuilder.
+                        Operator.EQUALS);
+                Query q3 = QueryBuilder.build("customer_id", CustomerId, QueryBuilder.
+                        Operator.EQUALS);
+
+                // Build query q1 for key1 equal to name and value1 equal to Nick
+
+                // Build query q2 for key2 equal to age and value2
+
+                Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);
+                Query q5 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.AND, q4);
+                if (sessionManager.getCheckInCareStatus()) {
+                    // Build query q2
+                    Query q6 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
+                    q5 = QueryBuilder.compoundOperator(q5, QueryBuilder.Operator.AND, q6);
+                }
+
+                storageService.findDocsByQueryOrderBy(Config.collectionCheckInCare, q5, 3000, 0, "created_date", 1, new App42CallBack() {
+                            @Override
+                            public void onSuccess(Object o) {
+
+
+                                Storage response = (Storage) o;
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+
+                                if (response != null) {
+
+                                    Utils.log(response.toString(), " S ");
+                                    Utils.log("Size : " + response.getJsonDocList().size(), " S ");
+                                    if (response.getJsonDocList().size() > 0) {
                                         try {
-                                            for (int i = 0; i < response.getJsonDocList().size(); i++) {
+                                            try {
+                                                for (int i = 0; i < response.getJsonDocList().size(); i++) {
 
-                                                Storage.JSONDocument jsonDocument = response.
-                                                        getJsonDocList().get(i);
+                                                    Storage.JSONDocument jsonDocument = response.
+                                                            getJsonDocList().get(i);
 
-                                                String strDocument = jsonDocument.getJsonDoc();
-                                                String strActivityId = jsonDocument.getDocId();
-                                                //JSONObject jsonObjectActivity = new JSONObject(strDocument);
+                                                    String strDocument = jsonDocument.getJsonDoc();
+                                                    String strActivityId = jsonDocument.getDocId();
+                                                    //JSONObject jsonObjectActivity = new JSONObject(strDocument);
 
-                                                String values[] = {strActivityId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionCheckInCare, "", "1", "", ""};
+                                                    String values[] = {strActivityId, jsonDocument.getUpdatedAt(), strDocument, Config.collectionCheckInCare, "", "1", "", ""};
 
-                                                if (sessionManager.getCheckInCareStatus()) {
-                                                    String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+                                                    if (sessionManager.getCheckInCareStatus()) {
+                                                        String selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
 
-                                                    // WHERE clause arguments
-                                                    String[] selectionArgs = {strActivityId};
-                                                    CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
+                                                        // WHERE clause arguments
+                                                        String[] selectionArgs = {strActivityId};
+                                                        CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);
 
-                                                } else {
+                                                    } else {
 
-                                                    CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
-                                                    utils.createCheckInCareModel(strActivityId, strDocument);
+                                                        CareTaker.dbCon.insert(DbHelper.strTableNameCollection, values, Config.names_collection_table);
+                                                        utils.createCheckInCareModel(strActivityId, strDocument);
+
+                                                    }
+
 
                                                 }
-
-
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
+
+                                            if (!sessionManager.getCheckInCareStatus()) {
+                                                sessionManager.saveCheckInCareStatus(true);
+                                                checkInCare.setVisibility(View.VISIBLE);
+                                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                                            }
+
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-
-                                        if (!sessionManager.getCheckInCareStatus()) {
-                                            sessionManager.saveCheckInCareStatus(true);
-                                            checkInCare.setVisibility(View.VISIBLE);
-                                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                                        }
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
                                 }
                             }
-                        }
 
-                        @Override
-                        public void onException(Exception e) {
-                            DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            @Override
+                            public void onException(Exception e) {
+                                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                            }
                         }
-                    }
-            );
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -446,30 +460,39 @@ public class DashboardFragment extends Fragment {
         @Override
         protected void onPostExecute(Void result) {
 
-            pager.setAdapter(adapter);
-            pager.setOnPageChangeListener(adapter);
+            try {
 
-            // Set current item to the middle page so we can fling to both
-            // directions left and right
+                try {
+                    pager.setAdapter(adapter);
+                    pager.setOnPageChangeListener(adapter);
 
-            int i = Config.dependentModels.size();
+                    // Set current item to the middle page so we can fling to both
+                    // directions left and right
 
-            if (i > 0)
-                pager.setCurrentItem(0);
+                    int i = Config.dependentModels.size();
 
-            // Necessary or the pager will only have one extra page to show
-            // make this at least however many pages you can see
-            pager.setOffscreenPageLimit(Config.dependentModels.size()); //1
-            //
+                    if (i > 0)
+                        pager.setCurrentItem(0);
 
-            // Set margin for pages as a negative number, so a part of next and
-            // previous pages will be showed
-            // pager.setPageMargin(-110); //-200
+                    // Necessary or the pager will only have one extra page to show
+                    // make this at least however many pages you can see
+                    pager.setOffscreenPageLimit(Config.dependentModels.size()); //1
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //
 
-            Calendar c = Calendar.getInstance();
-            String iyear = String.valueOf(c.get(Calendar.YEAR));
-            String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
-            fetchLatestCheckInCare(imonth, iyear, Config.customerModel.getStrCustomerID());
+                // Set margin for pages as a negative number, so a part of next and
+                // previous pages will be showed
+                // pager.setPageMargin(-110); //-200
+
+                Calendar c = Calendar.getInstance();
+                String iyear = String.valueOf(c.get(Calendar.YEAR));
+                String imonth = String.valueOf(c.get(Calendar.MONTH) + 1);
+                fetchLatestCheckInCare(imonth, iyear, Config.customerModel.getStrCustomerID());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     }

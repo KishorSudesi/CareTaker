@@ -26,7 +26,6 @@ import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
-import com.hdfc.caretaker.fragments.ActivityFragment;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbHelper;
@@ -164,12 +163,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
-        try {
-             lastSelectedDate = Utils.readFormat.parse(ActivityFragment.activitiesModelArrayList.get(ActivityFragment.activitiesModelArrayList.size()-1).getStrActivityDate());
-        } catch (Exception e) {
-            e.printStackTrace();
-            lastSelectedDate=new Date();
-        }
+        selectedDate=new Date();
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +171,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
                 new SlideDateTimePicker.Builder(getSupportFragmentManager())
                         .setListener(listener)
-                        .setInitialDate(lastSelectedDate)
+                        .setInitialDate(selectedDate)
                         .build()
                         .show();
             }

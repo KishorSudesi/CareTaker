@@ -27,55 +27,53 @@
             android:src="@drawable/add_dependent"
             android:visibility="invisible" />
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/personImage_copy">
+            android:layout_below="@+id/personImage_copy"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <TableRow android:gravity="center">
+            <TextView
+                android:id="@+id/textViewName"
+                style="@style/TextViewSmallStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_general"
+                android:layout_marginRight="@dimen/margin_general"
+                android:gravity="center"
+                android:padding="@dimen/padding_general"
+                android:textColor="@color/blue"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/textViewName"
-                    style="@style/TextViewSmallStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_general"
-                    android:layout_marginRight="@dimen/margin_general"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_general"
-                    android:textColor="@color/blue"
-                    android:textStyle="bold" />
 
-            </TableRow>
+            <TextView
+                android:id="@+id/dateTimeRating"
+                style="@style/TextViewSmallStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/padding_general"
+                android:textColor="@color/colorBlackDark"
+                android:textStyle="bold" />
 
-            <TableRow android:gravity="center">
 
-                <TextView
-                    android:id="@+id/dateTimeRating"
-                    style="@style/TextViewSmallStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_general"
-                    android:textColor="@color/colorBlackDark"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/feedBack"
+                style="@style/TextViewSmallStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_general"
+                android:gravity="center"
+                android:inputType="textMultiLine"
+                android:padding="@dimen/padding_general"
+                android:singleLine="false"
+                android:textStyle="bold" />
 
-            </TableRow>
-
-            <TableRow android:gravity="center">
-
-                <TextView
-                    android:id="@+id/feedBack"
-                    style="@style/TextViewSmallStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_general"
-                    android:padding="@dimen/padding_general"
-                    android:textStyle="bold" />
-
-            </TableRow>
-
-            <TableRow android:gravity="center">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
                     style="@style/HeaderStyle"
@@ -91,10 +89,10 @@
                     android:id="@+id/smileyImage"
                     android:layout_width="32dp"
                     android:layout_height="32dp" />
+            </LinearLayout>
 
-            </TableRow>
 
-        </TableLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <ImageView

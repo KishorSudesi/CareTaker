@@ -57,6 +57,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
     private SessionManager sessionManager;
     private int mPosition;
 
+    private boolean isInsert = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +137,21 @@ public class DependentDetailsMedical extends AppCompatActivity {
                     if (buttonText.equalsIgnoreCase(getString(R.string.submit))) {
                         validateDependantMedicalData();
                     } else {
-                        skip();
+                        if (utils.isConnectingToInternet()) {
+                            skip();
+                        } else {
+                            utils.toast(2, 2, getString(R.string.warning_internet));
+                            final List<String> dependentIdsList = new ArrayList<>();
+                            dependentIdsList.clear();
+                            if (DependentDetailPersonal.dependentModel != null) {
+
+
+                                dependentIdsList.addAll(sessionManager.getUpdateDependent());
+                                dependentIdsList.add(DependentDetailPersonal.dependentModel.getStrDependentID());
+                            }
+                            sessionManager.saveUpdateDependent(dependentIdsList);
+                            updateDependentDataInDb();
+                        }
                     }
 
 //                    if (buttonContinue.getText().toString().trim().equalsIgnoreCase(getString(R.string.submit)))
@@ -228,9 +243,21 @@ public class DependentDetailsMedical extends AppCompatActivity {
         } else {
 
             //
+            if (utils.isConnectingToInternet()) {
+                storeData();
+            } else {
+                utils.toast(2, 2, getString(R.string.warning_internet));
+                final List<String> dependentIdsList = new ArrayList<>();
+                dependentIdsList.clear();
+                if (DependentDetailPersonal.dependentModel != null) {
 
 
-            storeData();
+                    dependentIdsList.addAll(sessionManager.getUpdateDependent());
+                    dependentIdsList.add(DependentDetailPersonal.dependentModel.getStrDependentID());
+                }
+                sessionManager.saveUpdateDependent(dependentIdsList);
+                updateDependentDataInDb();
+            }
 
 
         }
@@ -322,6 +349,36 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                 backToDashBoard();
 
+            } else if (isInsert) {
+
+
+                try {
+                    String strDocument = jsonDependant.toString();
+                    Calendar c = Calendar.getInstance();
+                    System.out.println("Current time => " + c.getTime());
+
+
+                    String updatedAt = Utils.readFormat.format(c.getTime());
+
+                    String values[] = {DependentDetailPersonal.dependentModel.getStrDependentID(), updatedAt, strDocument, Config.collectionDependent, "", "1", "", ""};
+                    //Config.jsonCustomer = new JSONObject(strDocument);
+
+                    selection = DbHelper.COLUMN_OBJECT_ID + " = ?";
+
+                    // WHERE clause arguments
+                    String[] selectionArgsUpdate = {DependentDetailPersonal.dependentModel.getStrDependentID()};
+                    boolean isUpdatedDB = CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgsUpdate);
+                    if (isUpdatedDB) {
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                cursor.close();
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+
+                backToDashBoard();
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
@@ -477,7 +534,6 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                                 if (o != null) {
 
-
                                     idregisterflag = 1;
 
                                     uploadDependentImages();
@@ -494,6 +550,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                             public void onException(Exception e) {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
+
                                 if (e != null) {
                                     Utils.log(e.getMessage(), "");
 
@@ -556,12 +613,19 @@ public class DependentDetailsMedical extends AppCompatActivity {
                    /* if (!dependentModel.getStrName().equalsIgnoreCase(
                             DependentDetailsMedicalActivity.this.getResources().getString(R.string.add_dependent))) {
 */
+                String strContacts = "";
+                try {
+                    strContacts = dependentModel.getStrContacts();
+                    strContacts = utils.getOnlyDigits(strContacts);
+                } catch (Exception e) {
+                    strContacts = dependentModel.getStrContacts();
+                }
                 if (dependentModel.getStrImagePath() != null &&
                         !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                     uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                            utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                            dependentModel.getStrContacts(),
+                            utils.replaceSpace(strContacts), "Profile Picture",
+                            strContacts,
                             UploadFileType.IMAGE, new App42CallBack() {
 
                                 public void onSuccess(Object response) {
@@ -680,6 +744,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                     Utils.log(response.toString(), "message");
 
                                     if (response.isResponseSuccess()) {
+                                        isInsert = true;
                                         if (!Config.customerModel.isCustomerRegistered()) {
                                             Config.customerModel.setCustomerRegistered(true);
                                             utils.updateCustomerRegistrationDetailOnServer(true);
@@ -692,7 +757,14 @@ public class DependentDetailsMedical extends AppCompatActivity {
                                         String strDependentDocId = jsonDocument.getDocId();
 
                                         DependentDetailPersonal.dependentModel.setStrDependentID(strDependentDocId);
-
+                                        final List<String> dependentIdsList = new ArrayList<>();
+                                        dependentIdsList.clear();
+                                        if (DependentDetailPersonal.dependentModel != null) {
+                                            dependentIdsList.addAll(sessionManager.getUpdateDependent());
+                                            dependentIdsList.add(DependentDetailPersonal.dependentModel.getStrDependentID());
+                                        }
+                                        sessionManager.saveUpdateDependent(dependentIdsList);
+                                        updateDependentDataInDb();
                                         try {
 
                                             File newFile = new File(DependentDetailPersonal.dependentModel.getStrImagePath());
@@ -815,8 +887,15 @@ public class DependentDetailsMedical extends AppCompatActivity {
                /* if (progressDialog.isShowing())
                     progressDialog.setProgress(1);
 */
-                uploadService.removeImage(DependentDetailPersonal.dependentModel.getStrContacts(),
-                        DependentDetailPersonal.dependentModel.getStrContacts(),
+                String strContacts = "";
+                try {
+                    strContacts =DependentDetailPersonal.dependentModel.getStrContacts();
+                    strContacts = utils.getOnlyDigits(strContacts);
+                } catch (Exception e) {
+                    strContacts = DependentDetailPersonal.dependentModel.getStrContacts();
+                }
+                uploadService.removeImage(strContacts,
+                        strContacts,
                         new App42CallBack() {
                             public void onSuccess(Object response) {
 
@@ -887,13 +966,19 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                 if (!dependentModel.getStrName().equalsIgnoreCase(
                         DependentDetailsMedical.this.getResources().getString(R.string.add_dependent))) {
-
+                    String strContacts = "";
+                    try {
+                        strContacts = dependentModel.getStrContacts();
+                        strContacts = utils.getOnlyDigits(strContacts);
+                    } catch (Exception e) {
+                        strContacts = dependentModel.getStrContacts();
+                    }
                     if (dependentModel.getStrImagePath() != null &&
                             !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                         uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                                dependentModel.getStrContacts(),
+                                utils.replaceSpace(strContacts), "Profile Picture",
+                                strContacts,
                                 UploadFileType.IMAGE, new App42CallBack() {
 
                                     public void onSuccess(Object response) {
@@ -1043,6 +1128,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                                     Utils.log(o.toString(), "LOG");
 
+                                    sessionManager.saveUpdateDependent(dependentIdsList);
                                     updateDependentDataInDb();
                                     if (!Config.customerModel.isCustomerRegistered()) {
                                         Config.customerModel.setCustomerRegistered(true);
@@ -1060,7 +1146,6 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
                         @Override
                         public void onException(Exception e) {
-
                             sessionManager.saveUpdateDependent(dependentIdsList);
                             updateDependentDataInDb();
 
@@ -1068,8 +1153,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
                     });
 
         } else {
-            sessionManager.saveUpdateDependent(dependentIdsList);
-            updateDependentDataInDb();
+
         }
     }
 

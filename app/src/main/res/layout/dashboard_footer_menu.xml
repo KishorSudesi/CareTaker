@@ -2,44 +2,45 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="76dp"
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <ImageView
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/blue">
 
-    </RelativeLayout>
+    </ImageView>
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="74dp"
+        android:layout_marginTop="@dimen/margin_general"
         android:layout_below="@+id/line">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/buttonSeniors"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/margin_general"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
                 android:layout_weight="1"
-                android:background="@color/colorWhite"
+                android:background="@drawable/image_back_trans"
                 android:padding="@dimen/padding_general"
                 android:src="@mipmap/senior" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/buttonCallActivity"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
                 android:layout_weight="1"
-                android:background="@color/colorWhite"
+                android:background="@drawable/image_back_trans"
                 android:padding="@dimen/padding_general"
                 android:src="@mipmap/activity" />
 
@@ -49,39 +50,37 @@
                   android:layout_height="wrap_content"
                   android:layout_margin="@dimen/margin_general"
                   android:layout_weight="1"
-                  android:background="@drawable/button_back_trans"
+                  android:background="@drawable/image_back_trans"
                   android:padding="@dimen/padding_general"
                   android:src="@drawable/dashboard_reports" />
   -->
 
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/buttonNotifications"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/margin_general"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/colorWhite"
+                android:background="@drawable/image_back_trans"
                 android:padding="@dimen/padding_general"
                 android:src="@mipmap/notification" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/buttonAccount"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/margin_general"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
                 android:layout_weight="1"
-                android:background="@color/colorWhite"
+                android:background="@drawable/image_back_trans"
                 android:padding="@dimen/padding_general"
                 android:src="@mipmap/my_account" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/buttonSync"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/margin_general"
+                android:layout_width="45dip"
+                android:layout_height="45dip"
                 android:layout_weight="1"
-                android:background="@color/colorWhite"
+                android:background="@drawable/image_back_trans"
                 android:padding="@dimen/padding_general"
                 android:src="@mipmap/time" />
 
@@ -89,7 +88,7 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="10dp">
+            android:layout_height="12dp">
 
             <TextView
                 android:id="@+id/textViewSeniors"
@@ -99,7 +98,7 @@
                 android:gravity="center"
                 android:text="@string/menu_seniors"
                 android:textColor="@color/colorHeaderGradientStart"
-                android:textSize="12sp" />
+                android:textSize="9sp" />
 
 
             <TextView
@@ -109,7 +108,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_activities"
-                android:textSize="12sp" />
+                android:textSize="9sp" />
 
             <!-- <TextView
                  android:layout_width="wrap_content"
@@ -127,7 +126,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_notification"
-                android:textSize="12sp" />
+                android:textSize="9sp" />
 
             <TextView
                 android:id="@+id/textViewAccount"
@@ -136,7 +135,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_account"
-                android:textSize="12sp" />
+                android:textSize="9sp" />
 
             <TextView
                 android:id="@+id/textViewSync"
@@ -145,7 +144,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/menu_sync"
-                android:textSize="12sp" />
+                android:textColor="@color/colorBlackDark"
+                android:textSize="9sp" />
 
         </TableRow>
 

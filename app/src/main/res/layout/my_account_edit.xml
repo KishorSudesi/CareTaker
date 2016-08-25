@@ -45,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textView18"
                     android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorBlackDark"
                     android:drawableLeft="@drawable/mail_icon_32"
                     android:drawablePadding="5dp" />
 
@@ -67,6 +68,7 @@
                         android:layout_marginTop="10dp"
                         android:drawableLeft="@drawable/person_icon"
                         android:drawablePadding="15dp"
+                        android:textColor="@color/colorBlackDark"
                         android:drawableStart="@drawable/person_icon"
                         android:hint="@string/name"
                         android:paddingLeft="10dp" />
@@ -80,6 +82,7 @@
                         android:layout_marginLeft="@dimen/edit_text_margin"
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:layout_marginTop="25dp"
+                        android:textColor="@color/colorBlackDark"
                         android:drawableLeft="@drawable/activity_icon_32"
                         android:drawablePadding="10dp"
                         android:focusableInTouchMode="false"
@@ -149,6 +152,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textColor="@color/colorBlackDark"
                             android:text="@string/mobile" />
 
                         <RadioButton
@@ -158,6 +162,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:checked="true"
+                            android:textColor="@color/colorBlackDark"
                             android:text="@string/landline" />
 
                     </RadioGroup>
@@ -180,6 +185,7 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="0.4"
+                    android:textColor="@color/colorBlackDark"
                     android:drawablePadding="10dp"
                     android:enabled="false"
                     android:hint="@string/country_code"
@@ -196,6 +202,7 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="0.5"
+                    android:textColor="@color/colorBlackDark"
                     android:drawablePadding="10dp"
                     android:hint="@string/area_code"
                     android:inputType="number"
@@ -212,6 +219,7 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="1.1"
+                    android:textColor="@color/colorBlackDark"
                     android:drawablePadding="10dp"
                     android:hint="@string/contact_number"
                     android:inputType="number"

@@ -1,6 +1,7 @@
 package com.hdfc.caretaker;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
@@ -20,9 +21,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hdfc.app42service.App42GCMController;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
+import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.views.CheckView;
 import com.scottyab.aescrypt.AESCrypt;
@@ -57,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private int measuredwidth = 0;
     private int measuredheight = 0;
+    private Context mContext;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +77,17 @@ public class LoginActivity extends AppCompatActivity {
         editPassword = (EditText) findViewById(R.id.editPassword);
         TextView txtForgotPassword = (TextView) findViewById(R.id.txtForgotPassword);
         Button buttonBack = (Button) findViewById(R.id.buttonBack);
-
+        mContext = this;
         utils = new Utils(LoginActivity.this);
         progressDialog = new ProgressDialog(LoginActivity.this);
-
+        sessionManager=new SessionManager(mContext);
+        try {
+            App42GCMController.clearPref(mContext);
+            utils.unregisterGcm(mContext);
+            sessionManager.logoutUser();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         utils.setStatusBarColor("#2196f3");
 
         try {
@@ -457,6 +469,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (utils.isConnectingToInternet()) {
 
+
                 progressDialog.setMessage(getString(R.string.text_loader_processing));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
@@ -500,7 +513,7 @@ public class LoginActivity extends AppCompatActivity {
                             //todo check rolelist
                             //Utils.log(String.valueOf(roleList.size()), " ROLE ");
                             //roleList.size()>0 && roleList.get(0).equalsIgnoreCase("provider");
-                            utils.fetchCustomer(progressDialog, 1,password,userName);
+                            utils.fetchCustomer(progressDialog, 1, password, userName);
 
 
                         } else {

@@ -21,6 +21,7 @@
 
             <EditText
                 android:id="@+id/editAgedepend"
+                style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_centerHorizontal="true"

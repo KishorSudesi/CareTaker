@@ -56,7 +56,7 @@ public class SessionManager {
     public SessionManager(Context context) {
         try {
             this._context = context;
-            pref = context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+            pref = context.getSharedPreferences(PREF_NAME, context.MODE_PRIVATE);
             editor = pref.edit();
         } catch (Exception e) {
             e.printStackTrace();

@@ -114,7 +114,12 @@
                     <LinearLayout
                         android:id="@+id/linearActivityBy"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
+                        android:orientation="horizontal"
+                        android:paddingTop="@dimen/padding_general"
+                        android:paddingBottom="@dimen/padding_general"
                         android:background="@drawable/bottom_border_grey">
 
                         <TextView
@@ -138,12 +143,43 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/linearCareRecipients"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:orientation="horizontal"
+                        android:paddingTop="@dimen/padding_general"
+                        android:paddingBottom="@dimen/padding_general"
+                        android:layout_below="@+id/linearActivityBy"
+                        android:background="@drawable/bottom_border_grey">
+
+                        <TextView
+                            android:id="@+id/tvCareRecipients"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="Care Recipient : "
+                            style="@style/HeaderStyle"
+                            android:textColor="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/tvCareRecipientsName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text=""
+                            style="@style/LabelStyle"
+                            android:textColor="@android:color/black" />
+
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/linearPhoto"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/linearActivityBy"
+                        android:layout_below="@+id/linearCareRecipients"
                         android:layout_marginTop="@dimen/margin_general">
 
                         <TextView

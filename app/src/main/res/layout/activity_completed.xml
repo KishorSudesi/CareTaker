@@ -192,6 +192,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
+                    android:visibility="gone"
                     android:layout_weight="1">
 
                     <LinearLayout
@@ -203,6 +204,15 @@
                         android:padding="3dp" />
 
                 </HorizontalScrollView>
+
+                <Gallery
+                    android:id="@+id/galleryThumbnails"
+                    android:layout_width="fill_parent"
+                    android:layout_marginBottom="20dp"
+                    android:padding="3dp"
+                    android:spacing="5dp"
+
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/textViewAddRating"
@@ -220,7 +230,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    style="@style/TextViewSmallStyle"
                     android:textColor="@color/red"
                     android:visibility="gone" />
 
@@ -316,6 +326,7 @@
                                 android:hint="Your Feedback"
                                 android:inputType="textMultiLine"
                                 android:lines="8"
+                                android:textColor="@color/colorBlackDark"
                                 android:maxLines="10"
                                 android:minLines="4"
                                 android:paddingTop="10dp"
@@ -376,6 +387,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
+                        android:textColor="@color/colorBlackDark"
                         android:text="@string/no_ratings"
                         android:visibility="gone" />
 
