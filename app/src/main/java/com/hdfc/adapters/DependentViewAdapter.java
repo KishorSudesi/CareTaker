@@ -11,12 +11,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
+import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.models.DependentModel;
 
 import java.util.ArrayList;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by balamurugan@adstringo.in on 01-01-2016.
@@ -79,8 +84,18 @@ public class DependentViewAdapter extends BaseAdapter {
                     holder.textRelation.setText(dependentModel.getStrRelation());
 
                     if (!dependentModel.getStrImagePath().equalsIgnoreCase("")) {
-                        multiBitmapLoader.loadBitmap(dependentModel.getStrImagePath().trim(),
-                                holder.image);
+                        Glide.with(_ctxt)
+                                .load(dependentModel.getStrImageUrl())
+                                .centerCrop()
+                                .bitmapTransform(new CropCircleTransformation(_ctxt))
+                                .placeholder(R.drawable.person_icon)
+                                .crossFade()
+                                .override(Config.intWidth,Config.intHeight)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(holder.image);
+
+                       /* multiBitmapLoader.loadBitmap(dependentModel.getStrImagePath().trim(),
+                                holder.image);*/
                     } else {
                         holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
                                 R.drawable.person_icon));

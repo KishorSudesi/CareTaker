@@ -17,7 +17,11 @@ public class UserService {
     }
 
     public void authenticate(String userName, String password, App42CallBack app42CallBack) {
-        asyncService.authenticateUser(userName, password, app42CallBack);
+        try {
+            asyncService.authenticateUser(userName, password, app42CallBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*public void addJSONObject(String collectionCustomer, String password) {
@@ -27,16 +31,28 @@ public class UserService {
 
     public void onChangePassword(String userName, String oldPassword, String confirmPassword,
                                  App42CallBack app42CallBack) {
-        asyncService.changePassword(userName, oldPassword, confirmPassword, app42CallBack);
+        try {
+            asyncService.changePassword(userName, oldPassword, confirmPassword, app42CallBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void getUser(String userName, App42CallBack app42CallBack) {
-        asyncService.getUser(userName, app42CallBack);
+        try {
+            asyncService.getUser(userName, app42CallBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void resetUserPassword(String userName, App42CallBack app42CallBack) {
         //utils.showProgress(true, formView, progressView);
-        asyncService.resetUserPassword(userName, app42CallBack);
+        try {
+            asyncService.resetUserPassword(userName, app42CallBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
    /* public void onGetUserRoles(String userName) {
@@ -133,7 +149,11 @@ public class UserService {
 
     public void onCreateUser(String userName, String password, String email, App42CallBack
             app42CallBack, ArrayList<String> roleList) {
-        asyncService.createUser(userName, password, email, roleList, app42CallBack);
+        try {
+            asyncService.createUser(userName, password, email, roleList, app42CallBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*@Override

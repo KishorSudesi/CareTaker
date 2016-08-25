@@ -74,6 +74,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/buttonContinue"
             android:layout_below="@+id/textViewColor"
+            android:textColor="@color/colorBlackDark"
             android:gravity="center"
             android:text="@string/no_services"
             android:visibility="gone" />

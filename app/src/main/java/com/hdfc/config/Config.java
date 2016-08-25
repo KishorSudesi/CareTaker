@@ -214,6 +214,6 @@ public class Config {
 
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
 
-    public static final String viewRefreshAction = "action.refresh.view";
+    public static final String viewRefreshAction = "com.caretaker.action.refresh.view";
 
 }

@@ -21,22 +21,31 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
 
     public CarouselPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
-        this.fm = fm;
-        this.context = context;
+        try {
+            this.fm = fm;
+            this.context = context;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
-        // make the first pager bigger than others
-        //if (position == DashboardFragment.FIRST_PAGE)
-        float scale = DashboardFragment.BIG_SCALE;
+        try {
+            // make the first pager bigger than others
+            //if (position == DashboardFragment.FIRST_PAGE)
+            float scale = DashboardFragment.BIG_SCALE;
         /*else
             scale = DashboardFragment.SMALL_SCALE;*/
 
-        //position = position % DashboardFragment.PAGES;
+            //position = position % DashboardFragment.PAGES;
 
-        //Log.e("CarouselPagerAdapter", String.valueOf(position));
-        return ImagesFragment.newInstance(context, position, scale);
+            //Log.e("CarouselPagerAdapter", String.valueOf(position));
+            return ImagesFragment.newInstance(context, position, scale);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -47,37 +56,45 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
     @Override
     public void onPageScrolled(int position, float positionOffset,
                                int positionOffsetPixels) {
-        if (positionOffset >= 0f && positionOffset <= 1f) {
-            MyLinearView cur = getRootView(position);
-            cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE *
-                    positionOffset);
-
-            /*if(Config.intDependentsCount<=position)*/
-            //Utils.log(String.valueOf(position), " position ");
-            //DashboardFragment.loadData(position);
-           /* else
-                DashboardFragment.loadData(0);*/
-
-            if (position < DashboardFragment.PAGES - 1) {
-                MyLinearView next = getRootView(position + 1);
-                next.setScaleBoth(DashboardFragment.SMALL_SCALE + DashboardFragment.DIFF_SCALE *
+        try {
+            if (positionOffset >= 0f && positionOffset <= 1f) {
+                MyLinearView cur = getRootView(position);
+                cur.setScaleBoth(DashboardFragment.BIG_SCALE - DashboardFragment.DIFF_SCALE *
                         positionOffset);
+
+                /*if(Config.intDependentsCount<=position)*/
+                //Utils.log(String.valueOf(position), " position ");
+                //DashboardFragment.loadData(position);
+               /* else
+                    DashboardFragment.loadData(0);*/
+
+                if (position < DashboardFragment.PAGES - 1) {
+                    MyLinearView next = getRootView(position + 1);
+                    next.setScaleBoth(DashboardFragment.SMALL_SCALE + DashboardFragment.DIFF_SCALE *
+                            positionOffset);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void onPageSelected(int position) {
-        if (position == 0) {
-            DashboardFragment.leftNav.setVisibility(View.GONE);
-        } else {
-            DashboardFragment.leftNav.setVisibility(View.VISIBLE);
-        }
+        try {
+            if (position == 0) {
+                DashboardFragment.leftNav.setVisibility(View.GONE);
+            } else {
+                DashboardFragment.leftNav.setVisibility(View.VISIBLE);
+            }
 
-        if (position == Config.dependentModels.size() - 1) {
-            DashboardFragment.rightNav.setVisibility(View.GONE);
-        } else {
-            DashboardFragment.rightNav.setVisibility(View.VISIBLE);
+            if (position == Config.dependentModels.size() - 1) {
+                DashboardFragment.rightNav.setVisibility(View.GONE);
+            } else {
+                DashboardFragment.rightNav.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

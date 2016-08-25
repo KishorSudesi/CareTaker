@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:id="@+id/logoLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="120dip"
         android:background="@drawable/header_background"
         android:orientation="vertical">

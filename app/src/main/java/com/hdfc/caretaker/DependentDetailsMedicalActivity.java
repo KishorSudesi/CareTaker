@@ -473,13 +473,19 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                 if (!dependentModel.getStrName().equalsIgnoreCase(
                         DependentDetailsMedicalActivity.this.getResources().getString(R.string.add_dependent))) {
-
+                    String strContacts = "";
+                    try {
+                        strContacts = dependentModel.getStrContacts();
+                        strContacts = utils.getOnlyDigits(strContacts);
+                    } catch (Exception e) {
+                        strContacts = dependentModel.getStrContacts();
+                    }
                     if (dependentModel.getStrImagePath() != null &&
                             !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                         uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                                dependentModel.getStrContacts(),
+                                utils.replaceSpace(strContacts), "Profile Picture",
+                                strContacts,
                                 UploadFileType.IMAGE, new App42CallBack() {
 
                                     public void onSuccess(Object response) {
@@ -593,12 +599,19 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                    /* if (!dependentModel.getStrName().equalsIgnoreCase(
                             DependentDetailsMedicalActivity.this.getResources().getString(R.string.add_dependent))) {
 */
+                String strContacts = "";
+                try {
+                    strContacts = dependentModel.getStrContacts();
+                    strContacts = utils.getOnlyDigits(strContacts);
+                } catch (Exception e) {
+                    strContacts = dependentModel.getStrContacts();
+                }
                 if (dependentModel.getStrImagePath() != null &&
                         !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                     uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                            utils.replaceSpace(dependentModel.getStrContacts()), "Profile Picture",
-                            dependentModel.getStrContacts(),
+                            utils.replaceSpace(strContacts), "Profile Picture",
+                            strContacts,
                             UploadFileType.IMAGE, new App42CallBack() {
 
                                 public void onSuccess(Object response) {
@@ -1023,9 +1036,17 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                /* if (progressDialog.isShowing())
                     progressDialog.setProgress(1);
+
 */
-                uploadService.removeImage(DependentDetailPersonalActivity.dependentModel.getStrContacts(),
-                        DependentDetailPersonalActivity.dependentModel.getStrContacts(),
+                String strContacts = "";
+                try {
+                    strContacts = DependentDetailPersonal.dependentModel.getStrContacts();
+                    strContacts = utils.getOnlyDigits(strContacts);
+                } catch (Exception e) {
+                    strContacts = DependentDetailPersonal.dependentModel.getStrContacts();
+                }
+                uploadService.removeImage(strContacts,
+                        strContacts,
                         new App42CallBack() {
                             public void onSuccess(Object response) {
 

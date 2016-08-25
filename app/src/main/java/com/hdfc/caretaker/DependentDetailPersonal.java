@@ -3,6 +3,8 @@ package com.hdfc.caretaker;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +18,7 @@ import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,8 +29,10 @@ import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.config.Config;
@@ -127,6 +132,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
         utils = new Utils(DependentDetailPersonal.this);
         utils.setStatusBarColor("#2196f3");
         isSelected = false;
+        editflag = false;
         editName = (EditText) findViewById(R.id.editDependName);
         editContactNo = (EditText) findViewById(R.id.editContNo);
         editAddress = (EditText) findViewById(R.id.editAddr);
@@ -256,11 +262,11 @@ public class DependentDetailPersonal extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        if (!searchView.isIconified()) {
-//            searchView.setIconified(true);
-//            searchView.setIconified(true);
-//
-//        }
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            searchView.setIconified(true);
+
+        }
         goBack();
 
     }
@@ -444,13 +450,13 @@ public class DependentDetailPersonal extends AppCompatActivity {
     }
 
     private void setupSearchView() {
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchView = (SearchView) findViewById(R.id.searchView1);
-//
-//        ComponentName cn = new ComponentName(this, DependentDetailPersonal.class);
-//
-//        SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
-//        searchView.setSearchableInfo(searchableInfo);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) findViewById(R.id.searchView1);
+
+        ComponentName cn = new ComponentName(this, DependentDetailPersonal.class);
+
+        SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
+        searchView.setSearchableInfo(searchableInfo);
     }
 
     @Override
@@ -558,15 +564,25 @@ public class DependentDetailPersonal extends AppCompatActivity {
                 strImageName = "";
             }
 
+
+            try {
+                if (phone != null && phone.length() > 0) {
+                    phone = phone.replaceAll(" ", "");
+                    editContactNo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(phone.length())});
+                }
+                editContactNo.setText(phone);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             editName.setText(name);
-            editContactNo.setText(phone);
+
             editDependantEmail.setText(emailContact);
 
-//            searchView.setFocusable(false);
-//            searchView.clearFocus();
-//
-//            searchView.setIconified(true);
-//            searchView.setIconified(true);
+            searchView.setFocusable(false);
+            searchView.clearFocus();
+
+            searchView.setIconified(true);
+            searchView.setIconified(true);
 
             editName.requestFocus();
 
@@ -587,7 +603,16 @@ public class DependentDetailPersonal extends AppCompatActivity {
             //&& !strDependantName.equalsIgnoreCase("")
 
             editName.setText(dependentModel.getStrName());
-            editContactNo.setText(dependentModel.getStrContacts());
+            try {
+                if (dependentModel.getStrContacts() != null && dependentModel.getStrContacts().length() > 0) {
+
+                    editContactNo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(dependentModel.getStrContacts().length())});
+                }
+                editContactNo.setText(dependentModel.getStrContacts());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             editAddress.setText(dependentModel.getStrAddress());
             //editRelation.setText(dependentModel.getStrRelation());
             editDependantEmail.setText(dependentModel.getStrEmail());
@@ -632,28 +657,51 @@ public class DependentDetailPersonal extends AppCompatActivity {
 
     private void loadImageSimpleTarget(String url) {
 
-        Glide.with(DependentDetailPersonal.this)
-                .load(url)
-                .asBitmap()
-                .centerCrop()
-                .override(Config.intWidth, Config.intHeight)
-                .transform(new CropCircleTransformation(DependentDetailPersonal.this))
-                .placeholder(R.drawable.person_icon)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(target);
+        try {
+            Glide.with(DependentDetailPersonal.this)
+                    .load(url)
+                    .asBitmap()
+                    .centerCrop()
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                            if (dependentModel != null && dependentModel.getStrImageUrl() != null && dependentModel.getStrImageUrl().length() > 0) {
+
+                                loadImageSimpleTarget(dependentModel.getStrImageUrl());
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .override(Config.intWidth, Config.intHeight)
+                    .transform(new CropCircleTransformation(DependentDetailPersonal.this))
+                    .placeholder(R.drawable.person_icon)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(target);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadImageSimpleTarget(Uri url) {
 
-        Glide.with(DependentDetailPersonal.this)
-                .load(url)
-                .asBitmap()
-                .centerCrop()
-                .override(Config.intWidth, Config.intHeight)
-                .transform(new CropCircleTransformation(DependentDetailPersonal.this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.person_icon)
-                .into(target);
+        try {
+            Glide.with(DependentDetailPersonal.this)
+                    .load(url)
+                    .asBitmap()
+                    .centerCrop()
+                    .override(Config.intWidth, Config.intHeight)
+                    .transform(new CropCircleTransformation(DependentDetailPersonal.this))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.person_icon)
+                    .into(target);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -42,7 +42,7 @@ public class CheckInCareActivity extends AppCompatActivity {
     private ImageButton backButton;
     private Button buttonHall, buttonKitchen, buttonWashroom, buttonBed, water, gas, electricity, phone, kitchenItems, groceryItems, maidServices, electronics, automobiles, homeAppliances;
     private TextView utilityBill, domesticStatus, workingStatus, homeStatus,
-            photoStatus, tvmediaComment, tvActivityByName, utilityBilsStatus, kitchenItemsStatus, groceryStatus, tvDriverStatus;
+            photoStatus, tvmediaComment, tvActivityByName, utilityBilsStatus, kitchenItemsStatus, groceryStatus, tvDriverStatus, tvCareRecipientsName;
     private String subActivityName, status, dueStatus, dueDate, utilityName, imageUrl, imageDescription, imageTime;
     private int homeEssCount = 0, domesticHelp = 0, equipmentStatus = 0, utilityBills = 0, imageCount = 0;
     private Utils utils;
@@ -90,6 +90,7 @@ public class CheckInCareActivity extends AppCompatActivity {
         kitchenItemsStatus = (TextView) findViewById(R.id.tvKitchenItemsStatus);
         groceryStatus = (TextView) findViewById(R.id.tvGroceryStatus);
         tvDriverStatus = (Button) findViewById(R.id.tvDriverStatus);
+        tvCareRecipientsName = (TextView) findViewById(R.id.tvCareRecipientsName);
         linearImages.setVisibility(View.GONE);
         activities.setVisibility(View.GONE);
 
@@ -103,13 +104,26 @@ public class CheckInCareActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //picture = Config.roomtypeName.get(position).getImageModels();
+                String providerName = "";
                 try {
                     int iPosition = Config.strProviderIds.indexOf(Config.checkInCareActivityNames.get(position).getStrProviderID());
-                    String providerName = Config.providerModels.get(iPosition).getStrName();
+                    providerName = Config.providerModels.get(iPosition).getStrName();
                     tvActivityByName.setText(providerName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                String dependentName = "";
+                try {
+
+
+                    int iPositionDep = Config.strDependentIds.indexOf(Config.checkInCareActivityNames.get(position).getStrDependentID());
+                    dependentName = Config.dependentModels.get(iPositionDep).getStrName();
+                    tvCareRecipientsName.setText(dependentName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 String mediaComment = Config.checkInCareActivityNames.get(position).getStrMediaComment();
                 tvmediaComment.setText(mediaComment);
                 activity = Config.checkInCareActivityNames.get(position).getCheckInCareActivityModels();
@@ -132,13 +146,13 @@ public class CheckInCareActivity extends AppCompatActivity {
                                 utilityName = subActivityModels.get(j).getStrUtilityName();
                                 status = status != null ? status.trim() : status;
                                 checkBoxStatus = subActivityModels.get(j).isCheckBoxStatus();
-                                if (utilityName.equalsIgnoreCase("water ") && status.equalsIgnoreCase("Yes")) {
+                                if (utilityName.equalsIgnoreCase("water") && status.equalsIgnoreCase("Yes")) {
                                     homeEssCount++;
                                     utilityBills++;
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_checkin), null);
                                     water.setTag(dueDate);
                                     water.setClickable(false);
-                                } else if (utilityName.equalsIgnoreCase("water ") && status.equalsIgnoreCase("No")) {
+                                } else if (utilityName.equalsIgnoreCase("water") && status.equalsIgnoreCase("No")) {
                                     water.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.mipmap.tick_disable_checkin), null);
                                     water.setTag(dueDate);
                                     water.setClickable(true);

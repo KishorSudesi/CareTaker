@@ -12,9 +12,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.hdfc.adapters.GalleryImageAdapter;
 import com.hdfc.adapters.MileStoneAdapter;
 import com.hdfc.adapters.RatingCompletedAdapter;
 import com.hdfc.app42service.App42GCMService;
@@ -67,6 +71,7 @@ public class CompletedActivity extends AppCompatActivity {
     private static ActivityModel activityModel;
     private static ExpandableListView expandableListView;
     private static List<Bitmap> bitmapimages = new ArrayList<>();
+    private static List<String> imageUrlList = new ArrayList<String>();
     private static LinearLayout _thumbnails;
     private static Context context;
     private static int iRating = 0, iActivityPosition = 0;
@@ -90,6 +95,7 @@ public class CompletedActivity extends AppCompatActivity {
     private TextView smileyMessage;
     private LinearLayout linearLayoutRatingAdd;
     private byte START_FROM = 0;
+    private Gallery galleryThumbnails;
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
@@ -155,14 +161,16 @@ public class CompletedActivity extends AppCompatActivity {
             imageViewCarla = (ImageView) findViewById(R.id.imageViewCarla);
             loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
             tvTasks = (TextView) findViewById(R.id.tvTasks);
+            galleryThumbnails = (Gallery) findViewById(R.id.galleryThumbnails);
 
             linearLayoutRatingAdd = (LinearLayout) findViewById(R.id.linearLayoutRatingAdd);
             final TextView textViewAddRating = (TextView) findViewById(R.id.textViewAddRating);
 
             sv = (ScrollView) findViewById(R.id.scrollView);
-
+            galleryThumbnails.setSpacing(2);
             smileyMessage = (TextView) findViewById(R.id.smileyMessage);
-
+            imageUrlList = new ArrayList<>();
+            imageUrlList.clear();
             if (textViewAddRating != null) {
 
                 if (activityModel.getFeedBackModels() != null && activityModel.getFeedBackModels().size() > 0 && activityModel.isRatingAddedByCutsm()) {
@@ -309,6 +317,7 @@ public class CompletedActivity extends AppCompatActivity {
                 });*/
 
                 if (btnSubmit != null) {
+
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -318,6 +327,14 @@ public class CompletedActivity extends AppCompatActivity {
                                 boolean b = true;
 
                                 editFeedBack.setError(null);
+                                try {
+                                    InputMethodManager inputManager = (InputMethodManager)
+                                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                                            InputMethodManager.HIDE_NOT_ALWAYS);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
                                 if (!activityModel.getStrActivityStatus().
                                         equalsIgnoreCase("completed")) { //
@@ -389,7 +406,12 @@ public class CompletedActivity extends AppCompatActivity {
                 threadHandler = new ThreadHandler();
                 Thread backgroundThread = new BackgroundThread();
                 backgroundThread.start();
-
+                galleryThumbnails.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        showAlertDialogForImage(imageUrlList.get(position), strImageTitles.get(position));
+                    }
+                });
             }
 
         } catch (Exception e) {
@@ -850,79 +872,186 @@ public class CompletedActivity extends AppCompatActivity {
         goBack();
     }
 
-    public static class ThreadHandler extends Handler {
+    private void showAlertDialogForImage(String imageUrl, String title) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.setContentView(R.layout.image_dialog_layout);
+
+        final TouchImageView mOriginal = (TouchImageView) dialog.findViewById(R.id.imgOriginal);
+        TextView textViewClose = (TextView) dialog.findViewById(R.id.textViewClose);
+        TextView textViewTitle = (TextView) dialog.findViewById(R.id.textViewTitle);
+
+        textViewTitle.setText(title);
+
+        textViewClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //mOriginal.
+                dialog.dismiss();
+            }
+        });
+
+        try {
+            try {
+
+                Glide.with(context)
+                        .load(imageUrl)
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+
+                                mOriginal.setImageBitmap(resource);
+                            }
+                        });
+
+            } catch (OutOfMemoryError oOm) {
+                oOm.printStackTrace();
+            }
+        } catch (OutOfMemoryError oOm) {
+            oOm.printStackTrace();
+        }
+        dialog.setCancelable(true);
+
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
+        dialog.show();
+    }
+
+    public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
 
 
             try {
 
-                _thumbnails.removeAllViews();
-
-                if (bitmapimages.size() > 0) {
-
-                    for (int m = 0; m < bitmapimages.size(); m++) {
-
-                        ImageView _gallery = new ImageView(context);
-                        _gallery.setPadding(0, 0, 7, 0);
-                        _gallery.setImageBitmap(bitmapimages.get(m));
-                        _gallery.setTag(bitmapimages.get(m));
-                        _gallery.setTag(R.id.image_title, strImageTitles.get(m));
-                        _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-                        _gallery.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //imageGallery.setImageBitmap(bitmapimages.get(finalM));
-
-                                final Dialog dialog = new Dialog(context);
-                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-                                dialog.setContentView(R.layout.image_dialog_layout);
-
-                                TouchImageView mOriginal = (TouchImageView) dialog.findViewById(R.id.imgOriginal);
-                                TextView textViewClose = (TextView) dialog.findViewById(R.id.textViewClose);
-                                TextView textViewTitle = (TextView) dialog.findViewById(R.id.textViewTitle);
-
-                                textViewTitle.setText((String) v.getTag(R.id.image_title));
-
-                                textViewClose.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        //mOriginal.
-                                        dialog.dismiss();
-                                    }
-                                });
-
-                                try {
-                                    mOriginal.setImageBitmap((Bitmap) v.getTag());
-                                } catch (OutOfMemoryError oOm) {
-                                    oOm.printStackTrace();
-                                }
-                                dialog.setCancelable(true);
-
-                                dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
-                                        LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
-                                dialog.show();
-                            }
-                        });
-
-                        _thumbnails.addView(_gallery);
-                    }
-                } else {
-                    TextView textView = new TextView(context);
-
-                  /*  textView.setTextAppearance(context, R.style.MilestoneStyle);
-                    textView.setTextColor(context.getResources().getColor(R.color.colorWhite));
-                    textView.setPadding(10, 10, 10, 10);
-                    textView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.button_success));
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-                    params.setMargins(10, 10, 10, 10);
-                    textView.setLayoutParams(params);*/
-                    //
-                    textView.setText(context.getString(R.string.no_images));
-                    _thumbnails.addView(textView);
+                //_thumbnails.removeAllViews();
+                if (imageUrlList != null && imageUrlList.size() > 0) {
+                    GalleryImageAdapter galleryImageAdapter = new GalleryImageAdapter(context, imageUrlList);
+                    galleryThumbnails.setAdapter(galleryImageAdapter);
                 }
+
+//                if (activityModel.getMilestoneModels().size() > 0) {
+//                    for (int k = 0; k < activityModel.getMilestoneModels().size(); k++) {
+//                        for (int m = 0; m < activityModel.getMilestoneModels().get(k).getFileModels().size(); m++) {
+//
+//                            ImageView _gallery = new ImageView(context);
+////                            _gallery.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
+////                            _gallery.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//                            _gallery.setPadding(0, 0, 7, 0);
+//                            Glide.with(context)
+//                                    .load(activityModel.getMilestoneModels().get(k).getFileModels().get(m).getStrFileUrl())
+//                                    .centerCrop()
+//                                    .crossFade()
+//                                    .override(Config.intWidth, Config.intHeight)
+//                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                    .into(_gallery);
+//
+//
+//                            _gallery.setTag(activityModel.getMilestoneModels().get(k).getFileModels().get(m).getStrFileUrl());
+//                            _gallery.setTag(R.id.image_title, activityModel.getMilestoneModels().get(k).getStrMilestoneName());
+//                            _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//
+//                            _gallery.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    //imageGallery.setImageBitmap(bitmapimages.get(finalM));
+//
+//
+//                                }
+//                            });
+//
+//
+//                            _thumbnails.addView(_gallery);
+//                        }
+//                    }
+//
+//
+//                }
+//
+//
+//                if (activityModel.getImageModels().size() > 0) {
+//                    for (int m = 0; m < activityModel.getImageModels().size(); m++) {
+//
+//                        ImageView _gallery = new ImageView(context);
+////                        _gallery.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
+////                        _gallery.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//                        _gallery.setPadding(0, 0, 7, 0);
+//                        Glide.with(context)
+//                                .load(activityModel.getImageModels().get(m).getStrImageUrl())
+//                                .centerCrop()
+//                                .crossFade()
+//                                .override(Config.intWidth, Config.intHeight)
+//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .into(_gallery);
+//
+//
+//                        _gallery.setTag(activityModel.getImageModels().get(m).getStrImageUrl());
+//                        _gallery.setTag(R.id.image_title, activityModel.getStrActivityName());
+//                        _gallery.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//
+//                        _gallery.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                //imageGallery.setImageBitmap(bitmapimages.get(finalM));
+//
+//                                final Dialog dialog = new Dialog(context);
+//                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//
+//                                dialog.setContentView(R.layout.image_dialog_layout);
+//
+//                                TouchImageView mOriginal = (TouchImageView) dialog.findViewById(R.id.imgOriginal);
+//                                TextView textViewClose = (TextView) dialog.findViewById(R.id.textViewClose);
+//                                TextView textViewTitle = (TextView) dialog.findViewById(R.id.textViewTitle);
+//
+//                                textViewTitle.setText((String) v.getTag(R.id.image_title));
+//
+//                                textViewClose.setOnClickListener(new View.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(View v) {
+//                                        //mOriginal.
+//                                        dialog.dismiss();
+//                                    }
+//                                });
+//
+//                                try {
+//                                    Glide.with(context)
+//                                            .load((String) v.getTag())
+//                                            .crossFade()
+//                                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                            .into(mOriginal);
+//                                    //  mOriginal.setImageBitmap((Bitmap) );
+//                                } catch (OutOfMemoryError oOm) {
+//                                    oOm.printStackTrace();
+//                                }
+//                                dialog.setCancelable(true);
+//
+//                                dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+//                                        LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
+//                                dialog.show();
+//                            }
+//                        });
+//
+//
+//                        _thumbnails.addView(_gallery);
+//                    }
+//
+//                } else {
+//                    TextView textView = new TextView(context);
+//
+//                  /*  textView.setTextAppearance(context, R.style.MilestoneStyle);
+//                    textView.setTextColor(context.getResources().getColor(R.color.colorWhite));
+//                    textView.setPadding(10, 10, 10, 10);
+//                    textView.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.button_success));
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+//                    params.setMargins(10, 10, 10, 10);
+//                    textView.setLayoutParams(params);*/
+//                    //
+//                    textView.setText(context.getString(R.string.no_images));
+//                    _thumbnails.addView(textView);
+//                }
 
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
@@ -964,6 +1093,7 @@ public class CompletedActivity extends AppCompatActivity {
                             bitmapimages.add(bitmap);
 
                             strImageTitles.add(activityModel.getStrActivityName());
+                            imageUrlList.add(activityModel.getImageModels().get(i).getStrImageUrl());
                             // bitmap.recycle();
                         }
                     }
@@ -989,6 +1119,7 @@ public class CompletedActivity extends AppCompatActivity {
                                 bitmapimages.add(bitmap);
                                 // bitmap.recycle();
                                 strImageTitles.add(activityModel.getMilestoneModels().get(j).getStrMilestoneName());
+                                imageUrlList.add(activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileUrl());
                             }
                         }
                     }

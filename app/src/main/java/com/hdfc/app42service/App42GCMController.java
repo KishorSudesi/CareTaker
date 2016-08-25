@@ -13,6 +13,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.shephertz.app42.paas.sdk.android.App42API;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
+import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.App42Response;
 
 /**
@@ -31,18 +32,23 @@ public class App42GCMController {
     }
 
     public static boolean isPlayServiceAvailable(Activity activity) {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
-        if (resultCode != 0) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, activity, 9000).show();
-            } else {
-                Log.i("App42PushNotification", "This device is not supported.");
-            }
+        try {
+            int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+            if (resultCode != 0) {
+                if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                    GooglePlayServicesUtil.getErrorDialog(resultCode, activity, 9000).show();
+                } else {
+                    Log.i("App42PushNotification", "This device is not supported.");
+                }
 
-            return false;
-        } else {
-            return true;
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     @SuppressLint({"NewApi"})
@@ -69,10 +75,14 @@ public class App42GCMController {
     }
 
     public static void clearPref(Context context) {
-        SharedPreferences prefs = getGCMPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.clear();
-        editor.commit();
+        try {
+            SharedPreferences prefs = getGCMPreferences(context);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear();
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static int getAppVersion(Context context) {
@@ -85,13 +95,17 @@ public class App42GCMController {
     }
 
     public static void storeRegistrationId(Context context, String regId) {
-        SharedPreferences prefs = getGCMPreferences(context);
-        int appVersion = getAppVersion(context);
-        //Log.i("App42PushNotification", "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("registration_id", regId);
-        editor.putInt("appVersion", appVersion);
-        editor.commit();
+        try {
+            SharedPreferences prefs = getGCMPreferences(context);
+            int appVersion = getAppVersion(context);
+            //Log.i("App42PushNotification", "Saving regId on app version " + appVersion);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("registration_id", regId);
+            editor.putInt("appVersion", appVersion);
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean isApp42Registerd(Context context) {
@@ -99,24 +113,32 @@ public class App42GCMController {
     }
 
     public static void storeApp42Success(Context context) {
-        SharedPreferences prefs = getGCMPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("app42_register", true);
-        editor.commit();
+        try {
+            SharedPreferences prefs = getGCMPreferences(context);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("app42_register", true);
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressLint({"NewApi"})
     public static void getRegistrationId(Context context, String googleProjectNo, App42GCMController.App42GCMListener callBack) {
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-        String regid = getRegistrationId(context);
-        if (regid != null)
-            regid = regid.trim();
-        if (regid.isEmpty()) {
-            registeronGCM(context, googleProjectNo, gcm, callBack);
-        } else {
-            callBack.onGCMRegistrationId(regid);
+        try {
+            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+            String regid = getRegistrationId(context);
+            if (regid != null)
+                regid = regid.trim();
+            if (regid.isEmpty()) {
+                registeronGCM(context, googleProjectNo, gcm, callBack);
+            } else {
+                callBack.onGCMRegistrationId(regid);
+            }
+            Log.i("TAG", "Reg id :" + regid);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Log.i("TAG", "Reg id :" + regid);
 
     }
 
@@ -151,16 +173,20 @@ public class App42GCMController {
     }
 
     public static void registerOnApp42(String userName, String deviceToen, final App42GCMController.App42GCMListener callBack) {
-        App42API.buildPushNotificationService().storeDeviceToken(userName, deviceToen, new App42CallBack() {
-            public void onSuccess(Object arg0) {
-                App42Response response = (App42Response) arg0;
-                callBack.onRegisterApp42(response.getStrResponse());
-            }
+        try {
+            App42API.buildPushNotificationService().storeDeviceToken(userName, deviceToen, new App42CallBack() {
+                public void onSuccess(Object arg0) {
+                    App42Response response = (App42Response) arg0;
+                    callBack.onRegisterApp42(response.getStrResponse());
+                }
 
-            public void onException(Exception arg0) {
-                callBack.onApp42Response(arg0.getMessage());
-            }
-        });
+                public void onException(Exception arg0) {
+                    callBack.onApp42Response(arg0.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public interface App42GCMListener {

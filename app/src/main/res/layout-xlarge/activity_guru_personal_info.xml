@@ -233,6 +233,7 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="0.5"
+                    android:maxLength="6"
                     android:drawablePadding="10dp"
                     android:hint="@string/area_code"
                     android:inputType="number"
@@ -247,6 +248,7 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="1.1"
+                    android:maxLength="10"
                     android:drawablePadding="10dp"
                     android:hint="@string/contact_number"
                     android:inputType="number"
@@ -256,17 +258,16 @@
 
             <CheckBox
                 android:id="@+id/checked_terms_conditions"
+                style="@style/CheckBoxStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/margin_general"
-
                 android:checked="false"
                 android:drawablePadding="@dimen/margin_general"
-                android:textColor="@android:color/black"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/text_terms_condition" />
+                android:gravity="center"
+                android:text="@string/text_terms_condition"
+                android:textColor="@android:color/black" />
 
             <Button
                 android:id="@+id/buttonContinue"

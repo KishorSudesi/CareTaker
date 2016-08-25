@@ -39,6 +39,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:maxLines="2"
+        android:textColor="@color/colorBlackDark"
         android:text="@string/buy_services_large_text"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="gone" />
@@ -50,6 +51,7 @@
         android:layout_above="@+id/buttonContinue"
         android:layout_below="@+id/txtAdditionalServices"
         android:gravity="center"
+        android:textColor="@color/colorBlackDark"
         android:text="@string/no_services"
         android:visibility="gone" />
 

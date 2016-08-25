@@ -3,6 +3,8 @@ package com.hdfc.caretaker.fragments;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -617,6 +619,41 @@ public class NotificationFragment extends Fragment {
         }
 
         return activityModel;
+    }
+
+    public void loadAllFiles() {
+        for (int j = 0; j < activityModel.getMilestoneModels().size(); j++) {
+            for (int i = 0; i < activityModel.getMilestoneModels().get(j).getFileModels().size(); i++) {
+                FileModel fileModel = activityModel.getMilestoneModels().get(j).getFileModels().get(i);
+
+                if (fileModel != null && fileModel.getStrFileUrl() != null &&
+                        !fileModel.getStrFileUrl().equalsIgnoreCase("")) {
+
+                    utils.loadImageFromWeb(fileModel.getStrFileName(),
+                            fileModel.getStrFileUrl());
+                }
+            }
+        }
+    }
+
+    private static Handler threadHandler;
+    public class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+        }
+    }
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                loadAllFiles();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            threadHandler.sendEmptyMessage(0);
+        }
     }
 
 }

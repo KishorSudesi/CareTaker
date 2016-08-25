@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@android:color/white"
     android:orientation="vertical">
+
 
     <RelativeLayout
         android:id="@+id/toplayout"
@@ -20,33 +22,38 @@
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:layout_below="@+id/toplayout"
-        android:layout_above="@+id/includeFooterMenu"
-        android:id="@+id/fragment_dashboard"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:background="@null" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="2">
 
-    <RelativeLayout
-        android:id="@+id/loadingPanel"
-        style="@style/GenericProgressBackground"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:padding="5dp"
-        android:layout_above="@+id/includeFooterMenu"
-        android:visibility="gone">
+        <FrameLayout
+            android:id="@+id/fragment_dashboard"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.97"
+            android:background="@null" />
 
-        <ProgressBar style="@style/GenericProgressIndicator" />
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/loadingPanel"
+            style="@style/GenericProgressBackground"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:padding="5dp"
+            android:visibility="gone">
 
-    <include
-        android:id="@+id/includeFooterMenu"
-        layout="@layout/dashboard_footer_menu"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <ProgressBar style="@style/GenericProgressIndicator" />
+        </RelativeLayout>
 
-</RelativeLayout>
+        <include
+            android:id="@+id/includeFooterMenu"
+            layout="@layout/dashboard_footer_menu"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="0.03" />
+    </LinearLayout>
+
+</LinearLayout>
