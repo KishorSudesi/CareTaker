@@ -10,8 +10,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.hdfc.caretaker.R;
-
 import java.util.Random;
 
 /**

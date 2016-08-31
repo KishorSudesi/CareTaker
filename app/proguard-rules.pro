@@ -161,3 +161,6 @@
 -dontwarn com.ayz4sci.androidfactory.**
 -keep class com.ayz4sci.androidfactory.** { *; }
 -keep interface com.ayz4sci.androidfactory.** { *; }
+
+#generate apk error fix
+-keepattributes EnclosingMethod

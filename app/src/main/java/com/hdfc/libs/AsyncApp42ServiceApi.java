@@ -10,6 +10,7 @@ import com.shephertz.app42.paas.sdk.android.App42CacheManager;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.App42Response;
+import com.shephertz.app42.paas.sdk.android.email.EmailService;
 import com.shephertz.app42.paas.sdk.android.push.PushNotificationService;
 import com.shephertz.app42.paas.sdk.android.storage.OrderByType;
 import com.shephertz.app42.paas.sdk.android.storage.Query;
@@ -34,6 +35,7 @@ public class AsyncApp42ServiceApi {
     private StorageService storageService;
     private UploadService uploadService;
     private PushNotificationService pushNotificationService;
+    private EmailService emailService;
 
 
     private AsyncApp42ServiceApi(Context context) {
@@ -54,6 +56,7 @@ public class AsyncApp42ServiceApi {
             this.storageService = App42API.buildStorageService();
             this.uploadService = App42API.buildUploadService();
             this.pushNotificationService = App42API.buildPushNotificationService();
+            this.emailService = App42API.buildEmailService();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -392,7 +395,7 @@ public class AsyncApp42ServiceApi {
     }
 
     public void deleteAllDocs(final String dbName, final String collectionName,
-                               final App42CallBack callBack) {
+                              final App42CallBack callBack) {
         final Handler callerThreadHandler = new Handler();
         new Thread() {
             @Override
@@ -656,6 +659,10 @@ public class AsyncApp42ServiceApi {
                 }
             }
         }.start();
+    }
+
+    public EmailService getEmailService() {
+        return this.emailService;
     }
 
     /*
@@ -924,7 +931,6 @@ public class AsyncApp42ServiceApi {
     }
 
 
-
     public void sendPushToUser(final String userName, final String strMessage,
                                final App42CallBack callBack) {
 
@@ -955,6 +961,7 @@ public class AsyncApp42ServiceApi {
             }
         }.start();
     }
+
     //todo get token and remove device in logout
     public void removeDevice(final String userName, final String strToken,
                              final App42CallBack callBack) {
@@ -989,7 +996,7 @@ public class AsyncApp42ServiceApi {
 
     //todo get token and remove device in logout
     public void deleteDeviceToken(final String userName, final String strToken,
-                             final App42CallBack callBack) {
+                                  final App42CallBack callBack) {
 
         final Handler callerThreadHandler = new Handler();
         new Thread() {

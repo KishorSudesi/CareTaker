@@ -56,7 +56,6 @@ public class RoundedImageView extends ImageView {
     }
 
 
-
     @Override
     public void setImageDrawable(Drawable drawable) {
         Bitmap b = ((BitmapDrawable) drawable).getBitmap();

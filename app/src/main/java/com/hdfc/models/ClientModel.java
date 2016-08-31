@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Created by Admin on 5/21/2016.
  */
-public class ClientModel implements Serializable{
+public class ClientModel implements Serializable {
 
 
     private CustomerModel customerModel;

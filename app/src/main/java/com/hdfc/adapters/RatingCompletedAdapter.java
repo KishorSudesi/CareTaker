@@ -165,11 +165,11 @@ public class RatingCompletedAdapter extends BaseAdapter {
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
 
                                 int intImgHeight = resource.getHeight();
-                                int sampleSize = utils.calculateSampleSize(resource.getWidth(), intImgHeight,
+                                int sampleSize = Utils.calculateSampleSize(resource.getWidth(), intImgHeight,
                                         Config.intWidth, Config.intHeight);
                                 intImgHeight = intImgHeight / sampleSize;
                                 int height = intImgHeight - 180;
-                                if (height < 130 && intImgHeight <180) {
+                                if (height < 130 && intImgHeight < 180) {
                                     height = 130;
                                 }
 

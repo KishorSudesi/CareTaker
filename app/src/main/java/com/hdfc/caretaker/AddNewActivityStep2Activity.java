@@ -73,7 +73,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     private SessionManager sessionManager;
     private Context mContext;
     private Date selectedDate = null;
-    private Date lastSelectedDate=null;
+    private Date lastSelectedDate = null;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -163,7 +163,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
-        selectedDate=new Date();
+        selectedDate = new Date();
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -173,7 +173,9 @@ public class CompletedActivity extends AppCompatActivity {
             imageUrlList.clear();
             if (textViewAddRating != null) {
 
-                if (activityModel.getFeedBackModels() != null && activityModel.getFeedBackModels().size() > 0 && activityModel.isRatingAddedByCutsm()) {
+                if (activityModel.getFeedBackModels() != null
+                        && activityModel.getFeedBackModels().size() > 0
+                        && activityModel.isRatingAddedByCutsm()) {
                     textViewAddRating.setVisibility(View.GONE);
                 }
 
@@ -192,7 +194,9 @@ public class CompletedActivity extends AppCompatActivity {
                         animation.setDuration(500);*/
 
                         // in future need to add a check based on customer id and freedbacktype=customer
-                        if (activityModel.getFeedBackModels() != null && activityModel.getFeedBackModels().size() > 0 && activityModel.isRatingAddedByCutsm()) {
+                        if (activityModel.getFeedBackModels() != null
+                                && activityModel.getFeedBackModels().size() > 0
+                                && activityModel.isRatingAddedByCutsm()) {
                             utils.toast(2, 2, getString(R.string.validation_rating));
                         } else {
 

@@ -23,8 +23,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
-                android:textColor="@color/blue"
                 android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue"
                 android:textStyle="bold" />
 
             <TextView
@@ -32,8 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_general"
-                android:textColor="#222222"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#222222"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -67,8 +67,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textColor="#222222"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#222222"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -80,8 +80,8 @@
                     android:id="@+id/txtPerson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/blue"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/blue"
                     android:textStyle="bold" />
 
                 <TextView
@@ -89,8 +89,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
-                    android:textColor="@color/blue"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/blue"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>

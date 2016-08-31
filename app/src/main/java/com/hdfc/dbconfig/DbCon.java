@@ -60,7 +60,8 @@ public class DbCon {
         return dbHelper.rawQuery(query);
         //return dbHelper.getMaxDate(collectionName);
     }
-    public android.database.Cursor getMaxDate(String collectionName,String strDependentsId) {
+
+    public android.database.Cursor getMaxDate(String collectionName, String strDependentsId) {
 
         String query = "Select MAX(" + COLUMN_UPDATE_DATE + ") from " + strTableNameCollection
                 + " where " + COLUMN_COLLECTION_NAME + " = '" + collectionName + "' AND "
@@ -80,7 +81,7 @@ public class DbCon {
         return dbHelper.fetch(tbl, names, where, args, order, limit, isDistinct, groupBy, having);
     }
 
-    public  Cursor fetchFromSelect(String tbl, String where) {
+    public Cursor fetchFromSelect(String tbl, String where) {
         String query = "select * from " + tbl + where;
         Log.i("TAG", "query :" + query);
         return dbHelper.rawQuery(query);
@@ -199,8 +200,7 @@ public class DbCon {
         dbHelper.dbTransactionSucessFull();
     }
 
-    public void updateServerStatus(String status)
-    {
+    public void updateServerStatus(String status) {
         dbHelper.updateServerStatus(status);
     }
 }

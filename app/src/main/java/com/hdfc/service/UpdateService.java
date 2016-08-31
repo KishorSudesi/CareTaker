@@ -713,7 +713,7 @@ public class UpdateService extends Service {
                         Operator.EQUALS);
                 Query q2 = QueryBuilder.build("month", imonth, QueryBuilder.
                         Operator.EQUALS);
-                Query q3 = QueryBuilder.build("customer_id",strCustomerId, QueryBuilder.
+                Query q3 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.
                         Operator.EQUALS);
 
                 // Build query q1 for key1 equal to name and value1 equal to Nick
@@ -1000,7 +1000,7 @@ public class UpdateService extends Service {
 
                 }
 
-                if (Config.strProviderIds == null || Config.strProviderIds.size() <=0) {
+                if (Config.strProviderIds == null || Config.strProviderIds.size() <= 0) {
                     Config.strProviderIds.addAll(sessionManager.getProvidersIds());
                 }
 

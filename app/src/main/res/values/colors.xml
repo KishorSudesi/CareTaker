@@ -5,24 +5,18 @@
     <color name="colorAccent">#292929</color>
     <color name="colorAccentDark">#181818</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="statusBG">#2196f3</color>
-    <color name="orange">#FFA726</color>
 
     <color name="colorHeaderGradientStart">#2196f3</color>
-    <color name="colorHeaderGradientEnd">#6fb6c4</color>
 
-    <color name="polygonViewCircleStrokeColor">#ff59a9ff</color>
-    <color name="polygonViewCircleBackground">#046abc</color>
     <color name="red">#FF0000</color>
+    <color name="colorRed">#EF5350</color>
     <color name="blue">#2196f3</color>
     <color name="colorDarkBlue">#046abc</color>
     <color name="colorHightlight">#ff2c55</color>
     <color name="colorBlackDark">#222222</color>
 
     <!--for tooltip only-->
-    <color name="colorAccentTooltip">#ffb20d</color>
 
     <color name="simpletooltip_background">@color/colorAccent</color>
-    <color name="simpletooltip_text">@android:color/primary_text_light</color>
     <color name="simpletooltip_arrow">@color/colorAccent</color>
 </resources>

@@ -76,13 +76,14 @@ public class MilestoneModel implements Serializable {
         this.strMilestoneName = strMilestoneName;
     }
 
-    public String getStrMilestoneDate(){
+    public String getStrMilestoneDate() {
         return strMilestoneDate;
     }
 
     public void setStrMilestoneDate(String strMilestoneDate) {
         this.strMilestoneDate = strMilestoneDate;
     }
+
     public String getStrMilestoneScheduledDate() {
         return strMilestoneScheduledDate;
     }

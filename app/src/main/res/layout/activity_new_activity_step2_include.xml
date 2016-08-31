@@ -126,9 +126,9 @@
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/notes_icon"
             android:drawablePadding="@dimen/padding_general"
-            android:textColor="@color/colorBlackDark"
             android:hint="@string/notes"
-            android:padding="15dp" />
+            android:padding="15dp"
+            android:textColor="@color/colorBlackDark" />
 
         <Button
             android:id="@+id/button"

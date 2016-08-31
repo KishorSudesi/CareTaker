@@ -108,6 +108,39 @@ public class MyAccountEditFragment extends Fragment {
             // Overriding onDateTimeCancel() is optional.
         }
     };
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+            if (uri != null) {
+                bitmapImg = utils.rotateBitmap(utils.getRealPathFromURI(uri), bitmapImg);
+            }
+
+            if (!isImageChanged) {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                if (bitmap != null)
+                    roundedImageView.setImageBitmap(bitmap);
+                else {
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera));
+                    utils.toast(2, 2, getString(R.string.error));
+                }
+            }
+            if (isImageChanged) {
+                if (bitmap != null)
+                    checkImage();
+                else {
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera));
+                    utils.toast(2, 2, getString(R.string.error));
+                }
+            }
+
+        }
+    };
 
     public static MyAccountEditFragment newInstance() {
         MyAccountEditFragment fragment = new MyAccountEditFragment();
@@ -502,41 +535,6 @@ public class MyAccountEditFragment extends Fragment {
         }
     }
 
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
-            if (uri != null) {
-                bitmapImg = utils.rotateBitmap(utils.getRealPathFromURI(uri), bitmapImg);
-            }
-
-            if (!isImageChanged) {
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                if (bitmap != null)
-                    roundedImageView.setImageBitmap(bitmap);
-                else {
-                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
-                            getDrawable(R.mipmap.camera));
-                    utils.toast(2, 2, getString(R.string.error));
-                }
-            }
-            if (isImageChanged) {
-                if (bitmap != null)
-                    checkImage();
-                else {
-                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
-                            getDrawable(R.mipmap.camera));
-                    utils.toast(2, 2, getString(R.string.error));
-                }
-            }
-
-        }
-    };
-
     private void loadImageSimpleTarget(String url) {
 
         Glide.with(getActivity())
@@ -847,6 +845,80 @@ public class MyAccountEditFragment extends Fragment {
         }
     }
 
+    private void showImageFromGallery() {
+        try {
+            if (uri != null) {
+                Calendar calendar = new GregorianCalendar();
+                String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+                File galleryFile = utils.createFileInternalImage(strFileName);
+                strCustomerImgName = galleryFile.getAbsolutePath();
+                InputStream is = getActivity().getContentResolver().openInputStream(uri);
+                utils.copyInputStreamToFile(is, galleryFile);
+                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                //bitmapImg=utils.roundedBitmap(bitmapImg);
+                loadImageSimpleTarget(uri);
+                isImageChanged = true;
+            }
+            // threadHandler.sendEmptyMessage(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//
+//                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+//                Utils.log(f.getAbsolutePath(), " FP ");
+//                bitmapImg = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+//
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+    //
+
+    private void showImageFromCamera() {
+        try {
+            if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
+                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                loadImageSimpleTarget(strCustomerImgName);
+                isImageChanged = true;
+            }
+            //threadHandler.sendEmptyMessage(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+//    public class BackgroundThreadGallery extends Thread {
+//        @Override
+//        public void run() {
+//
+//            try {
+//                if (uri != null) {
+//                    Calendar calendar = new GregorianCalendar();
+//                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+//                    File galleryFile = utils.createFileInternalImage(strFileName);
+//                    strCustomerImgName = galleryFile.getAbsolutePath();
+//                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
+//                    utils.copyInputStreamToFile(is, galleryFile);
+//                    bitmap = utils.getbitmapImgFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+//                    bitmapImg=utils.roundedBitmap(bitmapImg);
+//                    isImageChanged = true;
+//                }
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -878,80 +950,6 @@ public class MyAccountEditFragment extends Fragment {
 
             //loadingPanel.setVisibility(View.GONE);
         }
-    }
-
-//    public class BackgroundThread extends Thread {
-//        @Override
-//        public void run() {
-//            try {
-//
-//                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
-//                Utils.log(f.getAbsolutePath(), " FP ");
-//                bitmapImg = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-//
-//                threadHandler.sendEmptyMessage(0);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-    //
-
-    private void showImageFromGallery() {
-        try {
-            if (uri != null) {
-                Calendar calendar = new GregorianCalendar();
-                String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                File galleryFile = utils.createFileInternalImage(strFileName);
-                strCustomerImgName = galleryFile.getAbsolutePath();
-                InputStream is = getActivity().getContentResolver().openInputStream(uri);
-                utils.copyInputStreamToFile(is, galleryFile);
-                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-                //bitmapImg=utils.roundedBitmap(bitmapImg);
-                loadImageSimpleTarget(uri);
-                isImageChanged = true;
-            }
-            // threadHandler.sendEmptyMessage(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-//    public class BackgroundThreadGallery extends Thread {
-//        @Override
-//        public void run() {
-//
-//            try {
-//                if (uri != null) {
-//                    Calendar calendar = new GregorianCalendar();
-//                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-//                    File galleryFile = utils.createFileInternalImage(strFileName);
-//                    strCustomerImgName = galleryFile.getAbsolutePath();
-//                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
-//                    utils.copyInputStreamToFile(is, galleryFile);
-//                    bitmap = utils.getbitmapImgFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-//                    bitmapImg=utils.roundedBitmap(bitmapImg);
-//                    isImageChanged = true;
-//                }
-//                threadHandler.sendEmptyMessage(0);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-    private void showImageFromCamera() {
-        try {
-            if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
-                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-                loadImageSimpleTarget(strCustomerImgName);
-                isImageChanged = true;
-            }
-            //threadHandler.sendEmptyMessage(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     public class BackgroundThreadCamera extends Thread {

@@ -17,8 +17,8 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="74dp"
-        android:layout_marginTop="@dimen/margin_general"
-        android:layout_below="@+id/line">
+        android:layout_below="@+id/line"
+        android:layout_marginTop="@dimen/margin_general">
 
         <TableRow
             android:layout_width="match_parent"

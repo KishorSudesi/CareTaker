@@ -24,7 +24,7 @@ public class DependAdapter extends FragmentPagerAdapter implements
     private FragmentManager fm;
     private float scale;
 
-    public DependAdapter(Context context ,FragmentManager fm){
+    public DependAdapter(Context context, FragmentManager fm) {
         super(fm);
         this.fm = fm;
         this.context = context;
@@ -59,7 +59,7 @@ public class DependAdapter extends FragmentPagerAdapter implements
 
             /*if(Config.intDependentsCount<=position)*/
             //Utils.log(String.valueOf(position), " position ");
-           // MyAccountFragment.loadData(position);
+            // MyAccountFragment.loadData(position);
            /* else
                 DashboardFragment.loadData(0);*/
 

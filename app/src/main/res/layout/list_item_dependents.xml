@@ -45,23 +45,20 @@
                     android:id="@+id/textViewClient_age"
                     style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/years"
-                    />
+                    android:text="@string/years" />
 
                 <TextView
                     android:id="@+id/textViewRealtion"
                     style="@style/TextViewSmallStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    />
+                    android:layout_marginLeft="8dp" />
 
             </LinearLayout>
 
@@ -70,8 +67,7 @@
                 style="@style/TextViewSmallStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                />
+                android:layout_marginTop="7dp" />
         </LinearLayout>
 
     </LinearLayout>

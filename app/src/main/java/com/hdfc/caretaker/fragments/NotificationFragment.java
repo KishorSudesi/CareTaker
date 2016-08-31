@@ -59,6 +59,7 @@ public class NotificationFragment extends Fragment {
     public static NotificationAdapter notificationAdapter;
     public static LinearLayout dynamicUserTab;
     private static Utils utils;
+    private static Handler threadHandler;
     private SessionManager sessionManager;
     private ActivityModel activityModel = null;
 
@@ -132,7 +133,7 @@ public class NotificationFragment extends Fragment {
                 if (Config.dependentModels.get(Config.intSelectedDependent).
                         getNotificationModels().get(position).isCheckincare() && Config.checkInCareActivityNames.size() > 0) {
                     Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
-                    intent.putExtra(Config.KEY_START_FROM,Config.START_FROM_NOTIFICATION);
+                    intent.putExtra(Config.KEY_START_FROM, Config.START_FROM_NOTIFICATION);
                     startActivity(intent);
 
                 } else if (Config.intSelectedDependent > -1 &&
@@ -197,7 +198,7 @@ public class NotificationFragment extends Fragment {
                     if (activityModel.getStrActivityStatus().equalsIgnoreCase("new")) {
 
                         DashboardActivity.updateActivityIconMenu();
-                        UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel,Config.START_FROM_NOTIFICATION);
+                        UpcomingFragment completedFragment = UpcomingFragment.newInstance(activityModel, Config.START_FROM_NOTIFICATION);
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().
                                 beginTransaction();
                         ft.replace(R.id.fragment_dashboard, completedFragment);
@@ -210,7 +211,7 @@ public class NotificationFragment extends Fragment {
                         args.putSerializable("ACTIVITY", activityModel);
                         args.putBoolean("WHICH_SCREEN", true);
                         args.putInt("ACTIVITY_POSITION", position);
-                        args.putByte(Config.KEY_START_FROM,Config.START_FROM_NOTIFICATION);
+                        args.putByte(Config.KEY_START_FROM, Config.START_FROM_NOTIFICATION);
                         intent.putExtras(args);
                         startActivity(intent);
                     }
@@ -291,7 +292,6 @@ public class NotificationFragment extends Fragment {
         }
         return activityModel;
     }
-
 
     @Override
     public void onResume() {
@@ -636,13 +636,13 @@ public class NotificationFragment extends Fragment {
         }
     }
 
-    private static Handler threadHandler;
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
 
         }
     }
+
     public class BackgroundThread extends Thread {
         @Override
         public void run() {

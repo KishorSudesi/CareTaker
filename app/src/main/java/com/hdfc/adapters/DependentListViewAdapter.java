@@ -36,7 +36,7 @@ public class DependentListViewAdapter extends BaseAdapter {
         contxt = ctxt;
         data = d;
         inflater = (LayoutInflater) contxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-       // multiBitmapLoader = new MultiBitmapLoader(contxt);
+        // multiBitmapLoader = new MultiBitmapLoader(contxt);
         utils = new Utils(contxt);
     }
 
@@ -55,7 +55,7 @@ public class DependentListViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         View vi = convertView;
-        ViewHolder holder=null;
+        ViewHolder holder = null;
 
         DependentModel editDependentModel = (DependentModel) data.get(position);
 
@@ -63,18 +63,18 @@ public class DependentListViewAdapter extends BaseAdapter {
             vi = inflater.inflate(R.layout.dependent_list_item, null);
 
             holder = new ViewHolder();
-            holder.linearlayoutview = (LinearLayout)vi.findViewById(R.id.linearlayoutClient);
+            holder.linearlayoutview = (LinearLayout) vi.findViewById(R.id.linearlayoutClient);
             holder.textName = (TextView) vi.findViewById(R.id.txtViewName);
             holder.textRelation = (TextView) vi.findViewById(R.id.txtViewRelation);
             holder.image = (ImageView) vi.findViewById(R.id.imgdependent);
             holder.address = (TextView) vi.findViewById(R.id.txtViewAdd);
-            holder.age = (TextView)vi.findViewById(R.id.txtViewClient_age);
+            holder.age = (TextView) vi.findViewById(R.id.txtViewClient_age);
 
             vi.setTag(holder);
         } else {
             holder = (ViewHolder) vi.getTag();
         }
-       // holder.image.setTag(editDependentModel);
+        // holder.image.setTag(editDependentModel);
 
         String strName = editDependentModel.getStrName();
 
@@ -92,7 +92,6 @@ public class DependentListViewAdapter extends BaseAdapter {
         holder.textRelation.setText(editDependentModel.getStrRelation());
 
         //File fileImage = new File(editDependentModel.getStrImagePath());
-
 
 
 //        File fileImage = utils.getInternalFileImages(editDependentModel.getStrDependentID());
@@ -125,8 +124,8 @@ public class DependentListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("editflag",true);
-                bundle.putInt("childposition",position);
+                bundle.putBoolean("editflag", true);
+                bundle.putInt("childposition", position);
                 Intent intent = new Intent(contxt, DependentDetailPersonal.class);
                 intent.putExtras(bundle);
                 contxt.startActivity(intent);

@@ -464,7 +464,7 @@ public class GuruDetailsFragment extends Fragment {
 
                                 @Override
                                 public void onException(Exception e) {
-                                    if(mProgress.isShowing())
+                                    if (mProgress.isShowing())
                                         mProgress.dismiss();
                                     if (e != null) {
 
@@ -472,11 +472,11 @@ public class GuruDetailsFragment extends Fragment {
                                             JSONObject jsonObject = new JSONObject(e.getMessage());
                                             JSONObject jsonObjectError = jsonObject.getJSONObject("app42Fault");
 
-                                            int appErrorCode = ((App42Exception)e).getAppErrorCode();
+                                            int appErrorCode = ((App42Exception) e).getAppErrorCode();
 
                                             if (appErrorCode == 2001) {
-                                                utils.toast(2,2,getString(R.string.email__already_exists));
-                                            }else {
+                                                utils.toast(2, 2, getString(R.string.email__already_exists));
+                                            } else {
                                                 strMess = jsonObjectError.getString("message");
                                                 utils.toast(2, 2, e.getMessage());
                                             }

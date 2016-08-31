@@ -179,7 +179,7 @@ public class DashboardFragment extends Fragment {
                     if (Config.checkInCareActivityNames.size() > 0) {
 
                         Intent intent = new Intent(getActivity(), CheckInCareActivity.class);
-                        intent.putExtra(Config.KEY_START_FROM,Config.START_FROM_DASHBOARD);
+                        intent.putExtra(Config.KEY_START_FROM, Config.START_FROM_DASHBOARD);
                         startActivity(intent);
                     }
 

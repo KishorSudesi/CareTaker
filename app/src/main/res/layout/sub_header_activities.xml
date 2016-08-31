@@ -17,12 +17,10 @@
         android:background="@color/colorWhite"
         android:text="@string/list"
         android:textAllCaps="false"
-        android:textColor="@color/blue"
-         />
+        android:textColor="@color/blue" />
 
 
     <LinearLayout
-        android:id="@+id/buttonlayout"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_weight="2"
@@ -36,7 +34,7 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_general"
             android:padding="@dimen/padding_general"
-            android:src="@drawable/left_arrow_active"/>
+            android:src="@drawable/left_arrow_active" />
 
         <TextView
             android:id="@+id/currentMonth"
@@ -55,7 +53,7 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_general"
             android:padding="@dimen/padding_general"
-            android:src="@drawable/right_arrow_active"/>
+            android:src="@drawable/right_arrow_active" />
     </LinearLayout>
 
 

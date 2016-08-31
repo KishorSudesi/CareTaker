@@ -21,18 +21,8 @@ public class CheckInCareModel {
     private String strCustomerID;
     private String strDependentID;
     private String strProviderID;
-
-    public String getStrProviderID() {
-        return strProviderID;
-    }
-
-    public void setStrProviderID(String strProviderID) {
-        this.strProviderID = strProviderID;
-    }
-
     private List<PictureModel> pictureModels = new ArrayList<>();
     private List<ImageModel> imageModels = new ArrayList<>();
-
     private List<CheckInCareActivityModel> checkInCareActivityModels = new ArrayList<>();
 
     public CheckInCareModel() {
@@ -58,6 +48,14 @@ public class CheckInCareModel {
 
     }
 
+    public String getStrProviderID() {
+        return strProviderID;
+    }
+
+    public void setStrProviderID(String strProviderID) {
+        this.strProviderID = strProviderID;
+    }
+
     public String getStrName() {
         return strName;
     }
@@ -65,6 +63,7 @@ public class CheckInCareModel {
     public void setStrName(String strName) {
         this.strName = strName;
     }
+
     public String getStrStatus() {
         return strStatus;
     }
@@ -142,11 +141,11 @@ public class CheckInCareModel {
         return pictureModels;
     }
 
-    public void setPictureModels(ArrayList<PictureModel> pictureModels) {
+    public void setPictureModels(List<PictureModel> pictureModels) {
         this.pictureModels = pictureModels;
     }
 
-    public void setPictureModels(List<PictureModel> pictureModels) {
+    public void setPictureModels(ArrayList<PictureModel> pictureModels) {
         this.pictureModels = pictureModels;
     }
 

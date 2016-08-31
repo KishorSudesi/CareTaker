@@ -13,6 +13,7 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
+import com.hdfc.libs.CrashLogger;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 //            e.getMessage();
 //        }
         try {
-
+            CrashLogger.getInstance().init(MainActivity.this);
 
             sessionManager = new SessionManager(MainActivity.this);
             if (sessionManager.isLoggedIn()) {

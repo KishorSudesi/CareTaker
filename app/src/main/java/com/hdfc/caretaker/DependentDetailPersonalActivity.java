@@ -58,7 +58,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private static Thread backgroundThread, backgroundThreadCamera, backgroundThreadGallery;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
-   private static SearchView searchView;
+    private static SearchView searchView;
     private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private static ProgressDialog mProgress = null;
     public String drawable;
@@ -67,7 +67,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     private Spinner spinnerRelation;
     private String strRelation;
     private Context mContext;
-    private boolean isSelected=false;
+    private boolean isSelected = false;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -109,7 +109,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
 //        if(getIntent().getExtras()!=null)
 
-        isSelected=false;
+        isSelected = false;
         utils = new Utils(DependentDetailPersonalActivity.this);
         utils.setStatusBarColor("#2196f3");
         mContext = this;
@@ -640,7 +640,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        isSelected=true;
+                        isSelected = true;
                         strImageName = Utils.customerImageUri.getPath();
                         backgroundThreadHandler = new BackgroundThreadHandler();
                         backgroundThreadCamera = new BackgroundThreadCamera();
@@ -649,7 +649,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                     case Config.START_GALLERY_REQUEST_CODE:
                         if (intent.getData() != null) {
-                            isSelected=true;
+                            isSelected = true;
                             uri = intent.getData();
                             backgroundThreadHandler = new BackgroundThreadHandler();
                             backgroundThread = new BackgroundThread();

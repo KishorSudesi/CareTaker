@@ -42,7 +42,20 @@ public class UpcomingFragment extends Fragment {
     private int iPosition;
     private Context mContext;
     private byte START_FROM = 0;
-//    private ImageButton buttonCancel;
+    //    private ImageButton buttonCancel;
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+
+            progressDialog.dismiss();
+
+            if (bitmap != null)
+                imageViewCarla.setImageBitmap(bitmap);
+        }
+    };
 
     public static UpcomingFragment newInstance(ActivityModel activityModel, byte statusFrom) {
         UpcomingFragment fragment = new UpcomingFragment();
@@ -205,20 +218,6 @@ public class UpcomingFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.show();*/
     }
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
-
-            progressDialog.dismiss();
-
-            if (bitmap != null)
-                imageViewCarla.setImageBitmap(bitmap);
-        }
-    };
 
     private void loadImageSimpleTarget(String url) {
 

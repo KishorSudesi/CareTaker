@@ -111,7 +111,7 @@ public class GalleryImageAdapter extends BaseAdapter {
                 Glide.with(_context)
                         .load(strUrl)
                         .centerCrop()
-                        .override(Config.intWidth,Config.intHeight)
+                        .override(Config.intWidth, Config.intHeight)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder.roundedImageView);
 

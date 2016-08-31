@@ -25,10 +25,6 @@ import java.util.TimeZone;
 public class Config {
 
     public static final String dbName = "newzeal";
-    public static byte START_FROM_DASHBOARD = 0;
-    public static byte START_FROM_NOTIFICATION = 1;
-    public static byte START_FROM_ACTIVITY = 3;
-
     public static final String KEY_START_FROM = "start_from";
     public static final String collectionService = "service";
     public static final String collectionServiceHistory = "servicehistory";
@@ -40,13 +36,10 @@ public class Config {
     public static final String collectionNotification = "notification";
     public static final String collectionMilestones = "milestones";
     public static final String collectionCheckInCare = "checkincare";
-
     public static final int iSdkVersion = Build.VERSION.SDK_INT;
     public static final int iAppVersion = BuildConfig.VERSION_CODE;
     public static final String strOs = "android";
-
     public static final String strAppId = "910502819263";
-
     public static final String string = Utils.getStringJni();
     public static final int START_CAMERA_REQUEST_CODE = 1;
     public static final int START_GALLERY_REQUEST_CODE = 2;
@@ -58,11 +51,8 @@ public class Config {
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public static final boolean isDebuggable = true;
     public static final boolean release = false;
-
     public static final int intCompressWidth = 320, intCompressHeight = 480, iQuality = 50;
-
     public static final String strRelations[] = {"Select a Relation", "Father", "Mother", "Uncle", "Aunt", "Grand Father", "Grand Mother", "Father-in-law", "Mother-in-law", "Other"};
-
     public static final String[] countryNames = {"Select Country", "Afghanistan", "Albania",
             "Algeria", "Andorra", "Angola", "Antarctica", "Argentina",
             "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan",
@@ -107,7 +97,6 @@ public class Config {
             "Uruguay", "United States", "Uzbekistan", "Vanuatu",
             "Holy See (vatican City State)", "Venezuela", "Viet Nam",
             "Wallis And Futuna", "Yemen", "Zambia", "Zimbabwe"};
-
     public static final String[] countryAreaCodes = {"0", "93", "355", "213",
             "376", "244", "672", "54", "374", "297", "61", "43", "994", "973",
             "880", "375", "32", "501", "229", "975", "591", "387", "267", "55",
@@ -130,7 +119,6 @@ public class Config {
             "963", "886", "992", "255", "66", "228", "690", "676", "216", "90",
             "993", "688", "971", "256", "44", "380", "598", "1", "998", "678",
             "39", "58", "84", "681", "967", "260", "263"};
-
     public static final String[] countryCodes = {"", "AF", "AL", "DZ", "AD", "AO",
             "AQ", "AR", "AM", "AW", "AU", "AT", "AZ", "BH", "BD", "BY", "BE",
             "BZ", "BJ", "BT", "BO", "BA", "BW", "BR", "BN", "BG", "BF", "MM",
@@ -152,13 +140,16 @@ public class Config {
             "GB", "UA", "UY", "US", "UZ", "VU", "VA", "VE", "VN", "WF", "YE",
             "ZM", "ZW"
     };
-
     public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
     public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
     public static final String strReload = "RELOAD";
     public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status", "doc_date", "is_updated"};
     public static final String names_update[] = {"is_updated"};
     public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
+    public static final String viewRefreshAction = "com.caretaker.action.refresh.view";
+    public static byte START_FROM_DASHBOARD = 0;
+    public static byte START_FROM_NOTIFICATION = 1;
+    public static byte START_FROM_ACTIVITY = 3;
     public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;
     public static int intServiceScreen = 7;
@@ -173,7 +164,6 @@ public class Config {
     //User Specific clear at logout or whenever needed
     public static int intScreenHeight = 0;
     public static JSONObject jsonCustomer = null;
-    public static int intSelectedMenu = 0;
     //public static int intDependentsCount = 0;
 //    public static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
 //    public static ArrayList<String> dependentNames = new ArrayList<>();
@@ -183,7 +173,7 @@ public class Config {
 //    public static ArrayList<String> strActivityIds = new ArrayList<>();
 //    public static ArrayList<String> strProviderIds = new ArrayList<>();
 //    public static ArrayList<String> strProviderIdsAdded = new ArrayList<>();
-
+    public static int intSelectedMenu = 0;
     public static ArrayList<CategoryServiceModel> categoryServiceModels = new ArrayList<>();
     public static ArrayList<String> dependentNames = new ArrayList<>();
     public static ArrayList<String> strDependentIds = new ArrayList<>();
@@ -213,7 +203,5 @@ public class Config {
     public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 
     public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
-
-    public static final String viewRefreshAction = "com.caretaker.action.refresh.view";
 
 }

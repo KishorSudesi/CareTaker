@@ -83,7 +83,7 @@ public class SignupActivity extends FragmentActivity {
 
                 break;
 
-                   }
+        }
     }
 
     private void initButton() {

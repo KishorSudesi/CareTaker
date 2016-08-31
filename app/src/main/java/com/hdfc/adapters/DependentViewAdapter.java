@@ -90,7 +90,7 @@ public class DependentViewAdapter extends BaseAdapter {
                                 .bitmapTransform(new CropCircleTransformation(_ctxt))
                                 .placeholder(R.drawable.person_icon)
                                 .crossFade()
-                                .override(Config.intWidth,Config.intHeight)
+                                .override(Config.intWidth, Config.intHeight)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(holder.image);
 

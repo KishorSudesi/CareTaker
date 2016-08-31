@@ -69,7 +69,7 @@ public class GalleryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         _thumbnails = (LinearLayout) view.findViewById(R.id.thumbnails);
-        imageGallery = (ImageView)view.findViewById(R.id.imageViewGallery);
+        imageGallery = (ImageView) view.findViewById(R.id.imageViewGallery);
         utils = new Utils(getActivity());
         context = getActivity();
 
@@ -146,44 +146,45 @@ public class GalleryFragment extends Fragment {
         }
 
     }
-        public class BackgroundThread extends Thread {
-            @Override
-            public void run() {
-                //
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            //
+            try {
+
+                bitmapimages.clear();
+
+                Utils.log(String.valueOf(imageModels.size()), " 1 ");
+
                 try {
 
-                    bitmapimages.clear();
+                    for (int i = 0; i < imageModels.size(); i++) {
 
-                    Utils.log(String.valueOf(imageModels.size()), " 1 ");
+                        ImageModel imageModel = imageModels.get(i);
 
-                    try {
+                        if (imageModel.getStrImageUrl() != null && !imageModel.getStrImageUrl().equalsIgnoreCase("")) {
 
-                        for (int i = 0; i < imageModels.size(); i++) {
+                            utils.loadImageFromWeb(imageModel.getStrImageName(), imageModel.getStrImageUrl());
 
-                            ImageModel imageModel = imageModels.get(i);
+                            File file = utils.getInternalFileImages(utils.replaceSpace(imageModel.getStrImageName()));
 
-                            if (imageModel.getStrImageUrl() != null && !imageModel.getStrImageUrl().equalsIgnoreCase("")) {
-
-                                utils.loadImageFromWeb(imageModel.getStrImageName(), imageModel.getStrImageUrl());
-
-                                File file = utils.getInternalFileImages(utils.replaceSpace(imageModel.getStrImageName()));
-
-                                Bitmap bitmap = utils.getBitmapFromFile(file.getAbsolutePath(), Config.intWidth, Config.intHeight);
-                                bitmapimages.add(bitmap);
-                                // bitmap.recycle();
-                            }
-
+                            Bitmap bitmap = utils.getBitmapFromFile(file.getAbsolutePath(), Config.intWidth, Config.intHeight);
+                            bitmapimages.add(bitmap);
+                            // bitmap.recycle();
                         }
-                    } catch (OutOfMemoryError e) {
-                        e.printStackTrace();
-                        bitmapimages.clear();
+
                     }
-
-
-                } catch (Exception e) {
+                } catch (OutOfMemoryError e) {
                     e.printStackTrace();
+                    bitmapimages.clear();
                 }
-                backgroundThreadHandler.sendEmptyMessage(0);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            backgroundThreadHandler.sendEmptyMessage(0);
         }
     }
+}

@@ -37,12 +37,12 @@ public class SessionManager {
     private static final String PREF_NAME = "CareTaker";
     // All Shared Preferences Keys
     private static final String IS_LOGIN = "IsLoggedIn";
+    private static final String KEY_DEVICE_TOKEN = "DEVICE_TOKEN";
     private final String KEY_DEPENDENTS_IDS = "dependents_ids";
     private final String KEY_PROVIDERS_IDS = "providers_ids";
     private final String KEY_OLD_PASSWORD = "old_password";
     private final String KEY_UPDATED_DEPENDENTS = "updated_dependents";
     private final String KEY_CHECKIN_CARE_STATUS = "checkin_care_status";
-   private static final String KEY_DEVICE_TOKEN = "DEVICE_TOKEN";
     // Shared Preferences
     SharedPreferences pref;
     // Editor for Shared preferences
@@ -56,7 +56,7 @@ public class SessionManager {
     public SessionManager(Context context) {
         try {
             this._context = context;
-            pref = context.getSharedPreferences(PREF_NAME, context.MODE_PRIVATE);
+            pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             editor = pref.edit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +99,10 @@ public class SessionManager {
         return pref.getString(KEY_EMAIL, "");
     }
 
-    public String getPassword(){return pref.getString(KEY_PASSWORD,"");}
+    public String getPassword() {
+        return pref.getString(KEY_PASSWORD, "");
+    }
+
     /**
      * Clear session details
      */

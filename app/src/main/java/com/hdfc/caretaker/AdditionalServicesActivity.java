@@ -64,6 +64,20 @@ public class AdditionalServicesActivity extends AppCompatActivity {
     private ExpandableListView listView;
     private SessionManager sessionManager;
     private byte INSERT = 0, UPDATE = 1;
+    /*Comparator for sorting the list by service Name*/
+    private Comparator<CategoryServiceModel> ServiceNameComparator = new Comparator<CategoryServiceModel>() {
+
+        public int compare(CategoryServiceModel s1, CategoryServiceModel s2) {
+            String serviceName1 = s1.getStrCategoryName().toUpperCase();
+            String serviceName2 = s2.getStrCategoryName().toUpperCase();
+
+            //ascending order
+            return serviceName1.compareTo(serviceName2);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -473,21 +487,6 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         }
     }
 
-    /*Comparator for sorting the list by service Name*/
-    private Comparator<CategoryServiceModel> ServiceNameComparator = new Comparator<CategoryServiceModel>() {
-
-        public int compare(CategoryServiceModel s1, CategoryServiceModel s2) {
-            String serviceName1 = s1.getStrCategoryName().toUpperCase();
-            String serviceName2 = s2.getStrCategoryName().toUpperCase();
-
-            //ascending order
-            return serviceName1.compareTo(serviceName2);
-
-            //descending order
-            //return StudentName2.compareTo(StudentName1);
-        }
-    };
-
     public void refreshAdapter() {
 
         try {
@@ -497,7 +496,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
             if (listView != null) {
                 if (Config.categoryServiceModels.size() > 0) {
-                    Collections.sort(Config.categoryServiceModels,ServiceNameComparator);
+                    Collections.sort(Config.categoryServiceModels, ServiceNameComparator);
                 }
                 listDataHeader.clear();
                 listDataChild.clear();

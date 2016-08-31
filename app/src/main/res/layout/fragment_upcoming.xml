@@ -4,7 +4,7 @@
     android:background="@drawable/app_header_blue"
     android:orientation="vertical">
 
-    <include layout="@layout/header_upcoming_activity"/>
+    <include layout="@layout/header_upcoming_activity" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,8 +13,7 @@
         android:layout_weight="3"
         android:background="@color/colorWhite">
 
-        <include layout="@layout/upcoming_activity_include"
-            />
+        <include layout="@layout/upcoming_activity_include" />
 
     </ScrollView>
 

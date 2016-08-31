@@ -7,16 +7,16 @@
     android:orientation="vertical"
     android:padding="1dp">
 
-  <!--  <Button
-        android:id="@+id/btn1"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/btn2"
-        android:layout_toStartOf="@+id/btn2"
-        android:background="@drawable/rounded_cell_blue" /> -->
+    <!--  <Button
+          android:id="@+id/btn1"
+          android:layout_width="15dp"
+          android:layout_height="15dp"
+          android:layout_centerVertical="true"
+          android:layout_marginEnd="5dp"
+          android:layout_marginRight="5dp"
+          android:layout_toLeftOf="@+id/btn2"
+          android:layout_toStartOf="@+id/btn2"
+          android:background="@drawable/rounded_cell_blue" /> -->
 
     <Button
         android:id="@+id/btn2"

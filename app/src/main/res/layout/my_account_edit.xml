@@ -16,7 +16,6 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
-                android:id="@+id/relativeLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
@@ -26,7 +25,6 @@
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="74dp"
                 android:background="@drawable/my_account_white">
-
 
 
                 <TextView
@@ -45,9 +43,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textView18"
                     android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorBlackDark"
                     android:drawableLeft="@drawable/mail_icon_32"
-                    android:drawablePadding="5dp" />
+                    android:drawablePadding="5dp"
+                    android:textColor="@color/colorBlackDark" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -68,10 +66,10 @@
                         android:layout_marginTop="10dp"
                         android:drawableLeft="@drawable/person_icon"
                         android:drawablePadding="15dp"
-                        android:textColor="@color/colorBlackDark"
                         android:drawableStart="@drawable/person_icon"
                         android:hint="@string/name"
-                        android:paddingLeft="10dp" />
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorBlackDark" />
 
                     <EditText
                         android:id="@+id/editDob"
@@ -82,13 +80,13 @@
                         android:layout_marginLeft="@dimen/edit_text_margin"
                         android:layout_marginRight="@dimen/edit_text_margin"
                         android:layout_marginTop="25dp"
-                        android:textColor="@color/colorBlackDark"
                         android:drawableLeft="@drawable/activity_icon_32"
                         android:drawablePadding="10dp"
                         android:focusableInTouchMode="false"
                         android:hint="@string/DOB"
                         android:inputType="textPersonName"
-                        android:padding="10dp" />
+                        android:padding="10dp"
+                        android:textColor="@color/colorBlackDark" />
                     <!--
                                     <EditText
                                         android:id="@+id/editTextCity"
@@ -152,18 +150,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textColor="@color/colorBlackDark"
-                            android:text="@string/mobile" />
+                            android:text="@string/mobile"
+                            android:textColor="@color/colorBlackDark" />
 
                         <RadioButton
-                            android:id="@+id/radioLandline"
                             style="@style/RadioButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:checked="true"
-                            android:textColor="@color/colorBlackDark"
-                            android:text="@string/landline" />
+                            android:text="@string/landline"
+                            android:textColor="@color/colorBlackDark" />
 
                     </RadioGroup>
 
@@ -175,56 +172,56 @@
                         android:padding="10dp"
                         android:weightSum="2">
 
-                <EditText
-                    android:id="@+id/editCountryCode"
-                    style="@style/EditTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="45dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/edit_text_margin"
-                    android:layout_marginRight="@dimen/edit_text_margin"
-                    android:layout_marginTop="2dp"
-                    android:layout_weight="0.4"
-                    android:textColor="@color/colorBlackDark"
-                    android:drawablePadding="10dp"
-                    android:enabled="false"
-                    android:hint="@string/country_code"
-                    android:inputType="number"
-                    android:padding="10dp" />
+                        <EditText
+                            android:id="@+id/editCountryCode"
+                            style="@style/EditTextStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="@dimen/edit_text_margin"
+                            android:layout_marginRight="@dimen/edit_text_margin"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="0.4"
+                            android:drawablePadding="10dp"
+                            android:enabled="false"
+                            android:hint="@string/country_code"
+                            android:inputType="number"
+                            android:padding="10dp"
+                            android:textColor="@color/colorBlackDark" />
 
-                <EditText
-                    android:id="@+id/editAreaCode"
-                    style="@style/EditTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="45dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/edit_text_margin"
-                    android:layout_marginRight="@dimen/edit_text_margin"
-                    android:layout_marginTop="2dp"
-                    android:layout_weight="0.5"
-                    android:textColor="@color/colorBlackDark"
-                    android:drawablePadding="10dp"
-                    android:hint="@string/area_code"
-                    android:inputType="number"
-                    android:maxLength="6"
-                    android:padding="10dp" />
+                        <EditText
+                            android:id="@+id/editAreaCode"
+                            style="@style/EditTextStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="@dimen/edit_text_margin"
+                            android:layout_marginRight="@dimen/edit_text_margin"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="0.5"
+                            android:drawablePadding="10dp"
+                            android:hint="@string/area_code"
+                            android:inputType="number"
+                            android:maxLength="6"
+                            android:padding="10dp"
+                            android:textColor="@color/colorBlackDark" />
 
-                <EditText
-                    android:id="@+id/editContactNo"
-                    style="@style/EditTextStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="45dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="@dimen/edit_text_margin"
-                    android:layout_marginRight="@dimen/edit_text_margin"
-                    android:layout_marginTop="2dp"
-                    android:layout_weight="1.1"
-                    android:textColor="@color/colorBlackDark"
-                    android:drawablePadding="10dp"
-                    android:hint="@string/contact_number"
-                    android:inputType="number"
-                    android:maxLength="10"
-                    android:padding="10dp" />
+                        <EditText
+                            android:id="@+id/editContactNo"
+                            style="@style/EditTextStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="45dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="@dimen/edit_text_margin"
+                            android:layout_marginRight="@dimen/edit_text_margin"
+                            android:layout_marginTop="2dp"
+                            android:layout_weight="1.1"
+                            android:drawablePadding="10dp"
+                            android:hint="@string/contact_number"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:padding="10dp"
+                            android:textColor="@color/colorBlackDark" />
 
                     </LinearLayout>
 
@@ -267,8 +264,8 @@
                 android:layout_alignRight="@+id/imageView5"
                 android:layout_alignStart="@+id/imageView5"
                 android:visibility="gone">
-                <ProgressBar
-                    style="@style/GenericProgressIndicator" />
+
+                <ProgressBar style="@style/GenericProgressIndicator" />
             </RelativeLayout>
 
         </RelativeLayout>

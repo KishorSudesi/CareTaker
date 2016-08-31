@@ -40,16 +40,14 @@
                 style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                />
+                android:layout_marginTop="7dp" />
 
             <TextView
                 android:id="@+id/textViewContact"
                 style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                />
+                android:layout_marginTop="7dp" />
         </LinearLayout>
 
     </LinearLayout>

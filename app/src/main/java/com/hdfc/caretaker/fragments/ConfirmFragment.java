@@ -35,7 +35,7 @@ public class ConfirmFragment extends Fragment {
     public static ArrayList<ConfirmViewModel> CustomListViewValuesArr = new ArrayList<>();
     //public static ConfirmListViewAdapter adapter;
     public static ConfirmListAdapter adapter;
-    public static int uploadSize, uploadingCount=0;
+    public static int uploadSize, uploadingCount = 0;
     //private static List<ConfirmCustomerModel> listDataHeader = new ArrayList<>();
     private static List<CustomerModel> listDataHeader = new ArrayList<>();
     //private static HashMap<ConfirmCustomerModel, List<ConfirmDependentModel>> listDataChild = new HashMap<>();
@@ -120,7 +120,7 @@ public class ConfirmFragment extends Fragment {
 
         utils = new Utils(getActivity());
 
-        expListView = (ExpandableListView)addFragment.findViewById(R.id.expList);
+        expListView = (ExpandableListView) addFragment.findViewById(R.id.expList);
 
         progressDialog = new ProgressDialog(getActivity());
 
@@ -156,64 +156,64 @@ public class ConfirmFragment extends Fragment {
         try {
 
 
-        if (utils.isConnectingToInternet()) {
+            if (utils.isConnectingToInternet()) {
 
-            StorageService storageService = new StorageService(getActivity());
+                StorageService storageService = new StorageService(getActivity());
 
-            JSONObject jsonToUpdate = new JSONObject();
+                JSONObject jsonToUpdate = new JSONObject();
 
-            jsonToUpdate.put("customer_register", true);
+                jsonToUpdate.put("customer_register", true);
 
-            storageService.updateDocs(jsonToUpdate,
-                    Config.customerModel.getStrCustomerID(),
-                    Config.collectionCustomer, new App42CallBack() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            try {
-                                if (o != null) {
-                                    Utils.log(o.toString(), "LOG");
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    callSuccess();
+                storageService.updateDocs(jsonToUpdate,
+                        Config.customerModel.getStrCustomerID(),
+                        Config.collectionCustomer, new App42CallBack() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                try {
+                                    if (o != null) {
+                                        Utils.log(o.toString(), "LOG");
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        callSuccess();
 
-                                } else {
-                                    if (progressDialog.isShowing())
-                                        progressDialog.dismiss();
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
-                                }
-                            } catch (Exception e1) {
-                                utils.toast(2, 2, getString(R.string.error));
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
-                                e1.printStackTrace();
-                            }
-
-                        }
-
-                        @Override
-                        public void onException(Exception e) {
-
-                            try {
-
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
-
-                                if (e != null) {
-                                    Utils.log(e.toString(),"TAG");
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+                                } catch (Exception e1) {
                                     utils.toast(2, 2, getString(R.string.error));
-                                }else {
-                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    e1.printStackTrace();
                                 }
-                            } catch (Exception e1) {
-                                e1.printStackTrace();
+
                             }
 
+                            @Override
+                            public void onException(Exception e) {
 
-                        }
-                    });
+                                try {
 
-        }
-    }catch(Exception e) {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+
+                                    if (e != null) {
+                                        Utils.log(e.toString(), "TAG");
+                                        utils.toast(2, 2, getString(R.string.error));
+                                    } else {
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+
+
+                            }
+                        });
+
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -31,7 +31,7 @@ public class CarlaCompletedFragment extends Fragment {
     private static ProgressDialog progressDialog;
     private static ImageView imageViewCarla;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
-    private String strCarlaImageName,strCarlaImageUrl;
+    private String strCarlaImageName, strCarlaImageUrl;
     private Utils utils;
     private int iPosition;
 
@@ -83,7 +83,7 @@ public class CarlaCompletedFragment extends Fragment {
             txtViewMSG.setText(ActivityCompletedFragment._activityModel.getStrActivityDesc());
 
             strCarlaImageName = utils.replaceSpace(ActivityCompletedFragment._activityModel.getStrProviderID());
-            strCarlaImageUrl=utils.replaceSpace(Config.providerModels.get(iPosition).getStrImgUrl());
+            strCarlaImageUrl = utils.replaceSpace(Config.providerModels.get(iPosition).getStrImgUrl());
 
         }
         //

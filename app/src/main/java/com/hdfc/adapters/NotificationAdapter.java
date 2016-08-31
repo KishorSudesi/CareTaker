@@ -92,7 +92,7 @@ public class NotificationAdapter extends BaseAdapter {
             //NotificationModel notificationModel = adapterNotificationModels.get(position);
 
             String strId = adapterNotificationModels.get(position).getStrCreatedByID();
-            String strUrl="";
+            String strUrl = "";
 
             String strName = "", strMess = "";
 

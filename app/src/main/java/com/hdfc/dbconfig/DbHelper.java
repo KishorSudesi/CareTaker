@@ -111,7 +111,7 @@ encrypt(false);*/
         if (oldVersion < newVersion) {
             dropDb(db);
             onCreate(db);
-            SessionManager sessionManager=new SessionManager(_ctxt);
+            SessionManager sessionManager = new SessionManager(_ctxt);
             sessionManager.logoutUser();
 
         }
