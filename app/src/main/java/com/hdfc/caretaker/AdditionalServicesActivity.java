@@ -91,6 +91,7 @@ public class AdditionalServicesActivity extends AppCompatActivity {
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
 
         utils = new Utils(AdditionalServicesActivity.this);
+        utils.setStatusBarColor("#2196f3");
         progressDialog = new ProgressDialog(AdditionalServicesActivity.this);
 
         loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);

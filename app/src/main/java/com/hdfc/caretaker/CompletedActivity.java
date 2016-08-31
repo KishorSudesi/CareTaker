@@ -1,9 +1,7 @@
 package com.hdfc.caretaker;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -21,14 +18,11 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.adapters.GalleryImageAdapter;
 import com.hdfc.adapters.MileStoneAdapter;
 import com.hdfc.adapters.RatingCompletedAdapter;
@@ -43,7 +37,6 @@ import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 import com.hdfc.models.FeedBackModel;
 import com.hdfc.models.FieldModel;
-import com.hdfc.views.TouchImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
@@ -52,37 +45,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
-
 public class CompletedActivity extends AppCompatActivity {
 
     private static boolean bWhichScreen;
-    private static Bitmap bitmapImg;
     private static Handler threadHandler;
-    private static ImageView imageViewCarla;
-    private static RelativeLayout loadingPanel;
     private static ActivityModel activityModel;
-    private static ExpandableListView expandableListView;
-    private static List<Bitmap> bitmapimages = new ArrayList<>();
-    private static List<String> imageUrlList = new ArrayList<String>();
-    private static LinearLayout _thumbnails;
-    private static Context context;
-    private static int iRating = 0, iActivityPosition = 0;
-    private static View previousViewButton;
+    //private static List<Bitmap> bitmapimages = new ArrayList<>();
+    private static List<String> imageUrlList = new ArrayList<>();
+    private static int iRating = 0;
     private static String strUserName;
     private static JSONObject jsonObjectMess;
-    private static RatingCompletedAdapter ratingCompletedAdapter;
     private static ArrayList<String> strImageTitles = new ArrayList<>();
-    private static ListView listView;
     private static boolean bReload;
-    private String strCarlaImageName, strCarlaImageUrl;
+    private ImageView imageViewCarla;
+    private RelativeLayout loadingPanel;
+    private ExpandableListView expandableListView;
+    private Context context;
+    private View previousViewButton;
+    private RatingCompletedAdapter ratingCompletedAdapter;
+    private ListView listView;
+    private String strCarlaImageUrl;
     private Utils utils;
     private EditText editFeedBack;
     //private CheckBox checkReport;
@@ -96,18 +84,19 @@ public class CompletedActivity extends AppCompatActivity {
     private LinearLayout linearLayoutRatingAdd;
     private byte START_FROM = 0;
     private Gallery galleryThumbnails;
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+    private ProgressBar progressBar;
+   /* private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
             // do something with the bitmap
             // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
+            //Bitmap bitmapImg = bitmap;
 
 
             if (bitmap != null)
                 imageViewCarla.setImageBitmap(bitmap);
         }
-    };
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +111,7 @@ public class CompletedActivity extends AppCompatActivity {
             if (extras != null) {
                 bWhichScreen = extras.getBoolean("WHICH_SCREEN", false);
                 activityModel = (ActivityModel) extras.getSerializable("ACTIVITY");
-                iActivityPosition = extras.getInt("ACTIVITY_POSITION", -1);
+                //int iActivityPosition = extras.getInt("ACTIVITY_POSITION", -1);
                 if (getIntent().hasExtra(Config.KEY_START_FROM)) {
                     START_FROM = getIntent().getByteExtra(Config.KEY_START_FROM, (byte) 0);
                 }
@@ -160,6 +149,7 @@ public class CompletedActivity extends AppCompatActivity {
             TextView txtViewHead2 = (TextView) findViewById(R.id.textViewHead2);
             imageViewCarla = (ImageView) findViewById(R.id.imageViewCarla);
             loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
+            progressBar = (ProgressBar) findViewById(R.id.progressBar);
             tvTasks = (TextView) findViewById(R.id.tvTasks);
             galleryThumbnails = (Gallery) findViewById(R.id.galleryThumbnails);
 
@@ -169,8 +159,9 @@ public class CompletedActivity extends AppCompatActivity {
             sv = (ScrollView) findViewById(R.id.scrollView);
             galleryThumbnails.setSpacing(2);
             smileyMessage = (TextView) findViewById(R.id.smileyMessage);
-            imageUrlList = new ArrayList<>();
-            imageUrlList.clear();
+            //imageUrlList = new ArrayList<>();
+            /*imageUrlList.clear();
+            strImageTitles.clear();*/
             if (textViewAddRating != null) {
 
                 if (activityModel.getFeedBackModels() != null
@@ -236,6 +227,7 @@ public class CompletedActivity extends AppCompatActivity {
             }
 
             utils = new Utils(CompletedActivity.this);
+            utils.setStatusBarColor("#2196f3");
 
             if (activityModel != null) {
 
@@ -245,7 +237,8 @@ public class CompletedActivity extends AppCompatActivity {
                     strCarlaImageUrl = Config.providerModels.get(iPosition).getStrImgUrl();
                 String strDate = "\n" + utils.formatDate(activityModel.getStrActivityDate());
                 if (txtAdditionalServices != null) {
-                    txtAdditionalServices.setText(activityModel.getStrActivityName() + strDate);
+                    String strTemp = activityModel.getStrActivityName() + strDate;
+                    txtAdditionalServices.setText(strTemp);
                 }
                 if (txtViewHead2 != null) {
                     txtViewHead2.setText(activityModel.getStrActivityName());
@@ -271,7 +264,7 @@ public class CompletedActivity extends AppCompatActivity {
                     txtViewMSG.setText(strTemp);
                 }
 
-                strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
+                String strCarlaImageName = utils.replaceSpace(activityModel.getStrProviderID());
 
                 expandableListView = (ExpandableListView) findViewById(R.id.listViewAdditionalServices);
 
@@ -301,7 +294,7 @@ public class CompletedActivity extends AppCompatActivity {
                         return false;
                     }
                 });*/
-                _thumbnails = (LinearLayout) findViewById(R.id.thumbnails);
+                //LinearLayout _thumbnails = (LinearLayout) findViewById(R.id.thumbnails);
                 //imageGallery = (ImageView) findViewById(R.id.imageViewGallery);
 
                 editFeedBack = (EditText) findViewById(R.id.editFeedBack);
@@ -364,7 +357,9 @@ public class CompletedActivity extends AppCompatActivity {
 
 
                                 if (b) {
-                                    textViewAddRating.setVisibility(View.GONE);
+                                    if (textViewAddRating != null) {
+                                        textViewAddRating.setVisibility(View.GONE);
+                                    }
                                     linearLayoutRatingAdd.setVisibility(View.GONE);
                                     smileyMessage.setVisibility(View.GONE);
                                     uploadCheckBox();
@@ -427,14 +422,16 @@ public class CompletedActivity extends AppCompatActivity {
     private void loadImageSimpleTarget(String url) {
 
         try {
-            Glide.with(context)
+           /* Glide.with(context)
                     .load(url)
                     .asBitmap()
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .transform(new CropCircleTransformation(context))
                     .placeholder(R.drawable.person_icon)
-                    .into(target);
+                    .into(target);*/
+
+            Utils.loadGlide(context, url, imageViewCarla, progressBar);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -779,7 +776,7 @@ public class CompletedActivity extends AppCompatActivity {
     public void setRating(View v) {
 
         iRating = Integer.parseInt((String) v.getTag());
-
+        //todo put in strings.xml
         if (iRating == 1) {
             smileyMessage.setVisibility(View.VISIBLE);
             smileyMessage.setText("Sorry to Hear that, New Zeal Team will contact you shortly");
@@ -809,7 +806,7 @@ public class CompletedActivity extends AppCompatActivity {
     }
 
     private void refreshAdapter() {
-
+        //todo check logic
         try {
 
             if (expandableListView != null) {
@@ -877,7 +874,10 @@ public class CompletedActivity extends AppCompatActivity {
     }
 
     private void showAlertDialogForImage(String imageUrl, String title) {
-        final Dialog dialog = new Dialog(context);
+
+        Utils.showProfileImage(imageUrl, CompletedActivity.this, title);
+
+        /*final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         dialog.setContentView(R.layout.image_dialog_layout);
@@ -885,6 +885,9 @@ public class CompletedActivity extends AppCompatActivity {
         final TouchImageView mOriginal = (TouchImageView) dialog.findViewById(R.id.imgOriginal);
         TextView textViewClose = (TextView) dialog.findViewById(R.id.textViewClose);
         TextView textViewTitle = (TextView) dialog.findViewById(R.id.textViewTitle);
+        final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.progressBar);
+
+        progressBar.setVisibility(View.VISIBLE);
 
         textViewTitle.setText(title);
 
@@ -906,8 +909,14 @@ public class CompletedActivity extends AppCompatActivity {
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-
+                                progressBar.setVisibility(View.GONE);
                                 mOriginal.setImageBitmap(resource);
+                            }
+
+                            @Override
+                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                super.onLoadFailed(e, errorDrawable);
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
 
@@ -921,7 +930,7 @@ public class CompletedActivity extends AppCompatActivity {
 
         dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
-        dialog.show();
+        dialog.show();*/
     }
 
     public class ThreadHandler extends Handler {
@@ -1073,7 +1082,9 @@ public class CompletedActivity extends AppCompatActivity {
 
                 try {
 
-                    bitmapimages.clear();
+                    //bitmapimages.clear();
+                    imageUrlList.clear();
+                    strImageTitles.clear();
 
                     //Utils.log(String.valueOf(imageModels.size()), " 1 ");
 
@@ -1089,12 +1100,12 @@ public class CompletedActivity extends AppCompatActivity {
                           /*  utils.loadImageFromWeb(activityModel.getImageModels().get(i).getStrImageName(),
                                     activityModel.getImageModels().get(i).getStrImageUrl());*/
 
-                            File file = utils.getInternalFileImages(utils.replaceSpace(activityModel
+                           /* File file = utils.getInternalFileImages(utils.replaceSpace(activityModel
                                     .getImageModels().get(i).getStrImageName()));
 
                             Bitmap bitmap = utils.getBitmapFromFile(file.getAbsolutePath(),
-                                    Config.intWidth, Config.intHeight);
-                            bitmapimages.add(bitmap);
+                                    Config.intWidth, Config.intHeight);*/
+                            //bitmapimages.add(bitmap);
 
                             strImageTitles.add(activityModel.getStrActivityName());
                             imageUrlList.add(activityModel.getImageModels().get(i).getStrImageUrl());
@@ -1114,13 +1125,13 @@ public class CompletedActivity extends AppCompatActivity {
 
                                 Utils.log(activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileName(), " MS IMAGE ");
 
-                                File file = utils.getInternalFileImages(utils.replaceSpace(
+                               /* File file = utils.getInternalFileImages(utils.replaceSpace(
                                         activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileName()
                                 ));
 
                                 Bitmap bitmap = utils.getBitmapFromFile(file.getAbsolutePath(),
-                                        Config.intWidth, Config.intHeight);
-                                bitmapimages.add(bitmap);
+                                        Config.intWidth, Config.intHeight);*/
+                                //bitmapimages.add(bitmap);
                                 // bitmap.recycle();
                                 strImageTitles.add(activityModel.getMilestoneModels().get(j).getStrMilestoneName());
                                 imageUrlList.add(activityModel.getMilestoneModels().get(j).getFileModels().get(k).getStrFileUrl());
@@ -1130,7 +1141,7 @@ public class CompletedActivity extends AppCompatActivity {
 
                 } catch (OutOfMemoryError e) {
                     e.printStackTrace();
-                    bitmapimages.clear();
+                    // bitmapimages.clear();
                 }
 
                 threadHandler.sendEmptyMessage(0);

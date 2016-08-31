@@ -29,8 +29,6 @@ import java.util.ArrayList;
 public class AsyncApp42ServiceApi {
 
     private static AsyncApp42ServiceApi mInstance = null;
-    private static String apiKey = "";
-    private static String apiSecret = "";
     private UserService userService;
     private StorageService storageService;
     private UploadService uploadService;
@@ -40,6 +38,8 @@ public class AsyncApp42ServiceApi {
 
     private AsyncApp42ServiceApi(Context context) {
         try {
+            String apiKey = "";
+            String apiSecret = "";
             if (Config.release) {//for release
                 apiKey = AESCrypt.decrypt(Config.string, "gybi3gsBYxnuYlyOlEExwGiyLd0um74K2fVLphtFpt3GkTBoxvew3lPxrVtBpFVJhdJDhHg3wfXR3HmshlC5XBmMM50dEWXZ7/Z8TJ78wt4=");
                 apiSecret = AESCrypt.decrypt(Config.string, "tdSH3TJGp/KiMIVp9CZOTi5Rdw+x1xADUQiMzdWIf8gbI5V+VlQACV3IIE4EMfqNy9qv1YW4tMJyq90xP0tKa99pmIDzNVbIZ3eiVOeWG+4=");

@@ -17,6 +17,4 @@
 
     <!--for tooltip only-->
 
-    <color name="simpletooltip_background">@color/colorAccent</color>
-    <color name="simpletooltip_arrow">@color/colorAccent</color>
 </resources>

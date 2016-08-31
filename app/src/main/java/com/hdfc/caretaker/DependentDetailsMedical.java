@@ -163,7 +163,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
             });
         }
 
-        utils.setStatusBarColor("#cccccc");
+        //utils.setStatusBarColor("#cccccc");
 
 
     }

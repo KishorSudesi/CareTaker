@@ -116,6 +116,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         mContext = this;
 
         utils = new Utils(AddNewActivityStep2Activity.this);
+        utils.setStatusBarColor("#2196f3");
         progressDialog = new ProgressDialog(AddNewActivityStep2Activity.this);
         sessionManager = new SessionManager(AddNewActivityStep2Activity.this);
 

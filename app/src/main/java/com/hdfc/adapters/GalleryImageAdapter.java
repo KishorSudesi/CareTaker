@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Utils;
 
 import java.util.List;
 
@@ -23,13 +22,13 @@ public class GalleryImageAdapter extends BaseAdapter {
     private LayoutInflater inflater = null;
     private Context _context;
     private List<String> imageUrlList;
-    private Utils utils;
+    //private Utils utils;
 
 
     public GalleryImageAdapter(Context ctxt, List<String> urlList) {
         _context = ctxt;
         imageUrlList = urlList;
-        utils = new Utils(ctxt);
+        //utils = new Utils(ctxt);
     }
 
     @Override

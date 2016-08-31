@@ -23,12 +23,12 @@ public class CheckView extends ImageView {
             'X', 'Y', 'Z'};
     //éªŒè¯�ç �å›¾ç‰‡
     private Bitmap bitmap = null;
-    private Context mContext;
+    //private Context mContext;
 
     //æž„é€ å‡½æ•°  
     public CheckView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
+        //mContext = context;
     }
 
     @Override
@@ -62,9 +62,10 @@ public class CheckView extends ImageView {
 
     /**
      * ç»˜åˆ¶éªŒè¯�ç �å¹¶è¿”å›ž
+     * <p>
+     * //@param strContent
+     * //@param strRes
      *
-     * @param strContent
-     * @param strRes
      * @return
      */
     private Bitmap generateValidate(char[] charContent, char[] charRes) {
@@ -138,8 +139,9 @@ public class CheckView extends ImageView {
 
     /**
      * ä»ŽæŒ‡å®šæ•°ç»„ä¸­éš�æœºå�–å‡º4ä¸ªå­—ç¬¦(æ•°ç»„)
+     * <p>
+     * //@param strContent
      *
-     * @param strContent
      * @return
      */
     private char[] generageRadom(char[] charContent) {
@@ -165,7 +167,7 @@ public class CheckView extends ImageView {
      *
      * @param strContent
      * @return
-     */
+     *//*
     private String generageRadomStr(String[] strContent) {
         StringBuilder str = new StringBuilder();
         // éš�æœºä¸²çš„ä¸ªæ•°  
@@ -184,14 +186,14 @@ public class CheckView extends ImageView {
         return str.toString();
     }
 
-    /**
+    *//**
      * ç»™å®šèŒƒå›´èŽ·å¾—éš�æœºé¢œè‰²ï¼Œæœªä½¿ç”¨
      *
      * @param rc 0-255
      * @param gc 0-255
      * @param bc 0-255
      * @return colorValue é¢œè‰²å€¼ï¼Œä½¿ç”¨setColor(colorValue)
-     */
+     *//*
     public int getRandColor(int rc, int gc, int bc) {
         Random random = new Random();
         if (rc > 255)
@@ -204,5 +206,5 @@ public class CheckView extends ImageView {
         int g = gc + random.nextInt(gc);
         int b = bc + random.nextInt(bc);
         return Color.rgb(r, g, b);
-    }
+    }*/
 }  

@@ -17,7 +17,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.FeedBackModel;
 
@@ -36,14 +35,14 @@ public class RatingCompletedAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     private static Context _ctx;
     private static Utils utils;
-    private static MultiBitmapLoader multiBitmapLoader;
+    //private static MultiBitmapLoader multiBitmapLoader;
     private List<FeedBackModel> data = new ArrayList<>();
 
     public RatingCompletedAdapter(Context context, List<FeedBackModel> x) {
         _ctx = context;
         data = x;
         utils = new Utils(context);
-        multiBitmapLoader = new MultiBitmapLoader(context);
+        //multiBitmapLoader = new MultiBitmapLoader(context);
     }
 
     @Override

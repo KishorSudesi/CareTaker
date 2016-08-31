@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.DependentDetailPersonal;
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 
 import java.util.ArrayList;
@@ -30,14 +29,14 @@ public class DependentListViewAdapter extends BaseAdapter {
     //public MultiBitmapLoader multiBitmapLoader;
     private Context contxt;
     private ArrayList data;
-    private Utils utils;
+    //private Utils utils;
 
     public DependentListViewAdapter(Context ctxt, ArrayList d) {
         contxt = ctxt;
         data = d;
         inflater = (LayoutInflater) contxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // multiBitmapLoader = new MultiBitmapLoader(contxt);
-        utils = new Utils(contxt);
+        //utils = new Utils(contxt);
     }
 
     public int getCount() {

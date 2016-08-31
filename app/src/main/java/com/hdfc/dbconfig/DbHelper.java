@@ -18,7 +18,6 @@ import java.util.Date;
 public class DbHelper extends SQLiteOpenHelper {
 
     public static final String strTableNameCollection = "collections";
-    public static final String DATABASE_NAME = "caretaker";
     public static final String COLUMN_OBJECT_ID = "object_id";
     public static final String COLUMN_UPDATE_DATE = "updated_date";
     public static final String COLUMN_DOCUMENT = "document";
@@ -28,6 +27,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DEPENDENT_ID = "dependent_id";
     public static final String COLUMN_IS_UPDATED = "is_updated";
     static final String strTableNameFiles = "files";
+    private static final String DATABASE_NAME = "caretaker";
     private static final int DATABASE_VERSION = 2;
     private static String dbPass = ""; //"hdfc@12#$";//
     private static DbHelper dbInstance = null;

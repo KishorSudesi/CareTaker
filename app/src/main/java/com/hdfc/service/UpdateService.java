@@ -1,11 +1,9 @@
 package com.hdfc.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,8 +40,8 @@ public class UpdateService extends Service {
     private SessionManager sessionManager = null;
     private Utils utils;
     private NotificationModel notificationModel;
-    private Context mContext;
-    private Handler handler;
+    //private Context mContext;
+    //private Handler handler;
     private String strCustomerId;
     private int j = 0;
     private boolean updateAll = false;
@@ -53,7 +51,7 @@ public class UpdateService extends Service {
         super.onCreate();
         utils = new Utils(UpdateService.this);
         sessionManager = new SessionManager(UpdateService.this);
-        mContext = this;
+        //mContext = this;
     }
 
     @Override
@@ -62,7 +60,7 @@ public class UpdateService extends Service {
         try {
             utils = new Utils(UpdateService.this);
             sessionManager = new SessionManager(UpdateService.this);
-            mContext = this;
+            //mContext = this;
 
             try {
                 if (intent != null && intent.hasExtra("message")) {

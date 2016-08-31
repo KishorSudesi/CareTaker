@@ -4,17 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
-    <!--
-        <ImageView
-            android:id="@+id/imageBg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY" />-->
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -95,6 +84,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"

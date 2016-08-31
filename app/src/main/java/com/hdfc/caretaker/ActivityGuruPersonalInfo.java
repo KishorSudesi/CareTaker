@@ -133,6 +133,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         utils = new Utils(ActivityGuruPersonalInfo.this);
 
+        utils.setStatusBarColor("#2196f3");
+
         back = (ImageButton) findViewById(R.id.buttonBack);
         checked_terms_conditions = (CheckBox) findViewById(R.id.checked_terms_conditions);
         imgButtonCamera = (RoundedImageView) findViewById(R.id.imageButtonCamera);

@@ -80,6 +80,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new);
 
         utils = new Utils(AddNewActivityActivity.this);
+        utils.setStatusBarColor("#2196f3");
         listView = (ExpandableListView) findViewById(R.id.listView1);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);

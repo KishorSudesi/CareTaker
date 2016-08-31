@@ -216,7 +216,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
         });
         setupSearchView();
 
-        utils.setStatusBarColor("#cccccc");
+        //utils.setStatusBarColor("#cccccc");
 
         try {
             Bundle getBundle = getIntent().getExtras();

@@ -35,6 +35,7 @@ public class AccountSuccessActivity extends AppCompatActivity {
         sessionManager = new SessionManager(AccountSuccessActivity.this);
 
         try {
+            utils.setStatusBarColor("#2196f3");
             ImageView imgBg = (ImageView) findViewById(R.id.imageBg);
 
             if (imgBg != null) {

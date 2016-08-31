@@ -55,6 +55,7 @@ public class CheckInCareActivity extends AppCompatActivity {
         setContentView(R.layout.activity_check_in_care);
 
         utils = new Utils(CheckInCareActivity.this);
+        utils.setStatusBarColor("#2196f3");
 
         if (getIntent().hasExtra(Config.KEY_START_FROM)) {
             START_FROM = getIntent().getByteExtra(Config.KEY_START_FROM, (byte) 0);

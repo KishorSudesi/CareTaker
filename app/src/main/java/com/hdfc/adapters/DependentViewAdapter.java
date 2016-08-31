@@ -29,7 +29,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 public class DependentViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    public MultiBitmapLoader multiBitmapLoader;
+    private MultiBitmapLoader multiBitmapLoader;
     private Context _ctxt;
     private ArrayList data;
 

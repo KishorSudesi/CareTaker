@@ -15,7 +15,6 @@ import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
-import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 
@@ -31,7 +30,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     // child data in format of header title, child title
 //    private HashMap<ConfirmCustomerModel, List<ConfirmDependentModel>> _listDataChild;
     private HashMap<CustomerModel, List<DependentModel>> _listDataChild;
-    private Utils utils;
+    //private Utils utils;
     private MultiBitmapLoader multiBitmapLoader;
 //    private ExpandableListView expListView;
 
@@ -40,7 +39,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
 
     public ConfirmListAdapter(Context context, List<CustomerModel> listDataHeader, HashMap<CustomerModel, List<DependentModel>> listChildData) {
         this._context = context;
-        utils = new Utils(_context);
+        //utils = new Utils(_context);
         multiBitmapLoader = new MultiBitmapLoader(_context);
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;

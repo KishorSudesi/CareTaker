@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CareTaker</string>
+    <string name="app_name">Care Taker</string>
 
     <!--Common Strings-->
     <string name="text_no_comments">No Comments</string>
@@ -35,7 +35,6 @@
     <string name="attachments">Attachments</string>
     <string name="close">Close</string>
     <string name="at">&#160;at&#160;</string>
-    <string name="image">Image</string>
     <string name="by">By&#160;</string>
     <string name="mobile">Mobile</string>
     <string name="landline">Landline</string>
@@ -98,7 +97,6 @@
     <string name="years">&#160;Yrs</string>
     <string name="select_date">Select a Date</string>
     <string name="no_ratings">No Ratings</string>
-    <string name="up_next">UP Next</string>
     <string name="activities_on">Activities On&#160;</string>
     <string name="service_continue">Press Get Services</string>
     <string name="existing_request">A Transaction is already in process, Please Wait…</string>

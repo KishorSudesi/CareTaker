@@ -31,7 +31,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -116,8 +115,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -148,7 +145,7 @@ public class Utils {
     public static Locale locale = Locale.ENGLISH;
     public final static SimpleDateFormat readFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
-    public final static SimpleDateFormat readFormatDB =
+    private final static SimpleDateFormat readFormatDB =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
     public final static SimpleDateFormat readFormatDate =
             new SimpleDateFormat("yyyy-MM-dd", locale);
@@ -160,7 +157,7 @@ public class Utils {
             new SimpleDateFormat("HH:mm", locale);
     public final static SimpleDateFormat writeFormatDateDB = new
             SimpleDateFormat("yyyy-MM-dd", locale);
-    public final static SimpleDateFormat dateFormat =
+    private final static SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd", locale);
     /*   public final static SimpleDateFormat writeFormatActivity =
                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
@@ -172,12 +169,11 @@ public class Utils {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
     public static Uri customerImageUri = null;
     public static int iProviderCount = 0;
-    public static Bitmap noBitmap;
     public static int iActivityCount = 0;
+    static Bitmap noBitmap;
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
-    private static SessionManager sessionManager;
     /*Comparator for sorting the list by service Name*/
     private static Comparator<NotificationModel> notificationDataComparator = new Comparator<NotificationModel>() {
 
@@ -197,16 +193,15 @@ public class Utils {
         System.loadLibrary("stringGen");
     }
 
+    private SessionManager sessionManager;
     private boolean showCheckInButton = false;
     private boolean isUpdateServer = false;
-    private Date dat;
-    private List<String> dependentsIdsList;
 
     public Utils(Context context) {
         try {
             _ctxt = context;
             sessionManager = new SessionManager(context);
-            dat = new Date();
+            Date dat = new Date();
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             if (wm != null) {
                 Display display = wm.getDefaultDisplay();
@@ -220,7 +215,8 @@ public class Utils {
             queryFormat.setTimeZone(TimeZone.getDefault());
 
             try {
-                noBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
+                noBitmap = BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.person_icon);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
@@ -236,7 +232,7 @@ public class Utils {
         return getString();//for temp fix on Native crash
     }
 
-    public static double round(double value, int places) {
+    /*public static double round(double value, int places) {
         BigDecimal bd = null;
         try {
             if (places < 0) throw new IllegalArgumentException();
@@ -247,10 +243,10 @@ public class Utils {
             e.printStackTrace();
         }
         return bd.doubleValue();
-    }
+    }*/
 
     //creating scaled bitmap with required width and height
-    public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
+    private static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
 
         Rect srcRect = null;
         Rect dstRect = null;
@@ -266,8 +262,10 @@ public class Utils {
         Bitmap scaledBitmap = null;
 
         try {
-            scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(),
-                    Bitmap.Config.ARGB_8888);
+            if (dstRect != null) {
+                scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(),
+                        Bitmap.Config.ARGB_8888);
+            }
         } catch (OutOfMemoryError oom) {
             oom.printStackTrace();
         }
@@ -275,7 +273,8 @@ public class Utils {
         try {
             if (scaledBitmap != null) {
                 Canvas canvas = new Canvas(scaledBitmap);
-                canvas.drawBitmap(unscaledBitmap, srcRect, dstRect, new Paint(Paint.FILTER_BITMAP_FLAG));
+                canvas.drawBitmap(unscaledBitmap, srcRect, dstRect,
+                        new Paint(Paint.FILTER_BITMAP_FLAG));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -324,10 +323,10 @@ public class Utils {
         return true;
     }*/
 
-    public static boolean isImageFile(String path) {
+  /*  public static boolean isImageFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
         return mimeType != null && mimeType.indexOf("image") == 0;
-    }
+    }*/
 
     //
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
@@ -404,7 +403,7 @@ public class Utils {
     }
 
     //source and destinatino rectangular regions to decode
-    public static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
+    private static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
         //for crop
             /*final float srcAspect = (float)srcWidth / (float)srcHeight;
             final float dstAspect = (float)dstWidth / (float)dstHeight;
@@ -422,7 +421,7 @@ public class Utils {
         return new Rect(0, 0, srcWidth, srcHeight);
     }
 
-    public static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
+    private static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
 
         final float srcAspect = (float) srcWidth / (float) srcHeight;
         final float dstAspect = (float) dstWidth / (float) dstHeight;
@@ -548,7 +547,7 @@ public class Utils {
         mRecorder.start();
     }*/
 
-    public static boolean externalMemoryAvailable() {
+    private static boolean externalMemoryAvailable() {
         return android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED);
     }
@@ -632,10 +631,11 @@ public class Utils {
         return json;
     }*/
 
+   /* @SuppressLint("HardwareIds")
     public static String getDeviceID(Activity activity) {
         return Settings.Secure.getString(activity.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-    }
+    }*/
 
     public static void log(String message, String tag) {
 
@@ -677,7 +677,7 @@ public class Utils {
         return deviceId;
     }*/
 
-    public static File createFileInternal(String strFileName) {
+    private static File createFileInternal(String strFileName) {
 
         File file = null;
         try {
@@ -710,7 +710,7 @@ public class Utils {
         }
     }*/
 
-    public static boolean deleteAllFiles(File directory) {
+    private static boolean deleteAllFiles(File directory) {
 
         final File[] files = directory.listFiles();
 
@@ -813,9 +813,9 @@ public class Utils {
                     e.printStackTrace();
                 }
 
-                if (CareTaker.dbCon != null) {
+                /*if (CareTaker.dbCon != null) {
                     //CareTaker.dbCon.close();
-                }
+                }*/
 
 
                 File fileImage = createFileInternal("images/");
@@ -883,14 +883,16 @@ public class Utils {
         thread.start();
     }
 
-    public static void refreshNotifications() {
+    private static void refreshNotifications() {
 
         try {
             if (NotificationFragment.listViewActivities != null) {
-                Collections.sort(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels(), notificationDataComparator);
+                Collections.sort(Config.dependentModels.get(Config.intSelectedDependent).
+                        getNotificationModels(), notificationDataComparator);
 
                 NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
-                        Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels());
+                        Config.dependentModels.get(Config.intSelectedDependent).
+                                getNotificationModels());
 
                 NotificationFragment.listViewActivities.
                         setAdapter(NotificationFragment.notificationAdapter);
@@ -906,26 +908,29 @@ public class Utils {
             if (listAdapter == null)
                 return;
 
-            int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+            int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                    View.MeasureSpec.UNSPECIFIED);
             int totalHeight = 0;
             View view = null;
             for (int i = 0; i < listAdapter.getCount(); i++) {
                 view = listAdapter.getView(i, view, listView);
                 if (i == 0)
-                    view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
 
                 view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
                 totalHeight += view.getMeasuredHeight();
             }
             ViewGroup.LayoutParams params = listView.getLayoutParams();
-            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+            params.height = totalHeight + (listView.getDividerHeight() * (
+                    listAdapter.getCount() - 1));
             listView.setLayoutParams(params);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void setListViewHeightBasedOnChildren(ExpandableListView listView) {
+   /* public static void setListViewHeightBasedOnChildren(ExpandableListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
@@ -935,10 +940,10 @@ public class Utils {
         View view = null;
 
         //////////////
-       /* view = listAdapter.getView(0, view, listView);
+       *//* view = listAdapter.getView(0, view, listView);
         int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.EXACTLY);
         int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, View.MeasureSpec.EXACTLY);
-        view.measure(widthMeasureSpec, heightMeasureSpec);*/
+        view.measure(widthMeasureSpec, heightMeasureSpec);*//*
         //////////////
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
@@ -952,57 +957,70 @@ public class Utils {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
-    }
+    }*/
 
     /* method to get only digits from the string passed*/
     public static String getOnlyDigits(String s) {
         Pattern pattern = Pattern.compile("[^0-9]");
         Matcher matcher = pattern.matcher(s);
-        String number = matcher.replaceAll("");
-        return number;
+        return matcher.replaceAll("");
     }
 
-    public static void showProfileImage(String strImage, Context context) {
+    public static void showProfileImage(String strImage, Context context, String title) {
 
-        final Dialog dialog = new Dialog(context);
+        try {
+            final Dialog dialog = new Dialog(context);
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        dialog.setContentView(R.layout.image_dialog_layout);
+            dialog.setContentView(R.layout.image_dialog_layout);
 
-        TouchImageView mOriginal = (TouchImageView) dialog.findViewById(
-                R.id.imgOriginal);
-        TextView textViewClose = (TextView) dialog.findViewById(
-                R.id.textViewClose);
-        Button buttonDelete = (Button) dialog.findViewById(
-                R.id.textViewTitle);
+            TouchImageView mOriginal = (TouchImageView) dialog.findViewById(
+                    R.id.imgOriginal);
+            TextView textViewClose = (TextView) dialog.findViewById(
+                    R.id.textViewClose);
+            Button buttonDelete = (Button) dialog.findViewById(
+                    R.id.textViewTitle);
 
-        ProgressBar progressBar = (ProgressBar) dialog.findViewById(
-                R.id.progressBar);
+            ProgressBar progressBar = (ProgressBar) dialog.findViewById(
+                    R.id.progressBar);
 
-        buttonDelete.setVisibility(View.GONE);
-        textViewClose.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        textViewClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            if (title != null && !title.equalsIgnoreCase("")) {
+                buttonDelete.setVisibility(View.VISIBLE);
+                buttonDelete.setText(title);
+            } else {
+                buttonDelete.setVisibility(View.GONE);
             }
-        });
 
-        dialog.setCancelable(true);
+            textViewClose.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
 
-        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
-        dialog.show();
+            textViewClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
 
-        loadGlide(context, strImage, mOriginal, progressBar);
+            dialog.setCancelable(true);
+
+            dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
+            dialog.show();
+
+            loadGlide(context, strImage, mOriginal, progressBar);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void loadGlide(Context context, String strImage, final ImageView view,
                                  final ProgressBar progressBar) {
         try {
+
+            if (progressBar != null)
+                progressBar.setVisibility(View.VISIBLE);
+
             Glide.with(context)
                     .load(strImage)
                     .asBitmap()
@@ -1204,7 +1222,7 @@ public class Utils {
         return b;
     }
 
-    public int getMemory() {
+    int getMemory() {
         Runtime rt = Runtime.getRuntime();
 
         //int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
@@ -1397,12 +1415,7 @@ public class Utils {
         }
     }*/
     public boolean isValidAreaCode(String number) {
-        if (number == null) {
-            return false;
-        } else {
-
-            return number.length() > 1;
-        }
+        return number != null && number.length() > 1;
 
     }
 
@@ -1417,11 +1430,8 @@ public class Utils {
         if (number == null) {
             return false;
         } else {
-            if (number.length() < 6 || number.length() > 13) {
-                return false;
-            } else {
-                return android.util.Patterns.PHONE.matcher(number).matches();
-            }
+            return !(number.length() < 6 || number.length() > 13)
+                    && android.util.Patterns.PHONE.matcher(number).matches();
         }
 
     }
@@ -1495,7 +1505,7 @@ public class Utils {
 
     //Application Specigfic Start
 
-    public void openCamera(String strFileName, Fragment fragment, final Activity activity) {
+    private void openCamera(String strFileName, Fragment fragment, final Activity activity) {
 
         try {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -1528,8 +1538,8 @@ public class Utils {
         }
     }
 
-    public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current,
-                                      EditText editCurrent) {
+    /*private EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current,
+                                       EditText editCurrent) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
@@ -1548,9 +1558,9 @@ public class Utils {
             }
         }
         return invalid;
-    }
+    }*/
 
-    public void setEditTextDrawable(EditText editText, Drawable drw) {
+    private void setEditTextDrawable(EditText editText, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
             editText.setBackgroundDrawable(drw);
         else
@@ -1641,8 +1651,8 @@ public class Utils {
         try {
             int iLength = ints.length;
 
-            for (int i = 0; i < iLength; i++) {
-                jsonArray.put(ints[i]);
+            for (int anInt : ints) {
+                jsonArray.put(anInt);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1689,7 +1699,7 @@ public class Utils {
         }
     }
 
-    public Bitmap roundedBitmap(Bitmap bmp) {
+    Bitmap roundedBitmap(Bitmap bmp) {
         Bitmap output = null;
 
         try {
@@ -1830,7 +1840,7 @@ public class Utils {
         return original;
     }
 
-    public int getBitmapHeightFromFile(String strPath) {
+  /*  public int getBitmapHeightFromFile(String strPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         //Bitmap original;
         int intSampleHeight = 0;
@@ -1849,7 +1859,7 @@ public class Utils {
             }
         }
         return intSampleHeight;
-    }
+    }*/
 
     public void populateHeaderDependents(final LinearLayout dynamicUserTab,
                                          final int intWhichScreen) {
@@ -1931,7 +1941,7 @@ public class Utils {
         }
     }
 
-    public void loadDependentData(int intWhichScreen) {
+    private void loadDependentData(int intWhichScreen) {
 
         try {
             if (intWhichScreen == Config.intNotificationScreen) {
@@ -1947,7 +1957,7 @@ public class Utils {
         }
     }
 
-    public void loadNotifications() {
+    private void loadNotifications() {
 
         try {
             final ProgressDialog progressDialog = new ProgressDialog(_ctxt);
@@ -2135,7 +2145,7 @@ public class Utils {
 
     }
 
-    public void createNotificationModel(String strDocumentId, String strDocument) {
+    private void createNotificationModel(String strDocumentId, String strDocument) {
         try {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);
@@ -2176,7 +2186,7 @@ public class Utils {
 
     }
 
-    protected void updateTabColor(int id, View v) {
+    private void updateTabColor(int id, View v) {
 
         try {
             for (int i = 0; i < Config.dependentModels.size(); i++) {
@@ -2268,7 +2278,7 @@ public class Utils {
         return password.length() > 1;
     }
 
-    public void fetchCustomerFromDB(int iFlag, String password, String userName) {
+    private void fetchCustomerFromDB(int iFlag, String password, String userName) {
 
         try {
             String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
@@ -2322,7 +2332,7 @@ public class Utils {
 
     }
 
-    public void updateCustomerDetailOnServer() {
+    private void updateCustomerDetailOnServer() {
         StorageService storageService = new StorageService(_ctxt);
 
         JSONObject jsonToUpdate = new JSONObject();
@@ -2442,47 +2452,43 @@ public class Utils {
 
     private JSONObject createJson(JSONObject jsonDep, DependentModel dependentMod) {
 
-
-        DependentModel dependentModel = dependentMod;
-        //
-        JSONObject jsonDependant = jsonDep;
         try {
 
-            jsonDependant.put("dependent_name", dependentModel.getStrName());
+            jsonDep.put("dependent_name", dependentMod.getStrName());
 
-            if (dependentModel.getStrIllness() == null || dependentModel.getStrIllness().equalsIgnoreCase(""))
-                dependentModel.setStrIllness("NA");
+            if (dependentMod.getStrIllness() == null || dependentMod.getStrIllness().equalsIgnoreCase(""))
+                dependentMod.setStrIllness("NA");
 
-            if (dependentModel.getStrNotes() == null || dependentModel.getStrNotes().equalsIgnoreCase(""))
-                dependentModel.setStrNotes("NA");
+            if (dependentMod.getStrNotes() == null || dependentMod.getStrNotes().equalsIgnoreCase(""))
+                dependentMod.setStrNotes("NA");
 
-            jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
+            jsonDep.put("dependent_illness", dependentMod.getStrIllness());
 
-            jsonDependant.put("dependent_address", dependentModel.getStrAddress());
-            jsonDependant.put("dependent_email", dependentModel.getStrEmail());
+            jsonDep.put("dependent_address", dependentMod.getStrAddress());
+            jsonDep.put("dependent_email", dependentMod.getStrEmail());
 
-            jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
-            jsonDependant.put("dependent_age", dependentModel.getStrAge());
-            jsonDependant.put("dependent_dob", dependentModel.getStrDob());
-            jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
+            jsonDep.put("dependent_notes", dependentMod.getStrNotes());
+            jsonDep.put("dependent_age", dependentMod.getStrAge());
+            jsonDep.put("dependent_dob", dependentMod.getStrDob());
+            jsonDep.put("dependent_contact_no", dependentMod.getStrContacts());
 
-            jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
-            jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
-            jsonDependant.put("customer_id", Config.customerModel.getStrCustomerID());
+            jsonDep.put("dependent_profile_url", dependentMod.getStrImageUrl());
+            jsonDep.put("dependent_relation", dependentMod.getStrRelation());
+            jsonDep.put("customer_id", Config.customerModel.getStrCustomerID());
 
-            jsonDependant.put("health_bp", dependentModel.getIntHealthBp());
+            jsonDep.put("health_bp", dependentMod.getIntHealthBp());
 
-            Config.dependentNames.add(dependentModel.getStrName());
+            Config.dependentNames.add(dependentMod.getStrName());
 
-            jsonDependant.put("health_heart_rate", dependentModel.getIntHealthHeartRate());
+            jsonDep.put("health_heart_rate", dependentMod.getIntHealthHeartRate());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return jsonDependant;
+        return jsonDep;
     }
 
-    public void updateDependentsDetailOnServer(final DependentModel dependentModel) {
+    private void updateDependentsDetailOnServer(final DependentModel dependentModel) {
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -2517,9 +2523,9 @@ public class Utils {
 
                                                     Utils.log(o.toString(), "LOG_DATA");
 
-                                                } else {
+                                                } /*else {
 
-                                                }
+                                                }*/
                                             } catch (Exception e1) {
 
                                                 e1.printStackTrace();
@@ -2645,8 +2651,6 @@ public class Utils {
                                         if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
 
                                         } else {
-
-
                                             toast(2, 2, _ctxt.getString(R.string.error));
                                         }
                                     }
@@ -2762,7 +2766,8 @@ public class Utils {
 
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);*/
-            Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
+            Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(),
+                    jsonObject.getString("customer_profile_url"), "IMAGE"));
             Config.customerModel.setCustomerRegistered(jsonObject.optBoolean("customer_register"));
             if (isUpdateServer && isConnectingToInternet()) {
                 updateCustomerDetailOnServer();
@@ -2955,7 +2960,7 @@ public class Utils {
         }
     }
 
-    public void createProviderModel(String strDocumentId, String strDocument) {
+    private void createProviderModel(String strDocumentId, String strDocument) {
         try {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);
@@ -2992,7 +2997,7 @@ public class Utils {
         }
     }
 
-    public DependentModel createDependentModel(String strDependentDocId, String strDocument) {
+    private DependentModel createDependentModel(String strDependentDocId, String strDocument) {
         DependentModel dependentModel = null;
         try {
 
@@ -3544,9 +3549,9 @@ public class Utils {
 
         if (strCustomerId == null || strCustomerId.length() == 0 || (strCustomerId.equalsIgnoreCase(""))) {
             strCustomerId = sessionManager.getCustomerId();
-        } else {
+        } /*else {
 
-        }
+        }*/
         Cursor cursor = null;
         if (sessionManager.getDependentsStatus()) {
             try {
@@ -3563,7 +3568,7 @@ public class Utils {
                     do {
                         DependentModel dependentModel = null;
                         dependentModel = createDependentModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
-                        dependentsIdsList = new ArrayList<>();
+                        List<String> dependentsIdsList = new ArrayList<>();
                         dependentsIdsList.clear();
                         dependentsIdsList.addAll(sessionManager.getUpdateDependent());
                         if (dependentModel != null && dependentModel.getStrDependentID() != null) {
@@ -3779,7 +3784,7 @@ public class Utils {
 
     }
 
-    public Query generateQuery(String strStatus) {
+    private Query generateQuery(String strStatus) {
 
         /*Calendar calendar = Calendar.optInstance();
         String value1 = convertDateToString(calendar.optTime());*/
@@ -3804,7 +3809,7 @@ public class Utils {
         return q4;
     }
 
-    public void fetchLatestActivities(final ProgressDialog progressDialog, final int iFlag) {
+    private void fetchLatestActivities(final ProgressDialog progressDialog, final int iFlag) {
 
         try {
             if (iActivityCount < Config.strDependentIds.size()) {
@@ -4164,7 +4169,7 @@ public class Utils {
         return b;
     }
 
-    public void loadAllFiles() {
+    private void loadAllFiles() {
         try {
             for (int i = 0; i < Config.fileModels.size(); i++) {
                 FileModel fileModel = Config.fileModels.get(i);
@@ -4181,7 +4186,7 @@ public class Utils {
         }
     }
 
-    public void refreshNotificationsImages() {
+    private void refreshNotificationsImages() {
 
         /*progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -4200,7 +4205,7 @@ public class Utils {
         }
     }
 
-    public void goToDashboard() {
+    private void goToDashboard() {
 
         try {
             try {
@@ -4222,7 +4227,7 @@ public class Utils {
         }
     }
 
-    public void loadImages() {
+    private void loadImages() {
 
        /* progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -4243,7 +4248,7 @@ public class Utils {
 
     //Application Specig=fic End
 
-    public void loadImagesActivityMonth() {
+    private void loadImagesActivityMonth() {
 
         /*progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -4265,7 +4270,7 @@ public class Utils {
         }
     }
 
-    public void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog, final int iFlag) {
+    private void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog, final int iFlag) {
 
         try {
             if (isConnectingToInternet()) {
@@ -4444,7 +4449,7 @@ public class Utils {
 //        });
 //    }
 
-    public String convertDateToStringQueryDB(Date dtDate) {
+    private String convertDateToStringQueryDB(Date dtDate) {
 
         String date = null;
 
@@ -4472,7 +4477,7 @@ public class Utils {
         return date; //
     }
 
-    public Date convertStringToDateQueryDB(String strDate) {
+    private Date convertStringToDateQueryDB(String strDate) {
 
         Date date = null;
 
@@ -4564,10 +4569,10 @@ public class Utils {
                     //todo uncomment for multiple carlas
                     //fetchProviders(progressDialog, 2);
 
-                } else {
+                } /*else {
 
 
-                }
+                }*/
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 loadImagesActivityMonth();
             } catch (Exception e) {
@@ -4793,22 +4798,22 @@ public class Utils {
 
     }
 
-    public void setListViewHeight(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
+    /* public void setListViewHeight(ListView listView) {
+         ListAdapter listAdapter = listView.getAdapter();
+         int totalHeight = 0;
+         for (int i = 0; i < listAdapter.getCount(); i++) {
+             View listItem = listAdapter.getView(i, null, listView);
+             listItem.measure(0, 0);
+             totalHeight += listItem.getMeasuredHeight();
+         }
 
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-    }
-
+         ViewGroup.LayoutParams params = listView.getLayoutParams();
+         params.height = totalHeight
+                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+         listView.setLayoutParams(params);
+         listView.requestLayout();
+     }
+ */
     /* method to set expandable lsit view's height based on children when any group is expanded */
     public void setListViewHeight(ExpandableListView listView,
                                   int group) {
@@ -4897,7 +4902,7 @@ public class Utils {
         return bitmap;
     }
 
-    public int getExifOrientation(String src) throws IOException {
+    private int getExifOrientation(String src) throws IOException {
         int orientation = 1;
 
         ExifInterface exif = new ExifInterface(src);
@@ -4905,6 +4910,7 @@ public class Utils {
         try {
             orientation = Integer.parseInt(orientationString);
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
         return orientation;
@@ -4927,7 +4933,7 @@ public class Utils {
         return "";
     }
 
-    public boolean fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
+    /*public boolean fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
 
         //iMonth = iMonth; // - 1
         try {
@@ -4960,9 +4966,9 @@ public class Utils {
                         } while (cursor.moveToNext());
 
                         showCheckInButton = true;
-                    }/* else {
+                    }*//* else {
 
-                    }*/
+                    }*//*
 
 
                 } catch (Exception e) {
@@ -5101,7 +5107,7 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public class ThreadHandler extends Handler {
         @Override
