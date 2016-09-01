@@ -45,9 +45,9 @@ public class App42GCMService extends IntentService {
     private static final String App42GeoTag = "app42_geoBase";
     private static final String Alert = "alert";
     private final static String GROUP_KEY = "activity";
-    public static GoogleCloudMessaging gcm = null;
     // public static final String ExtraMessage = "message";
     private static int msgCount = 0;
+    public GoogleCloudMessaging gcm = null;
 
     public App42GCMService() {
         super("GcmIntentService");

@@ -16,7 +16,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.models.DependentModel;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 public class DependentViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    private MultiBitmapLoader multiBitmapLoader;
+    // private MultiBitmapLoader multiBitmapLoader;
     private Context _ctxt;
     private ArrayList data;
 
@@ -37,7 +36,7 @@ public class DependentViewAdapter extends BaseAdapter {
         _ctxt = ctxt;
         data = d;
         inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        multiBitmapLoader = new MultiBitmapLoader(_ctxt);
+        //multiBitmapLoader = new MultiBitmapLoader(_ctxt);
     }
 
     public int getCount() {

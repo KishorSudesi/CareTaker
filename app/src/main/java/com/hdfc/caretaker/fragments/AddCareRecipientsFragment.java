@@ -25,7 +25,7 @@ import com.hdfc.libs.Utils;
  */
 public class AddCareRecipientsFragment extends Fragment {
 
-    public static DependentListViewAdapter adapter;
+    public DependentListViewAdapter adapter;
     Button addrecipient;
     ListView listview;
     private Utils utils;

@@ -25,7 +25,6 @@
     <string name="area_code">Code</string>
     <string name="country_code">Country Code</string>
     <string name="age">Age</string>
-    <string name="activity_process">Activity inProcess/Completed</string>
     <string name="my_account">My Account</string>
     <string name="my_account_edit">Edit My Account</string>
     <string name="activity_month">Monthly</string>
@@ -88,7 +87,6 @@
     <string name="confirm_reset_update">Previous Transaction was not Successful, Are you sure to Reset?</string>
     <string name="upcoming_activity">Upcoming Activity</string>
     <string name="completed_activity">Completed Activity</string>
-    <string name="process_activity">Inprocess Activity</string>
     <string name="get_services">Get Services</string>
     <string name="buy_services_large_text">Pay as you go services that can be easily added to an existing package</string>
     <string name="space">&#160;</string>
@@ -100,7 +98,6 @@
     <string name="activities_on">Activities On&#160;</string>
     <string name="service_continue">Press Get Services</string>
     <string name="existing_request">A Transaction is already in process, Please Wait…</string>
-    <string name="no_images">No Images Found</string>
     <string name="click_here">Click Here</string>
     <string name="activity_create_notification_1">Notification from New Zeal Care Services on the&#160;</string>
     <string name="activity_create_notification_3">&#160;The request for the&#160;</string>
@@ -114,6 +111,10 @@
     <string name="no_photo">Photos not available</string>
     <string name="text_description">Description:</string>
     <string name="delete_image">Delete Image</string>
+
+    <string name="feedback_rating_1">Sorry to Hear that, New Zeal Team will contact you shortly.</string>
+    <string name="feedback_rating_2">Not Happy with us, Your Feedback will Help us Improve.</string>
+    <string name="feedback_rating_3">Something went wrong-Tell us more.</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
@@ -191,6 +192,5 @@
 
     <!--Dialog Strings-->
     <string name="activity_not_saved">Your Activity created partially, Press OK to proceed</string>
-    <string name="no_videos">No Videos</string>
 
 </resources>

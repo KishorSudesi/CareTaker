@@ -42,16 +42,6 @@
 -keep interface com.shephertz.app42.** { *; }
 -dontwarn com.shephertz.app42.**
 
-#apache commons codec AES
-#-dontwarn org.apache.commons.codec.**
-#-keep class org.apache.commons.codec.** { *; }
-#-keep interface org.apache.commons.codec.** { *; }
-
-#Permission Dispatcher
-#-dontwarn com.github.hotchemi.**
-#-keep class com.github.hotchemi.** { *; }
-#-keep interface com.github.hotchemi.** { *; }
-
 #AES
 -dontwarn com.scottyab.**
 -keep class com.scottyab.** { *; }
@@ -66,11 +56,6 @@
 #-dontwarn com.google.code.gson.**
 #-keep class com.google.code.gson.** { *; }
 #-keep interface com.google.code.gson.** { *; }
-
-#glide
-#-dontwarn com.github.bumptech.glide.**
-#-keep class com.github.bumptech.glide.** { *; }
-#-keep interface com.github.bumptech.glide.** { *; }
 
 #davemorrissey
 #-dontwarn com.davemorrissey.labs.**

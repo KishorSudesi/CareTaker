@@ -432,6 +432,7 @@ public class CompletedActivity extends AppCompatActivity {
                     .into(target);*/
 
             Utils.loadGlide(context, url, imageViewCarla, progressBar);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -443,11 +444,11 @@ public class CompletedActivity extends AppCompatActivity {
         try {
             if (utils.isConnectingToInternet()) {
 
+                Calendar calendar = Calendar.getInstance();
+                Date dateNow = calendar.getTime();
+                final String strDateNow = utils.convertDateToString(dateNow);
+
                 loadingPanel.setVisibility(View.VISIBLE);
-
-                Date doneDate = new Date();
-
-                final String strDoneDate = utils.convertDateToString(doneDate);
 
                 final StorageService storageService = new StorageService(context);
 
@@ -479,7 +480,7 @@ public class CompletedActivity extends AppCompatActivity {
                     sJsonObjectFeedback.put("feedback_rating", iRating);
                     sJsonObjectFeedback.put("feedback_by", Config.customerModel.getStrCustomerID());
                     sJsonObjectFeedback.put("feedback_report", "0"); //String.valueOf(checked)
-                    sJsonObjectFeedback.put("feedback_time", strDoneDate);
+                    sJsonObjectFeedback.put("feedback_time", strDateNow);
                     sJsonObjectFeedback.put("feedback_by_type", "customer");
 
                     jsonArrayFeedback.put(sJsonObjectFeedback);
@@ -598,10 +599,7 @@ public class CompletedActivity extends AppCompatActivity {
                                                         getString(R.string.on) + strDoneDate;*/
 
                                                 //
-                                                String strDateNow = "";
-                                                Calendar calendar = Calendar.getInstance();
-                                                Date dateNow = calendar.getTime();
-                                                strDateNow = utils.convertDateToString(dateNow);
+
 
                                                 jsonObjectMess = new JSONObject();
 
@@ -776,18 +774,18 @@ public class CompletedActivity extends AppCompatActivity {
     public void setRating(View v) {
 
         iRating = Integer.parseInt((String) v.getTag());
-        //todo put in strings.xml
+
         if (iRating == 1) {
             smileyMessage.setVisibility(View.VISIBLE);
-            smileyMessage.setText("Sorry to Hear that, New Zeal Team will contact you shortly");
+            smileyMessage.setText(getString(R.string.feedback_rating_1));
         }
         if (iRating == 2) {
             smileyMessage.setVisibility(View.VISIBLE);
-            smileyMessage.setText("Not Happy with us, Your Feedback will Help us Improve.");
+            smileyMessage.setText(getString(R.string.feedback_rating_2));
         }
         if (iRating == 3) {
             smileyMessage.setVisibility(View.VISIBLE);
-            smileyMessage.setText("Something went wrong-Tell us more.");
+            smileyMessage.setText(getString(R.string.feedback_rating_3));
         }
         if (iRating == 4) {
             smileyMessage.setVisibility(View.GONE);
@@ -820,9 +818,11 @@ public class CompletedActivity extends AppCompatActivity {
 
                     if (activityModel.getMilestoneModels().size() - 1 == i) {
                         for (int j = 0; j < activityModel.getMilestoneModels().get(i).getFieldModels().size(); j++) {
-                            int index = j > 0 ? j - 1 : 0;
-                            if (activityModel.getMilestoneModels().get(i).getFieldModels().size() - 1 == j &&
-                                    activityModel.getMilestoneModels().get(i).getFieldModels().get(index).getStrFieldData().equalsIgnoreCase("SuccessFul")) {
+                            //int index = j > 0 ? j - 1 : 0;
+                            //activityModel.getMilestoneModels().get(i).getFieldModels().size() - 1 == j &&
+
+                            if (activityModel.getMilestoneModels().get(i).getFieldModels().get(j).
+                                    getStrFieldLabel().equalsIgnoreCase("Comments")) {
                                 activityModel.getMilestoneModels().get(i).getFieldModels().remove(j);
                             }
                         }

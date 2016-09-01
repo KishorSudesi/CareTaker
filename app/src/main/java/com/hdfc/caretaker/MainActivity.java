@@ -13,7 +13,6 @@ import com.hdfc.app42service.StorageService;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
-import com.hdfc.libs.CrashLogger;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 //            e.getMessage();
 //        }
         try {
-            CrashLogger.getInstance().init(MainActivity.this);
+            //CrashLogger.getInstance().init(MainActivity.this);
 
             sessionManager = new SessionManager(MainActivity.this);
             if (sessionManager.isLoggedIn()) {
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToWho(View v) {
-      /*  Intent selection = new Intent(MainActivity.this, CareSelectionActivity.class);
+      /*  Intent selectiopermissionHelper.onActivityResult(requestCode, resultCode, intent);n = new Intent(MainActivity.this, CareSelectionActivity.class);
         startActivity(selection);*/
 
         Intent selection = new Intent(MainActivity.this, ActivityGuruPersonalInfo.class);
@@ -115,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
         permissionHelper.onActivityResult(requestCode, resultCode, intent);
     }
 

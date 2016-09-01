@@ -975,25 +975,15 @@ public class Utils {
 
             dialog.setContentView(R.layout.image_dialog_layout);
 
-            TouchImageView mOriginal = (TouchImageView) dialog.findViewById(
+            final TouchImageView mOriginal = (TouchImageView) dialog.findViewById(
                     R.id.imgOriginal);
             TextView textViewClose = (TextView) dialog.findViewById(
                     R.id.textViewClose);
             Button buttonDelete = (Button) dialog.findViewById(
                     R.id.textViewTitle);
 
-            ProgressBar progressBar = (ProgressBar) dialog.findViewById(
+            final ProgressBar progressBar = (ProgressBar) dialog.findViewById(
                     R.id.progressBar);
-
-            if (title != null && !title.equalsIgnoreCase("")) {
-                buttonDelete.setVisibility(View.VISIBLE);
-                buttonDelete.setText(title);
-            } else {
-                buttonDelete.setVisibility(View.GONE);
-            }
-
-            textViewClose.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
 
             textViewClose.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1008,7 +998,55 @@ public class Utils {
                     LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
             dialog.show();
 
-            loadGlide(context, strImage, mOriginal, progressBar);
+            if (title != null && !title.equalsIgnoreCase("")) {
+                buttonDelete.setVisibility(View.VISIBLE);
+                buttonDelete.setText(title);
+            } else {
+                buttonDelete.setVisibility(View.GONE);
+            }
+
+            textViewClose.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            Glide.with(context)
+                    .load(strImage)
+                    .asBitmap()
+                    .centerCrop()
+                    .error(R.drawable.person_icon)
+                    .placeholder(R.drawable.person_icon)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target,
+                                                   boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model,
+                                                       Target<Bitmap> target,
+                                                       boolean isFromMemoryCache,
+                                                       boolean isFirstResource) {
+
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(/*new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource,
+                                                    GlideAnimation<? super Bitmap> glideAnimation) {
+                            mOriginal.setImageBitmap(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                        }
+                    }*/mOriginal);
+
+            //loadGlideFlat(context, strImage, mOriginal, progressBar);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1054,6 +1092,47 @@ public class Utils {
             e.printStackTrace();
         }
     }
+
+   /* public static void loadGlideFlat(Context context, String strImage, final ImageView view,
+                                 final ProgressBar progressBar) {
+        try {
+
+            if (progressBar != null)
+                progressBar.setVisibility(View.VISIBLE);
+
+            Glide.with(context)
+                    .load(strImage)
+                    .asBitmap()
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.person_icon)
+                    //.transform(new CropCircleTransformation(context)) //bitmapTransform
+                    .placeholder(R.drawable.person_icon)
+                    //.crossFade()
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target,
+                                                   boolean isFirstResource) {
+                            if (progressBar != null)
+                                progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model,
+                                                       Target<Bitmap> target,
+                                                       boolean isFromMemoryCache,
+                                                       boolean isFirstResource) {
+                            if (progressBar != null)
+                                progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
 
     public static void clearNotifications(Context context) {
         try {
@@ -3284,7 +3363,7 @@ public class Utils {
                     activityModel.setFeedBackModels(feedBackModels);
                 }
 
-                if (jsonObjectActivity.has("videos")) {
+               /* if (jsonObjectActivity.has("videos")) {
 
                     JSONArray jsonArrayVideos = jsonObjectActivity.
                             optJSONArray("videos");
@@ -3309,7 +3388,7 @@ public class Utils {
                         }
                     }
                     activityModel.setVideoModels(videoModels);
-                }
+                }*/
 
                 if (jsonObjectActivity.has("images")) {
 

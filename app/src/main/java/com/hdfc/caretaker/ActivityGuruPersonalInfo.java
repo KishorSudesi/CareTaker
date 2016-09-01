@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.app42service.StorageService;
@@ -59,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import pl.tajchert.nammu.PermissionCallback;
+
 /**
  * Created by Admin on 15-06-2016.
  */
@@ -80,6 +83,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     private static String jsonDocId;
     String strMess = "";
     ImageButton back;
+    private PermissionHelper permissionHelper;
     private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
     //editAddress
     private Utils utils;
@@ -122,6 +126,17 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         }
     };
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        permissionHelper.finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +149,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         utils = new Utils(ActivityGuruPersonalInfo.this);
 
         utils.setStatusBarColor("#2196f3");
+
+        permissionHelper = PermissionHelper.getInstance(this);
 
         back = (ImageButton) findViewById(R.id.buttonBack);
         checked_terms_conditions = (CheckBox) findViewById(R.id.checked_terms_conditions);
@@ -216,8 +233,31 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                utils.selectImage(String.valueOf(calendar.getTimeInMillis()) + ".jpeg", null, ActivityGuruPersonalInfo.this);
+
+                try {
+
+                    if (!isFinishing()) {
+
+                        permissionHelper.verifyPermission(
+                                new String[]{getString(R.string.permission_storage_rationale)},
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                new PermissionCallback() {
+                                    @Override
+                                    public void permissionGranted() {
+                                        Calendar calendar = Calendar.getInstance();
+                                        utils.selectImage(String.valueOf(calendar.getTimeInMillis())
+                                                + ".jpeg", null, ActivityGuruPersonalInfo.this);
+                                    }
+
+                                    @Override
+                                    public void permissionRefused() {
+                                    }
+                                }
+                        );
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -944,6 +984,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        permissionHelper.onActivityResult(requestCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {

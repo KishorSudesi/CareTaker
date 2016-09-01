@@ -27,6 +27,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -58,6 +59,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import pl.tajchert.nammu.PermissionCallback;
 
 public class MyAccountEditFragment extends Fragment {
 
@@ -66,12 +68,14 @@ public class MyAccountEditFragment extends Fragment {
     public static Bitmap bitmapImg = null;
     public static Uri uri;
     private static Utils utils;
-    private static ImageView roundedImageView;
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static boolean isImageChanged = false;
+    private ImageView roundedImageView;
     private EditText name, number, editTextOldPassword, editTextPassword,
             editTextConfirmPassword, editDob, editAreaCode, editCountryCode;
+
+    private PermissionHelper permissionHelper;
 
     //city
     private String strName;
@@ -84,7 +88,7 @@ public class MyAccountEditFragment extends Fragment {
     private String strCountry;
     private String strAddress;
     private String strOldPass;
-    private String strCustomerImagePath = "", strAreaCode, imageUrl = "";
+    private String strAreaCode, imageUrl = ""; //strCustomerImagePath = "",
 
     private RadioButton mobile;
     private Spinner citizenship;
@@ -149,6 +153,11 @@ public class MyAccountEditFragment extends Fragment {
         return fragment;
     }
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,9 +171,11 @@ public class MyAccountEditFragment extends Fragment {
         sessionManager = new SessionManager(getActivity());
         mail.setText(Config.customerModel.getStrEmail());
 
+        permissionHelper = PermissionHelper.getInstance(getActivity());
+
         //RelativeLayout loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
-        strCustomerImagePath = getActivity().getFilesDir() + "/images/" + Config.customerModel.getStrCustomerID();
+        //strCustomerImagePath = getActivity().getFilesDir() + "/images/" + Config.customerModel.getStrCustomerID();
 
         progressDialog = new ProgressDialog(getActivity());
 
@@ -230,8 +241,28 @@ public class MyAccountEditFragment extends Fragment {
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.selectImage(String.valueOf(new Date().getDate() + "" + new Date().getTime())
-                        + ".jpeg", MyAccountEditFragment.this, null);
+
+                try {
+
+                    permissionHelper.verifyPermission(
+                            new String[]{getString(R.string.permission_storage_rationale)},
+                            new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new PermissionCallback() {
+                                @Override
+                                public void permissionGranted() {
+                                    utils.selectImage(String.valueOf(new Date().getDate() + "" + new Date().getTime())
+                                            + ".jpeg", MyAccountEditFragment.this, null);
+                                }
+
+                                @Override
+                                public void permissionRefused() {
+                                }
+                            }
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -441,10 +472,10 @@ public class MyAccountEditFragment extends Fragment {
                     }
 
 
-                    if (utils.isConnectingToInternet()) {
+                    if (!utils.isConnectingToInternet()) {
 
 
-                    } else {
+                        //} else {
                         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
                         updateUserDatainDB("true");
                     }
@@ -570,6 +601,8 @@ public class MyAccountEditFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+
+        permissionHelper.onActivityResult(requestCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {

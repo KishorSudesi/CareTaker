@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestListener;
@@ -49,6 +50,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import pl.tajchert.nammu.PermissionCallback;
 
 /**
  * Created by Admin on 24-06-2016.
@@ -66,18 +68,19 @@ public class DependentDetailPersonal extends AppCompatActivity {
     public static ArrayList<String> dependentNames = new ArrayList<>();
     static Boolean editflag = false;
     static int mPosition = -1;
-    private static SearchView searchView;
-    private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private static ProgressDialog mProgress = null;
     private static boolean isCamera = false;
     private static Thread backgroundThread, backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     Button buttonContinue;
+    private SearchView searchView;
+    private EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private Spinner spinnerRelation;
     private Utils utils;
     private String strRelation;
     private Context mContext;
     private boolean isSelected = false;
+    private PermissionHelper permissionHelper;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -125,12 +128,26 @@ public class DependentDetailPersonal extends AppCompatActivity {
     };
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        permissionHelper.finish();
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dependent_detail_personal);
 
         utils = new Utils(DependentDetailPersonal.this);
         utils.setStatusBarColor("#2196f3");
+
+        permissionHelper = PermissionHelper.getInstance(DependentDetailPersonal.this);
+
         isSelected = false;
         editflag = false;
         editName = (EditText) findViewById(R.id.editDependName);
@@ -210,8 +227,29 @@ public class DependentDetailPersonal extends AppCompatActivity {
         imgButtonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.selectImage(dependantImgName, null, DependentDetailPersonal.this);
-                isCamera = true;
+
+                try {
+                    if (!isFinishing()) {
+
+                        permissionHelper.verifyPermission(
+                                new String[]{getString(R.string.permission_storage_rationale)},
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                new PermissionCallback() {
+                                    @Override
+                                    public void permissionGranted() {
+                                        utils.selectImage(dependantImgName, null, DependentDetailPersonal.this);
+                                        isCamera = true;
+                                    }
+
+                                    @Override
+                                    public void permissionRefused() {
+                                    }
+                                }
+                        );
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         setupSearchView();
@@ -708,6 +746,8 @@ public class DependentDetailPersonal extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+
+        permissionHelper.onActivityResult(requestCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {

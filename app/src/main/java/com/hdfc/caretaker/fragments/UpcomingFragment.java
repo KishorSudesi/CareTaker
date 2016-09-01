@@ -30,15 +30,14 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 public class UpcomingFragment extends Fragment {
-    private static Bitmap bitmapImg;
+    //private static Bitmap bitmapImg;
 
     private static Handler threadHandler;
-    private static ImageView imageViewCarla;
     private static ProgressDialog progressDialog;
     private static String strCarlaImageUrl, imageUrl;
     TextView txtViewHeader, txtViewMSG, txtViewDate, txtViewHead1, txtViewHead2;
+    private ImageView imageViewCarla;
     private String strCarlaImageName, strNo = "";
-    private Utils utils;
     private int iPosition;
     private Context mContext;
     private byte START_FROM = 0;
@@ -48,7 +47,7 @@ public class UpcomingFragment extends Fragment {
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
             // do something with the bitmap
             // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
+            //bitmapImg = bitmap;
 
             progressDialog.dismiss();
 
@@ -90,7 +89,7 @@ public class UpcomingFragment extends Fragment {
         ImageButton call = (ImageButton) view.findViewById(R.id.buttonCallUpcoming);
 //        buttonCancel = (ImageButton) view.findViewById(R.id.buttonCancel);
 
-        utils = new Utils(getActivity());
+        Utils utils = new Utils(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
         final ActivityModel activityModel = (ActivityModel) this.getArguments().getSerializable("ACTIVITY");

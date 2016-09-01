@@ -33,8 +33,8 @@ public class RatingCompletedAdapter extends BaseAdapter {
     private static final int[] intImageIds = new int[]{R.drawable.smiley_1, R.drawable.smiley_2,
             R.drawable.smiley_3, R.drawable.smiley_4, R.drawable.smiley_5};
     private static LayoutInflater inflater = null;
-    private static Context _ctx;
     private static Utils utils;
+    private Context _ctx;
     //private static MultiBitmapLoader multiBitmapLoader;
     private List<FeedBackModel> data = new ArrayList<>();
 
@@ -80,11 +80,11 @@ public class RatingCompletedAdapter extends BaseAdapter {
             viewHolder.personImage = (ImageView) convertView.findViewById(R.id.personImage);
             viewHolder.smiley = (ImageView) convertView.findViewById(R.id.smileyImage);
 
-            try {
+           /* try {
                 // viewHolder.linearLayoutRoot = (LinearLayout) convertView.findViewById(R.id.confirmLayoutRoot);
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
 
             convertView.setTag(viewHolder);
 
@@ -94,37 +94,39 @@ public class RatingCompletedAdapter extends BaseAdapter {
 
         if (data.size() > 0) {
 
-            String strTimeStamp = _ctx.getString(R.string.at);
-
             try {
-                strTimeStamp += " " + utils.formatDate(data.get(position).getStrFeedBackTime());
-            } catch (Exception e) {
-                e.printStackTrace();
-                strTimeStamp += " " + data.get(position).getStrFeedBackTime();
-            }
 
-            viewHolder.dateTime.setText(strTimeStamp);
+                String strTimeStamp = _ctx.getString(R.string.at);
 
-            String strType = data.get(position).getStrFeedBackByType();
-            String strName = "";
-            String strUrl = "";
+                try {
+                    strTimeStamp += " " + utils.formatDate(data.get(position).getStrFeedBackTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    strTimeStamp += " " + data.get(position).getStrFeedBackTime();
+                }
 
-            if (strType.equalsIgnoreCase("customer")) {
-                strName = Config.customerModel.getStrName();
-                strUrl = Config.customerModel.getStrImgUrl();
-            }
+                viewHolder.dateTime.setText(strTimeStamp);
 
-            if (strType.equalsIgnoreCase("dependent")) {
-                int iPosition = Config.strDependentIds.indexOf(data.get(position).getStrFeedBackBy());
-                strName = Config.dependentModels.get(iPosition).getStrName();
-                strUrl = Config.dependentModels.get(iPosition).getStrImageUrl();
-            }
+                String strType = data.get(position).getStrFeedBackByType();
+                String strName = "";
+                String strUrl = "";
 
-            String strAuthor = _ctx.getString(R.string.by) + strName;
+                if (strType.equalsIgnoreCase("customer") && Config.customerModel != null) {
+                    strName = Config.customerModel.getStrName();
+                    strUrl = Config.customerModel.getStrImgUrl();
+                }
 
-            viewHolder.personName.setText(strAuthor);
+                if (strType.equalsIgnoreCase("dependent")) {
+                    int iPosition = Config.strDependentIds.indexOf(data.get(position).getStrFeedBackBy());
+                    strName = Config.dependentModels.get(iPosition).getStrName();
+                    strUrl = Config.dependentModels.get(iPosition).getStrImageUrl();
+                }
 
-            try {
+                String strAuthor = _ctx.getString(R.string.by) + strName;
+
+                viewHolder.personName.setText(strAuthor);
+
+                try {
 
 //                File file = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrFeedBackBy()));
 //
@@ -151,28 +153,28 @@ public class RatingCompletedAdapter extends BaseAdapter {
 //                    multiBitmapLoader.loadBitmap(strPath, viewHolder.personImage);
 //                }
 
-                Glide.with(_ctx)
-                        .load(strUrl)
-                        .asBitmap()
-                        .centerCrop()
-                        .override(Config.intWidth, Config.intHeight)
-                        .transform(new CropCircleTransformation(_ctx))
-                        .placeholder(R.drawable.person_icon)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    Glide.with(_ctx)
+                            .load(strUrl)
+                            .asBitmap()
+                            .centerCrop()
+                            .override(Config.intWidth, Config.intHeight)
+                            .transform(new CropCircleTransformation(_ctx))
+                            .placeholder(R.drawable.person_icon)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
 
-                                int intImgHeight = resource.getHeight();
-                                int sampleSize = Utils.calculateSampleSize(resource.getWidth(), intImgHeight,
-                                        Config.intWidth, Config.intHeight);
-                                intImgHeight = intImgHeight / sampleSize;
-                                int height = intImgHeight - 180;
-                                if (height < 130 && intImgHeight < 180) {
-                                    height = 130;
-                                }
+                                    int intImgHeight = resource.getHeight();
+                                    int sampleSize = Utils.calculateSampleSize(resource.getWidth(), intImgHeight,
+                                            Config.intWidth, Config.intHeight);
+                                    intImgHeight = intImgHeight / sampleSize;
+                                    int height = intImgHeight - 180;
+                                    if (height < 130 && intImgHeight < 180) {
+                                        height = 130;
+                                    }
 
-                                viewHolder.personImage_copy.getLayoutParams().height = height;
+                                    viewHolder.personImage_copy.getLayoutParams().height = height;
 //                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
 //                                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 //                                viewHolder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
@@ -185,23 +187,32 @@ public class RatingCompletedAdapter extends BaseAdapter {
 //                                layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
 //                                viewHolder.linearLayoutRoot.setLayoutParams(layoutParams);
 
-                                viewHolder.personImage.setImageBitmap(resource);
-                            }
-                        });
+                                    viewHolder.personImage.setImageBitmap(resource);
+                                }
+                            });
 
-            } catch (Exception | OutOfMemoryError e) {
+                } catch (Exception | OutOfMemoryError e) {
+                    e.printStackTrace();
+                }
+                //
+
+                //String strMess = data.get(position).getStrFeedBackMessage();
+
+           /* if(strMess.length()>60)
+                strMess = strMess.substring(0,58)+"..";*/
+
+                viewHolder.feedback.setText(data.get(position).getStrFeedBackMessage());
+
+                if (data.get(position).getBoolFeedBackReport())
+                    viewHolder.feedback.setTextColor(Color.RED);
+                else
+                    viewHolder.feedback.setTextColor(Color.BLACK);
+
+                viewHolder.smiley.setImageResource(intImageIds[data.get(position).getIntFeedBackRating()
+                        - 1]);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            //
-
-            viewHolder.feedback.setText(data.get(position).getStrFeedBackMessage());
-
-            if (data.get(position).getBoolFeedBackReport())
-                viewHolder.feedback.setTextColor(Color.RED);
-            else
-                viewHolder.feedback.setTextColor(Color.BLACK);
-
-            viewHolder.smiley.setImageResource(intImageIds[data.get(position).getIntFeedBackRating() - 1]);
         }
         return convertView;
     }

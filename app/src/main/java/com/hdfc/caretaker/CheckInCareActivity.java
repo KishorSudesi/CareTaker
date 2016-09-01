@@ -31,11 +31,11 @@ import java.util.List;
 public class CheckInCareActivity extends AppCompatActivity {
 
     static List data;
-    private static ListView checkActivities;
     private static List<CheckInCareActivityModel> activity = new ArrayList<>();
     private static List<SubActivityModel> subActivityModels = new ArrayList<>();
     ArrayAdapter arrayAdapter;
     LinearLayout dialogLinear, linearImages;
+    private ListView checkActivities;
     private List<PictureModel> picture = new ArrayList<>();
     private List<ImageModelCheck> image = new ArrayList<>();
     private ScrollView activities;

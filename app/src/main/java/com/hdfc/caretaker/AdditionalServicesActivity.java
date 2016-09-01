@@ -48,15 +48,14 @@ public class AdditionalServicesActivity extends AppCompatActivity {
 
     public static List<ServiceModel> selectedServiceModels = new ArrayList<>();
     public static List<ServiceModel> selectedServiceHistoryModels = new ArrayList<>();
-
-    public static AdditionalServicesAdapter additionalServicesAdapter;
-    public static RelativeLayout loadingPanel;
     public static ArrayList<String> serviceIds = new ArrayList<String>();
     private static ProgressDialog progressDialog;
     private static StorageService storageService;
     //private static LinearLayout dynamicUserTab;
     private static int iServiceCount;
     private static boolean isUpdating;
+    public AdditionalServicesAdapter additionalServicesAdapter;
+    public RelativeLayout loadingPanel;
     private Utils utils;
     private Button buttonContinue;
     private List<String> listDataHeader = new ArrayList<>();

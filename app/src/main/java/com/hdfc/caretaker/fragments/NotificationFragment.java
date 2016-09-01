@@ -385,7 +385,7 @@ public class NotificationFragment extends Fragment {
                     activityModel.setFeedBackModels(feedBackModels);
                 }
 
-                if (jsonObjectActivity.has("videos")) {
+               /* if (jsonObjectActivity.has("videos")) {
 
                     JSONArray jsonArrayVideos = jsonObjectActivity.
                             optJSONArray("videos");
@@ -410,7 +410,7 @@ public class NotificationFragment extends Fragment {
                         }
                     }
                     activityModel.setVideoModels(videoModels);
-                }
+                }*/
 
                 if (jsonObjectActivity.has("images")) {
 
