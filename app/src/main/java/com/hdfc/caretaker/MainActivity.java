@@ -59,6 +59,26 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+
+            if (!isFinishing()) {
+
+                permissionHelper.verifyPermission(
+                        new String[]{getString(R.string.permission_storage_rationale),
+                                getString(R.string.permission_contacts_rationale)},
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                android.Manifest.permission.READ_CONTACTS},
+                        new PermissionCallback() {
+                            @Override
+                            public void permissionGranted() {
+                            }
+
+                            @Override
+                            public void permissionRefused() {
+                            }
+                        }
+                );
+            }
+
             new LoadDataTask().execute();
 
         } catch (Exception e) {
@@ -159,22 +179,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //getString(R.string.permission_contact_rationale) Manifest.permission.READ_CONTACTS
-
-        permissionHelper.verifyPermission(
-                new String[]{getString(R.string.permission_storage_rationale)},
-                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                new PermissionCallback() {
-                    @Override
-                    public void permissionGranted() {
-                    }
-
-                    @Override
-                    public void permissionRefused() {
-                    }
-                }
-        );
     }
 
     private class LoadDataTask extends AsyncTask<Void, Void, Void> {

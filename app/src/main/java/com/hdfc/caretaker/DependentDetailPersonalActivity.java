@@ -58,7 +58,8 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public static String strContactNo, strAddress, strEmail, strDob, relation;
     static Boolean editflag = false;
     static int mPosition = -1;
-    private static Thread backgroundThread, backgroundThreadCamera, backgroundThreadGallery;
+    private static Thread backgroundThread;
+    private static Thread backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
     private static ProgressDialog mProgress = null;
@@ -219,12 +220,15 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                     if (!isFinishing()) {
 
                         permissionHelper.verifyPermission(
-                                new String[]{getString(R.string.permission_storage_rationale)},
-                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                new String[]{getString(R.string.permission_storage_rationale),
+                                        getString(R.string.permission_contacts_rationale)},
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        android.Manifest.permission.READ_CONTACTS},
                                 new PermissionCallback() {
                                     @Override
                                     public void permissionGranted() {
-                                        utils.selectImage(dependantImgName, null, DependentDetailPersonalActivity.this);
+                                        utils.selectImage(dependantImgName, null,
+                                                DependentDetailPersonalActivity.this);
                                         isCamera = true;
                                     }
 
@@ -233,7 +237,9 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                                     }
                                 }
                         );
+
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -272,6 +278,28 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 editContactNo.setFocusable(false);
                 editContactNo.setKeyListener(null);
                 editContactNo.setClickable(false);
+            }
+
+            if (!isFinishing()) {
+
+                permissionHelper.verifyPermission(
+                        new String[]{getString(R.string.permission_storage_rationale),
+                                getString(R.string.permission_contacts_rationale)},
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                android.Manifest.permission.READ_CONTACTS},
+                        new PermissionCallback() {
+                            @Override
+                            public void permissionGranted() {
+
+                            }
+
+                            @Override
+                            public void permissionRefused() {
+                                utils.toast(2, 2, getString(R.string.permission_general_rationale));
+                            }
+                        }
+                );
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -657,7 +685,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             } else {
                 isCamera = false;
                 backgroundThreadHandler = new BackgroundThreadHandler();
-                backgroundThreadGallery = new BackgroundThreadForGallery();
+                Thread backgroundThreadGallery = new BackgroundThreadForGallery();
                 backgroundThreadGallery.start();
             }
         } else isCamera = false;

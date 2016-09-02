@@ -1,5 +1,6 @@
 package com.hdfc.libs;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,6 +32,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -230,6 +232,13 @@ public class Utils {
     public static String getStringJni() {
         //return "KaEO19Fc"; //"KaEO19Fc"
         return getString();//for temp fix on Native crash
+    }
+
+    @SuppressLint("HardwareIds")
+    private static String getDeviceID(Activity activity) {
+        return Settings.Secure.getString(activity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
     }
 
     /*public static double round(double value, int places) {
@@ -2399,6 +2408,7 @@ public class Utils {
                     DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 }
                 if (iFlag == 1) {
+                    putLoginLog();
                     goToDashboard();
                 }
             } else if (!isUpdateServer && isConnectingToInternet()) {
@@ -5188,6 +5198,71 @@ public class Utils {
         }
     }*/
 
+    private void putLoginLog() {
+
+        if (isConnectingToInternet()) {
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                //SessionManager sessionManager = new SessionManager(LoginActivity.this);
+
+                Calendar calendar = Calendar.getInstance();
+                Date datNow = calendar.getTime();
+                String strDateNow = Utils.readFormat.format(datNow);
+
+                jsonObject.put("user_id", sessionManager.getCustomerId());
+                jsonObject.put("source", "caretaker");
+                jsonObject.put("user_type", "customer");
+                jsonObject.put("device_id", Utils.getDeviceID((Activity) _ctxt));
+                jsonObject.put("os", Config.strOs);
+                jsonObject.put("sdk_version", Config.iSdkVersion);
+                jsonObject.put("app_version", Config.iAppVersion);
+                jsonObject.put("time", strDateNow);
+                //jsonObject.put("ip", Utils.getIPAddress(true));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            storageService.insertDocs(jsonObject,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            try {
+                                if (response.isResponseSuccess()) {
+                                    Utils.log(response.toString(), " LOG ");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    }, Config.collectionLoginLog);
+        }
+    }
+
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -5221,5 +5296,4 @@ public class Utils {
             threadHandler.sendEmptyMessage(0);
         }
     }
-
 }

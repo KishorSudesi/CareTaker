@@ -7,8 +7,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -63,37 +61,38 @@ import pl.tajchert.nammu.PermissionCallback;
 
 public class MyAccountEditFragment extends Fragment {
 
-    public static String strCustomerImgNameCamera;
+    //public static String strCustomerImgNameCamera;
     public static String strCustomerImgName = "";
     public static Bitmap bitmapImg = null;
     public static Uri uri;
     private static Utils utils;
-    private static Handler threadHandler;
-    private static ProgressDialog progressDialog;
+    //private static Handler threadHandler;
     private static boolean isImageChanged = false;
     private ImageView roundedImageView;
-    private EditText name, number, editTextOldPassword, editTextPassword,
-            editTextConfirmPassword, editDob, editAreaCode, editCountryCode;
+    private EditText name;
+    private EditText number;
+    private EditText editDob;
+    private EditText editAreaCode;
+    private EditText editCountryCode;
 
     private PermissionHelper permissionHelper;
 
     //city
     private String strName;
     private String strContactNo;
-    private String strPass;
+    //private String strPass;
     private String strCountryCode;
 
     //strAddress = editAddress.getText().toString().trim();
     private String strDob;
     private String strCountry;
     private String strAddress;
-    private String strOldPass;
+    //private String strOldPass;
     private String strAreaCode, imageUrl = ""; //strCustomerImagePath = "",
 
     private RadioButton mobile;
     private Spinner citizenship;
     private SessionManager sessionManager;
-
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -153,6 +152,12 @@ public class MyAccountEditFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        permissionHelper.finish();
+    }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -177,7 +182,7 @@ public class MyAccountEditFragment extends Fragment {
 
         //strCustomerImagePath = getActivity().getFilesDir() + "/images/" + Config.customerModel.getStrCustomerID();
 
-        progressDialog = new ProgressDialog(getActivity());
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
         roundedImageView = (ImageView) view.findViewById(R.id.imageView5);
 
@@ -185,9 +190,9 @@ public class MyAccountEditFragment extends Fragment {
 
         ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
 
-        editTextOldPassword = (EditText) view.findViewById(R.id.editOldPassword);
-        editTextPassword = (EditText) view.findViewById(R.id.editPassword);
-        editTextConfirmPassword = (EditText) view.findViewById(R.id.editConfirmPassword);
+      /*  EditText editTextOldPassword = (EditText) view.findViewById(R.id.editOldPassword);
+        EditText editTextPassword = (EditText) view.findViewById(R.id.editPassword);
+        EditText editTextConfirmPassword = (EditText) view.findViewById(R.id.editConfirmPassword);*/
         editDob = (EditText) view.findViewById(R.id.editDob);
         editAreaCode = (EditText) view.findViewById(R.id.editAreaCode);
         editCountryCode = (EditText) view.findViewById(R.id.editCountryCode);
@@ -294,7 +299,7 @@ public class MyAccountEditFragment extends Fragment {
 
         utils = new Utils(getActivity());
 
-        threadHandler = new ThreadHandler();
+        //threadHandler = new ThreadHandler();
 //        Thread backgroundThread = new BackgroundThread();
 //        backgroundThread.start();
 
@@ -393,7 +398,7 @@ public class MyAccountEditFragment extends Fragment {
                     editDob.setError(getString(R.string.error_field_required));
                     focusView = editDob;
                     cancel = true;
-                    return;
+                    //return;
                 }
 
 
@@ -401,7 +406,7 @@ public class MyAccountEditFragment extends Fragment {
                     name.setError(getString(R.string.error_field_required));
                     focusView = name;
                     cancel = true;
-                    return;
+                    //return;
                 }
 
                 if (cancel) {
@@ -952,11 +957,11 @@ public class MyAccountEditFragment extends Fragment {
 //        }
 //    }
 
-    public class ThreadHandler extends Handler {
+    /*public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            /*if (progressDialog.isShowing())
-                progressDialog.dismiss();*/
+            *//*if (progressDialog.isShowing())
+                progressDialog.dismiss();*//*
 
 
             if (!isImageChanged) {
@@ -983,9 +988,9 @@ public class MyAccountEditFragment extends Fragment {
 
             //loadingPanel.setVisibility(View.GONE);
         }
-    }
+    }*/
 
-    public class BackgroundThreadCamera extends Thread {
+  /*  public class BackgroundThreadCamera extends Thread {
         @Override
         public void run() {
 
@@ -999,7 +1004,6 @@ public class MyAccountEditFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
-
+    }*/
 
 }

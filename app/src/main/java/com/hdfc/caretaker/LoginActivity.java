@@ -233,7 +233,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
     private void resetPassword(String userEmail) {
 
         if (utils.isConnectingToInternet()) {

@@ -74,17 +74,19 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     public static Uri uri;
     public static String citizenshipVal;
     public static String strPass;
-    public static int uploadSize, uploadingCount = 0;
+    //public static int uploadSize, uploadingCount = 0;
     private static int idregisterflag = 0;
-    private static Thread backgroundThreadCamera, backgroundThread;
     private static Handler backgroundThreadHandler;
-    private static String strName, strEmail, strConfirmPass, strContactNo, strDate, strCountryCode, strCountry;//,strAddress;
+    private static String strName;
+    private static String strEmail;
+    private static String strDate;
     private static ProgressDialog mProgress = null;
     private static String jsonDocId;
     String strMess = "";
     ImageButton back;
     private PermissionHelper permissionHelper;
-    private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate, editAreaCode, editCountryCode;
+    private EditText editName, editEmail, editPass, editConfirmPass, editContactNo, editTextDate,
+            editAreaCode, editCountryCode;
     //editAddress
     private Utils utils;
     private RadioButton mobile;
@@ -150,7 +152,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         utils.setStatusBarColor("#2196f3");
 
-        permissionHelper = PermissionHelper.getInstance(this);
+        permissionHelper = PermissionHelper.getInstance(ActivityGuruPersonalInfo.this);
 
         back = (ImageButton) findViewById(R.id.buttonBack);
         checked_terms_conditions = (CheckBox) findViewById(R.id.checked_terms_conditions);
@@ -674,8 +676,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         strName = editName.getText().toString().trim();
         strEmail = editEmail.getText().toString().trim();
         strPass = editPass.getText().toString().trim();
-        strConfirmPass = editConfirmPass.getText().toString().trim();
-        strContactNo = editContactNo.getText().toString().trim();
+        String strConfirmPass = editConfirmPass.getText().toString().trim();
+        String strContactNo = editContactNo.getText().toString().trim();
         strDate = editTextDate.getText().toString().trim();
 
 
@@ -683,11 +685,11 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             strAreaCode = editAreaCode.getText().toString().trim();
         }
 
-        strCountryCode = editCountryCode.getText().toString().trim();
+        String strCountryCode = editCountryCode.getText().toString().trim();
 
         //strAddress = editAddress.getText().toString().trim();
         //final String strDob = editTextDate.getText().toString().trim();
-        strCountry = citizenship.getSelectedItem().toString().trim();
+        String strCountry = citizenship.getSelectedItem().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -996,7 +998,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                     case Config.START_CAMERA_REQUEST_CODE:
                         backgroundThreadHandler = new BackgroundThreadHandler();
                         strCustomerImgName = Utils.customerImageUri.getPath();
-                        backgroundThreadCamera = new BackgroundThreadCamera();
+                        Thread backgroundThreadCamera = new BackgroundThreadCamera();
                         backgroundThreadCamera.start();
                         break;
 
@@ -1005,7 +1007,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                             backgroundThreadHandler = new BackgroundThreadHandler();
                             uri = intent.getData();
                             //strCustomerImgName = Utils.customerImageUri.getPath();
-                            backgroundThread = new BackgroundThread();
+                            Thread backgroundThread = new BackgroundThread();
                             backgroundThread.start();
                         }
                         break;

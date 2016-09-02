@@ -1,5 +1,6 @@
 package com.hdfc.caretaker;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -70,7 +71,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
     static int mPosition = -1;
     private static ProgressDialog mProgress = null;
     private static boolean isCamera = false;
-    private static Thread backgroundThread, backgroundThreadCamera;
+    private static Thread backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     Button buttonContinue;
     private SearchView searchView;
@@ -229,6 +230,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
             public void onClick(View v) {
 
                 try {
+
                     if (!isFinishing()) {
 
                         permissionHelper.verifyPermission(
@@ -237,7 +239,8 @@ public class DependentDetailPersonal extends AppCompatActivity {
                                 new PermissionCallback() {
                                     @Override
                                     public void permissionGranted() {
-                                        utils.selectImage(dependantImgName, null, DependentDetailPersonal.this);
+                                        utils.selectImage(dependantImgName, null,
+                                                DependentDetailPersonal.this);
                                         isCamera = true;
                                     }
 
@@ -247,6 +250,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
                                 }
                         );
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -285,6 +289,27 @@ public class DependentDetailPersonal extends AppCompatActivity {
                 editContactNo.setKeyListener(null);
                 editContactNo.setClickable(false);
             }
+
+            if (!isFinishing()) {
+
+                permissionHelper.verifyPermission(
+                        new String[]{getString(R.string.permission_storage_rationale),
+                                getString(R.string.permission_contacts_rationale)},
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_CONTACTS},
+                        new PermissionCallback() {
+                            @Override
+                            public void permissionGranted() {
+                            }
+
+                            @Override
+                            public void permissionRefused() {
+                                utils.toast(2, 2, getString(R.string.permission_general_rationale));
+                            }
+                        }
+                );
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -581,7 +606,7 @@ public class DependentDetailPersonal extends AppCompatActivity {
                         mProgress.show();
                         uri = Uri.parse(image_uri);
                         backgroundThreadHandler = new BackgroundThreadHandler();
-                        backgroundThread = new BackgroundThread();
+                        Thread backgroundThread = new BackgroundThread();
                         backgroundThread.start();
                     } catch (Exception e) {
                         e.printStackTrace();

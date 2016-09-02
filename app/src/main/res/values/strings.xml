@@ -177,6 +177,9 @@
 
     <!--Permission Strings-->
     <string name="permission_storage_rationale">We need access to Storage to Proceed Further</string>
+    <string name="permission_contacts_rationale">We need access to Contacts to Proceed Further</string>
+
+    <string name="permission_general_rationale">We need access to Contacts or Storage to Proceed Further</string>
 
     <!--List View Empty Strings-->
     <string name="no_activities">No Activities</string>

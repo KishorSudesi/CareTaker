@@ -36,6 +36,8 @@ public class Config {
     public static final String collectionNotification = "notification";
     public static final String collectionMilestones = "milestones";
     public static final String collectionCheckInCare = "checkincare";
+    public static final String collectionLoginLog = "login_log";
+
     public static final int iSdkVersion = Build.VERSION.SDK_INT;
     public static final int iAppVersion = BuildConfig.VERSION_CODE;
     public static final String strOs = "android";

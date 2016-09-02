@@ -30,8 +30,8 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  */
 public class RatingCompletedAdapter extends BaseAdapter {
 
-    private static final int[] intImageIds = new int[]{R.drawable.smiley_1, R.drawable.smiley_2,
-            R.drawable.smiley_3, R.drawable.smiley_4, R.drawable.smiley_5};
+    private static final int[] intImageIds = new int[]{R.drawable.smiley_3, R.drawable.smiley_1,
+            R.drawable.smiley_2, R.drawable.smiley_4, R.drawable.smiley_5};
     private static LayoutInflater inflater = null;
     private static Utils utils;
     private Context _ctx;
@@ -174,7 +174,7 @@ public class RatingCompletedAdapter extends BaseAdapter {
                                         height = 130;
                                     }
 
-                                    viewHolder.personImage_copy.getLayoutParams().height = height;
+                                    viewHolder.personImage.getLayoutParams().height = height;
 //                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
 //                                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 //                                viewHolder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);

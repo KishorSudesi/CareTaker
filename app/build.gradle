@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 8
-        versionName "0.9 (beta)"
+        versionName "New Zeal 0.9 (beta)"
     }
 
     sourceSets.main {
