@@ -272,7 +272,8 @@ public class TouchImageView extends ImageView {
         onDrawReady = true;
         imageRenderedAtLeastOnce = true;
         if (delayedZoomVariables != null) {
-            setZoom(delayedZoomVariables.scale, delayedZoomVariables.focusX, delayedZoomVariables.focusY, delayedZoomVariables.scaleType);
+            setZoom(delayedZoomVariables.scale, delayedZoomVariables.focusX,
+                    delayedZoomVariables.focusY, delayedZoomVariables.scaleType);
             delayedZoomVariables = null;
         }
         super.onDraw(canvas);
@@ -515,7 +516,8 @@ public class TouchImageView extends ImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Drawable drawable = getDrawable();
-        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+        if (drawable == null || drawable.getIntrinsicWidth() == 0
+                || drawable.getIntrinsicHeight() == 0) {
             setMeasuredDimension(0, 0);
             return;
         }
@@ -547,7 +549,8 @@ public class TouchImageView extends ImageView {
      */
     private void fitImageToView() {
         Drawable drawable = getDrawable();
-        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+        if (drawable == null || drawable.getIntrinsicWidth() == 0
+                || drawable.getIntrinsicHeight() == 0) {
             return;
         }
         if (matrix == null || prevMatrix == null) {
@@ -634,14 +637,16 @@ public class TouchImageView extends ImageView {
             //
             float prevActualWidth = prevMatchViewWidth * normalizedScale;
             float actualWidth = getImageWidth();
-            translateMatrixAfterRotate(Matrix.MTRANS_X, transX, prevActualWidth, actualWidth, prevViewWidth, viewWidth, drawableWidth);
+            translateMatrixAfterRotate(Matrix.MTRANS_X, transX, prevActualWidth, actualWidth,
+                    prevViewWidth, viewWidth, drawableWidth);
 
             //
             // Height
             //
             float prevActualHeight = prevMatchViewHeight * normalizedScale;
             float actualHeight = getImageHeight();
-            translateMatrixAfterRotate(Matrix.MTRANS_Y, transY, prevActualHeight, actualHeight, prevViewHeight, viewHeight, drawableHeight);
+            translateMatrixAfterRotate(Matrix.MTRANS_Y, transY, prevActualHeight, actualHeight,
+                    prevViewHeight, viewHeight, drawableHeight);
 
             //
             // Set the matrix to the adjusted scale and translate values.
@@ -694,7 +699,9 @@ public class TouchImageView extends ImageView {
      * @param viewSize      width/height of view after rotation
      * @param drawableSize  width/height of drawable
      */
-    private void translateMatrixAfterRotate(int axis, float trans, float prevImageSize, float imageSize, int prevViewSize, int viewSize, int drawableSize) {
+    private void translateMatrixAfterRotate(int axis, float trans, float prevImageSize,
+                                            float imageSize, int prevViewSize, int viewSize,
+                                            int drawableSize) {
         if (imageSize < viewSize) {
             //
             // The width/height of image is less than the view's width/height. Center it.
@@ -722,9 +729,9 @@ public class TouchImageView extends ImageView {
         this.state = state;
     }
 
-    public boolean canScrollHorizontallyFroyo(int direction) {
+   /* public boolean canScrollHorizontallyFroyo(int direction) {
         return canScrollHorizontally(direction);
-    }
+    }*/
 
     @Override
     public boolean canScrollHorizontally(int direction) {
@@ -744,7 +751,8 @@ public class TouchImageView extends ImageView {
         return true;
     }
 
-    private void scaleImage(double deltaScale, float focusX, float focusY, boolean stretchImageToSuper) {
+    private void scaleImage(double deltaScale, float focusX, float focusY,
+                            boolean stretchImageToSuper) {
 
         float lowerScale, upperScale;
         if (stretchImageToSuper) {
@@ -829,7 +837,8 @@ public class TouchImageView extends ImageView {
     private void printMatrixInfo() {
         float[] n = new float[9];
         matrix.getValues(n);
-        Log.d(DEBUG, "Scale: " + n[Matrix.MSCALE_X] + " TransX: " + n[Matrix.MTRANS_X] + " TransY: " + n[Matrix.MTRANS_Y]);
+        Log.d(DEBUG, "Scale: " + n[Matrix.MSCALE_X] + " TransX: " + n[Matrix.MTRANS_X]
+                + " TransY: " + n[Matrix.MTRANS_Y]);
     }
 
     private enum State {NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM}
@@ -890,10 +899,7 @@ public class TouchImageView extends ImageView {
 
         @Override
         public boolean onDoubleTapEvent(MotionEvent e) {
-            if (doubleTapListener != null) {
-                return doubleTapListener.onDoubleTapEvent(e);
-            }
-            return false;
+            return doubleTapListener != null && doubleTapListener.onDoubleTapEvent(e);
         }
     }
 
@@ -1008,7 +1014,8 @@ public class TouchImageView extends ImageView {
             }
 
             if (animateToZoomBoundary) {
-                DoubleTapZoom doubleTap = new DoubleTapZoom(targetZoom, viewWidth / 2, viewHeight / 2, true);
+                DoubleTapZoom doubleTap = new DoubleTapZoom(targetZoom, viewWidth / 2,
+                        viewHeight / 2, true);
                 compatPostOnAnimation(doubleTap);
             }
         }
@@ -1027,7 +1034,8 @@ public class TouchImageView extends ImageView {
         private float startZoom, targetZoom;
         private float bitmapX, bitmapY;
         private boolean stretchImageToSuper;
-        private AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+        private AccelerateDecelerateInterpolator interpolator =
+                new AccelerateDecelerateInterpolator();
         private PointF startTouch;
         private PointF endTouch;
 
@@ -1161,7 +1169,7 @@ public class TouchImageView extends ImageView {
             currY = startY;
         }
 
-        public void cancelFling() {
+        private void cancelFling() {
             if (scroller != null) {
                 setState(State.NONE);
                 scroller.forceFinished(true);
@@ -1205,7 +1213,7 @@ public class TouchImageView extends ImageView {
         OverScroller overScroller;
         boolean isPreGingerbread;
 
-        public CompatScroller(Context context) {
+        CompatScroller(Context context) {
             if (VERSION.SDK_INT < VERSION_CODES.GINGERBREAD) {
                 isPreGingerbread = true;
                 scroller = new Scroller(context);
@@ -1216,7 +1224,8 @@ public class TouchImageView extends ImageView {
             }
         }
 
-        public void fling(int startX, int startY, int velocityX, int velocityY, int minX, int maxX, int minY, int maxY) {
+        void fling(int startX, int startY, int velocityX, int velocityY, int minX, int maxX,
+                   int minY, int maxY) {
             if (isPreGingerbread) {
                 scroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
             } else {
@@ -1224,7 +1233,7 @@ public class TouchImageView extends ImageView {
             }
         }
 
-        public void forceFinished(boolean finished) {
+        void forceFinished(boolean finished) {
             if (isPreGingerbread) {
                 scroller.forceFinished(finished);
             } else {
@@ -1232,7 +1241,7 @@ public class TouchImageView extends ImageView {
             }
         }
 
-        public boolean isFinished() {
+        boolean isFinished() {
             if (isPreGingerbread) {
                 return scroller.isFinished();
             } else {
@@ -1240,7 +1249,7 @@ public class TouchImageView extends ImageView {
             }
         }
 
-        public boolean computeScrollOffset() {
+        boolean computeScrollOffset() {
             if (isPreGingerbread) {
                 return scroller.computeScrollOffset();
             } else {
@@ -1249,7 +1258,7 @@ public class TouchImageView extends ImageView {
             }
         }
 
-        public int getCurrX() {
+        int getCurrX() {
             if (isPreGingerbread) {
                 return scroller.getCurrX();
             } else {
@@ -1257,7 +1266,7 @@ public class TouchImageView extends ImageView {
             }
         }
 
-        public int getCurrY() {
+        int getCurrY() {
             if (isPreGingerbread) {
                 return scroller.getCurrY();
             } else {
@@ -1267,12 +1276,12 @@ public class TouchImageView extends ImageView {
     }
 
     private class ZoomVariables {
-        public float scale;
-        public float focusX;
-        public float focusY;
         public ScaleType scaleType;
+        float scale;
+        float focusX;
+        float focusY;
 
-        public ZoomVariables(float scale, float focusX, float focusY, ScaleType scaleType) {
+        ZoomVariables(float scale, float focusX, float focusY, ScaleType scaleType) {
             this.scale = scale;
             this.focusX = focusX;
             this.focusY = focusY;

@@ -7,8 +7,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +25,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -58,38 +57,42 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import pl.tajchert.nammu.PermissionCallback;
 
 public class MyAccountEditFragment extends Fragment {
 
-    public static String strCustomerImgNameCamera;
+    //public static String strCustomerImgNameCamera;
     public static String strCustomerImgName = "";
     public static Bitmap bitmapImg = null;
     public static Uri uri;
     private static Utils utils;
-    private static ImageView roundedImageView;
-    private static Handler threadHandler;
-    private static ProgressDialog progressDialog;
+    //private static Handler threadHandler;
     private static boolean isImageChanged = false;
-    private EditText name, number, editTextOldPassword, editTextPassword,
-            editTextConfirmPassword, editDob, editAreaCode, editCountryCode;
+    private ImageView roundedImageView;
+    private EditText name;
+    private EditText number;
+    private EditText editDob;
+    private EditText editAreaCode;
+    private EditText editCountryCode;
+
+    private PermissionHelper permissionHelper;
 
     //city
     private String strName;
     private String strContactNo;
-    private String strPass;
+    //private String strPass;
     private String strCountryCode;
 
     //strAddress = editAddress.getText().toString().trim();
     private String strDob;
     private String strCountry;
     private String strAddress;
-    private String strOldPass;
-    private String strCustomerImagePath = "", strAreaCode, imageUrl = "";
+    //private String strOldPass;
+    private String strAreaCode, imageUrl = ""; //strCustomerImagePath = "",
 
     private RadioButton mobile;
     private Spinner citizenship;
     private SessionManager sessionManager;
-
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -108,12 +111,56 @@ public class MyAccountEditFragment extends Fragment {
             // Overriding onDateTimeCancel() is optional.
         }
     };
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
+            // do something with the bitmap
+            // for demonstration purposes, let's just set it to an ImageView
+            bitmapImg = bitmap;
+            if (uri != null) {
+                bitmapImg = utils.rotateBitmap(utils.getRealPathFromURI(uri), bitmapImg);
+            }
+
+            if (!isImageChanged) {
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                if (bitmap != null)
+                    roundedImageView.setImageBitmap(bitmap);
+                else {
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera));
+                    utils.toast(2, 2, getString(R.string.error));
+                }
+            }
+            if (isImageChanged) {
+                if (bitmap != null)
+                    checkImage();
+                else {
+                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
+                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
+                            getDrawable(R.mipmap.camera));
+                    utils.toast(2, 2, getString(R.string.error));
+                }
+            }
+
+        }
+    };
 
     public static MyAccountEditFragment newInstance() {
         MyAccountEditFragment fragment = new MyAccountEditFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        permissionHelper.finish();
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -129,11 +176,13 @@ public class MyAccountEditFragment extends Fragment {
         sessionManager = new SessionManager(getActivity());
         mail.setText(Config.customerModel.getStrEmail());
 
+        permissionHelper = PermissionHelper.getInstance(getActivity());
+
         //RelativeLayout loadingPanel = (RelativeLayout) view.findViewById(R.id.loadingPanel);
 
-        strCustomerImagePath = getActivity().getFilesDir() + "/images/" + Config.customerModel.getStrCustomerID();
+        //strCustomerImagePath = getActivity().getFilesDir() + "/images/" + Config.customerModel.getStrCustomerID();
 
-        progressDialog = new ProgressDialog(getActivity());
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
 
         roundedImageView = (ImageView) view.findViewById(R.id.imageView5);
 
@@ -141,9 +190,9 @@ public class MyAccountEditFragment extends Fragment {
 
         ImageButton buttonBack = (ImageButton) view.findViewById(R.id.buttonBack);
 
-        editTextOldPassword = (EditText) view.findViewById(R.id.editOldPassword);
-        editTextPassword = (EditText) view.findViewById(R.id.editPassword);
-        editTextConfirmPassword = (EditText) view.findViewById(R.id.editConfirmPassword);
+      /*  EditText editTextOldPassword = (EditText) view.findViewById(R.id.editOldPassword);
+        EditText editTextPassword = (EditText) view.findViewById(R.id.editPassword);
+        EditText editTextConfirmPassword = (EditText) view.findViewById(R.id.editConfirmPassword);*/
         editDob = (EditText) view.findViewById(R.id.editDob);
         editAreaCode = (EditText) view.findViewById(R.id.editAreaCode);
         editCountryCode = (EditText) view.findViewById(R.id.editCountryCode);
@@ -197,8 +246,28 @@ public class MyAccountEditFragment extends Fragment {
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.selectImage(String.valueOf(new Date().getDate() + "" + new Date().getTime())
-                        + ".jpeg", MyAccountEditFragment.this, null);
+
+                try {
+
+                    permissionHelper.verifyPermission(
+                            new String[]{getString(R.string.permission_storage_rationale)},
+                            new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new PermissionCallback() {
+                                @Override
+                                public void permissionGranted() {
+                                    utils.selectImage(String.valueOf(new Date().getDate() + "" + new Date().getTime())
+                                            + ".jpeg", MyAccountEditFragment.this, null);
+                                }
+
+                                @Override
+                                public void permissionRefused() {
+                                }
+                            }
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -230,7 +299,7 @@ public class MyAccountEditFragment extends Fragment {
 
         utils = new Utils(getActivity());
 
-        threadHandler = new ThreadHandler();
+        //threadHandler = new ThreadHandler();
 //        Thread backgroundThread = new BackgroundThread();
 //        backgroundThread.start();
 
@@ -329,7 +398,7 @@ public class MyAccountEditFragment extends Fragment {
                     editDob.setError(getString(R.string.error_field_required));
                     focusView = editDob;
                     cancel = true;
-                    return;
+                    //return;
                 }
 
 
@@ -337,7 +406,7 @@ public class MyAccountEditFragment extends Fragment {
                     name.setError(getString(R.string.error_field_required));
                     focusView = name;
                     cancel = true;
-                    return;
+                    //return;
                 }
 
                 if (cancel) {
@@ -408,10 +477,10 @@ public class MyAccountEditFragment extends Fragment {
                     }
 
 
-                    if (utils.isConnectingToInternet()) {
+                    if (!utils.isConnectingToInternet()) {
 
 
-                    } else {
+                        //} else {
                         DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
                         updateUserDatainDB("true");
                     }
@@ -502,41 +571,6 @@ public class MyAccountEditFragment extends Fragment {
         }
     }
 
-
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
-            // do something with the bitmap
-            // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
-            if (uri != null) {
-                bitmapImg = utils.rotateBitmap(utils.getRealPathFromURI(uri), bitmapImg);
-            }
-
-            if (!isImageChanged) {
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                if (bitmap != null)
-                    roundedImageView.setImageBitmap(bitmap);
-                else {
-                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
-                            getDrawable(R.mipmap.camera));
-                    utils.toast(2, 2, getString(R.string.error));
-                }
-            }
-            if (isImageChanged) {
-                if (bitmap != null)
-                    checkImage();
-                else {
-                    DashboardActivity.loadingPanel.setVisibility(View.GONE);
-                    roundedImageView.setBackgroundDrawable(getActivity().getResources().
-                            getDrawable(R.mipmap.camera));
-                    utils.toast(2, 2, getString(R.string.error));
-                }
-            }
-
-        }
-    };
-
     private void loadImageSimpleTarget(String url) {
 
         Glide.with(getActivity())
@@ -572,6 +606,8 @@ public class MyAccountEditFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+
+        permissionHelper.onActivityResult(requestCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
@@ -847,11 +883,85 @@ public class MyAccountEditFragment extends Fragment {
         }
     }
 
-    public class ThreadHandler extends Handler {
+    private void showImageFromGallery() {
+        try {
+            if (uri != null) {
+                Calendar calendar = new GregorianCalendar();
+                String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+                File galleryFile = utils.createFileInternalImage(strFileName);
+                strCustomerImgName = galleryFile.getAbsolutePath();
+                InputStream is = getActivity().getContentResolver().openInputStream(uri);
+                utils.copyInputStreamToFile(is, galleryFile);
+                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                //bitmapImg=utils.roundedBitmap(bitmapImg);
+                loadImageSimpleTarget(uri);
+                isImageChanged = true;
+            }
+            // threadHandler.sendEmptyMessage(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+//    public class BackgroundThread extends Thread {
+//        @Override
+//        public void run() {
+//            try {
+//
+//                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
+//                Utils.log(f.getAbsolutePath(), " FP ");
+//                bitmapImg = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
+//
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+    //
+
+    private void showImageFromCamera() {
+        try {
+            if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
+                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+                loadImageSimpleTarget(strCustomerImgName);
+                isImageChanged = true;
+            }
+            //threadHandler.sendEmptyMessage(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+//    public class BackgroundThreadGallery extends Thread {
+//        @Override
+//        public void run() {
+//
+//            try {
+//                if (uri != null) {
+//                    Calendar calendar = new GregorianCalendar();
+//                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
+//                    File galleryFile = utils.createFileInternalImage(strFileName);
+//                    strCustomerImgName = galleryFile.getAbsolutePath();
+//                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
+//                    utils.copyInputStreamToFile(is, galleryFile);
+//                    bitmap = utils.getbitmapImgFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
+//                    bitmapImg=utils.roundedBitmap(bitmapImg);
+//                    isImageChanged = true;
+//                }
+//                threadHandler.sendEmptyMessage(0);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+    /*public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            /*if (progressDialog.isShowing())
-                progressDialog.dismiss();*/
+            *//*if (progressDialog.isShowing())
+                progressDialog.dismiss();*//*
 
 
             if (!isImageChanged) {
@@ -878,83 +988,9 @@ public class MyAccountEditFragment extends Fragment {
 
             //loadingPanel.setVisibility(View.GONE);
         }
-    }
+    }*/
 
-//    public class BackgroundThread extends Thread {
-//        @Override
-//        public void run() {
-//            try {
-//
-//                File f = utils.getInternalFileImages(Config.customerModel.getStrCustomerID());
-//                Utils.log(f.getAbsolutePath(), " FP ");
-//                bitmapImg = utils.getBitmapFromFile(f.getAbsolutePath(), Config.intWidth, Config.intHeight);
-//
-//                threadHandler.sendEmptyMessage(0);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-    //
-
-    private void showImageFromGallery() {
-        try {
-            if (uri != null) {
-                Calendar calendar = new GregorianCalendar();
-                String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-                File galleryFile = utils.createFileInternalImage(strFileName);
-                strCustomerImgName = galleryFile.getAbsolutePath();
-                InputStream is = getActivity().getContentResolver().openInputStream(uri);
-                utils.copyInputStreamToFile(is, galleryFile);
-                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-                //bitmapImg=utils.roundedBitmap(bitmapImg);
-                loadImageSimpleTarget(uri);
-                isImageChanged = true;
-            }
-            // threadHandler.sendEmptyMessage(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-//    public class BackgroundThreadGallery extends Thread {
-//        @Override
-//        public void run() {
-//
-//            try {
-//                if (uri != null) {
-//                    Calendar calendar = new GregorianCalendar();
-//                    String strFileName = String.valueOf(calendar.getTimeInMillis()) + ".jpeg";
-//                    File galleryFile = utils.createFileInternalImage(strFileName);
-//                    strCustomerImgName = galleryFile.getAbsolutePath();
-//                    InputStream is = getActivity().getContentResolver().openInputStream(uri);
-//                    utils.copyInputStreamToFile(is, galleryFile);
-//                    bitmap = utils.getbitmapImgFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-//                    bitmapImg=utils.roundedBitmap(bitmapImg);
-//                    isImageChanged = true;
-//                }
-//                threadHandler.sendEmptyMessage(0);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-    private void showImageFromCamera() {
-        try {
-            if (strCustomerImgName != null && !strCustomerImgName.equalsIgnoreCase("")) {
-                //bitmapImg = utils.getBitmapFromFile(strCustomerImgName, Config.intWidth, Config.intHeight);
-                loadImageSimpleTarget(strCustomerImgName);
-                isImageChanged = true;
-            }
-            //threadHandler.sendEmptyMessage(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public class BackgroundThreadCamera extends Thread {
+  /*  public class BackgroundThreadCamera extends Thread {
         @Override
         public void run() {
 
@@ -968,7 +1004,6 @@ public class MyAccountEditFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
-
+    }*/
 
 }

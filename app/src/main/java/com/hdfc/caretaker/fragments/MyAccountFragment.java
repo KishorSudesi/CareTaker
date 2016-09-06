@@ -45,8 +45,6 @@ import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
@@ -60,17 +58,17 @@ public class MyAccountFragment extends Fragment {
     public final static float SMALL_SCALE = 0.7f; //0.7f
     public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
     public static ViewPager dependpager;
-    private static Bitmap bitmap;
-    private static ImageView roundedImageView;
-    //private static Handler threadHandler;
-    private static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
-    private static Context context;
     private static int iPosition;
     public DependAdapter adapter;
     TextView txtviewBuyServices, txtviewChangePassword;
     TextView txtNumber, txtAddress, textViewName, textViewEmail, textViewLogout, textViewRecipient;
     String strOldPass, strPass;
+    //private static Bitmap bitmap;
+    private ImageView roundedImageView;
+    //private static Handler threadHandler;
+    private RelativeLayout loadingPanel;
+    private Context context;
     private EditText editTextOldPassword, editTextPassword, editTextConfirmPassword;
     private Utils utils;
     private SessionManager sessionManager;
@@ -550,7 +548,7 @@ public class MyAccountFragment extends Fragment {
 //            threadHandler.sendEmptyMessage(0);
 //        }
 //    }
-    public class BackgroundThread extends Thread {
+   /* public class BackgroundThread extends Thread {
         @Override
         public void run() {
             try {
@@ -565,7 +563,7 @@ public class MyAccountFragment extends Fragment {
             }
             //threadHandler.sendEmptyMessage(0);
         }
-    }
+    }*/
 
    /* public static class ThreadHandler extends Handler {
         @Override

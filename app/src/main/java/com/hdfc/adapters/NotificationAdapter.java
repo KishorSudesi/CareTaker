@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.MultiBitmapLoader;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.NotificationModel;
 
@@ -33,13 +32,13 @@ public class NotificationAdapter extends BaseAdapter {
     private Context _context;
     private List<NotificationModel> adapterNotificationModels;
     private Utils utils;
-    private MultiBitmapLoader multiBitmapLoader;
+    //private MultiBitmapLoader multiBitmapLoader;
 
     public NotificationAdapter(Context ctxt, List<NotificationModel> d) {
         _context = ctxt;
         adapterNotificationModels = d;
         utils = new Utils(ctxt);
-        multiBitmapLoader = new MultiBitmapLoader(ctxt);
+        //multiBitmapLoader = new MultiBitmapLoader(ctxt);
     }
 
     @Override
@@ -92,7 +91,7 @@ public class NotificationAdapter extends BaseAdapter {
             //NotificationModel notificationModel = adapterNotificationModels.get(position);
 
             String strId = adapterNotificationModels.get(position).getStrCreatedByID();
-            String strUrl="";
+            String strUrl = "";
 
             String strName = "", strMess = "";
 

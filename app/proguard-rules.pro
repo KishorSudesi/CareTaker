@@ -15,6 +15,13 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# support design
+-dontwarn android.support.design.**
+-keep class android.support.design.** { *; }
+-keep interface android.support.design.** { *; }
+-keep public class android.support.design.R$* { *; }
+
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.** { *; }
 -dontwarn android.support.v4.**
@@ -42,16 +49,6 @@
 -keep interface com.shephertz.app42.** { *; }
 -dontwarn com.shephertz.app42.**
 
-#apache commons codec AES
-#-dontwarn org.apache.commons.codec.**
-#-keep class org.apache.commons.codec.** { *; }
-#-keep interface org.apache.commons.codec.** { *; }
-
-#Permission Dispatcher
-#-dontwarn com.github.hotchemi.**
-#-keep class com.github.hotchemi.** { *; }
-#-keep interface com.github.hotchemi.** { *; }
-
 #AES
 -dontwarn com.scottyab.**
 -keep class com.scottyab.** { *; }
@@ -66,11 +63,6 @@
 #-dontwarn com.google.code.gson.**
 #-keep class com.google.code.gson.** { *; }
 #-keep interface com.google.code.gson.** { *; }
-
-#glide
-#-dontwarn com.github.bumptech.glide.**
-#-keep class com.github.bumptech.glide.** { *; }
-#-keep interface com.github.bumptech.glide.** { *; }
 
 #davemorrissey
 #-dontwarn com.davemorrissey.labs.**
@@ -161,3 +153,6 @@
 -dontwarn com.ayz4sci.androidfactory.**
 -keep class com.ayz4sci.androidfactory.** { *; }
 -keep interface com.ayz4sci.androidfactory.** { *; }
+
+#generate apk error fix
+-keepattributes EnclosingMethod

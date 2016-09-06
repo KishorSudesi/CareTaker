@@ -80,10 +80,10 @@ public class LoginActivity extends AppCompatActivity {
         mContext = this;
         utils = new Utils(LoginActivity.this);
         progressDialog = new ProgressDialog(LoginActivity.this);
-        sessionManager=new SessionManager(mContext);
+        sessionManager = new SessionManager(mContext);
         try {
             App42GCMController.clearPref(mContext);
-            utils.unregisterGcm(mContext);
+            Utils.unregisterGcm(mContext);
             sessionManager.logoutUser();
         } catch (Exception e) {
             e.printStackTrace();
@@ -232,7 +232,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void resetPassword(String userEmail) {
 

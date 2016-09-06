@@ -16,33 +16,33 @@ public class SessionManager {
 
 
     // User password (make variable public to access from outside)
-    public static final String KEY_PASSWORD = "password";
+    static final String KEY_PASSWORD = "password";
     // Email address (make variable public to access from outside)
-    public static final String KEY_EMAIL = "email";
+    private static final String KEY_EMAIL = "email";
     // customer id (make variable public to access from outside)
-    public static final String KEY_CUST_ID = "customerId";
+    private static final String KEY_CUST_ID = "customerId";
     // service saved (make variable public to access from outside)
-    public static final String KEY_SERVICE_SAVED = "service_saved";
+    private static final String KEY_SERVICE_SAVED = "service_saved";
     // notification saved (make variable public to access from outside)
-    public static final String KEY_NOTIFICATION_SAVED = "notification_saved";
+    private static final String KEY_NOTIFICATION_SAVED = "notification_saved";
     // dependents saved (make variable public to access from outside)
-    public static final String KEY_DEPENDENTS_SAVED = "dependents_saved";
+    private static final String KEY_DEPENDENTS_SAVED = "dependents_saved";
     // service customer saved (make variable public to access from outside)
-    public static final String KEY_SERVICE_CUSTOMER = "service_customer";
+    private static final String KEY_SERVICE_CUSTOMER = "service_customer";
     // provider saved (make variable public to access from outside)
-    public static final String KEY_PROVIDER_SAVED = "provider_saved";
+    private static final String KEY_PROVIDER_SAVED = "provider_saved";
     // activity saved (make variable public to access from outside)
-    public static final String KEY_ACTIVITY_SAVED = "activity_saved";
+    private static final String KEY_ACTIVITY_SAVED = "activity_saved";
     // Sharedpref file name
     private static final String PREF_NAME = "CareTaker";
     // All Shared Preferences Keys
     private static final String IS_LOGIN = "IsLoggedIn";
+    private static final String KEY_DEVICE_TOKEN = "DEVICE_TOKEN";
     private final String KEY_DEPENDENTS_IDS = "dependents_ids";
     private final String KEY_PROVIDERS_IDS = "providers_ids";
     private final String KEY_OLD_PASSWORD = "old_password";
     private final String KEY_UPDATED_DEPENDENTS = "updated_dependents";
     private final String KEY_CHECKIN_CARE_STATUS = "checkin_care_status";
-   private static final String KEY_DEVICE_TOKEN = "DEVICE_TOKEN";
     // Shared Preferences
     SharedPreferences pref;
     // Editor for Shared preferences
@@ -56,7 +56,7 @@ public class SessionManager {
     public SessionManager(Context context) {
         try {
             this._context = context;
-            pref = context.getSharedPreferences(PREF_NAME, context.MODE_PRIVATE);
+            pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             editor = pref.edit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +83,7 @@ public class SessionManager {
     /**
      * Get stored session data
      */
-    public HashMap<String, String> getUserDetails() {
+    HashMap<String, String> getUserDetails() {
         HashMap<String, String> user = new HashMap<String, String>();
         // user password
         user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
@@ -99,7 +99,10 @@ public class SessionManager {
         return pref.getString(KEY_EMAIL, "");
     }
 
-    public String getPassword(){return pref.getString(KEY_PASSWORD,"");}
+    public String getPassword() {
+        return pref.getString(KEY_PASSWORD, "");
+    }
+
     /**
      * Clear session details
      */
@@ -131,7 +134,7 @@ public class SessionManager {
 
     }
 
-    public String getDeviceToken() {
+    String getDeviceToken() {
 
         String strDeviceToken;
 
@@ -318,7 +321,7 @@ public class SessionManager {
     /**
      * save dependent status
      */
-    public void saveDependentsStatus(boolean status) {
+    void saveDependentsStatus(boolean status) {
 
 
         // Storing service status in pref
@@ -366,7 +369,7 @@ public class SessionManager {
     /**
      * save provider status
      */
-    public void saveProviderStatus(boolean status) {
+    void saveProviderStatus(boolean status) {
 
 
         // Storing service status in pref

@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.app.NotificationCompat;
@@ -289,7 +292,7 @@ public class CrashLogger implements Thread.UncaughtExceptionHandler {
         //NotificationManager mNotificationManager = (NotificationManager)
         //context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        int icon = R.mipmap.ic_launcher;
+        int icon = R.mipmap.notification;
         CharSequence tickerText = applicationName + " error";
         long when = System.currentTimeMillis();
         //Notification notification = new Notification(icon, tickerText, when);
@@ -300,6 +303,7 @@ public class CrashLogger implements Thread.UncaughtExceptionHandler {
 
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
 
+        //todo change email id
         sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"balamurugan@adstringo.in"});
         sendIntent.putExtra(Intent.EXTRA_TEXT, body);
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -309,11 +313,15 @@ public class CrashLogger implements Thread.UncaughtExceptionHandler {
                 PendingIntent.getActivity(context, 0,
                         Intent.createChooser(sendIntent, tickerText), 0);
 
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.icon_notification);
+
         NotificationCompat.Builder b = new NotificationCompat.Builder(context);
 
         b.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(when)
+                .setLargeIcon(largeIcon)
                 .setSmallIcon(icon)
                 .setTicker(tickerText)
                 .setContentTitle(tickerText + " report. Click to review and send.")
@@ -321,6 +329,10 @@ public class CrashLogger implements Thread.UncaughtExceptionHandler {
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setContentIntent(contentIntent)
                 .setContentInfo("Info");
+
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            b.setColor(context.getResources().getColor(R.color.colorPrimaryDark));
+        }
 
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

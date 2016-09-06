@@ -15,7 +15,6 @@ import com.hdfc.caretaker.DependentDetailPersonalActivity;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
 import com.hdfc.libs.MultiBitmapLoader;
-import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 
@@ -31,16 +30,16 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     // child data in format of header title, child title
 //    private HashMap<ConfirmCustomerModel, List<ConfirmDependentModel>> _listDataChild;
     private HashMap<CustomerModel, List<DependentModel>> _listDataChild;
-    private Utils utils;
+    //private Utils utils;
     private MultiBitmapLoader multiBitmapLoader;
 //    private ExpandableListView expListView;
 
-    public ConfirmListAdapter(){
+    public ConfirmListAdapter() {
     }
 
     public ConfirmListAdapter(Context context, List<CustomerModel> listDataHeader, HashMap<CustomerModel, List<DependentModel>> listChildData) {
         this._context = context;
-        utils = new Utils(_context);
+        //utils = new Utils(_context);
         multiBitmapLoader = new MultiBitmapLoader(_context);
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -70,7 +69,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.address = (TextView) convertView.findViewById(R.id.textViewAddress);
             viewHolder.client = (ImageView) convertView.findViewById(R.id.imageClients);
-            viewHolder.age = (TextView)convertView.findViewById(R.id.textViewClient_age);
+            viewHolder.age = (TextView) convertView.findViewById(R.id.textViewClient_age);
             viewHolder.relation = (TextView) convertView.findViewById(R.id.textViewRealtion);
 
             convertView.setTag(viewHolder);
@@ -113,8 +112,8 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
                 //Config.customerModel = null;
 
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("editflag",true);
-                bundle.putInt("childposition",childPosition);
+                bundle.putBoolean("editflag", true);
+                bundle.putInt("childposition", childPosition);
                 Intent intent = new Intent(_context, DependentDetailPersonalActivity.class);
                 intent.putExtras(bundle);
                 _context.startActivity(intent);
@@ -152,10 +151,10 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-       // final CustomerModel confirmCustomerModel = (CustomerModel) getGroup(groupPosition);
-        final CustomerModel customerModel = (CustomerModel)getGroup(groupPosition);
+        // final CustomerModel confirmCustomerModel = (CustomerModel) getGroup(groupPosition);
+        final CustomerModel customerModel = (CustomerModel) getGroup(groupPosition);
 
-        ExpandableListView expandableListView = (ExpandableListView)parent;
+        ExpandableListView expandableListView = (ExpandableListView) parent;
         expandableListView.expandGroup(groupPosition);
 
         ViewHolder viewHolder;
@@ -166,7 +165,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.address = (TextView) convertView.findViewById(R.id.textViewAddress);
-            viewHolder.contact = (TextView)convertView.findViewById(R.id.textViewContact);
+            viewHolder.contact = (TextView) convertView.findViewById(R.id.textViewContact);
             viewHolder.customer = (ImageView) convertView.findViewById(R.id.imageClients);
 
             convertView.setTag(viewHolder);
@@ -186,16 +185,16 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         viewHolder.contact.setText(Config.customerModel.getStrContacts());
         viewHolder.address.setText(Config.customerModel.getStrAddress());
 
-       // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
+        // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
         //File fileImage = new File(customerModel.getStrImgPath());
 
-       //File fileImage = new File("/storage/sdcard0/Android/data/com.hdfc.caretaker/files/Pictures/1464327754189.jpeg");
+        //File fileImage = new File("/storage/sdcard0/Android/data/com.hdfc.caretaker/files/Pictures/1464327754189.jpeg");
         File fileImage = new File(Config.customerModel.getStrImgPath());
 
-        if(fileImage.exists()) {
+        if (fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.customer);
-        }else{
+        } else {
             //System.out.println("Does not exists");
             //viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
         }
@@ -224,7 +223,7 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public  class ViewHolder{
+    public class ViewHolder {
         TextView name, address, contact, age, relation;
         ImageView client, customer;
     }

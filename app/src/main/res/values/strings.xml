@@ -1,18 +1,14 @@
 <resources>
-    <string name="app_name">CareTaker</string>
-    <string name="app_code_name">NewZeal</string>
+    <string name="app_name">New Zeal</string>
 
     <!--Common Strings-->
     <string name="text_no_comments">No Comments</string>
-    <string name="back">Back</string>
     <string name="skip">Skip</string>
     <string name="ok">OK</string>
-    <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
     <string name="email">Email</string>
     <string name="name">Name</string>
     <string name="DOB">Date of Birth</string>
-    <string name="password">Password</string>
     <string name="enter_password">Enter Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="password_hint">*****</string>
@@ -23,16 +19,12 @@
     <string name="add_recipients">Would you like to add more Care Recipients?</string>
     <string name="submit">Submit</string>
     <string name="save_text">Save</string>
-    <string name="update">Update</string>
     <string name="string_continue">Continue</string>
-    <string name="create_password">Create a Password</string>
     <string name="verify_password">Verify Password</string>
     <string name="contact_number">Contact Number</string>
     <string name="area_code">Code</string>
     <string name="country_code">Country Code</string>
     <string name="age">Age</string>
-    <string name="activity">Activity</string>
-    <string name="activity_process">Activity inProcess/Completed</string>
     <string name="my_account">My Account</string>
     <string name="my_account_edit">Edit My Account</string>
     <string name="activity_month">Monthly</string>
@@ -42,20 +34,18 @@
     <string name="attachments">Attachments</string>
     <string name="close">Close</string>
     <string name="at">&#160;at&#160;</string>
-    <string name="image">Image</string>
     <string name="by">By&#160;</string>
     <string name="mobile">Mobile</string>
     <string name="landline">Landline</string>
     <string name="left">Left</string>
     <string name="to">&#160;for&#160;</string>
     <string name="dated">&#160;Dated&#160;</string>
-    <string name="on">\nOn: &#160;</string>
     <string name="has_created">&#160;has been placed&#160;</string>
     <string name="hyphen">&#160;-&#160;</string>
     <string name="submit_feedback">Submit your Feedback</string>
     <string name="has_given_feedback">&#160;has given Feedback on Activity&#160;</string>
     <string name="list">List</string>
-    <string name="read_more">read more...</string>
+    <string name="read_more">read more…</string>
     <string name="text_check_in_service">Home Inspection As a Pre-Added Service</string>
     <string name="validation_age_customer">You are Minor,not Eligible.</string>
     <string name="validation_age_dependnets">min age required is 60.</string>
@@ -67,7 +57,6 @@
     <string name="account_success_message">Welcome to Care Services of New Zeal.\n(A CSR initiative by HDFC Life)</string>
     <string name="take_me_in">Take Me In</string>
     <string name="tasks">Tasks</string>
-    <string name="register">Register</string>
     <string name="personal_info">Personal Information</string>
     <string name="express_care">Express your care to loved one</string>
     <string name="welcome">Welcome</string>
@@ -77,15 +66,10 @@
     <string name="myself">Myself</string>
     <string name="medicines">Medicines</string>
     <string name="loved_one">A Loved One</string>
-    <string name="login">Login</string>
     <string name="who_needs_care">Who Needs Care?</string>
-    <string name="your_details">Who needs care?</string>
     <string name="your_details_saved">Your Details Saved</string>
     <string name="dependents">Care Recipients</string>
-    <string name="number">9874560123</string>
     <string name="hint_number">Enter Contact Number</string>
-    <string name="gurunathan">Mr.Gurunathan</string>
-    <string name="string_email">abc@xyz.com</string>
     <string name="search_contacts">Search from Contacts</string>
     <string name="dependent_name">Care Recipient Name</string>
     <string name="dependent_details">Care Recipient Information</string>
@@ -95,54 +79,42 @@
     <string name="notes">Notes for Caregiver</string>
     <string name="confirm_details">Confirm Details</string>
     <string name="view_dashboard">View Dashboard</string>
-    <string name="info_discard">All your Information will be Deleted, OK to Proceed?</string>
     <string name="add_new_activity">Add New Activity</string>
     <string name="coming_soon">Coming Soon</string>
-    <string name="dpndnt_medical_info_saved">Care Recipient Medical Details Saved</string>
     <string name="dpndnt_details_saved">Care Recipient Details Saved</string>
-    <string name="delete_info">All your Information will be Deleted, OK to Proceed?</string>
     <string name="account_updated">Account updated successfully</string>
     <string name="confirm_logout">Are you sure want to Logout ?</string>
     <string name="confirm_reset_update">Previous Transaction was not Successful, Are you sure to Reset?</string>
-    <string name="not_found">NOT FOUND</string>
     <string name="upcoming_activity">Upcoming Activity</string>
     <string name="completed_activity">Completed Activity</string>
-    <string name="process_activity">Inprocess Activity</string>
-    <string name="buy_services">Buy Services</string>
     <string name="get_services">Get Services</string>
     <string name="buy_services_large_text">Pay as you go services that can be easily added to an existing package</string>
-    <string name="date_time">21-Dec-15 at 6:00pm</string>
-    <string name="paytm">Paytm</string>
     <string name="space">&#160;</string>
-    <string name="add_message">Add a Message</string>
     <string name="will_assist">&#160;will Assist in</string>
     <string name="assisted_by">&#160;Assisted By&#160;</string>
     <string name="years">&#160;Yrs</string>
     <string name="select_date">Select a Date</string>
     <string name="no_ratings">No Ratings</string>
-    <string name="up_next">UP Next</string>
     <string name="activities_on">Activities On&#160;</string>
     <string name="service_continue">Press Get Services</string>
     <string name="existing_request">A Transaction is already in process, Please Wait…</string>
-    <string name="existing_recipient">Previous Care Recipient</string>
-    <string name="milestones">Services Involved in &#160;</string>
-    <string name="selected_date">Selected &#160;</string>
-    <string name="no_images">No Images Found</string>
     <string name="click_here">Click Here</string>
     <string name="activity_create_notification_1">Notification from New Zeal Care Services on the&#160;</string>
-    <string name="activity_create_notification_2">. &#160;Pls login to your account for more details&#160;</string>
     <string name="activity_create_notification_3">&#160;The request for the&#160;</string>
     <string name="rating">Rating&#160;:</string>
     <string name="ratings">Ratings</string>
     <string name="rating_add">Add a Rating</string>
     <string name="proceed_dependent">Please continue to add Dependents</string>
-    <string name="proceedsubmit">Cannot go Back. Please Complete Registration</string>
     <string name="validation_feedback">Please provide feedback.</string>
     <string name="validation_rating">Rating Already Added.</string>
-    <string name="create_activity">Create a Acitvity</string>
     <string name="check_in_care">Check-In Services</string>
     <string name="no_photo">Photos not available</string>
     <string name="text_description">Description:</string>
+    <string name="delete_image">Delete Image</string>
+
+    <string name="feedback_rating_1">Sorry to Hear that, New Zeal Team will contact you shortly.</string>
+    <string name="feedback_rating_2">Not Happy with us, Your Feedback will Help us Improve.</string>
+    <string name="feedback_rating_3">Something went wrong-Tell us more.</string>
 
     <!--Success Strings-->
     <string name="account_success_header">Account Successfully Created</string>
@@ -156,14 +128,7 @@
     <string name="network_required">Facility available only in Online Mode</string>
 
     <!--Process Strings-->
-    <string name="uploading">Uploading…</string>
-    <string name="uploading_image">Preparing Images…</string>
-    <string name="loading">Getting Information…</string>
-    <string name="process_login">Taking you In…</string>
-    <string name="verify_identity">Taking you In…</string>
-    <string name="verify_identity_password">Verifying…</string>
-    <string name="uploading_profile_pic">Setting Profile Images…</string>
-    <string name="text_loader_processing">Processing...</string>
+    <string name="text_loader_processing">Processing…</string>
     <string name="text_notification_header">New Zeal</string>
     <!--Error Strings-->
     <string name="dpndnt_details_not_saved">Care Recipient Not Saved. Check Mobile Number</string>
@@ -172,7 +137,6 @@
     <string name="error_invalid_contact_no">Invalid Contact Number</string>
     <string name="error_invalid_area_code">Invalid Area Code</string>
     <string name="error_invalid_age">Invalid Age</string>
-    <string name="email_exists">Email Id Already Exists!!!</string>
     <string name="mobile_exists">Mobile Number Already Exists!!!</string>
     <string name="email__already_exists">Email Id Already Exists Please Proceed to Login</string>
 
@@ -181,25 +145,22 @@
     <string name="error">Something went wrong. Please try Again!!!</string>
     <string name="error_same_password">New and Old Password cannot be same</string>
     <string name="error_register">Error in uploading with server. Please try again Later!!!</string>
-    <string name="error_register_image">Error in Setting Profile picture. Please try again Later!!!</string>
     <string name="invalid_credentials">Invalid Credentials. Not able to Take you In</string>
-    <string name="error_load_images">Error Loading Images. Try Again!!!</string>
     <string name="error_service">Select a Service</string>
     <string name="error_service_zero">Select a Valid Service</string>
     <string name="dependent_data_lost">Something went wrong, Please create Care Recipient again</string>
     <string name="no_memory_camera">No storage mounted to save camera image</string>
-    <string name="image_write_failed">Sorry!!! we may have lost your Profile Image</string>
     <string name="select_country">Select a Country</string>
     <string name="select_relation">Select a Relation</string>
     <string name="no_push_actiity_added">Activity Added. Not able to Notify the Carla</string>
     <string name="enter_captcha">Valid Captcha required</string>
     <string name="enter_captcha_label">Enter Captcha</string>
     <string name="case_captcha">*Captcha is case sensitive</string>
+    <string name="create_on">Created On:&#160;</string>
 
 
     <!--Dashboard Menu Strings-->
     <string name="menu_activities">Activities</string>
-    <string name="menu_reports">Reports</string>
     <string name="menu_seniors">Care Recipients</string>
     <string name="menu_notification">Status</string>
     <string name="menu_account">My Account</string>
@@ -212,14 +173,13 @@
     <string name="select_rating">Select a Rating</string>
     <string name="activity_not_completed">Activity is not completed</string>
     <string name="no_recipients">Add Care Recipients.</string>
+    <string name="warning_internet_alert">No internet connection …</string>
 
     <!--Permission Strings-->
-    <string name="permission_contact_rationale">We need access to Contacts to Proceed Further</string>
-    <string name="permission_contact_denied">Contacts Access Denied</string>
-    <string name="permission_contact_neverask">Contacts Access Granted</string>
     <string name="permission_storage_rationale">We need access to Storage to Proceed Further</string>
-    <string name="permission_storage_denied">Storage Access Denied</string>
-    <string name="permission_storage_neverask">Storage Access Granted</string>
+    <string name="permission_contacts_rationale">We need access to Contacts to Proceed Further</string>
+
+    <string name="permission_general_rationale">We need access to Contacts or Storage to Proceed Further</string>
 
     <!--List View Empty Strings-->
     <string name="no_activities">No Activities</string>
@@ -232,15 +192,8 @@
     <string name="add_profile">Add a Profile picture</string>
     <string name="select_picture">Select a Picture</string>
 
-    <!--Google Strings-->
-    <string name="google_app_id">910502819263</string>
-
 
     <!--Dialog Strings-->
-    <string name="activity_not_saved">Your Activity created partially, Press Ok to proceed</string>
-    <string name="no_videos">No Videos</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="activity_not_saved">Your Activity created partially, Press OK to proceed</string>
 
 </resources>

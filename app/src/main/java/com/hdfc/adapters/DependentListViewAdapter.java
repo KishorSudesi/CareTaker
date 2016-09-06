@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.DependentDetailPersonal;
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Utils;
 import com.hdfc.models.DependentModel;
 
 import java.util.ArrayList;
@@ -30,14 +29,14 @@ public class DependentListViewAdapter extends BaseAdapter {
     //public MultiBitmapLoader multiBitmapLoader;
     private Context contxt;
     private ArrayList data;
-    private Utils utils;
+    //private Utils utils;
 
     public DependentListViewAdapter(Context ctxt, ArrayList d) {
         contxt = ctxt;
         data = d;
         inflater = (LayoutInflater) contxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-       // multiBitmapLoader = new MultiBitmapLoader(contxt);
-        utils = new Utils(contxt);
+        // multiBitmapLoader = new MultiBitmapLoader(contxt);
+        //utils = new Utils(contxt);
     }
 
     public int getCount() {
@@ -55,7 +54,7 @@ public class DependentListViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         View vi = convertView;
-        ViewHolder holder=null;
+        ViewHolder holder = null;
 
         DependentModel editDependentModel = (DependentModel) data.get(position);
 
@@ -63,18 +62,18 @@ public class DependentListViewAdapter extends BaseAdapter {
             vi = inflater.inflate(R.layout.dependent_list_item, null);
 
             holder = new ViewHolder();
-            holder.linearlayoutview = (LinearLayout)vi.findViewById(R.id.linearlayoutClient);
+            holder.linearlayoutview = (LinearLayout) vi.findViewById(R.id.linearlayoutClient);
             holder.textName = (TextView) vi.findViewById(R.id.txtViewName);
             holder.textRelation = (TextView) vi.findViewById(R.id.txtViewRelation);
             holder.image = (ImageView) vi.findViewById(R.id.imgdependent);
             holder.address = (TextView) vi.findViewById(R.id.txtViewAdd);
-            holder.age = (TextView)vi.findViewById(R.id.txtViewClient_age);
+            holder.age = (TextView) vi.findViewById(R.id.txtViewClient_age);
 
             vi.setTag(holder);
         } else {
             holder = (ViewHolder) vi.getTag();
         }
-       // holder.image.setTag(editDependentModel);
+        // holder.image.setTag(editDependentModel);
 
         String strName = editDependentModel.getStrName();
 
@@ -92,7 +91,6 @@ public class DependentListViewAdapter extends BaseAdapter {
         holder.textRelation.setText(editDependentModel.getStrRelation());
 
         //File fileImage = new File(editDependentModel.getStrImagePath());
-
 
 
 //        File fileImage = utils.getInternalFileImages(editDependentModel.getStrDependentID());
@@ -125,8 +123,8 @@ public class DependentListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("editflag",true);
-                bundle.putInt("childposition",position);
+                bundle.putBoolean("editflag", true);
+                bundle.putInt("childposition", position);
                 Intent intent = new Intent(contxt, DependentDetailPersonal.class);
                 intent.putExtras(bundle);
                 contxt.startActivity(intent);

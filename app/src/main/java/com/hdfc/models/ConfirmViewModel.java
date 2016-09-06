@@ -61,7 +61,12 @@ public class ConfirmViewModel {
     public void setStrDesc(String strDesc) {
         this.strDesc = strDesc;
     }
-    public String getStrRela() {return strRela;}
 
-    public void setStrRela(String strRela) {this.strRela = strRela;}
+    public String getStrRela() {
+        return strRela;
+    }
+
+    public void setStrRela(String strRela) {
+        this.strRela = strRela;
+    }
 }

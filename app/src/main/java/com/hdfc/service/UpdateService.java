@@ -1,11 +1,9 @@
 package com.hdfc.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,8 +40,8 @@ public class UpdateService extends Service {
     private SessionManager sessionManager = null;
     private Utils utils;
     private NotificationModel notificationModel;
-    private Context mContext;
-    private Handler handler;
+    //private Context mContext;
+    //private Handler handler;
     private String strCustomerId;
     private int j = 0;
     private boolean updateAll = false;
@@ -53,7 +51,7 @@ public class UpdateService extends Service {
         super.onCreate();
         utils = new Utils(UpdateService.this);
         sessionManager = new SessionManager(UpdateService.this);
-        mContext = this;
+        //mContext = this;
     }
 
     @Override
@@ -62,7 +60,7 @@ public class UpdateService extends Service {
         try {
             utils = new Utils(UpdateService.this);
             sessionManager = new SessionManager(UpdateService.this);
-            mContext = this;
+            //mContext = this;
 
             try {
                 if (intent != null && intent.hasExtra("message")) {
@@ -713,7 +711,7 @@ public class UpdateService extends Service {
                         Operator.EQUALS);
                 Query q2 = QueryBuilder.build("month", imonth, QueryBuilder.
                         Operator.EQUALS);
-                Query q3 = QueryBuilder.build("customer_id",strCustomerId, QueryBuilder.
+                Query q3 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.
                         Operator.EQUALS);
 
                 // Build query q1 for key1 equal to name and value1 equal to Nick
@@ -1000,7 +998,7 @@ public class UpdateService extends Service {
 
                 }
 
-                if (Config.strProviderIds == null || Config.strProviderIds.size() <=0) {
+                if (Config.strProviderIds == null || Config.strProviderIds.size() <= 0) {
                     Config.strProviderIds.addAll(sessionManager.getProvidersIds());
                 }
 

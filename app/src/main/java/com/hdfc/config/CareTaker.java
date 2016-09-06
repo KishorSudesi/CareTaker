@@ -3,6 +3,9 @@ package com.hdfc.config;
 import android.app.Application;
 import android.content.res.Configuration;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
+import com.hdfc.caretaker.R;
 import com.hdfc.dbconfig.DbCon;
 
 /**
@@ -15,6 +18,7 @@ public class CareTaker extends Application {
     //public static DbCon dbCon = null;
 
     public static DbCon dbCon = null;
+    private Tracker mTracker;
     //public static DisplayImageOptions defaultOptions;
 
 
@@ -22,7 +26,7 @@ public class CareTaker extends Application {
     public void onCreate() {
         super.onCreate();
 
-       // initImageLoaderConfiguration();
+        // initImageLoaderConfiguration();
     }
 
     @Override
@@ -37,6 +41,20 @@ public class CareTaker extends Application {
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, intent);*/
 
 
+    }
+
+    /**
+     * Gets the default {@link Tracker} for this {@link Application}.
+     *
+     * @return tracker
+     */
+    synchronized public Tracker getDefaultTracker() {
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+            mTracker = analytics.newTracker(R.xml.global_tracker);
+        }
+        return mTracker;
     }
 
 //    public void initImageLoaderConfiguration() {

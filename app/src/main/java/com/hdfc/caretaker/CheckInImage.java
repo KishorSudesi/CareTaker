@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.adapters.CheckInImageAdapter;
+import com.hdfc.libs.Utils;
 import com.hdfc.models.ImageModelCheck;
 import com.hdfc.views.TouchImageView;
 
@@ -42,6 +43,8 @@ public class CheckInImage extends AppCompatActivity {
                 finish();
             }
         });
+        Utils utils = new Utils(CheckInImage.this);
+        utils.setStatusBarColor("#2196f3");
 
         GridView gridView = (GridView) findViewById(R.id.gridImage);
         tvLabel = (TextView) findViewById(R.id.textViewLabel);

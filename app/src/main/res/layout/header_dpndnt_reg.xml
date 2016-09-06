@@ -44,8 +44,7 @@
         android:layout_weight="2"
         android:padding="@dimen/text_padding"
         android:text="@string/personal_info"
-        android:textColor="@color/blue"
-        />
+        android:textColor="@color/blue" />
 
     <include
         android:id="@+id/include"

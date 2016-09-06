@@ -139,7 +139,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             });
         }*/
 
-        utils.setStatusBarColor("#cccccc");
+        //utils.setStatusBarColor("#cccccc");
 
     }
 
@@ -476,7 +476,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                     String strContacts = "";
                     try {
                         strContacts = dependentModel.getStrContacts();
-                        strContacts = utils.getOnlyDigits(strContacts);
+                        strContacts = Utils.getOnlyDigits(strContacts);
                     } catch (Exception e) {
                         strContacts = dependentModel.getStrContacts();
                     }
@@ -602,7 +602,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 String strContacts = "";
                 try {
                     strContacts = dependentModel.getStrContacts();
-                    strContacts = utils.getOnlyDigits(strContacts);
+                    strContacts = Utils.getOnlyDigits(strContacts);
                 } catch (Exception e) {
                     strContacts = dependentModel.getStrContacts();
                 }
@@ -1041,7 +1041,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 String strContacts = "";
                 try {
                     strContacts = DependentDetailPersonal.dependentModel.getStrContacts();
-                    strContacts = utils.getOnlyDigits(strContacts);
+                    strContacts = Utils.getOnlyDigits(strContacts);
                 } catch (Exception e) {
                     strContacts = DependentDetailPersonal.dependentModel.getStrContacts();
                 }

@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.hdfc.config.Config;
@@ -40,6 +41,8 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import pl.tajchert.nammu.PermissionCallback;
 
 public class DependentDetailPersonalActivity extends AppCompatActivity {
 
@@ -55,19 +58,21 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public static String strContactNo, strAddress, strEmail, strDob, relation;
     static Boolean editflag = false;
     static int mPosition = -1;
-    private static Thread backgroundThread, backgroundThreadCamera, backgroundThreadGallery;
+    private static Thread backgroundThread;
+    private static Thread backgroundThreadCamera;
     private static Handler backgroundThreadHandler;
     private static boolean isCamera = false;
-   private static SearchView searchView;
-    private static EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private static ProgressDialog mProgress = null;
     public String drawable;
     Button buttonContinue;
+    private SearchView searchView;
+    private EditText editName, editContactNo, editAddress, editDependantEmail, editTextDate;
     private Utils utils;
     private Spinner spinnerRelation;
     private String strRelation;
     private Context mContext;
-    private boolean isSelected=false;
+    private boolean isSelected = false;
+    private PermissionHelper permissionHelper;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -102,6 +107,17 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
         }
     };
 
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        permissionHelper.finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,9 +125,10 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
 //        if(getIntent().getExtras()!=null)
 
-        isSelected=false;
+        isSelected = false;
         utils = new Utils(DependentDetailPersonalActivity.this);
         utils.setStatusBarColor("#2196f3");
+        permissionHelper = PermissionHelper.getInstance(DependentDetailPersonalActivity.this);
         mContext = this;
         editName = (EditText) findViewById(R.id.editDependantName);
         editContactNo = (EditText) findViewById(R.id.editContactNo);
@@ -198,14 +215,40 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                utils.selectImage(dependantImgName, null, DependentDetailPersonalActivity.this);
-                isCamera = true;
+                try {
+
+                    if (!isFinishing()) {
+
+                        permissionHelper.verifyPermission(
+                                new String[]{getString(R.string.permission_storage_rationale),
+                                        getString(R.string.permission_contacts_rationale)},
+                                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        android.Manifest.permission.READ_CONTACTS},
+                                new PermissionCallback() {
+                                    @Override
+                                    public void permissionGranted() {
+                                        utils.selectImage(dependantImgName, null,
+                                                DependentDetailPersonalActivity.this);
+                                        isCamera = true;
+                                    }
+
+                                    @Override
+                                    public void permissionRefused() {
+                                    }
+                                }
+                        );
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         setupSearchView();
 
-        utils.setStatusBarColor("#cccccc");
+        //utils.setStatusBarColor("#cccccc");
 
         try {
             Bundle getBundle = getIntent().getExtras();
@@ -235,6 +278,28 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
                 editContactNo.setFocusable(false);
                 editContactNo.setKeyListener(null);
                 editContactNo.setClickable(false);
+            }
+
+            if (!isFinishing()) {
+
+                permissionHelper.verifyPermission(
+                        new String[]{getString(R.string.permission_storage_rationale),
+                                getString(R.string.permission_contacts_rationale)},
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                android.Manifest.permission.READ_CONTACTS},
+                        new PermissionCallback() {
+                            @Override
+                            public void permissionGranted() {
+
+                            }
+
+                            @Override
+                            public void permissionRefused() {
+                                utils.toast(2, 2, getString(R.string.permission_general_rationale));
+                            }
+                        }
+                );
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -620,7 +685,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
             } else {
                 isCamera = false;
                 backgroundThreadHandler = new BackgroundThreadHandler();
-                backgroundThreadGallery = new BackgroundThreadForGallery();
+                Thread backgroundThreadGallery = new BackgroundThreadForGallery();
                 backgroundThreadGallery.start();
             }
         } else isCamera = false;
@@ -634,13 +699,15 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
+        permissionHelper.onActivityResult(requestCode, resultCode, intent);
+
         if (resultCode == Activity.RESULT_OK) { //&& data != null
             try {
                 mProgress.setMessage(getString(R.string.text_loader_processing));
                 mProgress.show();
                 switch (requestCode) {
                     case Config.START_CAMERA_REQUEST_CODE:
-                        isSelected=true;
+                        isSelected = true;
                         strImageName = Utils.customerImageUri.getPath();
                         backgroundThreadHandler = new BackgroundThreadHandler();
                         backgroundThreadCamera = new BackgroundThreadCamera();
@@ -649,7 +716,7 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
                     case Config.START_GALLERY_REQUEST_CODE:
                         if (intent.getData() != null) {
-                            isSelected=true;
+                            isSelected = true;
                             uri = intent.getData();
                             backgroundThreadHandler = new BackgroundThreadHandler();
                             backgroundThread = new BackgroundThread();

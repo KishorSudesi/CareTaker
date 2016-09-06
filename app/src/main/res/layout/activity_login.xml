@@ -35,6 +35,7 @@
 
             <EditText
                 android:id="@+id/editEmail"
+                style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_above="@+id/editPassword"
@@ -46,14 +47,14 @@
                 android:drawableLeft="@drawable/mail_icon_32"
                 android:drawablePadding="15dp"
                 android:ems="10"
-                android:textColor="@color/colorBlackDark"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
                 android:padding="10dp"
-                style="@style/EditTextStyle" />
+                android:textColor="@color/colorBlackDark" />
 
             <EditText
                 android:id="@+id/editPassword"
+                style="@style/EditTextStyle"
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
                 android:layout_above="@+id/textView"
@@ -63,16 +64,16 @@
                 android:drawableLeft="@mipmap/password"
                 android:drawablePadding="10dp"
                 android:ems="10"
-                style="@style/EditTextStyle"
-                android:textColor="@color/colorBlackDark"
                 android:hint="@string/password_hint"
                 android:inputType="textPassword"
                 android:padding="5dp"
                 android:paddingRight="40dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/colorBlackDark" />
 
             <Button
                 android:id="@+id/textView"
+                style="@style/ButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_above="@+id/buttonReg"
@@ -84,12 +85,12 @@
                 android:gravity="center"
                 android:onClick="validateLogin"
                 android:text="@string/take_me_in"
-                style="@style/ButtonStyle"
                 android:textColor="@color/colorDarkBlue"
                 android:visibility="visible" />
 
             <TextView
                 android:id="@+id/txtForgotPassword"
+                style="@style/TextViewSmallStyle"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_margin="@dimen/margin_general"
@@ -98,9 +99,8 @@
                 android:layout_marginRight="4dp"
                 android:gravity="center"
                 android:padding="5dp"
-                android:textColor="@color/colorBlackDark"
                 android:text="@string/forgot"
-                style="@style/TextViewSmallStyle" />
+                android:textColor="@color/colorBlackDark" />
 
         </LinearLayout>
 

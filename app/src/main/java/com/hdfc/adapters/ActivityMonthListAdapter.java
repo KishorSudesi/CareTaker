@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
 import java.util.List;
@@ -29,13 +28,13 @@ public class ActivityMonthListAdapter extends BaseAdapter {
     //public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private List<ActivityModel> data;
-    private Utils utils;
+    //private Utils utils;
 
     public ActivityMonthListAdapter(Context ctxt, List<ActivityModel> y) {
         _context = ctxt;
         data = y;
         //multiBitmapLoader = new MultiBitmapLoader(ctxt);
-        utils = new Utils(ctxt);
+        //utils = new Utils(ctxt);
     }
 
     @Override

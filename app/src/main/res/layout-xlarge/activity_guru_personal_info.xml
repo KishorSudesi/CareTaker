@@ -20,7 +20,6 @@
             android:visibility="gone" />
 
         <ImageView
-            android:id="@+id/imageView6"
             android:layout_width="176dp"
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
@@ -192,7 +191,6 @@
                     android:text="@string/mobile" />
 
                 <RadioButton
-                    android:id="@+id/radioLandline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -233,10 +231,10 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="0.5"
-                    android:maxLength="6"
                     android:drawablePadding="10dp"
                     android:hint="@string/area_code"
                     android:inputType="number"
+                    android:maxLength="6"
                     android:padding="10dp" />
 
                 <EditText
@@ -248,10 +246,10 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="2dp"
                     android:layout_weight="1.1"
-                    android:maxLength="10"
                     android:drawablePadding="10dp"
                     android:hint="@string/contact_number"
                     android:inputType="number"
+                    android:maxLength="10"
                     android:padding="10dp" />
 
             </LinearLayout>

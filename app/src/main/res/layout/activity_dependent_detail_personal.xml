@@ -33,9 +33,9 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="40dp"
                     android:background="@color/blue"
-                    android:visibility="gone"
                     android:focusableInTouchMode="true"
-                    android:queryHint="@string/search_contacts" />
+                    android:queryHint="@string/search_contacts"
+                    android:visibility="visible" />
 
 
                 <com.hdfc.views.RoundedImageView
@@ -56,12 +56,12 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="40dp"
-                    android:textColor="@color/colorBlackDark"
                     android:drawableLeft="@drawable/username"
                     android:drawablePadding="10dp"
                     android:hint="@string/dependent_name"
                     android:inputType="textPersonName"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:textColor="@color/colorBlackDark" />
 
                 <EditText
                     android:id="@+id/editDependantEmail"
@@ -72,12 +72,12 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
-                    android:textColor="@color/colorBlackDark"
                     android:drawableLeft="@drawable/mail_icon_32"
                     android:drawablePadding="10dp"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:textColor="@color/colorBlackDark" />
 
                 <EditText
                     android:id="@+id/editDOB"
@@ -88,13 +88,13 @@
                     android:layout_marginLeft="@dimen/edit_text_margin"
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="25dp"
-                    android:textColor="@color/colorBlackDark"
                     android:drawableLeft="@drawable/add_new_activity"
                     android:drawablePadding="10dp"
                     android:focusableInTouchMode="false"
                     android:hint="@string/DOB"
                     android:inputType="textPersonName"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:textColor="@color/colorBlackDark" />
 
                 <EditText
                     android:id="@+id/editContactNo"

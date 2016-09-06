@@ -4,20 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
-    <!--
-        <ImageView
-            android:id="@+id/imageBg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY" />-->
-
 
     <LinearLayout
-        android:id="@+id/activity_completed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -96,6 +84,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -192,11 +187,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
-                    android:visibility="gone"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:visibility="gone">
 
                     <LinearLayout
-                        android:id="@+id/thumbnails"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
@@ -208,11 +202,11 @@
                 <Gallery
                     android:id="@+id/galleryThumbnails"
                     android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:padding="3dp"
-                    android:spacing="5dp"
 
-                    android:layout_height="wrap_content" />
+                    android:spacing="5dp" />
 
                 <TextView
                     android:id="@+id/textViewAddRating"
@@ -227,10 +221,10 @@
 
                 <TextView
                     android:id="@+id/smileyMessage"
+                    style="@style/TextViewSmallStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    style="@style/TextViewSmallStyle"
                     android:textColor="@color/red"
                     android:visibility="gone" />
 
@@ -261,24 +255,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:onClick="setRating"
-                                android:src="@drawable/smiley_1"
-                                android:tag="1" />
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:onClick="setRating"
-                                android:src="@drawable/smiley_2"
-                                android:tag="2" />
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:onClick="setRating"
-                                android:src="@drawable/smiley_3"
-                                android:tag="3" />
+                                android:src="@drawable/smiley_5"
+                                android:tag="5" />
 
                             <ImageView
                                 android:layout_width="wrap_content"
@@ -293,8 +271,24 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:onClick="setRating"
-                                android:src="@drawable/smiley_5"
-                                android:tag="5" />
+                                android:src="@drawable/smiley_2"
+                                android:tag="3" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="setRating"
+                                android:src="@drawable/smiley_1"
+                                android:tag="2" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="setRating"
+                                android:src="@drawable/smiley_3"
+                                android:tag="1" />
 
                         </LinearLayout>
 
@@ -326,12 +320,12 @@
                                 android:hint="Your Feedback"
                                 android:inputType="textMultiLine"
                                 android:lines="8"
-                                android:textColor="@color/colorBlackDark"
                                 android:maxLines="10"
                                 android:minLines="4"
                                 android:paddingTop="10dp"
                                 android:scrollbarStyle="insideInset"
-                                android:scrollbars="vertical" />
+                                android:scrollbars="vertical"
+                                android:textColor="@color/colorBlackDark" />
                         </RelativeLayout>
 
                         <!--    <CheckBox
@@ -387,8 +381,8 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:textColor="@color/colorBlackDark"
                         android:text="@string/no_ratings"
+                        android:textColor="@color/colorBlackDark"
                         android:visibility="gone" />
 
                     <ListView

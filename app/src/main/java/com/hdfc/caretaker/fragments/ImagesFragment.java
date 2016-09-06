@@ -62,17 +62,17 @@ public class ImagesFragment extends Fragment {
                 //loadingPanel.setVisibility(View.VISIBLE);
                 //   Config.dependentModels.add(DependentDetailPersonal.dependentModel);
 
-    //            Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
-    //                    utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
-    //                    Config.intWidth, Config.intHeight);
-    //
-    //            if (bitmap != null)
-    //                imageView.setImageBitmap(bitmap);
-    //            else
-    //                imageView.setImageBitmap(Utils.noBitmap);
+                //            Bitmap bitmap = utils.getBitmapFromFile(utils.getInternalFileImages(
+                //                    utils.replaceSpace(Config.dependentModels.get(intPosition).getStrDependentID())).getAbsolutePath(),
+                //                    Config.intWidth, Config.intHeight);
+                //
+                //            if (bitmap != null)
+                //                imageView.setImageBitmap(bitmap);
+                //            else
+                //                imageView.setImageBitmap(Utils.noBitmap);
 
-    //            Glide.with(getActivity()).load(Config.dependentModels.get(intPosition).getStrImageUrl()).diskCacheStrategy(DiskCacheStrategy.ALL)
-    //                   .into(imageView);
+                //            Glide.with(getActivity()).load(Config.dependentModels.get(intPosition).getStrImageUrl()).diskCacheStrategy(DiskCacheStrategy.ALL)
+                //                   .into(imageView);
 
 
                 Glide.with(getActivity())
@@ -81,7 +81,7 @@ public class ImagesFragment extends Fragment {
                         .bitmapTransform(new CropCircleTransformation(getActivity()))
                         .placeholder(R.drawable.person_icon)
                         .crossFade()
-                        .override(Config.intWidth,Config.intHeight)
+                        .override(Config.intWidth, Config.intHeight)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(imageView);
 

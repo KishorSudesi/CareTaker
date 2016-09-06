@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 //            e.getMessage();
 //        }
         try {
-
+            //CrashLogger.getInstance().init(MainActivity.this);
 
             sessionManager = new SessionManager(MainActivity.this);
             if (sessionManager.isLoggedIn()) {
@@ -59,6 +59,26 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+
+            if (!isFinishing()) {
+
+                permissionHelper.verifyPermission(
+                        new String[]{getString(R.string.permission_storage_rationale),
+                                getString(R.string.permission_contacts_rationale)},
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                android.Manifest.permission.READ_CONTACTS},
+                        new PermissionCallback() {
+                            @Override
+                            public void permissionGranted() {
+                            }
+
+                            @Override
+                            public void permissionRefused() {
+                            }
+                        }
+                );
+            }
+
             new LoadDataTask().execute();
 
         } catch (Exception e) {
@@ -103,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToWho(View v) {
-      /*  Intent selection = new Intent(MainActivity.this, CareSelectionActivity.class);
+      /*  Intent selectiopermissionHelper.onActivityResult(requestCode, resultCode, intent);n = new Intent(MainActivity.this, CareSelectionActivity.class);
         startActivity(selection);*/
 
         Intent selection = new Intent(MainActivity.this, ActivityGuruPersonalInfo.class);
@@ -114,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
         permissionHelper.onActivityResult(requestCode, resultCode, intent);
     }
 
@@ -160,22 +179,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //getString(R.string.permission_contact_rationale) Manifest.permission.READ_CONTACTS
-
-        permissionHelper.verifyPermission(
-                new String[]{getString(R.string.permission_storage_rationale)},
-                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                new PermissionCallback() {
-                    @Override
-                    public void permissionGranted() {
-                    }
-
-                    @Override
-                    public void permissionRefused() {
-                    }
-                }
-        );
     }
 
     private class LoadDataTask extends AsyncTask<Void, Void, Void> {

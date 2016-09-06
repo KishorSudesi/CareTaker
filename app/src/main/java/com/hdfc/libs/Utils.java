@@ -1,7 +1,10 @@
 package com.hdfc.libs;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,15 +49,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hdfc.adapters.NotificationAdapter;
 import com.hdfc.app42service.App42GCMController;
+import com.hdfc.app42service.EmailService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
@@ -86,8 +96,10 @@ import com.hdfc.models.ProviderModel;
 import com.hdfc.models.ServiceModel;
 import com.hdfc.models.SubActivityModel;
 import com.hdfc.models.VideoModel;
+import com.hdfc.views.TouchImageView;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
+import com.shephertz.app42.paas.sdk.android.email.EmailMIME;
 import com.shephertz.app42.paas.sdk.android.storage.Query;
 import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
@@ -96,17 +108,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -121,31 +134,33 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 /**
  * Created by balamurugan@adstringo.in on 23-12-2015.
  */
 public class Utils {
 
+    private final static String SENDER_EMAIL = "adstringosoftware@gmail.com";
     public static String defaultDate = "2016-01-01T06:04:57.691Z";
     //application specific
     public static Locale locale = Locale.ENGLISH;
     public final static SimpleDateFormat readFormat =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
-    public final static SimpleDateFormat readFormatDB =
+    private final static SimpleDateFormat readFormatDB =
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", locale);
     public final static SimpleDateFormat readFormatDate =
             new SimpleDateFormat("yyyy-MM-dd", locale);
     public final static SimpleDateFormat writeFormatMonth =
             new SimpleDateFormat("MMM yyyy", locale);
     public final static SimpleDateFormat writeFormat =
-            new SimpleDateFormat("kk:mm dd MMM yyyy", locale);
+            new SimpleDateFormat("HH:mm dd MMM yyyy", locale);
     public final static SimpleDateFormat writeFormatTime =
-            new SimpleDateFormat("kk:mm", locale);
+            new SimpleDateFormat("HH:mm", locale);
     public final static SimpleDateFormat writeFormatDateDB = new
             SimpleDateFormat("yyyy-MM-dd", locale);
-    public final static SimpleDateFormat dateFormat =
+    private final static SimpleDateFormat dateFormat =
             new SimpleDateFormat("yyyy-MM-dd", locale);
-
     /*   public final static SimpleDateFormat writeFormatActivity =
                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Config.locale);*/
     public final static SimpleDateFormat writeFormatActivityYear =
@@ -156,12 +171,11 @@ public class Utils {
             new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", locale);
     public static Uri customerImageUri = null;
     public static int iProviderCount = 0;
-    public static Bitmap noBitmap;
     public static int iActivityCount = 0;
+    static Bitmap noBitmap;
     private static Handler threadHandler;
     private static ProgressDialog progressDialog;
     private static Context _ctxt;
-    private static SessionManager sessionManager;
     /*Comparator for sorting the list by service Name*/
     private static Comparator<NotificationModel> notificationDataComparator = new Comparator<NotificationModel>() {
 
@@ -181,16 +195,15 @@ public class Utils {
         System.loadLibrary("stringGen");
     }
 
+    private SessionManager sessionManager;
     private boolean showCheckInButton = false;
     private boolean isUpdateServer = false;
-    private Date dat;
-    private List<String> dependentsIdsList;
 
     public Utils(Context context) {
         try {
             _ctxt = context;
             sessionManager = new SessionManager(context);
-            dat = new Date();
+            Date dat = new Date();
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             if (wm != null) {
                 Display display = wm.getDefaultDisplay();
@@ -204,7 +217,8 @@ public class Utils {
             queryFormat.setTimeZone(TimeZone.getDefault());
 
             try {
-                noBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.person_icon);
+                noBitmap = BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.person_icon);
             } catch (Exception | OutOfMemoryError e) {
                 e.printStackTrace();
             }
@@ -220,7 +234,14 @@ public class Utils {
         return getString();//for temp fix on Native crash
     }
 
-    public static double round(double value, int places) {
+    @SuppressLint("HardwareIds")
+    private static String getDeviceID(Activity activity) {
+        return Settings.Secure.getString(activity.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+    }
+
+    /*public static double round(double value, int places) {
         BigDecimal bd = null;
         try {
             if (places < 0) throw new IllegalArgumentException();
@@ -231,10 +252,10 @@ public class Utils {
             e.printStackTrace();
         }
         return bd.doubleValue();
-    }
+    }*/
 
     //creating scaled bitmap with required width and height
-    public static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
+    private static Bitmap createScaledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight) {
 
         Rect srcRect = null;
         Rect dstRect = null;
@@ -250,8 +271,10 @@ public class Utils {
         Bitmap scaledBitmap = null;
 
         try {
-            scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(),
-                    Bitmap.Config.ARGB_8888);
+            if (dstRect != null) {
+                scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(),
+                        Bitmap.Config.ARGB_8888);
+            }
         } catch (OutOfMemoryError oom) {
             oom.printStackTrace();
         }
@@ -259,7 +282,8 @@ public class Utils {
         try {
             if (scaledBitmap != null) {
                 Canvas canvas = new Canvas(scaledBitmap);
-                canvas.drawBitmap(unscaledBitmap, srcRect, dstRect, new Paint(Paint.FILTER_BITMAP_FLAG));
+                canvas.drawBitmap(unscaledBitmap, srcRect, dstRect,
+                        new Paint(Paint.FILTER_BITMAP_FLAG));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -308,10 +332,10 @@ public class Utils {
         return true;
     }*/
 
-    public static boolean isImageFile(String path) {
+  /*  public static boolean isImageFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
         return mimeType != null && mimeType.indexOf("image") == 0;
-    }
+    }*/
 
     //
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
@@ -388,7 +412,7 @@ public class Utils {
     }
 
     //source and destinatino rectangular regions to decode
-    public static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
+    private static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
         //for crop
             /*final float srcAspect = (float)srcWidth / (float)srcHeight;
             final float dstAspect = (float)dstWidth / (float)dstHeight;
@@ -406,7 +430,7 @@ public class Utils {
         return new Rect(0, 0, srcWidth, srcHeight);
     }
 
-    public static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
+    private static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight) {
 
         final float srcAspect = (float) srcWidth / (float) srcHeight;
         final float dstAspect = (float) dstWidth / (float) dstHeight;
@@ -532,7 +556,7 @@ public class Utils {
         mRecorder.start();
     }*/
 
-    public static boolean externalMemoryAvailable() {
+    private static boolean externalMemoryAvailable() {
         return android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED);
     }
@@ -616,10 +640,11 @@ public class Utils {
         return json;
     }*/
 
+   /* @SuppressLint("HardwareIds")
     public static String getDeviceID(Activity activity) {
         return Settings.Secure.getString(activity.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-    }
+    }*/
 
     public static void log(String message, String tag) {
 
@@ -661,7 +686,7 @@ public class Utils {
         return deviceId;
     }*/
 
-    public static File createFileInternal(String strFileName) {
+    private static File createFileInternal(String strFileName) {
 
         File file = null;
         try {
@@ -694,7 +719,7 @@ public class Utils {
         }
     }*/
 
-    public static boolean deleteAllFiles(File directory) {
+    private static boolean deleteAllFiles(File directory) {
 
         final File[] files = directory.listFiles();
 
@@ -797,9 +822,9 @@ public class Utils {
                     e.printStackTrace();
                 }
 
-                if (CareTaker.dbCon != null) {
+                /*if (CareTaker.dbCon != null) {
                     //CareTaker.dbCon.close();
-                }
+                }*/
 
 
                 File fileImage = createFileInternal("images/");
@@ -867,14 +892,16 @@ public class Utils {
         thread.start();
     }
 
-    public static void refreshNotifications() {
+    private static void refreshNotifications() {
 
         try {
             if (NotificationFragment.listViewActivities != null) {
-                Collections.sort(Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels(), notificationDataComparator);
+                Collections.sort(Config.dependentModels.get(Config.intSelectedDependent).
+                        getNotificationModels(), notificationDataComparator);
 
                 NotificationFragment.notificationAdapter = new NotificationAdapter(_ctxt,
-                        Config.dependentModels.get(Config.intSelectedDependent).getNotificationModels());
+                        Config.dependentModels.get(Config.intSelectedDependent).
+                                getNotificationModels());
 
                 NotificationFragment.listViewActivities.
                         setAdapter(NotificationFragment.notificationAdapter);
@@ -890,26 +917,29 @@ public class Utils {
             if (listAdapter == null)
                 return;
 
-            int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+            int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                    View.MeasureSpec.UNSPECIFIED);
             int totalHeight = 0;
             View view = null;
             for (int i = 0; i < listAdapter.getCount(); i++) {
                 view = listAdapter.getView(i, view, listView);
                 if (i == 0)
-                    view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
 
                 view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
                 totalHeight += view.getMeasuredHeight();
             }
             ViewGroup.LayoutParams params = listView.getLayoutParams();
-            params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+            params.height = totalHeight + (listView.getDividerHeight() * (
+                    listAdapter.getCount() - 1));
             listView.setLayoutParams(params);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void setListViewHeightBasedOnChildren(ExpandableListView listView) {
+   /* public static void setListViewHeightBasedOnChildren(ExpandableListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
@@ -919,10 +949,10 @@ public class Utils {
         View view = null;
 
         //////////////
-       /* view = listAdapter.getView(0, view, listView);
+       *//* view = listAdapter.getView(0, view, listView);
         int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, View.MeasureSpec.EXACTLY);
         int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, View.MeasureSpec.EXACTLY);
-        view.measure(widthMeasureSpec, heightMeasureSpec);*/
+        view.measure(widthMeasureSpec, heightMeasureSpec);*//*
         //////////////
 
         for (int i = 0; i < listAdapter.getCount(); i++) {
@@ -936,7 +966,286 @@ public class Utils {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
+    }*/
+
+    /* method to get only digits from the string passed*/
+    public static String getOnlyDigits(String s) {
+        Pattern pattern = Pattern.compile("[^0-9]");
+        Matcher matcher = pattern.matcher(s);
+        return matcher.replaceAll("");
     }
+
+    public static void showProfileImage(String strImage, Context context, String title) {
+
+        try {
+            final Dialog dialog = new Dialog(context);
+
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+            dialog.setContentView(R.layout.image_dialog_layout);
+
+            final TouchImageView mOriginal = (TouchImageView) dialog.findViewById(
+                    R.id.imgOriginal);
+            TextView textViewClose = (TextView) dialog.findViewById(
+                    R.id.textViewClose);
+            Button buttonDelete = (Button) dialog.findViewById(
+                    R.id.textViewTitle);
+
+            final ProgressBar progressBar = (ProgressBar) dialog.findViewById(
+                    R.id.progressBar);
+
+            textViewClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.setCancelable(true);
+
+            dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT); //Controlling width and height.
+            dialog.show();
+
+            if (title != null && !title.equalsIgnoreCase("")) {
+                buttonDelete.setVisibility(View.VISIBLE);
+                buttonDelete.setText(title);
+            } else {
+                buttonDelete.setVisibility(View.GONE);
+            }
+
+            textViewClose.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            Glide.with(context)
+                    .load(strImage)
+                    .asBitmap()
+                    .centerCrop()
+                    .error(R.drawable.person_icon)
+                    .placeholder(R.drawable.person_icon)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target,
+                                                   boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model,
+                                                       Target<Bitmap> target,
+                                                       boolean isFromMemoryCache,
+                                                       boolean isFirstResource) {
+
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(/*new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource,
+                                                    GlideAnimation<? super Bitmap> glideAnimation) {
+                            mOriginal.setImageBitmap(resource);
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                        }
+                    }*/mOriginal);
+
+            //loadGlideFlat(context, strImage, mOriginal, progressBar);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadGlide(Context context, String strImage, final ImageView view,
+                                 final ProgressBar progressBar) {
+        try {
+
+            if (progressBar != null)
+                progressBar.setVisibility(View.VISIBLE);
+
+            Glide.with(context)
+                    .load(strImage)
+                    .asBitmap()
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.person_icon)
+                    .transform(new CropCircleTransformation(context)) //bitmapTransform
+                    .placeholder(R.drawable.person_icon)
+                    //.crossFade()
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target,
+                                                   boolean isFirstResource) {
+                            if (progressBar != null)
+                                progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model,
+                                                       Target<Bitmap> target,
+                                                       boolean isFromMemoryCache,
+                                                       boolean isFirstResource) {
+                            if (progressBar != null)
+                                progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+   /* public static void loadGlideFlat(Context context, String strImage, final ImageView view,
+                                 final ProgressBar progressBar) {
+        try {
+
+            if (progressBar != null)
+                progressBar.setVisibility(View.VISIBLE);
+
+            Glide.with(context)
+                    .load(strImage)
+                    .asBitmap()
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.person_icon)
+                    //.transform(new CropCircleTransformation(context)) //bitmapTransform
+                    .placeholder(R.drawable.person_icon)
+                    //.crossFade()
+                    .listener(new RequestListener<String, Bitmap>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<Bitmap> target,
+                                                   boolean isFirstResource) {
+                            if (progressBar != null)
+                                progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Bitmap resource, String model,
+                                                       Target<Bitmap> target,
+                                                       boolean isFromMemoryCache,
+                                                       boolean isFirstResource) {
+                            if (progressBar != null)
+                                progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void clearNotifications(Context context) {
+        try {
+            NotificationManager notifManager = (NotificationManager) context.
+                    getSystemService(Context.NOTIFICATION_SERVICE);
+            notifManager.cancelAll();
+            log(" Cleared ", " Notifications ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<String> splitLongText(String string, int length) {
+
+        List<String> strings = new ArrayList<>();
+        // int index = 0;
+
+        //
+        Pattern p = Pattern.compile("\\G\\s*(.{1," + length + "})(?=\\s|$)", Pattern.DOTALL);
+        Matcher m = p.matcher(string);
+        while (m.find())
+            strings.add(m.group(1));
+        //
+
+      /*  while (index < string.length()) {
+            strings.add(string.substring(index, Math.min(index + length, string.length())));
+            index += length;
+        }*/
+        return strings;
+    }
+
+    //todo send sms
+    public static void sendSMS(String reciever, String message) {
+        URLConnection myURLConnection = null;
+        URL myURL = null;
+        BufferedReader reader = null;
+        try {
+            //prepare connection
+            myURL = new URL(buildRequestString(reciever, message));
+            myURLConnection = myURL.openConnection();
+            myURLConnection.connect();
+            reader = new BufferedReader(new
+                    InputStreamReader(myURLConnection.getInputStream()));
+
+            //reading response
+            String response;
+            while ((response = reader.readLine()) != null)
+                //print response
+                log("RESPONSE", "" + response);
+            //finally close connection
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //todo for sending email
+    public static void sendEmail(Context context, String sendTo, String sendSubject, String sendMsg) {
+        EmailService emailService = new EmailService(context);
+        emailService.getEmailService().sendMail(sendTo, sendSubject, sendMsg, SENDER_EMAIL,
+                EmailMIME.HTML_TEXT_MIME_TYPE, new App42CallBack() {
+                    public void onSuccess(Object response) {
+                        Utils.log("Sent Mail", "1");
+                    }
+
+                    public void onException(Exception ex) {
+                        Utils.log("Sent Mail" + ex.getMessage(), "0");
+                    }
+
+                });
+    }
+
+    private static String buildRequestString(String reciever, String message) {
+        //encoding message
+        String encoded_message = URLEncoder.encode(message);
+
+        //http://otp2.maccesssmspush.com/OTP_ACL_Web/OtpRequestListener?enterpriseid=hlifeotp
+        // &subEnterpriseid=hlifeotp&pusheid=hlifeotp&pushepwd=hlifeotp&msisdn=919789863136&sender=HDFCSL&msgtext=sample
+
+        //Send SMS API
+        String mainUrl = "http://otp2.maccesssmspush.com/OTP_ACL_Web/OtpRequestListener?";
+
+        //Prepare parameter string
+        // sbPostData.append("authkey="+authkey);
+
+        return mainUrl + "&enterpriseid=" + "hlifeotp" +
+                "&subEnterpriseid=" + "hlifeotp" +
+                "&pusheid=" + "hlifeotp" +
+                "&pushepwd=" + "hlifeotp" +
+                "&msisdn=" + reciever +
+                "&sender=" + "HDFCSL" +
+                "&msgtext=" + encoded_message;
+    }
+
+    /*private void updateView(int index, ListView listView) {
+        View v = listView.getChildAt(index -
+                listView.getFirstVisiblePosition());
+
+        if (v == null)
+            return;
+
+        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
+        //someText.setText("Hi! I updated you manually!");
+    }*/
 
     public void toast(int type, int duration, String message) {
 
@@ -1001,13 +1310,23 @@ public class Utils {
         return b;
     }
 
-    public int getMemory() {
+    int getMemory() {
         Runtime rt = Runtime.getRuntime();
 
         //int totalMemory = (int) rt.totalMemory() / (1024 * 1024);
 
         return (int) rt.maxMemory() / 1024;
     }
+
+    /*public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }*/
 
     public String convertDateToString(Date dtDate) {
 
@@ -1078,17 +1397,6 @@ public class Utils {
         return date; //
     }
 
-    /*private void updateView(int index, ListView listView) {
-        View v = listView.getChildAt(index -
-                listView.getFirstVisiblePosition());
-
-        if (v == null)
-            return;
-
-        //TextView someText = (TextView) v.findViewById(R.id.sometextview);
-        //someText.setText("Hi! I updated you manually!");
-    }*/
-
     /**
      * Method to extract the user's age from the entered Date of Birth.
      *
@@ -1146,7 +1454,6 @@ public class Utils {
         return isValid;
     }
 
-
     public boolean isConnectingToInternet() {
         try {
             ConnectivityManager connectivity = (ConnectivityManager) _ctxt.getSystemService(
@@ -1164,16 +1471,6 @@ public class Utils {
         }
         return false;
     }
-
-    /*public static String bytesToHex(byte[] bytes) {
-        char[] hexChars = new char[bytes.length * 2];
-        for ( int j = 0; j < bytes.length; j++ ) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
-        }
-        return new String(hexChars);
-    }*/
 
     /**
      * Shows the progress UI and hides the login form.
@@ -1206,12 +1503,7 @@ public class Utils {
         }
     }*/
     public boolean isValidAreaCode(String number) {
-        if (number == null) {
-            return false;
-        } else {
-
-            return number.length() > 1;
-        }
+        return number != null && number.length() > 1;
 
     }
 
@@ -1226,11 +1518,8 @@ public class Utils {
         if (number == null) {
             return false;
         } else {
-            if (number.length() < 6 || number.length() > 13) {
-                return false;
-            } else {
-                return android.util.Patterns.PHONE.matcher(number).matches();
-            }
+            return !(number.length() < 6 || number.length() > 13)
+                    && android.util.Patterns.PHONE.matcher(number).matches();
         }
 
     }
@@ -1302,7 +1591,9 @@ public class Utils {
         }
     }
 
-    public void openCamera(String strFileName, Fragment fragment, final Activity activity) {
+    //Application Specigfic Start
+
+    private void openCamera(String strFileName, Fragment fragment, final Activity activity) {
 
         try {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -1335,8 +1626,8 @@ public class Utils {
         }
     }
 
-    public EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current,
-                                      EditText editCurrent) {
+    /*private EditText traverseEditTexts(ViewGroup v, Drawable all, Drawable current,
+                                       EditText editCurrent) {
         EditText invalid = null;
         for (int i = 0; i < v.getChildCount(); i++) {
             Object child = v.getChildAt(i);
@@ -1355,9 +1646,9 @@ public class Utils {
             }
         }
         return invalid;
-    }
+    }*/
 
-    public void setEditTextDrawable(EditText editText, Drawable drw) {
+    private void setEditTextDrawable(EditText editText, Drawable drw) {
         if (Build.VERSION.SDK_INT <= 16)
             editText.setBackgroundDrawable(drw);
         else
@@ -1424,8 +1715,6 @@ public class Utils {
         return ints;
     }
 
-    //Application Specigfic Start
-
     public JSONArray stringToJsonArray(String string[]) {
 
         JSONArray jsonArray = new JSONArray();
@@ -1450,8 +1739,8 @@ public class Utils {
         try {
             int iLength = ints.length;
 
-            for (int i = 0; i < iLength; i++) {
-                jsonArray.put(ints[i]);
+            for (int anInt : ints) {
+                jsonArray.put(anInt);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1498,7 +1787,7 @@ public class Utils {
         }
     }
 
-    public Bitmap roundedBitmap(Bitmap bmp) {
+    Bitmap roundedBitmap(Bitmap bmp) {
         Bitmap output = null;
 
         try {
@@ -1526,6 +1815,83 @@ public class Utils {
         return output;
     }
 
+   /* public String formatDateActivity(String strDate){
+
+        String strDisplayDate="06-03-2016 20:55:00";
+
+        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+            Date date = convertStringToDate(strDate);
+
+            if(date!=null)
+                strDisplayDate = writeFormatActivity.format(date);
+        }
+
+        return strDisplayDate;
+    }
+
+    public String formatDateActivityMonthYear(String strDate){
+
+        String strDisplayDate="06-03-2016 20:55:00";
+
+        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
+            Date date = convertStringToDate(strDate);
+
+            if(date!=null)
+                strDisplayDate = writeFormatActivityMonthYear.format(date);
+        }
+
+        return strDisplayDate;
+    }*/
+
+   /* public int retrieveConfirmDependants() {
+
+        ConfirmViewModel confirmViewModel;
+
+        ConfirmFragment.CustomListViewValuesArr.clear();
+
+        int count = 0;
+
+        if (Config.customerModel != null && !Config.customerModel.getStrEmail().equalsIgnoreCase("")) {
+
+            try {
+
+                confirmViewModel = new ConfirmViewModel();
+                confirmViewModel.setStrName(Config.customerModel.getStrName());
+                confirmViewModel.setStrDesc("");
+                confirmViewModel.setStrAddress(Config.customerModel.getStrAddress());
+                confirmViewModel.setStrContacts(Config.customerModel.getStrContacts());
+                confirmViewModel.setStrEmail(Config.customerModel.getStrEmail());
+                confirmViewModel.setStrImg(Config.customerModel.getStrImgPath());
+
+                count++;
+
+                ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
+
+                for (DependentModel dependentModel : SignupActivity.dependentModels) {
+
+                    if (!dependentModel.getStrName().equalsIgnoreCase(_ctxt.getResources().
+                            getString(R.string.add_dependent))) {
+                        confirmViewModel = new ConfirmViewModel();
+                        confirmViewModel.setStrName(dependentModel.getStrName());
+                        confirmViewModel.setStrDesc(dependentModel.getStrNotes());
+                        confirmViewModel.setStrAddress(dependentModel.getStrAddress());
+                        confirmViewModel.setStrContacts(dependentModel.getStrContacts());
+                        confirmViewModel.setStrEmail(dependentModel.getStrEmail());
+                        confirmViewModel.setStrImg(dependentModel.getStrImagePath());
+                        confirmViewModel.setStrRela(dependentModel.getStrRelation());
+
+                        ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
+                        count++;
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return count;
+    }*/
 
     public Bitmap getBitmapFromFile(String strPath, int intWidth, int intHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -1562,7 +1928,7 @@ public class Utils {
         return original;
     }
 
-    public int getBitmapHeightFromFile(String strPath) {
+  /*  public int getBitmapHeightFromFile(String strPath) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         //Bitmap original;
         int intSampleHeight = 0;
@@ -1581,7 +1947,7 @@ public class Utils {
             }
         }
         return intSampleHeight;
-    }
+    }*/
 
     public void populateHeaderDependents(final LinearLayout dynamicUserTab,
                                          final int intWhichScreen) {
@@ -1663,7 +2029,7 @@ public class Utils {
         }
     }
 
-    public void loadDependentData(int intWhichScreen) {
+    private void loadDependentData(int intWhichScreen) {
 
         try {
             if (intWhichScreen == Config.intNotificationScreen) {
@@ -1679,7 +2045,7 @@ public class Utils {
         }
     }
 
-    public void loadNotifications() {
+    private void loadNotifications() {
 
         try {
             final ProgressDialog progressDialog = new ProgressDialog(_ctxt);
@@ -1867,7 +2233,7 @@ public class Utils {
 
     }
 
-    public void createNotificationModel(String strDocumentId, String strDocument) {
+    private void createNotificationModel(String strDocumentId, String strDocument) {
         try {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);
@@ -1908,7 +2274,7 @@ public class Utils {
 
     }
 
-    protected void updateTabColor(int id, View v) {
+    private void updateTabColor(int id, View v) {
 
         try {
             for (int i = 0; i < Config.dependentModels.size(); i++) {
@@ -1928,84 +2294,6 @@ public class Utils {
             e.printStackTrace();
         }
     }
-
-   /* public String formatDateActivity(String strDate){
-
-        String strDisplayDate="06-03-2016 20:55:00";
-
-        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
-            Date date = convertStringToDate(strDate);
-
-            if(date!=null)
-                strDisplayDate = writeFormatActivity.format(date);
-        }
-
-        return strDisplayDate;
-    }
-
-    public String formatDateActivityMonthYear(String strDate){
-
-        String strDisplayDate="06-03-2016 20:55:00";
-
-        if(strDate!=null&&!strDate.equalsIgnoreCase("")) {
-            Date date = convertStringToDate(strDate);
-
-            if(date!=null)
-                strDisplayDate = writeFormatActivityMonthYear.format(date);
-        }
-
-        return strDisplayDate;
-    }*/
-
-   /* public int retrieveConfirmDependants() {
-
-        ConfirmViewModel confirmViewModel;
-
-        ConfirmFragment.CustomListViewValuesArr.clear();
-
-        int count = 0;
-
-        if (Config.customerModel != null && !Config.customerModel.getStrEmail().equalsIgnoreCase("")) {
-
-            try {
-
-                confirmViewModel = new ConfirmViewModel();
-                confirmViewModel.setStrName(Config.customerModel.getStrName());
-                confirmViewModel.setStrDesc("");
-                confirmViewModel.setStrAddress(Config.customerModel.getStrAddress());
-                confirmViewModel.setStrContacts(Config.customerModel.getStrContacts());
-                confirmViewModel.setStrEmail(Config.customerModel.getStrEmail());
-                confirmViewModel.setStrImg(Config.customerModel.getStrImgPath());
-
-                count++;
-
-                ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
-
-                for (DependentModel dependentModel : SignupActivity.dependentModels) {
-
-                    if (!dependentModel.getStrName().equalsIgnoreCase(_ctxt.getResources().
-                            getString(R.string.add_dependent))) {
-                        confirmViewModel = new ConfirmViewModel();
-                        confirmViewModel.setStrName(dependentModel.getStrName());
-                        confirmViewModel.setStrDesc(dependentModel.getStrNotes());
-                        confirmViewModel.setStrAddress(dependentModel.getStrAddress());
-                        confirmViewModel.setStrContacts(dependentModel.getStrContacts());
-                        confirmViewModel.setStrEmail(dependentModel.getStrEmail());
-                        confirmViewModel.setStrImg(dependentModel.getStrImagePath());
-                        confirmViewModel.setStrRela(dependentModel.getStrRelation());
-
-                        ConfirmFragment.CustomListViewValuesArr.add(confirmViewModel);
-                        count++;
-                    }
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return count;
-    }*/
 
     public File getInternalFileImages(String strFileName) {
 
@@ -2078,7 +2366,7 @@ public class Utils {
         return password.length() > 1;
     }
 
-    public void fetchCustomerFromDB(int iFlag, String password, String userName) {
+    private void fetchCustomerFromDB(int iFlag, String password, String userName) {
 
         try {
             String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ?";
@@ -2120,6 +2408,7 @@ public class Utils {
                     DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 }
                 if (iFlag == 1) {
+                    putLoginLog();
                     goToDashboard();
                 }
             } else if (!isUpdateServer && isConnectingToInternet()) {
@@ -2132,7 +2421,7 @@ public class Utils {
 
     }
 
-    public void updateCustomerDetailOnServer() {
+    private void updateCustomerDetailOnServer() {
         StorageService storageService = new StorageService(_ctxt);
 
         JSONObject jsonToUpdate = new JSONObject();
@@ -2252,48 +2541,43 @@ public class Utils {
 
     private JSONObject createJson(JSONObject jsonDep, DependentModel dependentMod) {
 
-
-        DependentModel dependentModel = dependentMod;
-        //
-        JSONObject jsonDependant = jsonDep;
         try {
 
-            jsonDependant.put("dependent_name", dependentModel.getStrName());
+            jsonDep.put("dependent_name", dependentMod.getStrName());
 
-            if (dependentModel.getStrIllness() == null || dependentModel.getStrIllness().equalsIgnoreCase(""))
-                dependentModel.setStrIllness("NA");
+            if (dependentMod.getStrIllness() == null || dependentMod.getStrIllness().equalsIgnoreCase(""))
+                dependentMod.setStrIllness("NA");
 
-            if (dependentModel.getStrNotes() == null || dependentModel.getStrNotes().equalsIgnoreCase(""))
-                dependentModel.setStrNotes("NA");
+            if (dependentMod.getStrNotes() == null || dependentMod.getStrNotes().equalsIgnoreCase(""))
+                dependentMod.setStrNotes("NA");
 
-            jsonDependant.put("dependent_illness", dependentModel.getStrIllness());
+            jsonDep.put("dependent_illness", dependentMod.getStrIllness());
 
-            jsonDependant.put("dependent_address", dependentModel.getStrAddress());
-            jsonDependant.put("dependent_email", dependentModel.getStrEmail());
+            jsonDep.put("dependent_address", dependentMod.getStrAddress());
+            jsonDep.put("dependent_email", dependentMod.getStrEmail());
 
-            jsonDependant.put("dependent_notes", dependentModel.getStrNotes());
-            jsonDependant.put("dependent_age", dependentModel.getStrAge());
-            jsonDependant.put("dependent_dob", dependentModel.getStrDob());
-            jsonDependant.put("dependent_contact_no", dependentModel.getStrContacts());
+            jsonDep.put("dependent_notes", dependentMod.getStrNotes());
+            jsonDep.put("dependent_age", dependentMod.getStrAge());
+            jsonDep.put("dependent_dob", dependentMod.getStrDob());
+            jsonDep.put("dependent_contact_no", dependentMod.getStrContacts());
 
-            jsonDependant.put("dependent_profile_url", dependentModel.getStrImageUrl());
-            jsonDependant.put("dependent_relation", dependentModel.getStrRelation());
-            jsonDependant.put("customer_id", Config.customerModel.getStrCustomerID());
+            jsonDep.put("dependent_profile_url", dependentMod.getStrImageUrl());
+            jsonDep.put("dependent_relation", dependentMod.getStrRelation());
+            jsonDep.put("customer_id", Config.customerModel.getStrCustomerID());
 
-            jsonDependant.put("health_bp", dependentModel.getIntHealthBp());
+            jsonDep.put("health_bp", dependentMod.getIntHealthBp());
 
-            Config.dependentNames.add(dependentModel.getStrName());
+            Config.dependentNames.add(dependentMod.getStrName());
 
-            jsonDependant.put("health_heart_rate", dependentModel.getIntHealthHeartRate());
+            jsonDep.put("health_heart_rate", dependentMod.getIntHealthHeartRate());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return jsonDependant;
+        return jsonDep;
     }
 
-
-    public void updateDependentsDetailOnServer(final DependentModel dependentModel) {
+    private void updateDependentsDetailOnServer(final DependentModel dependentModel) {
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -2328,9 +2612,9 @@ public class Utils {
 
                                                     Utils.log(o.toString(), "LOG_DATA");
 
-                                                } else {
+                                                } /*else {
 
-                                                }
+                                                }*/
                                             } catch (Exception e1) {
 
                                                 e1.printStackTrace();
@@ -2456,8 +2740,6 @@ public class Utils {
                                         if (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0) {
 
                                         } else {
-
-
                                             toast(2, 2, _ctxt.getString(R.string.error));
                                         }
                                     }
@@ -2573,7 +2855,8 @@ public class Utils {
 
                 ClientModel clientModel = new ClientModel();
                 clientModel.setCustomerModel(Config.customerModel);*/
-            Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(), jsonObject.getString("customer_profile_url"), "IMAGE"));
+            Config.fileModels.add(new FileModel(Config.customerModel.getStrCustomerID(),
+                    jsonObject.getString("customer_profile_url"), "IMAGE"));
             Config.customerModel.setCustomerRegistered(jsonObject.optBoolean("customer_register"));
             if (isUpdateServer && isConnectingToInternet()) {
                 updateCustomerDetailOnServer();
@@ -2584,6 +2867,7 @@ public class Utils {
             e.printStackTrace();
         }
     }
+    //
 
     public void createServiceModel(String strDocumentId, JSONObject jsonObject) {
 
@@ -2765,7 +3049,7 @@ public class Utils {
         }
     }
 
-    public void createProviderModel(String strDocumentId, String strDocument) {
+    private void createProviderModel(String strDocumentId, String strDocument) {
         try {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);
@@ -2802,7 +3086,7 @@ public class Utils {
         }
     }
 
-    public DependentModel createDependentModel(String strDependentDocId, String strDocument) {
+    private DependentModel createDependentModel(String strDependentDocId, String strDocument) {
         DependentModel dependentModel = null;
         try {
 
@@ -2900,7 +3184,6 @@ public class Utils {
         }
         return dependentModel;
     }
-
 
     public void createCheckInCareModel(String strActivityId, String strDocument) {
 
@@ -3090,7 +3373,7 @@ public class Utils {
                     activityModel.setFeedBackModels(feedBackModels);
                 }
 
-                if (jsonObjectActivity.has("videos")) {
+               /* if (jsonObjectActivity.has("videos")) {
 
                     JSONArray jsonArrayVideos = jsonObjectActivity.
                             optJSONArray("videos");
@@ -3115,7 +3398,7 @@ public class Utils {
                         }
                     }
                     activityModel.setVideoModels(videoModels);
-                }
+                }*/
 
                 if (jsonObjectActivity.has("images")) {
 
@@ -3355,9 +3638,9 @@ public class Utils {
 
         if (strCustomerId == null || strCustomerId.length() == 0 || (strCustomerId.equalsIgnoreCase(""))) {
             strCustomerId = sessionManager.getCustomerId();
-        } else {
+        } /*else {
 
-        }
+        }*/
         Cursor cursor = null;
         if (sessionManager.getDependentsStatus()) {
             try {
@@ -3374,7 +3657,7 @@ public class Utils {
                     do {
                         DependentModel dependentModel = null;
                         dependentModel = createDependentModel(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_OBJECT_ID)), cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_DOCUMENT)));
-                        dependentsIdsList = new ArrayList<>();
+                        List<String> dependentsIdsList = new ArrayList<>();
                         dependentsIdsList.clear();
                         dependentsIdsList.addAll(sessionManager.getUpdateDependent());
                         if (dependentModel != null && dependentModel.getStrDependentID() != null) {
@@ -3590,7 +3873,7 @@ public class Utils {
 
     }
 
-    public Query generateQuery(String strStatus) {
+    private Query generateQuery(String strStatus) {
 
         /*Calendar calendar = Calendar.optInstance();
         String value1 = convertDateToString(calendar.optTime());*/
@@ -3615,7 +3898,7 @@ public class Utils {
         return q4;
     }
 
-    public void fetchLatestActivities(final ProgressDialog progressDialog, final int iFlag) {
+    private void fetchLatestActivities(final ProgressDialog progressDialog, final int iFlag) {
 
         try {
             if (iActivityCount < Config.strDependentIds.size()) {
@@ -3722,7 +4005,6 @@ public class Utils {
             e.printStackTrace();
         }
     }
-    //
 
     public void fetchProviders(final ProgressDialog progressDialog, final int iFlag) {
 
@@ -3976,7 +4258,7 @@ public class Utils {
         return b;
     }
 
-    public void loadAllFiles() {
+    private void loadAllFiles() {
         try {
             for (int i = 0; i < Config.fileModels.size(); i++) {
                 FileModel fileModel = Config.fileModels.get(i);
@@ -3993,7 +4275,7 @@ public class Utils {
         }
     }
 
-    public void refreshNotificationsImages() {
+    private void refreshNotificationsImages() {
 
         /*progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -4012,7 +4294,7 @@ public class Utils {
         }
     }
 
-    public void goToDashboard() {
+    private void goToDashboard() {
 
         try {
             try {
@@ -4034,7 +4316,7 @@ public class Utils {
         }
     }
 
-    public void loadImages() {
+    private void loadImages() {
 
        /* progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -4052,7 +4334,10 @@ public class Utils {
         }
     }
 
-    public void loadImagesActivityMonth() {
+
+    //Application Specig=fic End
+
+    private void loadImagesActivityMonth() {
 
         /*progressDialog = new ProgressDialog(_ctxt);
         progressDialog.setMessage(_ctxt.getString(R.string.uploading_image));
@@ -4074,7 +4359,7 @@ public class Utils {
         }
     }
 
-    public void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog, final int iFlag) {
+    private void fetchLatestActivitiesUpcoming(final ProgressDialog progressDialog, final int iFlag) {
 
         try {
             if (isConnectingToInternet()) {
@@ -4212,6 +4497,8 @@ public class Utils {
         }
     }
 
+    /* method to set expandable lsit view's height based on children */
+
     public void clearActivityMonthModel() {
         try {
             for (DependentModel dependentModel : Config.dependentModels)
@@ -4235,7 +4522,23 @@ public class Utils {
         return date; //
     }
 
-    public String convertDateToStringQueryDB(Date dtDate) {
+//    public void deleteCollectionDoc(String collectionName) {
+//
+//        StorageService storageService = new StorageService(_ctxt);
+//
+//        storageService.deleteAllDocs(collectionName, new App42CallBack() {
+//            public void onSuccess(Object response) {
+//                App42Response app42response = (App42Response) response;
+//                System.out.println("response is " + app42response);
+//            }
+//
+//            public void onException(Exception ex) {
+//                System.out.println("Exception Message" + ex.getMessage());
+//            }
+//        });
+//    }
+
+    private String convertDateToStringQueryDB(Date dtDate) {
 
         String date = null;
 
@@ -4263,7 +4566,7 @@ public class Utils {
         return date; //
     }
 
-    public Date convertStringToDateQueryDB(String strDate) {
+    private Date convertStringToDateQueryDB(String strDate) {
 
         Date date = null;
 
@@ -4355,10 +4658,10 @@ public class Utils {
                     //todo uncomment for multiple carlas
                     //fetchProviders(progressDialog, 2);
 
-                } else {
+                } /*else {
 
 
-                }
+                }*/
                 DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 loadImagesActivityMonth();
             } catch (Exception e) {
@@ -4584,25 +4887,22 @@ public class Utils {
 
     }
 
+    /* public void setListViewHeight(ListView listView) {
+         ListAdapter listAdapter = listView.getAdapter();
+         int totalHeight = 0;
+         for (int i = 0; i < listAdapter.getCount(); i++) {
+             View listItem = listAdapter.getView(i, null, listView);
+             listItem.measure(0, 0);
+             totalHeight += listItem.getMeasuredHeight();
+         }
 
-    //Application Specig=fic End
-
-    public void setListViewHeight(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight
-                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-    }
-
+         ViewGroup.LayoutParams params = listView.getLayoutParams();
+         params.height = totalHeight
+                 + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+         listView.setLayoutParams(params);
+         listView.requestLayout();
+     }
+ */
     /* method to set expandable lsit view's height based on children when any group is expanded */
     public void setListViewHeight(ExpandableListView listView,
                                   int group) {
@@ -4637,8 +4937,6 @@ public class Utils {
         listView.requestLayout();
 
     }
-
-    /* method to set expandable lsit view's height based on children */
 
     public Bitmap rotateBitmap(String src, Bitmap bitmap) {
         try {
@@ -4693,7 +4991,7 @@ public class Utils {
         return bitmap;
     }
 
-    public int getExifOrientation(String src) throws IOException {
+    private int getExifOrientation(String src) throws IOException {
         int orientation = 1;
 
         ExifInterface exif = new ExifInterface(src);
@@ -4701,26 +4999,11 @@ public class Utils {
         try {
             orientation = Integer.parseInt(orientationString);
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
         return orientation;
     }
-
-//    public void deleteCollectionDoc(String collectionName) {
-//
-//        StorageService storageService = new StorageService(_ctxt);
-//
-//        storageService.deleteAllDocs(collectionName, new App42CallBack() {
-//            public void onSuccess(Object response) {
-//                App42Response app42response = (App42Response) response;
-//                System.out.println("response is " + app42response);
-//            }
-//
-//            public void onException(Exception ex) {
-//                System.out.println("Exception Message" + ex.getMessage());
-//            }
-//        });
-//    }
 
     public String getRealPathFromURI(Uri contentUri) {
         //Uri contentUri = Uri.parse(contentURI);
@@ -4739,7 +5022,7 @@ public class Utils {
         return "";
     }
 
-    public boolean fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
+    /*public boolean fetchLatestCheckInCare(String iMonth, String iYear, String CustomerId) {
 
         //iMonth = iMonth; // - 1
         try {
@@ -4772,9 +5055,9 @@ public class Utils {
                         } while (cursor.moveToNext());
 
                         showCheckInButton = true;
-                    }/* else {
+                    }*//* else {
 
-                    }*/
+                    }*//*
 
 
                 } catch (Exception e) {
@@ -4913,6 +5196,71 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+
+    private void putLoginLog() {
+
+        if (isConnectingToInternet()) {
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                //SessionManager sessionManager = new SessionManager(LoginActivity.this);
+
+                Calendar calendar = Calendar.getInstance();
+                Date datNow = calendar.getTime();
+                String strDateNow = Utils.readFormat.format(datNow);
+
+                jsonObject.put("user_id", sessionManager.getCustomerId());
+                jsonObject.put("source", "caretaker");
+                jsonObject.put("user_type", "customer");
+                jsonObject.put("device_id", Utils.getDeviceID((Activity) _ctxt));
+                jsonObject.put("os", Config.strOs);
+                jsonObject.put("sdk_version", Config.iSdkVersion);
+                jsonObject.put("app_version", Config.iAppVersion);
+                jsonObject.put("time", strDateNow);
+                //jsonObject.put("ip", Utils.getIPAddress(true));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            StorageService storageService = new StorageService(_ctxt);
+
+            storageService.insertDocs(jsonObject,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            try {
+                                if (response.isResponseSuccess()) {
+                                    Utils.log(response.toString(), " LOG ");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    }, Config.collectionLoginLog);
+        }
     }
 
     public class ThreadHandler extends Handler {
@@ -4948,13 +5296,4 @@ public class Utils {
             threadHandler.sendEmptyMessage(0);
         }
     }
-
-    /* method to get only digits from the string passed*/
-    public static String getOnlyDigits(String s) {
-        Pattern pattern = Pattern.compile("[^0-9]");
-        Matcher matcher = pattern.matcher(s);
-        String number = matcher.replaceAll("");
-        return number;
-    }
-
 }

@@ -106,8 +106,8 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
 
         //Utils.log(String.valueOf(fm.findFragmentByTag(this.getFragmentTag(position))+ " : " + position), " NPE ");
 
-    return (MyLinearView)
-            fm.findFragmentByTag(this.getFragmentTag(position)).getView().findViewById(R.id.root);
+        return (MyLinearView)
+                fm.findFragmentByTag(this.getFragmentTag(position)).getView().findViewById(R.id.root);
 
     }
 

@@ -24,6 +24,7 @@ public class PushNotificationService {
             e.printStackTrace();
         }
     }
+
     public void removeUserDevice(String strUserName, String strToken, App42CallBack app42CallBack) {
         try {
             asyncService.removeDevice(strUserName, strToken, app42CallBack);
@@ -42,7 +43,7 @@ public class PushNotificationService {
 
     public void deleteUserDevice(String strUserName, App42CallBack app42CallBack) {
         try {
-            asyncService.deleteDevice(strUserName,app42CallBack);
+            asyncService.deleteDevice(strUserName, app42CallBack);
         } catch (Exception e) {
             e.printStackTrace();
         }

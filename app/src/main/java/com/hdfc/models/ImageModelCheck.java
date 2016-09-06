@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class ImageModelCheck implements Serializable {
 
-    private String strImageUrl="";
+    private String strImageUrl = "";
     private String strImageDesc;
     private String strImageTime;
 

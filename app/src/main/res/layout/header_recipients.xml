@@ -15,8 +15,7 @@
         android:layout_centerVertical="true"
         android:padding="@dimen/text_padding"
         android:text="@string/dependents"
-        android:textColor="@color/blue"
-         />
+        android:textColor="@color/blue" />
 
     <ImageButton
         android:id="@+id/buttonback"

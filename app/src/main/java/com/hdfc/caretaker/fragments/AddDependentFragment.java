@@ -19,9 +19,9 @@ import com.hdfc.libs.Utils;
 
 public class AddDependentFragment extends Fragment {
 
-    public static ListView list;
     public static DependentViewAdapter adapter;
-    public static Button buttonContinue;
+    public ListView list;
+    public Button buttonContinue;
     private Utils utils;
 
     public AddDependentFragment() {

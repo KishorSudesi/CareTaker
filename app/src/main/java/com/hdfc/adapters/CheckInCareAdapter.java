@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.hdfc.caretaker.R;
-import com.hdfc.libs.Utils;
 import com.hdfc.models.CheckInCareModel;
 
 import java.text.DateFormatSymbols;
@@ -22,7 +21,7 @@ public class CheckInCareAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     public Context _context;
     public List<CheckInCareModel> data;
-    private Utils utils;
+    //private Utils utils;
 
     public CheckInCareAdapter(Context context, List<CheckInCareModel> d) {
         _context = context;

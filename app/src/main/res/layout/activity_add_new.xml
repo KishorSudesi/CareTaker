@@ -25,7 +25,6 @@
             android:visibility="visible" />
 
         <ImageView
-            android:id="@+id/imageView6"
             android:layout_width="176dp"
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
@@ -41,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/toplayout"
-        android:background="@color/colorWhite"/>
+        android:background="@color/colorWhite" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -74,35 +73,35 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/buttonContinue"
             android:layout_below="@+id/textViewColor"
-            android:textColor="@color/colorBlackDark"
             android:gravity="center"
             android:text="@string/no_services"
+            android:textColor="@color/colorBlackDark"
             android:visibility="gone" />
 
-    <ExpandableListView
-        android:id="@+id/listView1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/buttonContinue"
-        android:layout_below="@+id/textViewColor"
-        android:divider="@color/blue"
-        android:dividerHeight="1dp" />
+        <ExpandableListView
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/buttonContinue"
+            android:layout_below="@+id/textViewColor"
+            android:divider="@color/blue"
+            android:dividerHeight="1dp" />
 
 
-    <Button
-        android:id="@+id/buttonContinue"
-        style="@style/ButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
-        android:background="@drawable/button_success"
-        android:onClick="addNewActivityStep2"
-        android:text="Continue"
-        android:textAllCaps="false"
-        android:textColor="@color/colorWhite"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/buttonContinue"
+            style="@style/ButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="15dp"
+            android:background="@drawable/button_success"
+            android:onClick="addNewActivityStep2"
+            android:text="Continue"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>

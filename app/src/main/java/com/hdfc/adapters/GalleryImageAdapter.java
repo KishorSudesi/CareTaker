@@ -1,17 +1,20 @@
 package com.hdfc.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.hdfc.caretaker.R;
 import com.hdfc.config.Config;
-import com.hdfc.libs.Utils;
 
 import java.util.List;
 
@@ -23,13 +26,13 @@ public class GalleryImageAdapter extends BaseAdapter {
     private LayoutInflater inflater = null;
     private Context _context;
     private List<String> imageUrlList;
-    private Utils utils;
+    //private Utils utils;
 
 
     public GalleryImageAdapter(Context ctxt, List<String> urlList) {
         _context = ctxt;
         imageUrlList = urlList;
-        utils = new Utils(ctxt);
+        //utils = new Utils(ctxt);
     }
 
     @Override
@@ -65,6 +68,7 @@ public class GalleryImageAdapter extends BaseAdapter {
 
 
             viewHolder.roundedImageView = (ImageView) convertView.findViewById(R.id.imageViewThumbnail);
+            viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
             convertView.setTag(viewHolder);
         } else {
@@ -110,9 +114,30 @@ public class GalleryImageAdapter extends BaseAdapter {
 
                 Glide.with(_context)
                         .load(strUrl)
+                        .asBitmap()
                         .centerCrop()
-                        .override(Config.intWidth,Config.intHeight)
+                        .override(Config.intWidth, Config.intHeight)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.person_icon)
+                        .listener(new RequestListener<String, Bitmap>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<Bitmap> target,
+                                                       boolean isFirstResource) {
+                                if (viewHolder.progressBar != null)
+                                    viewHolder.progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Bitmap resource, String model,
+                                                           Target<Bitmap> target,
+                                                           boolean isFromMemoryCache,
+                                                           boolean isFirstResource) {
+                                if (viewHolder.progressBar != null)
+                                    viewHolder.progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
                         .into(viewHolder.roundedImageView);
 
             } catch (Exception e) {
@@ -126,6 +151,7 @@ public class GalleryImageAdapter extends BaseAdapter {
     public class ViewHolder {
 
         ImageView roundedImageView;
+        ProgressBar progressBar;
 
     }
 }

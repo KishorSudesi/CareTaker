@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -58,22 +57,22 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
     public static JSONObject jsonObjectCarla, jsonObject;
     private static StorageService storageService;
     private static ProgressDialog progressDialog;
-    private static ImageView imageViewCarla;
-    private static Bitmap bitmapImg;
-    private static Handler threadHandler;
+    //private static Bitmap bitmapImg;
+    //private static Handler threadHandler;
     //private static String strSelectedCarla;
     private static int iUpdateFlag = 0;
     private static String strInsertedDocumentId;
     private static String strProviderId;
+    private ImageView imageViewCarla;
     private EditText editTextMessage;
     private TextView textView6, textView7, editTextDate;
     private Utils utils;
     private String strCarlaImagepath, _strDate, strDate, strAlert;
-    private String getStrSelectedCarla, strPushMessage;
+    private String getStrSelectedCarla;
     private SessionManager sessionManager;
     private Context mContext;
     private Date selectedDate = null;
-    private Date lastSelectedDate=null;
+    private Date lastSelectedDate = null;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -98,7 +97,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         public void onResourceReady(Bitmap bitmap, GlideAnimation glideAnimation) {
             // do something with the bitmap
             // for demonstration purposes, let's just set it to an ImageView
-            bitmapImg = bitmap;
+            // bitmapImg = bitmap;
 
             progressDialog.dismiss();
 
@@ -116,6 +115,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         mContext = this;
 
         utils = new Utils(AddNewActivityStep2Activity.this);
+        utils.setStatusBarColor("#2196f3");
         progressDialog = new ProgressDialog(AddNewActivityStep2Activity.this);
         sessionManager = new SessionManager(AddNewActivityStep2Activity.this);
 
@@ -163,7 +163,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         }
         getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
-        selectedDate=new Date();
+        selectedDate = new Date();
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,14 +204,14 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         editTextMessage.setError(getString(R.string.error_field_required));
                         focusView = editTextMessage;
                         cancel = true;
-                        return;
+                        //return;
                     }
 
                     if (TextUtils.isEmpty(time)) {
                         editTextDate.setError(getString(R.string.error_field_required));
                         focusView = editTextDate;
                         cancel = true;
-                        return;
+                        //return;
                     }
 
 
@@ -219,7 +219,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         editTextDate.setError(getString(R.string.error_wrong_date));
                         focusView = editTextDate;
                         cancel = true;
-                        return;
+                        //return;
                     }
 
                     if (cancel) {
@@ -386,9 +386,13 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
         JSONObject jsonObjectServices = null;
 
+        final Calendar calendar = Calendar.getInstance();
+
         try {
             jsonObjectServices = new JSONObject();
-            //String strDate = utils.convertDateToString(new Date());
+
+            Date dateNow = calendar.getTime();
+            String strDateNow = utils.convertDateToString(dateNow);
 
             jsonObjectServices.put("service_id", serviceModel.getStrServiceId());
             jsonObjectServices.put("service_name", serviceModel.getStrServiceName());
@@ -397,7 +401,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             jsonObjectServices.put("category_name", serviceModel.getStrCategoryName());
 
             jsonObjectServices.put("customer_id", Config.customerModel.getStrCustomerID());
-            jsonObjectServices.put("dependent_id", Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
+            jsonObjectServices.put("dependent_id",
+                    Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID());
             jsonObjectServices.put("provider_id", strProviderId);
             jsonObjectServices.put("created_by", "customer");
 
@@ -408,6 +413,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             jsonObjectServices.put("provider_message", "");
 
             jsonObjectServices.put("activity_date", _strDate);
+            jsonObjectServices.put("date", strDateNow);
             jsonObjectServices.put("activity_done_date", "");
             jsonObjectServices.put("activity_name", serviceModel.getStrServiceName());
             jsonObjectServices.put("activity_desc", message);
@@ -418,15 +424,10 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             jsonArray.put("{\"0\":\"empty\"}");
 
             jsonObjectServices.put("feedbacks", jsonArray);
-            jsonObjectServices.put("videos", jsonArray);
+            //jsonObjectServices.put("videos", jsonArray);
             jsonObjectServices.put("images", jsonArray);
 
-            String strDateNow = "";
-            Calendar calendar = Calendar.getInstance();
-            Date dateNow = calendar.getTime();
-            strDateNow = utils.convertDateToString(dateNow);
-
-            strPushMessage = getString(R.string.activity_create_notification_1)
+            String strPushMessage = getString(R.string.activity_create_notification_1)
                     + serviceModel.getStrCategoryName()
                     //+ getString(R.string.activity_create_notification_2)
                     + getString(R.string.activity_create_notification_3)
@@ -550,12 +551,12 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
 
                                         //
-                                        Calendar calendar = Calendar.getInstance();
+                                        //Calendar calendar = Calendar.getInstance();
 
-                                        Date startDate = null, endDate = null;
+                                        Date startDate, endDate;
                                         String strStartDateCopy, strEndDateCopy;
-                                        String strDateNow = "";
-                                        Date activityDate = null;
+                                        //String strDateNow = "";
+                                        Date activityDate;
 
                                         try {
                                             Date dateNow = calendar.getTime();
@@ -663,9 +664,9 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                         }
                     },
                     Config.collectionActivity);
-        } else {
+        } /*else {
 
-        }
+        }*/
 
     }
 

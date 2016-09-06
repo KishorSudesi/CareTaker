@@ -17,6 +17,8 @@ public class CareSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_care_selection);
 
         utils = new Utils(CareSelectionActivity.this);
+
+        //todo set status color
     }
 
     public void selectedMyself(View v) {

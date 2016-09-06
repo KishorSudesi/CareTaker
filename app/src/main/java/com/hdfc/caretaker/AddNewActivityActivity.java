@@ -59,6 +59,20 @@ public class AddNewActivityActivity extends AppCompatActivity {
     private int previousChildPosition = -1, previouGroupPosition = -1;
     private SessionManager sessionManager = null;
     private Context mContext;
+    /*Comparator for sorting the list by service Name*/
+    private Comparator<CategoryServiceModel> ServiceNameComparator = new Comparator<CategoryServiceModel>() {
+
+        public int compare(CategoryServiceModel s1, CategoryServiceModel s2) {
+            String serviceName1 = s1.getStrCategoryName().toUpperCase();
+            String serviceName2 = s2.getStrCategoryName().toUpperCase();
+
+            //ascending order
+            return serviceName1.compareTo(serviceName2);
+
+            //descending order
+            //return StudentName2.compareTo(StudentName1);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +80,11 @@ public class AddNewActivityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new);
 
         utils = new Utils(AddNewActivityActivity.this);
+        utils.setStatusBarColor("#2196f3");
         listView = (ExpandableListView) findViewById(R.id.listView1);
         TextView textViewEmpty = (TextView) findViewById(android.R.id.empty);
         buttonContinue = (Button) findViewById(R.id.buttonContinue);
-        ImageButton imageButtonBuyServices = (ImageButton) findViewById(R.id.imageButtonBuyServices);
+        //ImageButton imageButtonBuyServices = (ImageButton) findViewById(R.id.imageButtonBuyServices);
         //ImageButton buttonBack = (ImageButton) findViewById(R.id.buttonBack);
         mContext = this;
         progressDialog = new ProgressDialog(AddNewActivityActivity.this);
@@ -193,7 +208,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
             });
         }
 
-        if (imageButtonBuyServices != null) {
+       /* if (imageButtonBuyServices != null) {
             imageButtonBuyServices.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -201,7 +216,7 @@ public class AddNewActivityActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-        }
+        }*/
 
 
         //
@@ -396,21 +411,6 @@ public class AddNewActivityActivity extends AppCompatActivity {
         startActivity(newIntent);
         finish();
     }
-
-    /*Comparator for sorting the list by service Name*/
-    private Comparator<CategoryServiceModel> ServiceNameComparator = new Comparator<CategoryServiceModel>() {
-
-        public int compare(CategoryServiceModel s1, CategoryServiceModel s2) {
-            String serviceName1 = s1.getStrCategoryName().toUpperCase();
-            String serviceName2 = s2.getStrCategoryName().toUpperCase();
-
-            //ascending order
-            return serviceName1.compareTo(serviceName2);
-
-            //descending order
-            //return StudentName2.compareTo(StudentName1);
-        }
-    };
 
     public void refreshAdapter() {
 

@@ -25,10 +25,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:button="@mipmap/tick_disable"
+                android:checked="false"
                 android:clickable="false"
                 android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:checked="false" />
+                android:focusableInTouchMode="false" />
 
         </RadioGroup>
 
@@ -38,9 +38,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
@@ -50,8 +50,8 @@
             android:layout_height="wrap_content"
             android:clickable="false"
             android:focusable="false"
-            android:text="Medical test"
             android:focusableInTouchMode="false"
+            android:text="Medical test"
             android:textColor="@color/blue"
             android:textStyle="bold" />
 

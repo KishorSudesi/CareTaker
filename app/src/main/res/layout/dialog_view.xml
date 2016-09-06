@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/colorWhite"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,12 +15,12 @@
 
             <TextView
                 android:id="@+id/milestoneName"
+                style="@style/LabelStyle"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/header_gradient"
                 android:gravity="center"
                 android:padding="@dimen/padding_general"
-                style="@style/LabelStyle"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold" />
 
@@ -40,6 +40,7 @@
 
                 <Button
                     android:id="@+id/buttonDone"
+                    style="@style/ButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -47,7 +48,6 @@
                     android:layout_marginTop="15dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_success"
-                    style="@style/ButtonStyle"
                     android:text="@string/close"
                     android:textAllCaps="true"
                     android:textStyle="bold"

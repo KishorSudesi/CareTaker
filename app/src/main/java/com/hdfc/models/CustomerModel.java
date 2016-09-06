@@ -19,9 +19,9 @@ public class CustomerModel {
     private String strCountryIsdCode = "";
     private String strCountryAreaCode = "";
     private String strLandLine = "";
-    private boolean isCustomerRegistered=false;
+    private boolean isCustomerRegistered = false;
 
-    private String strCustomerID="";
+    private String strCustomerID = "";
 
     public CustomerModel() {
     }

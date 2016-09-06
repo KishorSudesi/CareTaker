@@ -9,15 +9,15 @@ public class SubActivityModel {
     private String strDueStatus = "";
     private String strDueDate = "";
     private String strUtilityName = "";
-    private boolean checkBoxStatus=false;
+    private boolean checkBoxStatus = false;
 
-    public SubActivityModel(String strSubActivityName, String strStatus, String strDueStatus, String strDueDate, String strUtilityName,boolean checkBoxStatus) {
+    public SubActivityModel(String strSubActivityName, String strStatus, String strDueStatus, String strDueDate, String strUtilityName, boolean checkBoxStatus) {
         this.strSubActivityName = strSubActivityName;
         this.strStatus = strStatus;
         this.strDueStatus = strDueStatus;
         this.strDueDate = strDueDate;
         this.strUtilityName = strUtilityName;
-        this.checkBoxStatus=checkBoxStatus;
+        this.checkBoxStatus = checkBoxStatus;
 
     }
 

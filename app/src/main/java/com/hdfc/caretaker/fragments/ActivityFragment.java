@@ -35,7 +35,7 @@ import java.util.Locale;
 public class ActivityFragment extends Fragment implements View.OnClickListener {
 
     private static final String dateTemplate = "MMMM yyyy";
-   public static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
+    public static List<ActivityModel> activitiesModelArrayList = new ArrayList<>();
     static int month, year;
     private static TextView currentMonth;
     private static Calendar calendar;
@@ -98,7 +98,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         if (Config.intSelectedDependent < Config.dependentModels.size())
             activitiesModelArrayList = Config.dependentModels.get(Config.intSelectedDependent).
-                getMonthActivityModel();
+                    getMonthActivityModel();
 
         if (Config.intSelectedMenu == Config.intListActivityScreen) {
             ActivityListFragment.reload();
@@ -142,7 +142,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
         prevMonth.setOnClickListener(this);
 
         currentMonth = (TextView) view.findViewById(R.id.currentMonth);
-        currentMonth.setText(DateFormat.format(dateTemplate,calendar.getTime()));
+        currentMonth.setText(DateFormat.format(dateTemplate, calendar.getTime()));
 
         nextMonth = (ImageView) view.findViewById(R.id.nextMonth);
         nextMonth.setOnClickListener(this);
@@ -279,7 +279,8 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         if (v == nextMonth) {
             if (month > 11) {
-                month = 1; year++;
+                month = 1;
+                year++;
             } else {
                 month++;
             }

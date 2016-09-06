@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
-import com.hdfc.caretaker.fragments.GuruDetailsFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     public static int totalPage = 2;

@@ -11,18 +11,19 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.hdfc.app42service.App42GCMController;
 import com.hdfc.app42service.App42GCMService;
 import com.hdfc.app42service.StorageService;
@@ -35,6 +36,7 @@ import com.hdfc.caretaker.fragments.NotificationFragment;
 import com.hdfc.config.CareTaker;
 import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbCon;
+import com.hdfc.libs.NetworkStateReceiver;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
 import com.hdfc.service.UpdateService;
@@ -46,17 +48,24 @@ import java.util.Locale;
 /**
  * Created by user on 08-01-2016.
  */
-public class DashboardActivity extends AppCompatActivity implements App42GCMController.App42GCMListener {
+public class DashboardActivity extends AppCompatActivity implements
+        App42GCMController.App42GCMListener, NetworkStateReceiver.NetworkStateReceiverListener {
 
     public static RelativeLayout loadingPanel;
     private static ProgressDialog progressDialog;
     private static AppCompatActivity appCompatActivity;
-
-    private static ImageView buttonActivity, buttonNotifications, buttonAccount, buttonSeniors, buttonSync;
+    private static ImageView buttonActivity;
+    private static ImageView buttonNotifications;
+    private static ImageView buttonAccount;
+    private static ImageView buttonSeniors;
     private static TextView txtViewActivity, textViewNotifications, textViewAccount, textViewSeniors, textViewSync;
-
     private static Context context;
     private static boolean isSync = false;
+    private LinearLayout net_error_layout;
+    private NetworkStateReceiver networkStateReceiver;
+    private Tracker mTracker;
+    private SessionManager sessionManager;
+    private Utils utils;
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -79,37 +88,12 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
         }
     };
-
-
     private final BroadcastReceiver mBroadcastReceiverToUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             refreshView(context);
         }
     };
-    private SessionManager sessionManager;
-    private Utils utils;
-
-    private void showPushDialog(final String strMessage) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage(strMessage);
-        builder.setPositiveButton(getString(R.string.text_notification), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                goToNotifications();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
-    }
 
     public static void goToDashboard() {
         if (!Config.customerModel.isCustomerRegistered() && Config.dependentModels.size() == 0) {
@@ -174,6 +158,29 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showPushDialog(final String strMessage) {
+
+        Utils.clearNotifications(DashboardActivity.this);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+        builder.setTitle(getString(R.string.app_name));
+        builder.setMessage(strMessage);
+        builder.setPositiveButton(getString(R.string.text_notification), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                goToNotifications();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     public void refreshView(Context context) {
@@ -245,9 +252,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_layout);
         try {
+
+            CareTaker careTaker = (CareTaker) getApplication();
+            mTracker = careTaker.getDefaultTracker();
+
             sessionManager = new SessionManager(DashboardActivity.this);
             buttonActivity = (ImageView) findViewById(R.id.buttonCallActivity);
             txtViewActivity = (TextView) findViewById(R.id.textViewActivity);
+
+            net_error_layout = (LinearLayout) findViewById(R.id.pnd_net_error);
 
             buttonNotifications = (ImageView) findViewById(R.id.buttonNotifications);
             textViewNotifications = (TextView) findViewById(R.id.textViewNotifications);
@@ -258,7 +271,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             buttonSeniors = (ImageView) findViewById(R.id.buttonSeniors);
             textViewSeniors = (TextView) findViewById(R.id.textViewSeniors);
 
-            buttonSync = (ImageView) findViewById(R.id.buttonSync);
+            ImageView buttonSync = (ImageView) findViewById(R.id.buttonSync);
             textViewSync = (TextView) findViewById(R.id.textViewSync);
 
             loadingPanel = (RelativeLayout) findViewById(R.id.loadingPanel);
@@ -362,6 +375,15 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 });
             }
 
+            try {
+                networkStateReceiver = new NetworkStateReceiver();
+                networkStateReceiver.addListener(this);
+                this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.
+                        ConnectivityManager.CONNECTIVITY_ACTION));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (buttonSync != null) {
                 buttonSync.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -398,7 +420,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                     App42API.setLoggedInUser(Config.customerModel.getStrEmail());
                 }
             } else {
-    // this case will run when we click on notification and activity is in kill state, then new instance will be launched ..starting from DashBoard Activity
+                // this case will run when we click on notification and activity is in kill state, then new instance will be launched ..starting from DashBoard Activity
                 try {
                     if (CareTaker.dbCon == null) {
                         CareTaker.dbCon = DbCon.getInstance(getApplicationContext());
@@ -493,7 +515,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
 
     }
 
-    public void goToAddRecipient() {
+    /*public void goToAddRecipient() {
         try {
             AddCareRecipientsFragment addRecipientFragment = AddCareRecipientsFragment.newInstance();
             FragmentManager fm = getSupportFragmentManager();
@@ -503,7 +525,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Override
     public void onError(String var1) {
@@ -536,9 +558,6 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
             if (App42GCMController.isPlayServiceAvailable(this)) {
                 App42GCMController.getRegistrationId(DashboardActivity.this,
                         Config.strAppId, this);//prod. - 272065924531
-            } else {
-                /*Log.i("App42PushNotification",
-                        "No valid Google Play Services APK found.");*/
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -671,7 +690,20 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else {
-                if (utils.isConnectingToInternet()) {
+
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("Exit")
+                        .build());
+
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(homeIntent);
+                finish();
+
+                /*if (utils.isConnectingToInternet()) {
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
                     LayoutInflater inflater = getLayoutInflater();
                     View view = inflater.inflate(R.layout.alert_dialog_text, null);
@@ -680,9 +712,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ///
-                       /* if (CareTaker.dbCon != null) {
+                       *//* if (CareTaker.dbCon != null) {
                             CareTaker.dbCon.close();
-                        }*/
+                        }*//*
                             //
                             Utils.logout(DashboardActivity.this);
 
@@ -697,7 +729,7 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                     builder.show();
                 } else {
                     utils.toast(1, 1, context.getString(R.string.warning_internet));
-                }
+                }*/
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -715,8 +747,13 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
         super.onResume();
 
         try {
-            if (Config.customerModel != null && Config.customerModel.getStrName() != null && !(Config.customerModel.getStrName().equalsIgnoreCase(""))) {
+            if (Config.customerModel != null && Config.customerModel.getStrName() != null
+                    && !(Config.customerModel.getStrName().equalsIgnoreCase(""))) {
                 try {
+                    mTracker.setScreenName("CT - DashboardActivity "
+                            + String.valueOf(Config.intSelectedMenu));
+                    mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
                     IntentFilter filter = new IntentFilter(
                             App42GCMService.DisplayMessageAction);
                     filter.setPriority(2);
@@ -726,6 +763,9 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
                 }
 
                 try {
+                    registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.
+                            CONNECTIVITY_ACTION));
+
                     LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiverToUpdate,
                             new IntentFilter(Config.viewRefreshAction));
                 } catch (Exception e) {
@@ -742,33 +782,59 @@ public class DashboardActivity extends AppCompatActivity implements App42GCMCont
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         try {
-            if (mBroadcastReceiverToUpdate != null)
-                LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiverToUpdate);
+            Utils.log(String.valueOf(intent.getStringExtra(App42GCMService.ExtraMessage)),
+                    " PUSH ");
+            if (intent.getStringExtra(App42GCMService.ExtraMessage) != null) {
+
+                String strMess = intent.getStringExtra(App42GCMService.ExtraMessage);
+
+                if (CareTaker.dbCon != null) {
+                    showPushDialog(strMess);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    protected void onPause() {
+        super.onPause();
         try {
-            if (mBroadcastReceiver != null)
-                unregisterReceiver(mBroadcastReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            if (networkStateReceiver != null)
+                unregisterReceiver(networkStateReceiver);
 
-        try {
             if (mBroadcastReceiverToUpdate != null)
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiverToUpdate);
+
+            if (mBroadcastReceiver != null)
+                unregisterReceiver(mBroadcastReceiver);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void networkUnavailable() {
+        net_error_layout.setVisibility(View.VISIBLE);
+        loadingPanel.setVisibility(View.GONE);
+
+        net_error_layout.postDelayed(
+                new Runnable() {
+                    public void run() {
+                        net_error_layout.setVisibility(View.GONE);
+                    }
+                }, 3000);
+    }
+
+    @Override
+    public void networkAvailable() {
+        net_error_layout.setVisibility(View.GONE);
     }
 
     /* public class BackgroundThread extends Thread {
