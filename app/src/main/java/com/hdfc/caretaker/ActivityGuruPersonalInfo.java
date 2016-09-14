@@ -222,6 +222,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
                         .setListener(listener)
                         .setMaxDate(new Date())
                         .setInitialDate(date)
+                        .setTimeShownStatus(false)
                         .build()
                         .show();
             }

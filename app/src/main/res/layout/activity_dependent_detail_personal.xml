@@ -33,6 +33,7 @@
                     android:layout_marginRight="@dimen/edit_text_margin"
                     android:layout_marginTop="40dp"
                     android:background="@color/blue"
+
                     android:focusableInTouchMode="true"
                     android:queryHint="@string/search_contacts"
                     android:visibility="visible" />

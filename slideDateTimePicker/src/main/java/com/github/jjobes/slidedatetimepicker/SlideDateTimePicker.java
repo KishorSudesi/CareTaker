@@ -28,6 +28,7 @@ public class SlideDateTimePicker {
     private boolean mIs24HourTime;
     private int mTheme;
     private int mIndicatorColor;
+    private boolean isShowTime = true;
 
     /**
      * Creates a new instance of {@code SlideDateTimePicker}.
@@ -47,6 +48,14 @@ public class SlideDateTimePicker {
         }
 
         mFragmentManager = fm;
+    }
+
+    public boolean isShowTime() {
+        return isShowTime;
+    }
+
+    public void setShowTime(boolean showTime) {
+        isShowTime = showTime;
     }
 
     /**
@@ -164,7 +173,7 @@ public class SlideDateTimePicker {
                         mIsClientSpecified24HourTime,
                         mIs24HourTime,
                         mTheme,
-                        mIndicatorColor);
+                        mIndicatorColor, isShowTime);
 
         dialogFragment.show(mFragmentManager,
                 SlideDateTimeDialogFragment.TAG_SLIDE_DATE_TIME_DIALOG_FRAGMENT);
@@ -187,6 +196,7 @@ public class SlideDateTimePicker {
         private boolean is24HourTime;
         private int theme;
         private int indicatorColor;
+        private boolean isShowTime = true;
 
         public Builder(FragmentManager fm) {
             this.fm = fm;
@@ -205,6 +215,11 @@ public class SlideDateTimePicker {
          */
         public Builder setInitialDate(Date initialDate) {
             this.initialDate = initialDate;
+            return this;
+        }
+
+        public Builder setTimeShownStatus(boolean timeShownStatus) {
+            this.isShowTime = timeShownStatus;
             return this;
         }
 
@@ -267,6 +282,7 @@ public class SlideDateTimePicker {
             picker.setIs24HourTime(is24HourTime);
             picker.setTheme(theme);
             picker.setIndicatorColor(indicatorColor);
+            picker.setShowTime(isShowTime);
 
             return picker;
         }
