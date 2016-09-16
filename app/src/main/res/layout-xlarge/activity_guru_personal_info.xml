@@ -185,12 +185,15 @@
 
                 <RadioButton
                     android:id="@+id/radioMobile"
+                    style="@style/RadioButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/mobile" />
 
                 <RadioButton
+                    android:id="@+id/radioLandline"
+                    style="@style/RadioButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

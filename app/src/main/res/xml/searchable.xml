@@ -5,6 +5,7 @@
     android:label="@string/search_contacts"
     android:queryAfterZeroResults="true"
     android:searchMode="queryRewriteFromText"
+
     android:searchSettingsDescription="@string/search_contacts"
     android:searchSuggestAuthority="com.android.contacts"
     android:searchSuggestIntentAction="android.provider.Contacts.SEARCH_SUGGESTION_CLICKED"
@@ -14,6 +15,7 @@
     <actionkey
         android:keycode="KEYCODE_CALL"
         android:queryActionMsg="call"
+
         android:suggestActionMsg="call" />
 
 </searchable>

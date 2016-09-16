@@ -112,6 +112,10 @@ public class AddDependentFragment extends Fragment {
             setListData();
             adapter = new DependentViewAdapter(getContext(), SignupActivity.dependentModels);
             list.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

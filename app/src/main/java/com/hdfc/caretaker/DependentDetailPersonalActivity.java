@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,11 +22,13 @@ import android.support.v7.widget.SearchView;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -514,7 +517,31 @@ public class DependentDetailPersonalActivity extends AppCompatActivity {
 
         SearchableInfo searchableInfo = searchManager.getSearchableInfo(cn);
         searchView.setSearchableInfo(searchableInfo);
+        // changeSearchViewTextColor(searchView);
     }
+
+    private void changeSearchViewTextColor(View view) {
+        try {
+            if (view != null) {
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.BLACK);
+                    return;
+                }
+                if (view instanceof EditText) {
+                    ((EditText) view).setTextColor(Color.BLACK);
+                    return;
+                } else if (view instanceof ViewGroup) {
+                    ViewGroup viewGroup = (ViewGroup) view;
+                    for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                        changeSearchViewTextColor(viewGroup.getChildAt(i));
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {

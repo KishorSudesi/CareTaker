@@ -3,6 +3,7 @@ package com.hdfc.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,7 @@ public class DependentViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View vi = convertView;
-        ViewHolder holder;
+        final ViewHolder holder;
 
         if (convertView == null) {
             vi = inflater.inflate(R.layout.dependent_list, null);
@@ -83,6 +84,8 @@ public class DependentViewAdapter extends BaseAdapter {
                     holder.textRelation.setText(dependentModel.getStrRelation());
 
                     if (!dependentModel.getStrImagePath().equalsIgnoreCase("")) {
+
+
                         Glide.with(_ctxt)
                                 .load(dependentModel.getStrImageUrl())
                                 .centerCrop()
@@ -92,6 +95,7 @@ public class DependentViewAdapter extends BaseAdapter {
                                 .override(Config.intWidth, Config.intHeight)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(holder.image);
+                        this.notifyDataSetChanged();
 
                        /* multiBitmapLoader.loadBitmap(dependentModel.getStrImagePath().trim(),
                                 holder.image);*/
@@ -105,8 +109,10 @@ public class DependentViewAdapter extends BaseAdapter {
                     holder.textRelation.setVisibility(View.GONE);
                     //holder.textViewLabel.setVisibility(View.GONE);
 
-                    holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
-                            R.drawable.add_dependent));
+                    Bitmap mBitmap = BitmapFactory.decodeResource(_ctxt.getResources(),
+                            R.drawable.add_dependent);
+                    holder.image.setImageBitmap(mBitmap);
+                    this.notifyDataSetChanged();
                 }
 
             } catch (Exception e) {

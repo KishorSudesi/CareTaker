@@ -206,6 +206,7 @@ public class MyAccountEditFragment extends Fragment {
                 new SlideDateTimePicker.Builder(getActivity().getSupportFragmentManager())
                         .setListener(listener)
                         .setInitialDate(new Date())
+                        .setTimeShownStatus(false)
                         .build()
                         .show();
             }

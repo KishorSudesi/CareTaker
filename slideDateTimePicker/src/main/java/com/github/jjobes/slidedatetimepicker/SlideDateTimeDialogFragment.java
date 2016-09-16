@@ -52,6 +52,7 @@ public class SlideDateTimeDialogFragment extends DialogFragment implements DateF
     private Date mMaxDate;
     private boolean mIsClientSpecified24HourTime;
     private boolean mIs24HourTime;
+    private boolean mIsShowTime;
     private Calendar mCalendar;
     private int mDateFlags =
             DateUtils.FORMAT_SHOW_WEEKDAY |
@@ -76,11 +77,12 @@ public class SlideDateTimeDialogFragment extends DialogFragment implements DateF
      * @param is24HourTime
      * @param theme
      * @param indicatorColor
+     * @param isShowTime
      * @return
      */
     public static SlideDateTimeDialogFragment newInstance(SlideDateTimeListener listener,
                                                           Date initialDate, Date minDate, Date maxDate, boolean isClientSpecified24HourTime,
-                                                          boolean is24HourTime, int theme, int indicatorColor) {
+                                                          boolean is24HourTime, int theme, int indicatorColor, boolean isShowTime) {
         mListener = listener;
 
         // Create a new instance of SlideDateTimeDialogFragment
@@ -95,6 +97,7 @@ public class SlideDateTimeDialogFragment extends DialogFragment implements DateF
         bundle.putBoolean("is24HourTime", is24HourTime);
         bundle.putInt("theme", theme);
         bundle.putInt("indicatorColor", indicatorColor);
+        bundle.putBoolean("show_time", isShowTime);
         dialogFragment.setArguments(bundle);
 
         // Return the fragment with its bundle
@@ -166,6 +169,7 @@ public class SlideDateTimeDialogFragment extends DialogFragment implements DateF
         mIs24HourTime = args.getBoolean("is24HourTime");
         mTheme = args.getInt("theme");
         mIndicatorColor = args.getInt("indicatorColor");
+        mIsShowTime = args.getBoolean("show_time", true);
     }
 
     private void setupViews(View v) {
@@ -361,7 +365,12 @@ public class SlideDateTimeDialogFragment extends DialogFragment implements DateF
 
         @Override
         public int getCount() {
-            return 2;
+            if (mIsShowTime) {
+                return 2;
+            } else {
+                return 1;
+            }
+
         }
     }
 }
