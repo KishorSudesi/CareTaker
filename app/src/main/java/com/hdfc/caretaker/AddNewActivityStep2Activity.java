@@ -865,7 +865,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
         if (utils.isConnectingToInternet()) {
 
-            PushNotificationService pushNotificationService = new PushNotificationService(AddNewActivityStep2Activity.this);
+            PushNotificationService pushNotificationService = new PushNotificationService(
+                    AddNewActivityStep2Activity.this);
 
             pushNotificationService.sendPushToUser(strUserName, strMessage,
                     new App42CallBack() {

@@ -100,7 +100,7 @@
     <string name="existing_request">A Transaction is already in process, Please Wait…</string>
     <string name="click_here">Click Here</string>
     <string name="activity_create_notification_1">Notification from New Zeal Care Services on the&#160;</string>
-    <string name="activity_create_notification_3">&#160;The request for the&#160;</string>
+    <string name="activity_create_notification_3">.The request for the&#160;</string>
     <string name="rating">Rating&#160;:</string>
     <string name="ratings">Ratings</string>
     <string name="rating_add">Add a Rating</string>

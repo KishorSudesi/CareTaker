@@ -140,8 +140,8 @@ public class ConfirmFragment extends Fragment {
                     progressDialog.setCancelable(false);
                     progressDialog.show();
 
-                    //confirmRegister();
-                    callSuccess();
+                    confirmRegister();
+                    //callSuccess();
                 } else utils.toast(2, 2, getString(R.string.warning_internet));
             }
         });
@@ -1035,4 +1035,89 @@ public class ConfirmFragment extends Fragment {
 
         setListView();
     }
+
+    /*public void sendPushToProvider(String strUserName, String strMessage) {
+
+        if (utils.isConnectingToInternet()) {
+
+            PushNotificationService pushNotificationService = new PushNotificationService(
+                   getActivity());
+
+            pushNotificationService.sendPushToUser(strUserName, strMessage,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+
+                            if (o == null)
+
+                        }
+
+                        @Override
+                        public void onException(Exception ex) {
+
+                            if (ex == null)
+
+                        }
+                    });
+        }
+    }
+
+    private void insertNotification() {
+
+        if (utils.isConnectingToInternet()) {
+
+            StorageService storageService = new StorageService(getActivity());
+
+            storageService.insertDocs(jsonObject,
+                    new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                        @Override
+                        public void onDocumentInserted(Storage response) {
+                            try {
+                                if (response.isResponseSuccess()) {
+                                    sendPushToProvider(getStrSelectedCarla, jsonObject.toString());
+                                } else {
+                                    strAlert = getString(R.string.no_push_actiity_added);
+                                    goToActivityList(strAlert);
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                goToActivityList(strAlert);
+                            }
+                        }
+
+                        @Override
+                        public void onUpdateDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onFindDocSuccess(Storage response) {
+                        }
+
+                        @Override
+                        public void onInsertionFailed(App42Exception ex) {
+                            strAlert = getString(R.string.activity_added);
+
+                            if (ex == null)
+                                strAlert = getString(R.string.no_push_actiity_added);
+                            goToActivityList(strAlert);
+                        }
+
+                        @Override
+                        public void onFindDocFailed(App42Exception ex) {
+                        }
+
+                        @Override
+                        public void onUpdateDocFailed(App42Exception ex) {
+                        }
+                    },
+                    Config.collectionNotification);
+        } else {
+            strAlert = getString(R.string.no_push_actiity_added);
+
+            goToActivityList(strAlert);
+        }
+    }*/
 }
