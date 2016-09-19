@@ -789,26 +789,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
 
                                         DependentDetailPersonal.dependentModel = null;
-                                        Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
-                                        Config.intSelectedMenu = Config.intRecipientScreen;
-                                        startActivity(next);
-                                        finish();
-
-
-                                      /*  if (SignupActivity.dependentModels.size() == 2) {
-                                            confirmRegister();
-                                        } else {
-                                            //createDependentUser();
-
-
-                                            DependentDetailPersonal.dependentModel = null;
-                                            Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
-                                            Config.intSelectedMenu=Config.intRecipientScreen;*/
-
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
-
-                                        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+                                       insertProviderDependent(strDependentDocId);
 
 
                                         //  }
@@ -870,7 +851,103 @@ public class DependentDetailsMedical extends AppCompatActivity {
             utils.toast(2, 2, getString(R.string.error));
         }
     }
+    public void insertProviderDependent(String strDependentDocId) {
+        try {
 
+            JSONObject jsonProviderDepen = new JSONObject();
+            jsonProviderDepen.accumulate("dependent_id", strDependentDocId);
+            jsonProviderDepen.accumulate("provider_id", sessionManager.getProvidersIds().get(0));
+            jsonProviderDepen.accumulate("customer_id", Config.customerModel.getStrCustomerID());
+            if (utils.isConnectingToInternet()) {
+
+                StorageService storageService = new StorageService(DependentDetailsMedical.this);
+
+                storageService.insertDocs(jsonProviderDepen,
+                        new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                            @Override
+                            public void onDocumentInserted(Storage response) {
+
+                                if (response != null) {
+                                    Utils.log(response.toString(), "message");
+
+                                    if (response.isResponseSuccess()) {
+
+                                        Intent next = new Intent(DependentDetailsMedical.this, DashboardActivity.class);
+                                        Config.intSelectedMenu = Config.intRecipientScreen;
+                                        startActivity(next);
+                                        finish();
+
+
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+
+                                        utils.toast(1, 1, getString(R.string.dpndnt_details_saved));
+
+                                        //createDependentUser(strDependentEmail);
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.error));
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onUpdateDocSuccess(Storage response) {
+
+                            }
+
+                            @Override
+                            public void onFindDocSuccess(Storage response) {
+
+                            }
+
+                            @Override
+                            public void onInsertionFailed(App42Exception ex) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+
+                                if (ex != null) {
+                                    Utils.log(ex.getMessage(), "");
+                                    utils.toast(2, 2, getString(R.string.error_register));
+
+/*                                    iDependentCount++;
+
+                                    if (SignupActivity.dependentModels.size() == iDependentCount)
+                                        gotoDependnetList();
+                                    else*/
+                                    //createDependentUser();
+
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onFindDocFailed(App42Exception ex) {
+                            }
+
+                            @Override
+                            public void onUpdateDocFailed(App42Exception ex) {
+                            }
+                        }, Config.collectionProviderDependent);
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                utils.toast(2, 2, getString(R.string.warning_internet));
+            }
+
+        } catch (Exception e) {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.error));
+        }
+    }
 
     public void deleteImage() {
 

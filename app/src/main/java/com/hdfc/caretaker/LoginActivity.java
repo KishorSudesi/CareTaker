@@ -512,6 +512,7 @@ public class LoginActivity extends AppCompatActivity {
                             //todo check rolelist
                             //Utils.log(String.valueOf(roleList.size()), " ROLE ");
                             //roleList.size()>0 && roleList.get(0).equalsIgnoreCase("provider");
+
                             utils.fetchCustomer(progressDialog, 1, password, userName);
 
 
@@ -565,6 +566,8 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(selection);
         finish();
     }
+
+
 
 
    /* public class BackgroundThread extends Thread {

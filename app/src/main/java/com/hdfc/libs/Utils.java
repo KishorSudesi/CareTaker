@@ -2407,10 +2407,7 @@ public class Utils {
                 if (DashboardActivity.loadingPanel != null && DashboardActivity.loadingPanel.getVisibility() == View.VISIBLE) {
                     DashboardActivity.loadingPanel.setVisibility(View.GONE);
                 }
-                if (iFlag == 1) {
-                    putLoginLog();
-                    goToDashboard();
-                }
+
             } else if (!isUpdateServer && isConnectingToInternet()) {
                 updateorInsertCustomerData(iFlag, password, userName);
             }
@@ -2731,7 +2728,7 @@ public class Utils {
                                                     }
 
                                                 }
-                                                goToDashboard();
+
                                             }
                                         }
 
@@ -2861,12 +2858,16 @@ public class Utils {
             if (isUpdateServer && isConnectingToInternet()) {
                 updateCustomerDetailOnServer();
             }
+            fetchProviderIdMapped(Config.customerModel.getStrCustomerID());
+
 
             //     }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
     //
 
     public void createServiceModel(String strDocumentId, JSONObject jsonObject) {
@@ -4010,10 +4011,9 @@ public class Utils {
 
         //todo remove this after offline sync enabled
         try {
+            Log.i("TAG","Id:"+sessionManager.getProvidersIds().get(0)+" size:"+sessionManager.getProvidersIds().size());
             Config.strProviderIds.clear();
-            sessionManager.getProvidersIds().clear();
-            Config.strProviderIds.add("5715c39ee4b0d2aca6fe5d17");
-            sessionManager.saveProvidersIds(Config.strProviderIds);
+            Config.strProviderIds.add(sessionManager.getProvidersIds().get(0));
             Cursor cursor = null;
             if (Config.strProviderIds.size() > 0) {
                 DashboardActivity.loadingPanel.setVisibility(View.VISIBLE);
@@ -4195,6 +4195,7 @@ public class Utils {
         }
 
     }
+
 
     //
     public boolean compressImageFromPath(String strPath, int reqWidth, int reqHeight, int iQuality) {
@@ -5295,5 +5296,75 @@ public class Utils {
             }
             threadHandler.sendEmptyMessage(0);
         }
+    }
+
+    public void fetchProviderIdMapped(String strCustomerId) {
+
+        try {
+            if (isConnectingToInternet()) {
+                Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
+                StorageService storageService = new StorageService(_ctxt);
+
+                storageService.findDocsByQuery(Config.collectionProviderDependent, q1, new App42CallBack() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+                        Storage storage = (Storage) o;
+                        if (o != null) {
+
+                            if (storage.getJsonDocList().size() > 0) {
+                                try {
+                                    for (int i = 0; i < storage.getJsonDocList().size(); i++) {
+
+                                        Storage.JSONDocument jsonDocument = storage.
+                                                getJsonDocList().get(i);
+
+                                        String strDocument = jsonDocument.getJsonDoc();
+                                        String strDependentDocId = jsonDocument.getDocId();
+                                        List<String> providerIds = new ArrayList<String>();
+                                        JSONObject jsonObject= new JSONObject(strDocument);
+                                        providerIds.add(jsonObject.optString("provider_id"));
+                                        sessionManager.saveProvidersIds(providerIds);
+                                        break;
+
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
+                                putLoginLog();
+                                goToDashboard();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        try {
+                            if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
+                                putLoginLog();
+                                goToDashboard();
+                            }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
+                    putLoginLog();
+                    goToDashboard();
+                }
+            }
+        } catch (Exception e) {
+            if (sessionManager.isLoggedIn() && (sessionManager.getCustomerId() != null && sessionManager.getCustomerId().length() > 0)) {
+                putLoginLog();
+                goToDashboard();
+            }
+        }
+
+
     }
 }

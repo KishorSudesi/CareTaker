@@ -44,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -161,7 +162,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
+        //getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
         selectedDate = new Date();
 
@@ -284,86 +285,72 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
             StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-            storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email",
-                    getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
-                        @Override
-                        public void onDocumentInserted(Storage response) {
-                        }
+         storageService.findDocsByIdApp42CallBack(sessionManager.getProvidersIds().get(0), Config.collectionProvider, new App42CallBack() {
+             @Override
+             public void onSuccess(Object response) {
 
-                        @Override
-                        public void onUpdateDocSuccess(Storage response) {
-                        }
+                 if (response != null) {
+                     Storage storage = (Storage) response;
 
-                        @Override
-                        public void onFindDocSuccess(Storage response) {
+                     ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
+                     if (jsonDocList.size() > 0) {
 
-                            if (response != null) {
+                         Storage.JSONDocument jsonDocument = jsonDocList.get(0);
+                         String strDocument = jsonDocument.getJsonDoc();
 
-                                if (response.getJsonDocList().size() > 0) {
+                         try {
+                             jsonObjectCarla = new JSONObject(strDocument);
+                             textView6.setText(jsonObjectCarla.getString("provider_name"));
+                             textView7.setText(jsonObjectCarla.getString("provider_email"));
+                             getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                             //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
+                             strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
-                                    Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
-                                    String strDocument = jsonDocument.getJsonDoc();
+                             strProviderId = jsonDocument.getDocId();
 
-                                    try {
-                                        jsonObjectCarla = new JSONObject(strDocument);
-                                        textView6.setText(jsonObjectCarla.getString("provider_name"));
-                                        textView7.setText(jsonObjectCarla.getString("provider_email"));
-                                        //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
-                                        //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
-                                        strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
-
-                                        strProviderId = jsonDocument.getDocId();
-
-                                        if (progressDialog.isShowing())
-                                            progressDialog.dismiss();
+                             if (progressDialog.isShowing())
+                                 progressDialog.dismiss();
 
 //                                    threadHandler = new ThreadHandler();
 //                                    Thread backgroundThread = new BackgroundThread();
 //                                    backgroundThread.start();
-                                        loadImageSimpleTarget(strCarlaImagepath);
+                             loadImageSimpleTarget(strCarlaImagepath);
 
-                                        progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
-                                        progressDialog.setCancelable(false);
-                                        progressDialog.show();
+                             progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
+                             progressDialog.setCancelable(false);
+                             progressDialog.show();
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                         } catch (JSONException e) {
+                             e.printStackTrace();
+                         }
+                     }
 
-                            } else {
-                                if (progressDialog.isShowing())
-                                    progressDialog.dismiss();
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
+                 } else {
+                     if (progressDialog.isShowing())
+                         progressDialog.dismiss();
+                     utils.toast(2, 2, getString(R.string.warning_internet));
+                 }
+             }
 
-                        }
+             @Override
+             public void onException(Exception ex) {
+                 if (progressDialog.isShowing())
+                     progressDialog.dismiss();
 
-                        @Override
-                        public void onInsertionFailed(App42Exception ex) {
-                        }
+                 if (ex != null) {
+                     utils.toast(2, 2, ex.getMessage());
+                 } else {
+                     utils.toast(2, 2, getString(R.string.warning_internet));
+                 }
+             }
+         });
 
-                        @Override
-                        public void onFindDocFailed(App42Exception ex) {
-                            if (progressDialog.isShowing())
-                                progressDialog.dismiss();
 
-                            if (ex != null) {
-                                utils.toast(2, 2, ex.getMessage());
-                            } else {
-                                utils.toast(2, 2, getString(R.string.warning_internet));
-                            }
-                        }
-
-                        @Override
-                        public void onUpdateDocFailed(App42Exception ex) {
-                        }
-                    });
         } else {
             try {
                 textView6.setText(jsonObjectCarla.getString("provider_name"));
                 textView7.setText(jsonObjectCarla.getString("provider_email"));
-                //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
                 //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
                 strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 

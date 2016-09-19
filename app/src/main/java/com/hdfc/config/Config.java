@@ -37,6 +37,8 @@ public class Config {
     public static final String collectionMilestones = "milestones";
     public static final String collectionCheckInCare = "checkincare";
     public static final String collectionLoginLog = "login_log";
+    public static final String collectionProviderDependent = "providerdependent";
+
 
     public static final int iSdkVersion = Build.VERSION.SDK_INT;
     public static final int iAppVersion = BuildConfig.VERSION_CODE;

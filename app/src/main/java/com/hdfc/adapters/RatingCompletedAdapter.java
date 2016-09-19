@@ -76,7 +76,6 @@ public class RatingCompletedAdapter extends BaseAdapter {
             viewHolder.dateTime = (TextView) convertView.findViewById(R.id.dateTimeRating);
             viewHolder.personName = (TextView) convertView.findViewById(R.id.textViewName);
             viewHolder.feedback = (TextView) convertView.findViewById(R.id.feedBack);
-            viewHolder.personImage_copy = (ImageView) convertView.findViewById(R.id.personImage_copy);
             viewHolder.personImage = (ImageView) convertView.findViewById(R.id.personImage);
             viewHolder.smiley = (ImageView) convertView.findViewById(R.id.smileyImage);
 
@@ -165,16 +164,19 @@ public class RatingCompletedAdapter extends BaseAdapter {
                                 @Override
                                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
 
-                                    int intImgHeight = resource.getHeight();
-                                    int sampleSize = Utils.calculateSampleSize(resource.getWidth(), intImgHeight,
-                                            Config.intWidth, Config.intHeight);
-                                    intImgHeight = intImgHeight / sampleSize;
-                                    int height = intImgHeight - 180;
-                                    if (height < 130 && intImgHeight < 180) {
-                                        height = 130;
-                                    }
-
-                                    viewHolder.personImage.getLayoutParams().height = height;
+//                                    int intImgHeight = resource.getHeight();
+//                                    if(intImgHeight>Config.intHeight) {
+//                                        int sampleSize = Utils.calculateSampleSize(resource.getWidth(), intImgHeight,
+//                                                Config.intWidth, Config.intHeight);
+//                                        intImgHeight = intImgHeight / sampleSize;
+//                                        int height = intImgHeight - 180;
+//                                        if (height < 130 && intImgHeight < 180) {
+//                                            height = 130;
+//                                        }
+//
+//
+//                                        viewHolder.personImage.getLayoutParams().height = height;
+//                                    }
 //                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
 //                                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 //                                viewHolder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
