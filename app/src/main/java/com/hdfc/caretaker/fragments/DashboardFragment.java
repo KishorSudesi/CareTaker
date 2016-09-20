@@ -169,6 +169,11 @@ public class DashboardFragment extends Fragment {
             });
 
             leftNav.setVisibility(View.GONE);
+
+            if (Config.dependentModels.size() == 1) {
+                rightNav.setVisibility(View.GONE);
+            }
+
             new setAdapterTask().execute();
 
 

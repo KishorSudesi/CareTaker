@@ -153,7 +153,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 textViewName.setLayoutParams(params);
 */
 
-                Utils.log(milestoneModel.getStrMilestoneName(), " MS ");
+                // Utils.log(milestoneModel.getStrMilestoneName(), " MS ");
 /*
                 if (linearLayout != null) {
                     linearLayout.addView(textViewName);
@@ -285,66 +285,67 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
             StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-         storageService.findDocsByIdApp42CallBack(sessionManager.getProvidersIds().get(0), Config.collectionProvider, new App42CallBack() {
-             @Override
-             public void onSuccess(Object response) {
+            storageService.findDocsByIdApp42CallBack(sessionManager.getProvidersIds().get(0),
+                    Config.collectionProvider, new App42CallBack() {
+                        @Override
+                        public void onSuccess(Object response) {
 
-                 if (response != null) {
-                     Storage storage = (Storage) response;
+                            if (response != null) {
+                                Storage storage = (Storage) response;
 
-                     ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
-                     if (jsonDocList.size() > 0) {
+                                ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
+                                if (jsonDocList.size() > 0) {
 
-                         Storage.JSONDocument jsonDocument = jsonDocList.get(0);
-                         String strDocument = jsonDocument.getJsonDoc();
+                                    Storage.JSONDocument jsonDocument = jsonDocList.get(0);
+                                    String strDocument = jsonDocument.getJsonDoc();
 
-                         try {
-                             jsonObjectCarla = new JSONObject(strDocument);
-                             textView6.setText(jsonObjectCarla.getString("provider_name"));
-                             textView7.setText(jsonObjectCarla.getString("provider_email"));
-                             getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
-                             //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
-                             strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
+                                    try {
+                                        jsonObjectCarla = new JSONObject(strDocument);
+                                        textView6.setText(jsonObjectCarla.getString("provider_name"));
+                                        textView7.setText(jsonObjectCarla.getString("provider_email"));
+                                        getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                                        //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
+                                        strCarlaImagepath = jsonObjectCarla.
+                                                getString("provider_profile_url").trim();
 
-                             strProviderId = jsonDocument.getDocId();
+                                        strProviderId = jsonDocument.getDocId();
 
-                             if (progressDialog.isShowing())
-                                 progressDialog.dismiss();
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
 
-//                                    threadHandler = new ThreadHandler();
-//                                    Thread backgroundThread = new BackgroundThread();
-//                                    backgroundThread.start();
-                             loadImageSimpleTarget(strCarlaImagepath);
+                                        //                                    threadHandler = new ThreadHandler();
+                                        //                                    Thread backgroundThread = new BackgroundThread();
+                                        //                                    backgroundThread.start();
+                                        loadImageSimpleTarget(strCarlaImagepath);
 
-                             progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
-                             progressDialog.setCancelable(false);
-                             progressDialog.show();
+                                        progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
+                                        progressDialog.setCancelable(false);
+                                        progressDialog.show();
 
-                         } catch (JSONException e) {
-                             e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                          }
-                     }
 
-                 } else {
+                            } else {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                     }
+                        }
+
+                        @Override
+                        public void onException(Exception ex) {
                      if (progressDialog.isShowing())
                          progressDialog.dismiss();
-                     utils.toast(2, 2, getString(R.string.warning_internet));
+
+                            if (ex != null) {
+                                utils.toast(2, 2, ex.getMessage());
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
                  }
-             }
-
-             @Override
-             public void onException(Exception ex) {
-                 if (progressDialog.isShowing())
-                     progressDialog.dismiss();
-
-                 if (ex != null) {
-                     utils.toast(2, 2, ex.getMessage());
-                 } else {
-                     utils.toast(2, 2, getString(R.string.warning_internet));
-                 }
-             }
-         });
-
+                    });
 
         } else {
             try {

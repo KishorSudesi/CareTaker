@@ -176,19 +176,26 @@ public class UpdateService extends Service {
             if (utils.isConnectingToInternet()) {
                 String strCustomerId = sessionManager.getCustomerId();
 
-                String defaultDate = null;
+                String defaultDate = Utils.defaultDate;
                 Cursor cursorData = CareTaker.dbCon.getMaxDate(Config.collectionDependent);
+
                 if (cursorData != null && cursorData.getCount() > 0) {
                     cursorData.moveToFirst();
                     defaultDate = cursorData.getString(0);
                     cursorData.close();
-                } else {
-                    defaultDate = Utils.defaultDate;
-                }
+                }/* else {
+                    defaultDate = ;
+                }*/
+
                 Query finalQuery = null;
                 Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
                 // Build query q2
                 if (sessionManager.getDependentsStatus()) {
+
+                    if (defaultDate.equalsIgnoreCase("")) {
+                        defaultDate = Utils.defaultDate;
+                    }
+
                     Query q2 = QueryBuilder.build("_$updatedAt", defaultDate, QueryBuilder.Operator.GREATER_THAN);
 
                     finalQuery = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);

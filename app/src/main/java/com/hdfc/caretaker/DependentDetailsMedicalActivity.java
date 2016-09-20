@@ -889,9 +889,9 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                        } finally {
+                                        }/* finally {
 
-                                        }
+                                        }*/
 
                                     }
                                 } catch (Exception e) {

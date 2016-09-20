@@ -68,6 +68,7 @@ import com.hdfc.app42service.EmailService;
 import com.hdfc.app42service.PushNotificationService;
 import com.hdfc.app42service.StorageService;
 import com.hdfc.app42service.UserService;
+import com.hdfc.caretaker.AddNewActivityStep2Activity;
 import com.hdfc.caretaker.DashboardActivity;
 import com.hdfc.caretaker.LoginActivity;
 import com.hdfc.caretaker.R;
@@ -804,6 +805,8 @@ public class Utils {
                 Config.strServcieIds.clear();
                 Config.strActivityIds.clear();
                 Config.strProviderIds.clear();
+                AddNewActivityStep2Activity.jsonObjectCarla = null;
+                Config.providerModels.clear();
                 Config.strProviderIdsAdded.clear();
                 Config.strServiceCategoryNames.clear();
 
@@ -2256,7 +2259,7 @@ public class Utils {
                 if (jsonObjectProvider.getString("created_by_type").equalsIgnoreCase("provider")) {
                     if (!Config.strProviderIds.contains(jsonObjectProvider.getString("created_by"))) {
                         Config.strProviderIds.add(jsonObjectProvider.getString("created_by"));
-                        sessionManager.saveProvidersIds(Config.strProviderIds);
+                        //sessionManager.saveProvidersIds(Config.strProviderIds);
                     }
                 }
 
@@ -3315,7 +3318,7 @@ public class Utils {
 
                 if (!Config.strProviderIds.contains(jsonObjectActivity.optString("provider_id"))) {
                     Config.strProviderIds.add(jsonObjectActivity.optString("provider_id"));
-                    sessionManager.saveProvidersIds(Config.strProviderIds);
+                    //sessionManager.saveProvidersIds(Config.strProviderIds);
                 }
 
                 activityModel.setStrServcieID(jsonObjectActivity.optString("service_id"));
@@ -5264,40 +5267,6 @@ public class Utils {
         }
     }
 
-    public class ThreadHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-
-            /*if (progressDialog != null && progressDialog.isShowing())
-                progressDialog.dismiss();*/
-
-            try {
-                if (Config.intSelectedMenu == Config.intDashboardScreen) {
-                    DashboardActivity.goToDashboard();
-                }
-
-                DashboardActivity.loadingPanel.setVisibility(View.GONE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-        }
-    }
-
-    public class BackgroundThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                loadAllFiles();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            threadHandler.sendEmptyMessage(0);
-        }
-    }
-
     public void fetchProviderIdMapped(String strCustomerId) {
 
         try {
@@ -5366,5 +5335,39 @@ public class Utils {
         }
 
 
+    }
+
+    public class ThreadHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+
+            /*if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();*/
+
+            try {
+                if (Config.intSelectedMenu == Config.intDashboardScreen) {
+                    DashboardActivity.goToDashboard();
+                }
+
+                DashboardActivity.loadingPanel.setVisibility(View.GONE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                loadAllFiles();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            threadHandler.sendEmptyMessage(0);
+        }
     }
 }
