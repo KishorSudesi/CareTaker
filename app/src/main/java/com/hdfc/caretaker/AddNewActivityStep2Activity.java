@@ -414,10 +414,10 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             //jsonObjectServices.put("videos", jsonArray);
             jsonObjectServices.put("images", jsonArray);
 
-            String strPushMessage = getString(R.string.activity_create_notification_1)
-                    + serviceModel.getStrCategoryName()
-                    //+ getString(R.string.activity_create_notification_2)
-                    + getString(R.string.activity_create_notification_3)
+            String strPushMessage = /*getString(R.string.activity_create_notification_1)
+                    + serviceModel.getStrCategoryName() + "."*/
+                    //+ getString(R.string.activity_create_notification_2) +
+                    getString(R.string.activity_create_notification_3)
                     + serviceModel.getStrServiceName()
                     + getString(R.string.to)
                     + Config.dependentModels.get(Config.intSelectedDependent).getStrName()
