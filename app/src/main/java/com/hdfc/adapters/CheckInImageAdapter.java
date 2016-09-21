@@ -26,7 +26,6 @@ public class CheckInImageAdapter extends BaseAdapter {
     private Context mContext;
     private List<ImageModelCheck> data;
     private LayoutInflater inflater;
-    private int height = 240, width = 240;
 
     // Constructor
     public CheckInImageAdapter(Context c, List<ImageModelCheck> list) {
@@ -54,7 +53,6 @@ public class CheckInImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ImageView imageView;
         final ViewHolder viewHolder;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.check_in_grid_row_item, null);
@@ -65,7 +63,7 @@ public class CheckInImageAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        // imageView.setImageResource(Integer.parseInt(data.get(position).getStrImageUrl()));
+
         if (data.size() > 0) {
             Glide.with(mContext)
                     .load(data.get(position).getStrImageUrl())
@@ -73,13 +71,17 @@ public class CheckInImageAdapter extends BaseAdapter {
                     .centerCrop()
                     .listener(new RequestListener<String, Bitmap>() {
                         @Override
-                        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        public boolean onException(Exception e, String model, Target<Bitmap> target,
+                                                   boolean isFirstResource) {
                             viewHolder.progressBar.setVisibility(View.GONE);
                             return false;
                         }
 
                         @Override
-                        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(Bitmap resource, String model,
+                                                       Target<Bitmap> target,
+                                                       boolean isFromMemoryCache,
+                                                       boolean isFirstResource) {
                             viewHolder.progressBar.setVisibility(View.GONE);
                             return false;
                         }
@@ -87,7 +89,7 @@ public class CheckInImageAdapter extends BaseAdapter {
                     // .transform(new CropCircleTransformation(mContext))
                     .placeholder(R.drawable.person_icon)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .override(width, height)
+                    .override(240, 240)
                     .into(viewHolder.imageView);
         }
         return convertView;
@@ -95,6 +97,6 @@ public class CheckInImageAdapter extends BaseAdapter {
 
     public class ViewHolder {
         public ProgressBar progressBar;
-        public ImageView imageView;
+        ImageView imageView;
     }
 }

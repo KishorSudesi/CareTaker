@@ -32,14 +32,11 @@ public class NotificationAdapter extends BaseAdapter {
     private Context _context;
     private List<NotificationModel> adapterNotificationModels;
     private Utils utils;
-    private String strUrl, strName;
-    //private MultiBitmapLoader multiBitmapLoader;
 
     public NotificationAdapter(Context ctxt, List<NotificationModel> d) {
         _context = ctxt;
         adapterNotificationModels = d;
         utils = new Utils(ctxt);
-        //multiBitmapLoader = new MultiBitmapLoader(ctxt);
     }
 
     @Override
@@ -87,8 +84,8 @@ public class NotificationAdapter extends BaseAdapter {
 
         if (adapterNotificationModels.size() > 0) {
 
-            strUrl = "";
-            strName = "";
+            String strUrl = "";
+            String strName = "";
 
             if (adapterNotificationModels.get(position).getStrMessage().length() > 70) {
                 viewHolder.textReadMore.setVisibility(View.VISIBLE);

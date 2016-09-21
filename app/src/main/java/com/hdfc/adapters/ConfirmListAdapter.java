@@ -23,23 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ConfirmListAdapter extends BaseExpandableListAdapter {
+
     private Context _context;
-
-    //private List<ConfirmCustomerModel> _listDataHeader;
     private List<CustomerModel> _listDataHeader;
-    // child data in format of header title, child title
-//    private HashMap<ConfirmCustomerModel, List<ConfirmDependentModel>> _listDataChild;
     private HashMap<CustomerModel, List<DependentModel>> _listDataChild;
-    //private Utils utils;
     private MultiBitmapLoader multiBitmapLoader;
-//    private ExpandableListView expListView;
 
-    public ConfirmListAdapter() {
-    }
-
-    public ConfirmListAdapter(Context context, List<CustomerModel> listDataHeader, HashMap<CustomerModel, List<DependentModel>> listChildData) {
+    public ConfirmListAdapter(Context context, List<CustomerModel> listDataHeader,
+                              HashMap<CustomerModel, List<DependentModel>> listChildData) {
         this._context = context;
-        //utils = new Utils(_context);
         multiBitmapLoader = new MultiBitmapLoader(_context);
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -59,11 +51,13 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final DependentModel confirmDependentModel = (DependentModel) getChild(groupPosition, childPosition);
+        final DependentModel confirmDependentModel = (DependentModel) getChild(groupPosition,
+                childPosition);
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_item_dependents, null);
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
@@ -101,16 +95,13 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.client);
         } else {
-            viewHolder.client.setImageDrawable(_context.getResources().getDrawable(R.drawable.person_icon));
+            viewHolder.client.setImageDrawable(_context.getResources().getDrawable(
+                    R.drawable.person_icon));
         }
 
         viewHolder.client.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
-                ///Config.dependentModel = (DependentModel) v.getTag();
-                //Config.customerModel = null;
-
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("editflag", true);
                 bundle.putInt("childposition", childPosition);
@@ -120,10 +111,6 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             }
         });
 
-//        TextView txtListChild = (TextView) convertView
-//                .findViewById(R.id.lblListItem);
-//
-//        txtListChild.setText(childText);
         return convertView;
     }
 
@@ -151,8 +138,6 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        // final CustomerModel confirmCustomerModel = (CustomerModel) getGroup(groupPosition);
-        final CustomerModel customerModel = (CustomerModel) getGroup(groupPosition);
 
         ExpandableListView expandableListView = (ExpandableListView) parent;
         expandableListView.expandGroup(groupPosition);
@@ -160,7 +145,8 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater infalInflater = (LayoutInflater) this._context.
+                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_group_customers, null);
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.textViewName);
@@ -173,9 +159,6 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        /*viewHolder.name.setText(confirmCustomerModel.getStrName());
-        viewHolder.contact.setText(confirmCustomerModel.getStrContacts());
-        viewHolder.address.setText(confirmCustomerModel.getStrAddress());*/
         String strName = Config.customerModel.getStrName();
 
         if (strName != null && strName.length() > 20)
@@ -185,30 +168,12 @@ public class ConfirmListAdapter extends BaseExpandableListAdapter {
         viewHolder.contact.setText(Config.customerModel.getStrContacts());
         viewHolder.address.setText(Config.customerModel.getStrAddress());
 
-        // File fileImage = Utils.createFileInternal("images/" + utils.replaceSpace(confirmCustomerModel.getStrCustomerID()));
-        //File fileImage = new File(customerModel.getStrImgPath());
-
-        //File fileImage = new File("/storage/sdcard0/Android/data/com.hdfc.caretaker/files/Pictures/1464327754189.jpeg");
         File fileImage = new File(Config.customerModel.getStrImgPath());
 
         if (fileImage.exists()) {
             String filename = fileImage.getAbsolutePath();
             multiBitmapLoader.loadBitmap(filename, viewHolder.customer);
-        } else {
-            //System.out.println("Does not exists");
-            //viewHolder.customer.setImageDrawable(_context.getResources().getDrawable(R.drawable.carla1));
         }
-
-       /* viewHolder.customer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //Config.customerModel = (CustomerModel) v.getTag();
-                //Config.dependentModel = null;
-              *//*  Intent intent = new Intent(_context, ClientProfileActivity.class);
-                _context.startActivity(intent);*//*
-            }
-        });*/
 
         return convertView;
     }

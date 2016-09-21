@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -42,7 +41,6 @@ public class RatingCompletedAdapter extends BaseAdapter {
         _ctx = context;
         data = x;
         utils = new Utils(context);
-        //multiBitmapLoader = new MultiBitmapLoader(context);
     }
 
     @Override
@@ -79,12 +77,6 @@ public class RatingCompletedAdapter extends BaseAdapter {
             viewHolder.personImage = (ImageView) convertView.findViewById(R.id.personImage);
             viewHolder.smiley = (ImageView) convertView.findViewById(R.id.smileyImage);
 
-           /* try {
-                // viewHolder.linearLayoutRoot = (LinearLayout) convertView.findViewById(R.id.confirmLayoutRoot);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-
             convertView.setTag(viewHolder);
 
         } else {
@@ -116,7 +108,8 @@ public class RatingCompletedAdapter extends BaseAdapter {
                 }
 
                 if (strType.equalsIgnoreCase("dependent")) {
-                    int iPosition = Config.strDependentIds.indexOf(data.get(position).getStrFeedBackBy());
+                    int iPosition = Config.strDependentIds.indexOf(data.get(position).
+                            getStrFeedBackBy());
                     strName = Config.dependentModels.get(iPosition).getStrName();
                     strUrl = Config.dependentModels.get(iPosition).getStrImageUrl();
                 }
@@ -126,31 +119,6 @@ public class RatingCompletedAdapter extends BaseAdapter {
                 viewHolder.personName.setText(strAuthor);
 
                 try {
-
-//                File file = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrFeedBackBy()));
-//
-//                Utils.log(file.getAbsolutePath(), " PATH ");
-//
-//                if (file.exists()) {
-//
-//                    String strPath = file.getAbsolutePath();
-//
-//                    int intImgHeight = utils.getBitmapHeightFromFile(strPath);
-//
-//                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//                    viewHolder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
-//
-//                    if (Build.VERSION.SDK_INT <= 16)
-//                        viewHolder.linearLayoutRoot.setBackgroundDrawable(_ctx.getResources().getDrawable(R.drawable.confirm_view));
-//                    else
-//                        viewHolder.linearLayoutRoot.setBackground(_ctx.getResources().getDrawable(R.drawable.confirm_view));
-//
-//                    layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
-//                    viewHolder.linearLayoutRoot.setLayoutParams(layoutParams);
-//
-//                    multiBitmapLoader.loadBitmap(strPath, viewHolder.personImage);
-//                }
 
                     Glide.with(_ctx)
                             .load(strUrl)
@@ -162,33 +130,9 @@ public class RatingCompletedAdapter extends BaseAdapter {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-
-//                                    int intImgHeight = resource.getHeight();
-//                                    if(intImgHeight>Config.intHeight) {
-//                                        int sampleSize = Utils.calculateSampleSize(resource.getWidth(), intImgHeight,
-//                                                Config.intWidth, Config.intHeight);
-//                                        intImgHeight = intImgHeight / sampleSize;
-//                                        int height = intImgHeight - 180;
-//                                        if (height < 130 && intImgHeight < 180) {
-//                                            height = 130;
-//                                        }
-//
-//
-//                                        viewHolder.personImage.getLayoutParams().height = height;
-//                                    }
-//                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//                                viewHolder.linearLayoutRoot.setOrientation(LinearLayout.VERTICAL);
-//
-//                                if (Build.VERSION.SDK_INT <= 16)
-//                                    viewHolder.linearLayoutRoot.setBackgroundDrawable(_ctx.getResources().getDrawable(R.drawable.confirm_view));
-//                                else
-//                                    viewHolder.linearLayoutRoot.setBackground(_ctx.getResources().getDrawable(R.drawable.confirm_view));
-//
-//                                layoutParams.setMargins(0, intImgHeight / 2, 0, 0); //left, top, right, bottom
-//                                viewHolder.linearLayoutRoot.setLayoutParams(layoutParams);
-
+                                public void onResourceReady(Bitmap resource,
+                                                            GlideAnimation<? super Bitmap>
+                                                                    glideAnimation) {
                                     viewHolder.personImage.setImageBitmap(resource);
                                 }
                             });
@@ -196,12 +140,6 @@ public class RatingCompletedAdapter extends BaseAdapter {
                 } catch (Exception | OutOfMemoryError e) {
                     e.printStackTrace();
                 }
-                //
-
-                //String strMess = data.get(position).getStrFeedBackMessage();
-
-           /* if(strMess.length()>60)
-                strMess = strMess.substring(0,58)+"..";*/
 
                 viewHolder.feedback.setText(data.get(position).getStrFeedBackMessage());
 
@@ -210,7 +148,8 @@ public class RatingCompletedAdapter extends BaseAdapter {
                 else
                     viewHolder.feedback.setTextColor(Color.BLACK);
 
-                viewHolder.smiley.setImageResource(intImageIds[data.get(position).getIntFeedBackRating()
+                viewHolder.smiley.setImageResource(intImageIds[data.get(position).
+                        getIntFeedBackRating()
                         - 1]);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -220,8 +159,8 @@ public class RatingCompletedAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        public LinearLayout linearLayoutRoot;
-        ImageView personImage, personImage_copy;
+        //public LinearLayout linearLayoutRoot;
+        ImageView personImage;
         ImageView smiley;
         TextView feedback;
         TextView personName;

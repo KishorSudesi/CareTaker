@@ -325,26 +325,26 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                         }
+                                }
 
                             } else {
                                 if (progressDialog.isShowing())
                                     progressDialog.dismiss();
                                 utils.toast(2, 2, getString(R.string.warning_internet));
-                     }
+                            }
                         }
 
                         @Override
                         public void onException(Exception ex) {
-                     if (progressDialog.isShowing())
-                         progressDialog.dismiss();
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
 
                             if (ex != null) {
                                 utils.toast(2, 2, ex.getMessage());
                             } else {
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
-                 }
+                        }
                     });
 
         } else {
@@ -419,11 +419,11 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                     + serviceModel.getStrCategoryName() + "."*/
                     //+ getString(R.string.activity_create_notification_2) +
                     getString(R.string.activity_create_notification_3)
-                    + serviceModel.getStrServiceName()
-                    + getString(R.string.to)
-                    + Config.dependentModels.get(Config.intSelectedDependent).getStrName()
-                    + getString(R.string.has_created)
-                    + getString(R.string.at) + strDate;
+                            + serviceModel.getStrServiceName()
+                            + getString(R.string.to)
+                            + Config.dependentModels.get(Config.intSelectedDependent).getStrName()
+                            + getString(R.string.has_created)
+                            + getString(R.string.at) + strDate;
 
             jsonObject = new JSONObject();
 

@@ -4014,7 +4014,7 @@ public class Utils {
 
         //todo remove this after offline sync enabled
         try {
-            Log.i("TAG","Id:"+sessionManager.getProvidersIds().get(0)+" size:"+sessionManager.getProvidersIds().size());
+            Log.i("TAG", "Id:" + sessionManager.getProvidersIds().get(0) + " size:" + sessionManager.getProvidersIds().size());
             Config.strProviderIds.clear();
             Config.strProviderIds.add(sessionManager.getProvidersIds().get(0));
             Cursor cursor = null;
@@ -5291,7 +5291,7 @@ public class Utils {
                                         String strDocument = jsonDocument.getJsonDoc();
                                         String strDependentDocId = jsonDocument.getDocId();
                                         List<String> providerIds = new ArrayList<String>();
-                                        JSONObject jsonObject= new JSONObject(strDocument);
+                                        JSONObject jsonObject = new JSONObject(strDocument);
                                         providerIds.add(jsonObject.optString("provider_id"));
                                         sessionManager.saveProvidersIds(providerIds);
                                         break;

@@ -123,7 +123,8 @@ public class App42GCMController {
     }
 
     @SuppressLint({"NewApi"})
-    public static void getRegistrationId(Context context, String googleProjectNo, App42GCMController.App42GCMListener callBack) {
+    public static void getRegistrationId(Context context, String googleProjectNo,
+                                         App42GCMController.App42GCMListener callBack) {
         try {
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
             String regid = getRegistrationId(context);
@@ -142,7 +143,9 @@ public class App42GCMController {
     }
 
 
-    public static void registeronGCM(Context context, final String googleProjectNo, final GoogleCloudMessaging gcm, final App42GCMController.App42GCMListener callback) {
+    public static void registeronGCM(Context context, final String googleProjectNo,
+                                     final GoogleCloudMessaging gcm,
+                                     final App42GCMController.App42GCMListener callback) {
         final Handler callingThreadHandler = new Handler();
         (new Thread() {
             public void run() {
@@ -171,18 +174,20 @@ public class App42GCMController {
         }).start();
     }
 
-    public static void registerOnApp42(String userName, String deviceToen, final App42GCMController.App42GCMListener callBack) {
+    public static void registerOnApp42(String userName, String deviceToen,
+                                       final App42GCMController.App42GCMListener callBack) {
         try {
-            App42API.buildPushNotificationService().storeDeviceToken(userName, deviceToen, new App42CallBack() {
-                public void onSuccess(Object arg0) {
-                    App42Response response = (App42Response) arg0;
-                    callBack.onRegisterApp42(response.getStrResponse());
-                }
+            App42API.buildPushNotificationService().storeDeviceToken(userName,
+                    deviceToen, new App42CallBack() {
+                        public void onSuccess(Object arg0) {
+                            App42Response response = (App42Response) arg0;
+                            callBack.onRegisterApp42(response.getStrResponse());
+                        }
 
-                public void onException(Exception arg0) {
-                    callBack.onApp42Response(arg0.getMessage());
-                }
-            });
+                        public void onException(Exception arg0) {
+                            callBack.onApp42Response(arg0.getMessage());
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }

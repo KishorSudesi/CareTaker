@@ -115,7 +115,6 @@ public class AddDependentFragment extends Fragment {
             adapter.notifyDataSetChanged();
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -25,15 +25,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class CalendarAdapter extends BaseAdapter {
-    public final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
-    public final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
-    public final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
     //public final static SimpleDateFormat readFormat = new SimpleDateFormat("kk:mm aa dd MMM yyyy",
-    public final static SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Utils.locale);
+    public final static SimpleDateFormat readFormat = new
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Utils.locale);
+    private final static SimpleDateFormat writeFormatDate = new SimpleDateFormat("dd", Locale.US);
+    private final static SimpleDateFormat writeFormatMonth = new SimpleDateFormat("MMMM", Locale.US);
+    private final static SimpleDateFormat writeFormatYear = new SimpleDateFormat("yyyy", Locale.US);
     private static final int DAY_OFFSET = 1;
     private final Context _context;
     private final List<String> list;
-    public List<ActivityModel> activityModels = new ArrayList<>();
+    private List<ActivityModel> activityModels = new ArrayList<>();
     private int currentDayOfMonth;
     private int currentWeekDay;
     private int mCurrentPosition = -1;
@@ -73,12 +74,12 @@ public class CalendarAdapter extends BaseAdapter {
     }
 
     private void printMonth(int mm, int yy) {
-        int trailingSpaces = 0;
-        int daysInPrevMonth = 0;
-        int prevMonth = 0;
-        int prevYear = 0;
-        int nextMonth = 0;
-        int nextYear = 0;
+        int trailingSpaces;
+        int daysInPrevMonth;
+        int prevMonth;
+        int prevYear;
+        int nextMonth;
+        int nextYear;
 
         int currentMonth = mm - 1;
         int daysInMonth = getNumberOfDaysOfMonth(currentMonth);
@@ -150,7 +151,7 @@ public class CalendarAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        ViewHolder holder = null;
+        ViewHolder holder;
         if (row == null) {
             LayoutInflater inflater = (LayoutInflater) _context.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
@@ -232,7 +233,7 @@ public class CalendarAdapter extends BaseAdapter {
         return row;
     }
 
-    public int getCurrentDayOfMonth() {
+    private int getCurrentDayOfMonth() {
         return currentDayOfMonth;
     }
 
@@ -240,23 +241,23 @@ public class CalendarAdapter extends BaseAdapter {
         this.currentDayOfMonth = currentDayOfMonth;
     }
 
-    public int getCurrentWeekDay() {
+   /* public int getCurrentWeekDay() {
         return currentWeekDay;
-    }
+    }*/
 
-    public void setCurrentWeekDay(int currentWeekDay) {
+    private void setCurrentWeekDay(int currentWeekDay) {
         this.currentWeekDay = currentWeekDay;
     }
 
-    public int getmCurrentPosition() {
+   /* public int getmCurrentPosition() {
         return mCurrentPosition;
-    }
+    }*/
 
     public void setmCurrentPosition(int mCurrentPosition) {
         this.mCurrentPosition = mCurrentPosition;
     }
 
     public class ViewHolder {
-        public Button gridcell;
+        private Button gridcell;
     }
 }

@@ -153,8 +153,8 @@ encrypt(false);*/
         return inserted;
     }
 
-    Cursor fetch(String tbl, String names[], String where, String args[], String order, String limit,
-                 boolean isDistinct, String groupBy, String having) {
+    Cursor fetch(String tbl, String names[], String where, String args[], String order,
+                 String limit, boolean isDistinct, String groupBy, String having) {
 
         if (db != null && !db.isOpen())
             open();

@@ -789,7 +789,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
 
 
                                         DependentDetailPersonal.dependentModel = null;
-                                       insertProviderDependent(strDependentDocId);
+                                        insertProviderDependent(strDependentDocId);
 
 
                                         //  }
@@ -851,6 +851,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
             utils.toast(2, 2, getString(R.string.error));
         }
     }
+
     public void insertProviderDependent(String strDependentDocId) {
         try {
 
