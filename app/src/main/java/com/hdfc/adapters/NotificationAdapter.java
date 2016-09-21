@@ -90,19 +90,18 @@ public class NotificationAdapter extends BaseAdapter {
             strUrl = "";
             strName = "";
 
-            //String strMessage = strMess;
-
             if (adapterNotificationModels.get(position).getStrMessage().length() > 70) {
                 viewHolder.textReadMore.setVisibility(View.VISIBLE);
                 viewHolder.textReadMore.setTag(adapterNotificationModels.get(position).
+                        getStrMessage());
+                viewHolder.textViewText.setText(adapterNotificationModels.get(position).
                         getStrMessage().substring(0, 68));
             } else {
                 viewHolder.textReadMore.setVisibility(View.GONE);
                 viewHolder.textReadMore.setEnabled(false);
+                viewHolder.textViewText.setText(adapterNotificationModels.get(position).
+                        getStrMessage());
             }
-            //
-
-            viewHolder.textViewText.setText(adapterNotificationModels.get(position).getStrMessage());
 
             viewHolder.textReadMore.setOnClickListener(new View.OnClickListener() {
                 @Override

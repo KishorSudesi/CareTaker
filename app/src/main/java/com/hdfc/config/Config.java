@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by balamurugan@adstringo.in on 23-12-2015.
@@ -47,7 +46,7 @@ public class Config {
     public static final String string = Utils.getStringJni();
     public static final int START_CAMERA_REQUEST_CODE = 1;
     public static final int START_GALLERY_REQUEST_CODE = 2;
-    public static final int CACHE_EXPIRE = 1;//In Minutes
+    //public static final int CACHE_EXPIRE = 1;//In Minutes
     public static final int intWidth = 300, intHeight = 300;
     public static final String strCustomerImageName = "customer_image";
     public static final String[] weekNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -123,7 +122,7 @@ public class Config {
             "963", "886", "992", "255", "66", "228", "690", "676", "216", "90",
             "993", "688", "971", "256", "44", "380", "598", "1", "998", "678",
             "39", "58", "84", "681", "967", "260", "263"};
-    public static final String[] countryCodes = {"", "AF", "AL", "DZ", "AD", "AO",
+    /*public static final String[] countryCodes = {"", "AF", "AL", "DZ", "AD", "AO",
             "AQ", "AR", "AM", "AW", "AU", "AT", "AZ", "BH", "BD", "BY", "BE",
             "BZ", "BJ", "BT", "BO", "BA", "BW", "BR", "BN", "BG", "BF", "MM",
             "BI", "KH", "CM", "CA", "CV", "CF", "TD", "CL", "CN", "CX", "CC",
@@ -143,26 +142,26 @@ public class Config {
             "TZ", "TH", "TG", "TK", "TO", "TN", "TR", "TM", "TV", "AE", "UG",
             "GB", "UA", "UY", "US", "UZ", "VU", "VA", "VE", "VN", "WF", "YE",
             "ZM", "ZW"
-    };
+    };*/
     public static final ArrayList<String> strCountries = new ArrayList<>(Arrays.asList(countryNames));
     public static final ArrayList<String> strRelationsList = new ArrayList<>(Arrays.asList(strRelations));
     public static final String strReload = "RELOAD";
     public static final String names_collection_table[] = {"object_id", "updated_date", "document", "collection_name", "dependent_id", "status", "doc_date", "is_updated"};
     public static final String names_update[] = {"is_updated"};
-    public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
+    //public static final String names_file_table[] = {"id", "name", "url", "file_type", "file_hash"};
     public static final String viewRefreshAction = "com.caretaker.action.refresh.view";
     public static byte START_FROM_DASHBOARD = 0;
     public static byte START_FROM_NOTIFICATION = 1;
     public static byte START_FROM_ACTIVITY = 3;
-    public static TimeZone timeZone = TimeZone.getDefault();
+    //public static TimeZone timeZone = TimeZone.getDefault();
     public static int intNotificationScreen = 2;
-    public static int intServiceScreen = 7;
+    //public static int intServiceScreen = 7;
     public static int intActivityScreen = 5;
     public static int intListActivityScreen = 6;
     public static int intAccountScreen = 3;
     public static int intRecipientScreen = 8;
     public static int intDashboardScreen = 1;
-    public static int intReportsScreen = 4;
+    //public static int intReportsScreen = 4;
     public static int intScreenWidth = 0;
     //public static ArrayList<ServiceModel> serviceModels = new ArrayList<>();
     //User Specific clear at logout or whenever needed
@@ -200,12 +199,12 @@ public class Config {
     public static String strUserName = "";
     public static ArrayList<FileModel> fileModels = new ArrayList<>();
     public static ArrayList<String> strServiceCategoryNames = new ArrayList<>();
-    public static ArrayList<String> customerEmail = new ArrayList<>();
+    //public static ArrayList<String> customerEmail = new ArrayList<>();
     public static List<CheckInCareModel> checkInCareActivityNames = new ArrayList<>();
     public static List<PictureModel> roomtypeName = new ArrayList<>();
 
-    public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
+    //public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 
-    public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
+    //public enum MilestoneStatus {INACTIVE, OPENED, INPROCESS, COMPLETED, REOPENED, PENDING}
 
 }
