@@ -18,11 +18,8 @@ import com.hdfc.views.MyLinearView;
 public class DependAdapter extends FragmentPagerAdapter implements
         ViewPager.OnPageChangeListener {
 
-    private MyLinearView cur = null;
-    private MyLinearView next = null;
     private Context context;
     private FragmentManager fm;
-    private float scale;
 
     public DependAdapter(Context context, FragmentManager fm) {
         super(fm);
@@ -34,7 +31,7 @@ public class DependAdapter extends FragmentPagerAdapter implements
     public Fragment getItem(int position) {
         // make the first pager bigger than others
         /*if (position == DashboardFragment.FIRST_PAGE)*/
-        scale = DashboardFragment.BIG_SCALE;
+        float scale = DashboardFragment.BIG_SCALE;
        /* else
             scale = DashboardFragment.SMALL_SCALE;
 */
@@ -53,7 +50,7 @@ public class DependAdapter extends FragmentPagerAdapter implements
     public void onPageScrolled(int position, float positionOffset,
                                int positionOffsetPixels) {
         if (positionOffset >= 0f && positionOffset <= 1f) {
-            cur = getRootView(position);
+            MyLinearView cur = getRootView(position);
             cur.setScaleBoth(MyAccountFragment.BIG_SCALE - MyAccountFragment.DIFF_SCALE *
                     positionOffset);
 
@@ -64,7 +61,7 @@ public class DependAdapter extends FragmentPagerAdapter implements
                 DashboardFragment.loadData(0);*/
 
             if (position < MyAccountFragment.PAGES - 1) {
-                next = getRootView(position + 1);
+                MyLinearView next = getRootView(position + 1);
                 next.setScaleBoth(MyAccountFragment.SMALL_SCALE + MyAccountFragment.DIFF_SCALE *
                         positionOffset);
             }

@@ -127,7 +127,8 @@ public class MileStoneAdapter extends BaseExpandableListAdapter {
 
         JSONObject jsonObject = null;
 
-        if (fieldModel.getStrArrayData() != null && !fieldModel.getStrArrayData().equalsIgnoreCase("")) {
+        if (fieldModel.getStrArrayData() != null && !fieldModel.getStrArrayData().
+                equalsIgnoreCase("")) {
             strArrayData = fieldModel.getStrArrayData();
             viewHolder.textViewValue.setText(_context.getString(R.string.click_here));
 
@@ -168,9 +169,11 @@ public class MileStoneAdapter extends BaseExpandableListAdapter {
 
                 JSONArray jsonArray = jsonObject.getJSONArray("array_data");
 
-                View view = ((Activity) _context).getLayoutInflater().inflate(R.layout.dialog_view, null, false);
+                View view = ((Activity) _context).getLayoutInflater().inflate(R.layout.dialog_view,
+                        null, false);
 
-                final LinearLayout layoutDialog = (LinearLayout) view.findViewById(R.id.linearLayoutDialog);
+                final LinearLayout layoutDialog = (LinearLayout) view.findViewById(R.id.
+                        linearLayoutDialog);
                 final TextView textView = (TextView) view.findViewById(R.id.milestoneName);
 
                 textView.setText(_context.getString(R.string.medicines));
@@ -180,18 +183,22 @@ public class MileStoneAdapter extends BaseExpandableListAdapter {
                 LinearLayout linearLayoutArrayInner1 = new LinearLayout(_context);
                 linearLayoutArrayInner1.setOrientation(LinearLayout.HORIZONTAL);
 
-                LinearLayout.LayoutParams layoutArrayInnerParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams layoutArrayInnerParams1 = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
                 layoutArrayInnerParams1.setMargins(10, 10, 10, 10);
                 linearLayoutArrayInner1.setLayoutParams(layoutArrayInnerParams1);
 
                 TextView textViewName1 = new TextView(_context);
-                textViewName1.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                textViewName1.setLayoutParams(new LinearLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 1));
                 textViewName1.setText(_context.getString(R.string.medicine_name));
                 textViewName1.setTextAppearance(_context, R.style.boldtext);
                 linearLayoutArrayInner1.addView(textViewName1);
 
                 TextView textViewQty1 = new TextView(_context);
-                textViewQty1.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                textViewQty1.setLayoutParams(new LinearLayout.LayoutParams(0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT, 1));
                 textViewQty1.setText(_context.getString(R.string.quantity));
                 textViewQty1.setTextAppearance(_context, R.style.boldtext);
                 linearLayoutArrayInner1.addView(textViewQty1);
@@ -203,19 +210,23 @@ public class MileStoneAdapter extends BaseExpandableListAdapter {
                     LinearLayout linearLayoutArrayInner = new LinearLayout(_context);
                     linearLayoutArrayInner.setOrientation(LinearLayout.HORIZONTAL);
 
-                    LinearLayout.LayoutParams layoutArrayInnerParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    LinearLayout.LayoutParams layoutArrayInnerParams = new LinearLayout.
+                            LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
                     layoutArrayInnerParams.setMargins(10, 10, 10, 10);
                     linearLayoutArrayInner.setLayoutParams(layoutArrayInnerParams);
 
                     JSONObject jsonObjectInner = jsonArray.getJSONObject(j);
 
                     TextView textViewName = new TextView(_context);
-                    textViewName.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                    textViewName.setLayoutParams(new LinearLayout.LayoutParams(0,
+                            ViewGroup.LayoutParams.WRAP_CONTENT, 1));
                     textViewName.setText(jsonObjectInner.getString("medicine_name"));
                     linearLayoutArrayInner.addView(textViewName);
 
                     TextView textViewQty = new TextView(_context);
-                    textViewQty.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+                    textViewQty.setLayoutParams(new LinearLayout.LayoutParams(0,
+                            ViewGroup.LayoutParams.WRAP_CONTENT, 1));
                     textViewQty.setText(String.valueOf(jsonObjectInner.getInt("medicine_qty")));
                     linearLayoutArrayInner.addView(textViewQty);
 
@@ -230,14 +241,11 @@ public class MileStoneAdapter extends BaseExpandableListAdapter {
                     }
                 });
 
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(_context);
                 builder.setView(view);
                 dialog = builder.create();
 
                 dialog.show();
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();

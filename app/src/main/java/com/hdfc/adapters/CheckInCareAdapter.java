@@ -61,14 +61,15 @@ public class CheckInCareAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-//+ "-" + data.get(position).getStrStatus() this text to be added later
-        viewHolder.name.setText(getMonth(data.get(position).getStrMonth()) + "-" + data.get(position).getStrName());
+        //+ "-" + data.get(position).getStrStatus() this text to be added later
+        viewHolder.name.setText(getMonth(data.get(position).getStrMonth()) + "-"
+                + data.get(position).getStrName());
 
         return convertView;
     }
 
-    public String getMonth(String month) {
-        int intMonth = 0;
+    private String getMonth(String month) {
+        int intMonth;
         try {
             intMonth = Integer.parseInt(month);
         } catch (NumberFormatException e) {
@@ -80,7 +81,6 @@ public class CheckInCareAdapter extends BaseAdapter {
 
     public class ViewHolder {
         TextView name;
-
     }
 
 }

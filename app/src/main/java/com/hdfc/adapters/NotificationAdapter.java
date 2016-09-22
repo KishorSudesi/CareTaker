@@ -32,13 +32,11 @@ public class NotificationAdapter extends BaseAdapter {
     private Context _context;
     private List<NotificationModel> adapterNotificationModels;
     private Utils utils;
-    //private MultiBitmapLoader multiBitmapLoader;
 
     public NotificationAdapter(Context ctxt, List<NotificationModel> d) {
         _context = ctxt;
         adapterNotificationModels = d;
         utils = new Utils(ctxt);
-        //multiBitmapLoader = new MultiBitmapLoader(ctxt);
     }
 
     @Override
@@ -86,38 +84,28 @@ public class NotificationAdapter extends BaseAdapter {
 
         if (adapterNotificationModels.size() > 0) {
 
-            //mNotifyPosition = -1;
-
-            //NotificationModel notificationModel = adapterNotificationModels.get(position);
-
-            String strId = adapterNotificationModels.get(position).getStrCreatedByID();
             String strUrl = "";
+            String strName = "";
 
-            String strName = "", strMess = "";
-
-            //
-            strMess = adapterNotificationModels.get(position).getStrMessage();
-
-            String strMessage = strMess;
-
-            if (strMess.length() > 70) {
-                strMess = strMess.substring(0, 68);
+            if (adapterNotificationModels.get(position).getStrMessage().length() > 70) {
                 viewHolder.textReadMore.setVisibility(View.VISIBLE);
-                viewHolder.textReadMore.setTag(strMessage);
+                viewHolder.textReadMore.setTag(adapterNotificationModels.get(position).
+                        getStrMessage());
+                viewHolder.textViewText.setText(adapterNotificationModels.get(position).
+                        getStrMessage().substring(0, 68));
             } else {
                 viewHolder.textReadMore.setVisibility(View.GONE);
                 viewHolder.textReadMore.setEnabled(false);
+                viewHolder.textViewText.setText(adapterNotificationModels.get(position).
+                        getStrMessage());
             }
-            //
-
-            viewHolder.textViewText.setText(strMess);
 
             viewHolder.textReadMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String strMessage = (String) v.getTag();
                     final AlertDialog.Builder builder = new AlertDialog.Builder(_context);
-                    builder.setTitle("Notification");
+                    builder.setTitle(_context.getString(R.string.text_notification));
                     builder.setMessage(strMessage);
                     builder.setPositiveButton(_context.getString(R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
@@ -129,9 +117,12 @@ public class NotificationAdapter extends BaseAdapter {
                 }
             });
 
-            if (adapterNotificationModels.get(position).getStrCreatedByType().equalsIgnoreCase("provider")) {
-                if (Config.strProviderIds.contains(strId)) {
-                    mNotifyPosition = Config.strProviderIds.indexOf(strId);
+            if (adapterNotificationModels.get(position).getStrCreatedByType().
+                    equalsIgnoreCase("provider")) {
+                if (Config.strProviderIds.contains(adapterNotificationModels.get(position).
+                        getStrCreatedByID())) {
+                    mNotifyPosition = Config.strProviderIds.indexOf(adapterNotificationModels.
+                            get(position).getStrCreatedByID());
 
                     if (mNotifyPosition > -1 && mNotifyPosition < Config.providerModels.size())
                         strName = Config.providerModels.get(mNotifyPosition).getStrName();
@@ -142,9 +133,12 @@ public class NotificationAdapter extends BaseAdapter {
                 }
             }
 
-            if (adapterNotificationModels.get(position).getStrCreatedByType().equalsIgnoreCase("dependent")) {
-                if (Config.strDependentIds.contains(strId)) {
-                    mNotifyPosition = Config.strDependentIds.indexOf(strId);
+            if (adapterNotificationModels.get(position).getStrCreatedByType().
+                    equalsIgnoreCase("dependent")) {
+                if (Config.strDependentIds.contains(adapterNotificationModels.get(position).
+                        getStrCreatedByID())) {
+                    mNotifyPosition = Config.strDependentIds.indexOf(adapterNotificationModels.
+                            get(position).getStrCreatedByID());
 
                     if (mNotifyPosition > -1 && mNotifyPosition < Config.dependentModels.size())
                         strName = Config.dependentModels.get(mNotifyPosition).getStrName();
@@ -152,7 +146,8 @@ public class NotificationAdapter extends BaseAdapter {
                 }
             }
 
-            if (adapterNotificationModels.get(position).getStrCreatedByType().equalsIgnoreCase("customer")) {
+            if (adapterNotificationModels.get(position).getStrCreatedByType().
+                    equalsIgnoreCase("customer")) {
                 strName = Config.customerModel.getStrName();
                 strUrl = Config.customerModel.getStrImgUrl();
             }

@@ -25,16 +25,12 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 public class ActivityMonthListAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    //public MultiBitmapLoader multiBitmapLoader;
     private Context _context;
     private List<ActivityModel> data;
-    //private Utils utils;
 
     public ActivityMonthListAdapter(Context ctxt, List<ActivityModel> y) {
         _context = ctxt;
         data = y;
-        //multiBitmapLoader = new MultiBitmapLoader(ctxt);
-        //utils = new Utils(ctxt);
     }
 
     @Override
@@ -64,10 +60,12 @@ public class ActivityMonthListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
 
             viewHolder.textViewActivity = (TextView) convertView.findViewById(R.id.textViewActivity);
-            viewHolder.textViewDescription = (TextView) convertView.findViewById(R.id.textViewDescription);
+            viewHolder.textViewDescription = (TextView) convertView.findViewById(R.id.
+                    textViewDescription);
             viewHolder.imageViewPerson = (ImageView) convertView.findViewById(R.id.imageViewPerson);
 
-            viewHolder.linearLayoutDone = (LinearLayout) convertView.findViewById(R.id.linearLayoutDone);
+            viewHolder.linearLayoutDone = (LinearLayout) convertView.findViewById(R.id.
+                    linearLayoutDone);
 
             convertView.setTag(viewHolder);
         } else {
@@ -75,8 +73,6 @@ public class ActivityMonthListAdapter extends BaseAdapter {
         }
 
         if (data.size() > 0) {
-
-            // ActivityModel activityModel = data.get(position);
 
             viewHolder.textViewActivity.setText(data.get(position).getStrActivityName());
 
@@ -89,40 +85,24 @@ public class ActivityMonthListAdapter extends BaseAdapter {
 
             viewHolder.textViewActivity.setTag(data.get(position));
 
-            //multiBitmapLoader.loadBitmap(activityModel.getStrDependentName(), viewHolder.imageViewPerson);
-
-
-            //////////////////
             if ((data.get(position).getStrActivityStatus().equalsIgnoreCase("open"))
                     || data.get(position).getStrActivityStatus().equalsIgnoreCase("inprocess")) {
-                /*viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                        getColor(R.color.orange));*/
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
 
             }
 
             if (data.get(position).getStrActivityStatus().equalsIgnoreCase("completed")) {
-                /*viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                        getColor(R.color.colorPrimary));*/
                 viewHolder.linearLayoutDone.setVisibility(View.VISIBLE);
             }
 
             if (data.get(position).getStrActivityStatus().equalsIgnoreCase("new")) {
-               /* viewHolder.linearLayout.setBackgroundColor(_context.getResources().
-                        getColor(R.color.colorWhite));*/
                 viewHolder.linearLayoutDone.setVisibility(View.GONE);
 
             }
 
-            //////////////////
-
             try {
-
-//                File f = utils.getInternalFileImages(utils.replaceSpace(data.get(position).getStrDependentID().trim()));
-//
-//                if (f.exists())
-//                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.imageViewPerson);
-                int iPosition = Config.strProviderIdsAdded.indexOf(data.get(position).getStrProviderID().trim());
+                int iPosition = Config.strProviderIdsAdded.indexOf(data.get(position).
+                        getStrProviderID().trim());
                 Glide.with(_context)
                         .load(Config.providerModels.get(iPosition).getStrImgUrl())
                         .centerCrop()
@@ -135,11 +115,9 @@ public class ActivityMonthListAdapter extends BaseAdapter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
 
         return convertView;
-
     }
 
     public class ViewHolder {

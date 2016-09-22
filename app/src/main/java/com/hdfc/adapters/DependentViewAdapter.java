@@ -29,7 +29,6 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 public class DependentViewAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    // private MultiBitmapLoader multiBitmapLoader;
     private Context _ctxt;
     private ArrayList data;
 
@@ -37,7 +36,6 @@ public class DependentViewAdapter extends BaseAdapter {
         _ctxt = ctxt;
         data = d;
         inflater = (LayoutInflater) _ctxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //multiBitmapLoader = new MultiBitmapLoader(_ctxt);
     }
 
     public int getCount() {
@@ -100,8 +98,8 @@ public class DependentViewAdapter extends BaseAdapter {
                        /* multiBitmapLoader.loadBitmap(dependentModel.getStrImagePath().trim(),
                                 holder.image);*/
                     } else {
-                        holder.image.setImageBitmap(BitmapFactory.decodeResource(_ctxt.getResources(),
-                                R.drawable.person_icon));
+                        holder.image.setImageBitmap(BitmapFactory.decodeResource(
+                                _ctxt.getResources(), R.drawable.person_icon));
                     }
 
                 } else {
@@ -128,7 +126,7 @@ public class DependentViewAdapter extends BaseAdapter {
                     String strName =
                             ((TextView) v.findViewById(R.id.textViewName)).getText().toString();
 
-                    if (strName != null && strName.equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))) {
+                    if (strName.equalsIgnoreCase(_ctxt.getResources().getString(R.string.add_dependent))) {
                         Intent selection = new Intent(_ctxt, DependentDetailPersonalActivity.class);
                         ((Activity) _ctxt).finish();
                         _ctxt.startActivity(selection);
@@ -145,9 +143,9 @@ public class DependentViewAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        public TextView textName;
-        public TextView textRelation;
         //public TextView textViewLabel;
         public ImageView image;
+        TextView textName;
+        TextView textRelation;
     }
 }

@@ -215,9 +215,9 @@ public class NotificationFragment extends Fragment {
                         intent.putExtras(args);
                         startActivity(intent);
                     }
-                } else {
+                } /*else {
 
-                }
+                }*/
 
 
             }
@@ -272,9 +272,9 @@ public class NotificationFragment extends Fragment {
 
                                 }
 
-                            } else {
+                            }/* else {
 
-                            }
+                            }*/
 
                         }
 
@@ -326,7 +326,7 @@ public class NotificationFragment extends Fragment {
 
                 if (!Config.strProviderIds.contains(jsonObjectActivity.optString("provider_id"))) {
                     Config.strProviderIds.add(jsonObjectActivity.optString("provider_id"));
-                    sessionManager.saveProvidersIds(Config.strProviderIds);
+                    //sessionManager.saveProvidersIds(Config.strProviderIds);
                 }
 
                 activityModel.setStrServcieID(jsonObjectActivity.optString("service_id"));

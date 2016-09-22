@@ -34,6 +34,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
@@ -769,6 +771,182 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                         DependentDetailPersonalActivity.dependentModel.setStrCustomerID(Config.customerModel.getStrCustomerID());
                                         SignupActivity.dependentModels.add(DependentDetailPersonalActivity.dependentModel);
 
+                                        if (sessionManager.getProvidersIds() != null && sessionManager.getProvidersIds().size() > 0) {
+                                            insertProviderDependent(strDependentDocId);
+                                        } else {
+                                            fetchAllProviders(strDependentDocId);
+                                        }
+
+
+                                        //createDependentUser(strDependentEmail);
+                                    } else {
+                                        if (progressDialog.isShowing())
+                                            progressDialog.dismiss();
+                                        utils.toast(2, 2, getString(R.string.error));
+                                    }
+                                } else {
+                                    if (progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onUpdateDocSuccess(Storage response) {
+
+                            }
+
+                            @Override
+                            public void onFindDocSuccess(Storage response) {
+
+                            }
+
+                            @Override
+                            public void onInsertionFailed(App42Exception ex) {
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+
+                                if (ex != null) {
+                                    Utils.log(ex.getMessage(), "");
+                                    utils.toast(2, 2, getString(R.string.error_register));
+
+/*                                    iDependentCount++;
+
+                                    if (SignupActivity.dependentModels.size() == iDependentCount)
+                                        gotoDependnetList();
+                                    else*/
+                                    //createDependentUser();
+
+                                } else {
+                                    utils.toast(2, 2, getString(R.string.warning_internet));
+                                }
+                            }
+
+                            @Override
+                            public void onFindDocFailed(App42Exception ex) {
+                            }
+
+                            @Override
+                            public void onUpdateDocFailed(App42Exception ex) {
+                            }
+                        }, Config.collectionDependent);
+            } else {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+                utils.toast(2, 2, getString(R.string.warning_internet));
+            }
+
+        } catch (Exception e) {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.error));
+        }
+    }
+
+    public void fetchAllProviders(final String dependentId) {
+
+        //todo remove this after offline sync enabled
+        try {
+            if (utils.isConnectingToInternet()) {
+
+                StorageService storageService = new StorageService(DependentDetailsMedicalActivity.this);
+
+                storageService.findAllDocs(Config.collectionProvider,
+                        new App42CallBack() {
+
+                            @Override
+                            public void onSuccess(Object o) {
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                try {
+                                    if (o != null) {
+
+                                        Utils.log(o.toString(), " Response Success");
+                                        List<String> provideIdList = new ArrayList<String>();
+                                        Storage storage = (Storage) o;
+                                        try {
+                                            if (storage.getJsonDocList().size() > 0) {
+                                                for (int i = 0; i < storage.getJsonDocList().size(); i++) {
+
+                                                    Storage.JSONDocument jsonDocument = storage.
+                                                            getJsonDocList().get(i);
+
+                                                    String strDocument = jsonDocument.getJsonDoc();
+                                                    String strProviderDocId = jsonDocument.
+                                                            getDocId();
+                                                    provideIdList.add(strProviderDocId);
+
+                                                }
+
+                                                Random randomGenerator = new Random();
+                                                int index = randomGenerator.nextInt(provideIdList.size());
+                                                List<String> provideIds = new ArrayList<String>();
+                                                provideIds.add(provideIdList.get(index));
+                                                sessionManager.saveProvidersIds(provideIds);
+                                                insertProviderDependent(dependentId);
+                                            }
+
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }/* finally {
+
+                                        }*/
+
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onException(Exception e) {
+                                    /*if (progressDialog.isShowing())
+                                        progressDialog.dismiss();*/
+                                try {
+                                    Utils.log(e.getMessage(), " Response Failure");
+
+                                    if (e != null) {
+
+                                    } else {
+                                        utils.toast(2, 2, getString(R.string.warning_internet));
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+
+                                }
+                            }
+                        });
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void insertProviderDependent(String strDependentDocId) {
+        try {
+
+            JSONObject jsonProviderDepen = new JSONObject();
+            jsonProviderDepen.accumulate("dependent_id", strDependentDocId);
+            jsonProviderDepen.accumulate("provider_id", sessionManager.getProvidersIds().get(0));
+            jsonProviderDepen.accumulate("customer_id", Config.customerModel.getStrCustomerID());
+            if (utils.isConnectingToInternet()) {
+
+                StorageService storageService = new StorageService(DependentDetailsMedicalActivity.this);
+
+                storageService.insertDocs(jsonProviderDepen,
+                        new AsyncApp42ServiceApi.App42StorageServiceListener() {
+
+                            @Override
+                            public void onDocumentInserted(Storage response) {
+
+                                if (response != null) {
+                                    Utils.log(response.toString(), "message");
+
+                                    if (response.isResponseSuccess()) {
+
                                         if (SignupActivity.dependentModels.size() == 2) {
                                             confirmRegister();
                                         } else {
@@ -839,7 +1017,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                             @Override
                             public void onUpdateDocFailed(App42Exception ex) {
                             }
-                        }, Config.collectionDependent);
+                        }, Config.collectionProviderDependent);
             } else {
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();

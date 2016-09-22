@@ -25,8 +25,6 @@ public class CareTaker extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // initImageLoaderConfiguration();
     }
 
     @Override
@@ -56,26 +54,4 @@ public class CareTaker extends Application {
         }
         return mTracker;
     }
-
-//    public void initImageLoaderConfiguration() {
-//        // UNIVERSAL IMAGE LOADER SETUP
-//        defaultOptions = new DisplayImageOptions.Builder()
-//                .showImageForEmptyUri(R.drawable.person_icon)
-//                .showImageOnFail(R.drawable.person_icon)
-//                .cacheInMemory(true)
-//                .cacheOnDisk(true)
-//                .imageScaleType(ImageScaleType.EXACTLY)
-//
-//                .considerExifParams(true)
-//                .displayer(new FadeInBitmapDisplayer(300))
-//                .build();
-//
-//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-//                getApplicationContext())
-//                .defaultDisplayImageOptions(defaultOptions)
-//                .memoryCache(new WeakMemoryCache())
-//                .discCacheSize(100 * 1024 * 1024).build();
-//
-//        ImageLoader.getInstance().init(config);
-//    }
 }

@@ -84,8 +84,8 @@ public class StorageService {
     public void findDocsByQueryOrderBy(String strCollectionName, Query query, int max, int offset,
                                        String strKey, int iOrderFlag, App42CallBack app42CallBack) {
         try {
-            asyncService.findDocumentByQueryPagingOrderBy(Config.dbName, strCollectionName, query, max,
-                    offset, strKey, iOrderFlag, app42CallBack);
+            asyncService.findDocumentByQueryPagingOrderBy(Config.dbName, strCollectionName, query,
+                    max, offset, strKey, iOrderFlag, app42CallBack);
         } catch (Exception e) {
             e.printStackTrace();
         }

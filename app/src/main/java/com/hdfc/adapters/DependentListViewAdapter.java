@@ -26,17 +26,13 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  */
 public class DependentListViewAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
-    //public MultiBitmapLoader multiBitmapLoader;
     private Context contxt;
     private ArrayList data;
-    //private Utils utils;
 
     public DependentListViewAdapter(Context ctxt, ArrayList d) {
         contxt = ctxt;
         data = d;
         inflater = (LayoutInflater) contxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        // multiBitmapLoader = new MultiBitmapLoader(contxt);
-        //utils = new Utils(contxt);
     }
 
     public int getCount() {
@@ -54,7 +50,7 @@ public class DependentListViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         View vi = convertView;
-        ViewHolder holder = null;
+        ViewHolder holder;
 
         DependentModel editDependentModel = (DependentModel) data.get(position);
 
@@ -73,7 +69,6 @@ public class DependentListViewAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) vi.getTag();
         }
-        // holder.image.setTag(editDependentModel);
 
         String strName = editDependentModel.getStrName();
 
@@ -90,17 +85,6 @@ public class DependentListViewAdapter extends BaseAdapter {
         holder.age.setText(editDependentModel.getStrAge());
         holder.textRelation.setText(editDependentModel.getStrRelation());
 
-        //File fileImage = new File(editDependentModel.getStrImagePath());
-
-
-//        File fileImage = utils.getInternalFileImages(editDependentModel.getStrDependentID());
-//
-//        if (fileImage.exists()) {
-//            String filename = fileImage.getAbsolutePath();
-//            multiBitmapLoader.loadBitmap(filename, holder.image);
-//        } else {
-//            holder.image.setImageDrawable(contxt.getResources().getDrawable(R.drawable.person_icon));
-//        }
         try {
 
 
@@ -116,7 +100,6 @@ public class DependentListViewAdapter extends BaseAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         holder.linearlayoutview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,11 +118,11 @@ public class DependentListViewAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
-        public TextView textName;
-        public TextView textRelation;
         public ImageView image;
         public TextView address;
         public TextView age;
-        public LinearLayout linearlayoutview;
+        TextView textName;
+        TextView textRelation;
+        LinearLayout linearlayoutview;
     }
 }

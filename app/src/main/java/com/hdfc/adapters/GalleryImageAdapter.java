@@ -32,7 +32,6 @@ public class GalleryImageAdapter extends BaseAdapter {
     public GalleryImageAdapter(Context ctxt, List<String> urlList) {
         _context = ctxt;
         imageUrlList = urlList;
-        //utils = new Utils(ctxt);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class GalleryImageAdapter extends BaseAdapter {
 
         final ViewHolder viewHolder;
 
-        int mNotifyPosition;
+        //int mNotifyPosition;
 
         if (inflater == null)
             inflater = (LayoutInflater) _context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -67,7 +66,8 @@ public class GalleryImageAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
 
 
-            viewHolder.roundedImageView = (ImageView) convertView.findViewById(R.id.imageViewThumbnail);
+            viewHolder.roundedImageView = (ImageView) convertView.findViewById(R.id.
+                    imageViewThumbnail);
             viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
 
             convertView.setTag(viewHolder);
@@ -77,40 +77,9 @@ public class GalleryImageAdapter extends BaseAdapter {
 
         if (imageUrlList.size() > 0) {
 
-
-            String strUrl = "";
-
-
-            //
-            strUrl = imageUrlList.get(position);
-
-
-//            viewHolder.roundedImageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    String strMessage = (String) v.getTag();
-//                    final AlertDialog.Builder builder = new AlertDialog.Builder(_context);
-//                    builder.setTitle("Notification");
-//                    builder.setMessage(strMessage);
-//                    builder.setPositiveButton(_context.getString(R.string.ok), new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    builder.show();
-//                }
-//            });
-
+            String strUrl = imageUrlList.get(position);
 
             try {
-                //File f = utils.getInternalFileImages(utils.replaceSpace(strId));
-
-                //Utils.log(f.getAbsolutePath(), " P ");
-
-//                if (f.exists())
-//                    multiBitmapLoader.loadBitmap(f.getAbsolutePath(), viewHolder.roundedImageView);
-
 
                 Glide.with(_context)
                         .load(strUrl)
@@ -121,7 +90,8 @@ public class GalleryImageAdapter extends BaseAdapter {
                         .placeholder(R.drawable.person_icon)
                         .listener(new RequestListener<String, Bitmap>() {
                             @Override
-                            public boolean onException(Exception e, String model, Target<Bitmap> target,
+                            public boolean onException(Exception e, String model,
+                                                       Target<Bitmap> target,
                                                        boolean isFirstResource) {
                                 if (viewHolder.progressBar != null)
                                     viewHolder.progressBar.setVisibility(View.GONE);
@@ -149,9 +119,7 @@ public class GalleryImageAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-
         ImageView roundedImageView;
         ProgressBar progressBar;
-
     }
 }

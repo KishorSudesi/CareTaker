@@ -44,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -152,7 +153,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                 textViewName.setLayoutParams(params);
 */
 
-                Utils.log(milestoneModel.getStrMilestoneName(), " MS ");
+                // Utils.log(milestoneModel.getStrMilestoneName(), " MS ");
 /*
                 if (linearLayout != null) {
                     linearLayout.addView(textViewName);
@@ -161,7 +162,7 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
+        //getStrSelectedCarla = CARLAS[0]; //new Random().nextInt((1 - 0) + 1) + 0
 
         selectedDate = new Date();
 
@@ -284,42 +285,37 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
             StorageService storageService = new StorageService(AddNewActivityStep2Activity.this);
 
-            storageService.findDocsByKeyValue(Config.collectionProvider, "provider_email",
-                    getStrSelectedCarla, new AsyncApp42ServiceApi.App42StorageServiceListener() {
+            storageService.findDocsByIdApp42CallBack(sessionManager.getProvidersIds().get(0),
+                    Config.collectionProvider, new App42CallBack() {
                         @Override
-                        public void onDocumentInserted(Storage response) {
-                        }
-
-                        @Override
-                        public void onUpdateDocSuccess(Storage response) {
-                        }
-
-                        @Override
-                        public void onFindDocSuccess(Storage response) {
+                        public void onSuccess(Object response) {
 
                             if (response != null) {
+                                Storage storage = (Storage) response;
 
-                                if (response.getJsonDocList().size() > 0) {
+                                ArrayList<Storage.JSONDocument> jsonDocList = storage.getJsonDocList();
+                                if (jsonDocList.size() > 0) {
 
-                                    Storage.JSONDocument jsonDocument = response.getJsonDocList().get(0);
+                                    Storage.JSONDocument jsonDocument = jsonDocList.get(0);
                                     String strDocument = jsonDocument.getJsonDoc();
 
                                     try {
                                         jsonObjectCarla = new JSONObject(strDocument);
                                         textView6.setText(jsonObjectCarla.getString("provider_name"));
                                         textView7.setText(jsonObjectCarla.getString("provider_email"));
-                                        //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                                        getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
                                         //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
-                                        strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
+                                        strCarlaImagepath = jsonObjectCarla.
+                                                getString("provider_profile_url").trim();
 
                                         strProviderId = jsonDocument.getDocId();
 
                                         if (progressDialog.isShowing())
                                             progressDialog.dismiss();
 
-//                                    threadHandler = new ThreadHandler();
-//                                    Thread backgroundThread = new BackgroundThread();
-//                                    backgroundThread.start();
+                                        //                                    threadHandler = new ThreadHandler();
+                                        //                                    Thread backgroundThread = new BackgroundThread();
+                                        //                                    backgroundThread.start();
                                         loadImageSimpleTarget(strCarlaImagepath);
 
                                         progressDialog.setMessage(getResources().getString(R.string.text_loader_processing));
@@ -336,15 +332,10 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                     progressDialog.dismiss();
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
-
                         }
 
                         @Override
-                        public void onInsertionFailed(App42Exception ex) {
-                        }
-
-                        @Override
-                        public void onFindDocFailed(App42Exception ex) {
+                        public void onException(Exception ex) {
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
 
@@ -354,16 +345,13 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
                         }
-
-                        @Override
-                        public void onUpdateDocFailed(App42Exception ex) {
-                        }
                     });
+
         } else {
             try {
                 textView6.setText(jsonObjectCarla.getString("provider_name"));
                 textView7.setText(jsonObjectCarla.getString("provider_email"));
-                //getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
+                getStrSelectedCarla = jsonObjectCarla.getString("provider_email");
                 //strSelectedCarla = utils.replaceSpace(jsonObjectCarla.getString("provider_name"));
                 strCarlaImagepath = jsonObjectCarla.getString("provider_profile_url").trim();
 
@@ -427,15 +415,15 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
             //jsonObjectServices.put("videos", jsonArray);
             jsonObjectServices.put("images", jsonArray);
 
-            String strPushMessage = getString(R.string.activity_create_notification_1)
-                    + serviceModel.getStrCategoryName()
-                    //+ getString(R.string.activity_create_notification_2)
-                    + getString(R.string.activity_create_notification_3)
-                    + serviceModel.getStrServiceName()
-                    + getString(R.string.to)
-                    + Config.dependentModels.get(Config.intSelectedDependent).getStrName()
-                    + getString(R.string.has_created)
-                    + getString(R.string.at) + strDate;
+            String strPushMessage = /*getString(R.string.activity_create_notification_1)
+                    + serviceModel.getStrCategoryName() + "."*/
+                    //+ getString(R.string.activity_create_notification_2) +
+                    getString(R.string.activity_create_notification_3)
+                            + serviceModel.getStrServiceName()
+                            + getString(R.string.to)
+                            + Config.dependentModels.get(Config.intSelectedDependent).getStrName()
+                            + getString(R.string.has_created)
+                            + getString(R.string.at) + strDate;
 
             jsonObject = new JSONObject();
 
@@ -878,7 +866,8 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 
         if (utils.isConnectingToInternet()) {
 
-            PushNotificationService pushNotificationService = new PushNotificationService(AddNewActivityStep2Activity.this);
+            PushNotificationService pushNotificationService = new PushNotificationService(
+                    AddNewActivityStep2Activity.this);
 
             pushNotificationService.sendPushToUser(strUserName, strMessage,
                     new App42CallBack() {

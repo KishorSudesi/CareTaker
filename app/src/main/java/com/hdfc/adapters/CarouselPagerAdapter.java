@@ -104,15 +104,13 @@ public class CarouselPagerAdapter extends FragmentPagerAdapter implements
 
     private MyLinearView getRootView(int position) {
 
-        //Utils.log(String.valueOf(fm.findFragmentByTag(this.getFragmentTag(position))+ " : " + position), " NPE ");
-
         return (MyLinearView)
-                fm.findFragmentByTag(this.getFragmentTag(position)).getView().findViewById(R.id.root);
+                fm.findFragmentByTag(this.getFragmentTag(position)).getView().
+                        findViewById(R.id.root);
 
     }
 
     private String getFragmentTag(int position) {
-        //Utils.log(String.valueOf("android:switcher:" + DashboardFragment.pager.getId() + ":" + position), " NPE 0 ");
         return "android:switcher:" + DashboardFragment.pager.getId() + ":" + position;
     }
 }

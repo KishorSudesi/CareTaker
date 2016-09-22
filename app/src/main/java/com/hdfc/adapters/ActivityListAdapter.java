@@ -110,7 +110,8 @@ public class ActivityListAdapter extends BaseAdapter {
 
             String strTimeStamp = utils.convertDateToString(date);
 
-            if (activityListModel.getStrActivityDate() != null && !activityListModel.getStrActivityDate().equalsIgnoreCase(""))
+            if (activityListModel.getStrActivityDate() != null && !activityListModel.
+                    getStrActivityDate().equalsIgnoreCase(""))
                 strTimeStamp = activityListModel.getStrActivityDate();
 
             viewHolder.dateNumber.setText(strTimeStamp.substring(8, 10));
@@ -144,7 +145,7 @@ public class ActivityListAdapter extends BaseAdapter {
 
             viewHolder.Message.setText(strMess);
 
-            strMess = "";
+            //strMess = "";
 
             String strAuthor = strCarlaName + _context.getResources().getString(R.string.at);
 

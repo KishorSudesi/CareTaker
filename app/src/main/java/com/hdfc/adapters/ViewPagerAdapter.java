@@ -9,11 +9,9 @@ import com.hdfc.caretaker.fragments.AddDependentFragment;
 import com.hdfc.caretaker.fragments.ConfirmFragment;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-    public static int totalPage = 2;
 
     public ViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
-
     }
 
     @Override
@@ -22,8 +20,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 f = AddDependentFragment.newInstance();
-
-//                f = GuruDetailsFragment.newInstance();
                 break;
             case 1:
                 f = ConfirmFragment.newInstance();
@@ -34,17 +30,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return f;
     }
 
-    //@Override
-    //chk this
-    //chk this
-    /*public int getItemPosition(Object object) {
-        return super.getItemPosition(POSITION_NONE );
-    }*/
-
     @Override
     public int getCount() {
-        return totalPage;
+        return 2;
     }
-
-
 }

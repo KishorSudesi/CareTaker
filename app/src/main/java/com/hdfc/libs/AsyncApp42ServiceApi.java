@@ -431,6 +431,7 @@ public class AsyncApp42ServiceApi {
             @Override
             public void run() {
                 try {
+
                     final Storage response = storageService.findDocumentById(dbName, collectionName, docId);
                     callerThreadHandler.post(new Runnable() {
                         @Override

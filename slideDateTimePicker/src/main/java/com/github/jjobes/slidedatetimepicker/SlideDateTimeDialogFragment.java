@@ -50,6 +50,7 @@ public class SlideDateTimeDialogFragment extends DialogFragment implements DateF
     private int mIndicatorColor;
     private Date mMinDate;
     private Date mMaxDate;
+    private boolean isCalendarViewShown = true;
     private boolean mIsClientSpecified24HourTime;
     private boolean mIs24HourTime;
     private boolean mIsShowTime;
@@ -58,6 +59,7 @@ public class SlideDateTimeDialogFragment extends DialogFragment implements DateF
             DateUtils.FORMAT_SHOW_WEEKDAY |
                     DateUtils.FORMAT_SHOW_DATE |
                     DateUtils.FORMAT_ABBREV_ALL;
+    private int viewPagerCount = 0;
 
     public SlideDateTimeDialogFragment() {
         // Required empty public constructor

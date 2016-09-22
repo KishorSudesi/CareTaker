@@ -96,8 +96,8 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final ViewGroup viewGroup = parent;
-        final int pos = childPosition;
+        /*final ViewGroup viewGroup = parent;
+        final int pos = childPosition;*/
 
         final ServiceModel serviceModel = (ServiceModel) getChild(groupPosition, childPosition);
 
@@ -116,7 +116,7 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        View c = parent.getChildAt(childPosition);
+        //View c = parent.getChildAt(childPosition);
 
         String strTemp = serviceModel.getStrServiceName() + " - (" +
                 String.valueOf(serviceModel.getiUnit() - serviceModel.getiUnitUsed()) + " " +
@@ -132,6 +132,7 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder.checkBoxService.setEnabled(true);
         }
+
         if (serviceModel.isSelected()) {
             viewHolder.checkBoxService.setChecked(true);
             viewHolder.checkBoxService.setButtonDrawable(_context.getResources().
@@ -141,23 +142,6 @@ public class ActivityServicesAdapter extends BaseExpandableListAdapter {
             viewHolder.checkBoxService.setButtonDrawable(_context.getResources().
                     getDrawable(R.mipmap.tick_disable));
         }
-
-        /*viewHolder.checkBoxService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //
-
-                *//*parent.getExpandableListAdapter().getChild(groupPosition, childPosition);
-
-                    View v1 = viewGroup.getChildAt(groupPosition);
-                    RadioButton checkBoxAll = (RadioButton) v1.findViewById(R.id.checkBoxService);
-                    checkBoxAll.setChecked(false);*//*
-
-                //
-
-            }
-        });*/
-
 
         return convertView;
     }

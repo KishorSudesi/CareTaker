@@ -19,7 +19,8 @@ public class App42GCMReceiver extends WakefulBroadcastReceiver {
         //Log.e("App42GCMReceiver",String.valueOf(sPre.getBoolean("LOGGED_IN", false)));
         //if(sPre.getBoolean("LOGGED_IN",false)) {
         try {
-            ComponentName comp = new ComponentName(context.getPackageName(), App42GCMService.class.getName());
+            ComponentName comp = new ComponentName(context.getPackageName(),
+                    App42GCMService.class.getName());
             //Log.e("MESSAGE RECEIVED : ", comp.toString());
             startWakefulService(context, intent.setComponent(comp));
             this.setResultCode(Activity.RESULT_OK);
