@@ -859,6 +859,7 @@ public class DependentDetailsMedical extends AppCompatActivity {
             jsonProviderDepen.accumulate("dependent_id", strDependentDocId);
             jsonProviderDepen.accumulate("provider_id", sessionManager.getProvidersIds().get(0));
             jsonProviderDepen.accumulate("customer_id", Config.customerModel.getStrCustomerID());
+            jsonProviderDepen.accumulate("removed", "0");
             if (utils.isConnectingToInternet()) {
 
                 StorageService storageService = new StorageService(DependentDetailsMedical.this);

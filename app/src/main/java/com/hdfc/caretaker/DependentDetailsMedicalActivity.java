@@ -862,7 +862,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                     if (o != null) {
 
                                         Utils.log(o.toString(), " Response Success");
-                                        List<String> provideIdList = new ArrayList<String>();
+                                        List<String> provideIdList = new ArrayList<>();
                                         Storage storage = (Storage) o;
                                         try {
                                             if (storage.getJsonDocList().size() > 0) {
@@ -871,7 +871,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                                     Storage.JSONDocument jsonDocument = storage.
                                                             getJsonDocList().get(i);
 
-                                                    String strDocument = jsonDocument.getJsonDoc();
+                                                    //String strDocument = jsonDocument.getJsonDoc();
                                                     String strProviderDocId = jsonDocument.
                                                             getDocId();
                                                     provideIdList.add(strProviderDocId);
@@ -880,7 +880,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
 
                                                 Random randomGenerator = new Random();
                                                 int index = randomGenerator.nextInt(provideIdList.size());
-                                                List<String> provideIds = new ArrayList<String>();
+                                                List<String> provideIds = new ArrayList<>();
                                                 provideIds.add(provideIdList.get(index));
                                                 sessionManager.saveProvidersIds(provideIds);
                                                 insertProviderDependent(dependentId);
@@ -906,9 +906,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                                 try {
                                     Utils.log(e.getMessage(), " Response Failure");
 
-                                    if (e != null) {
-
-                                    } else {
+                                    if (e == null) {
                                         utils.toast(2, 2, getString(R.string.warning_internet));
                                     }
                                 } catch (Exception e1) {
@@ -932,6 +930,7 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
             jsonProviderDepen.accumulate("dependent_id", strDependentDocId);
             jsonProviderDepen.accumulate("provider_id", sessionManager.getProvidersIds().get(0));
             jsonProviderDepen.accumulate("customer_id", Config.customerModel.getStrCustomerID());
+            jsonProviderDepen.accumulate("removed", "0");
             if (utils.isConnectingToInternet()) {
 
                 StorageService storageService = new StorageService(DependentDetailsMedicalActivity.this);
