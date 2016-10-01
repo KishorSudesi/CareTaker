@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -32,6 +33,7 @@ import com.hdfc.app42service.UserService;
 import com.hdfc.config.Config;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
+import com.hdfc.models.UpdateVersionModel;
 import com.hdfc.views.CheckView;
 import com.scottyab.aescrypt.AESCrypt;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
@@ -68,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     private int measuredheight = 0;
     private Context mContext;
     private SessionManager sessionManager;
+    private static StorageService storageService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +137,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+
+      //  updateVersion();
 
        /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -573,6 +578,102 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    public void updateVersion() {
+
+        if (utils.isConnectingToInternet()) {
+
+            storageService = new StorageService(LoginActivity.this);
+
+            storageService.findAllDocs(Config.collectionUpdateVersion, new App42CallBack() {
+
+                @Override
+                public void onSuccess(Object o) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+
+                    Storage response = (Storage) o;
+
+                    if (response != null) {
+
+                        if (response.getJsonDocList().size() > 0) {
+                            try {
+                                for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                    Storage.JSONDocument jsonDocument = response.
+                                            getJsonDocList().get(i);
+
+                                    String strDocument = jsonDocument.getJsonDoc();
+                                    try {
+                                        JSONObject jsonObjectActivity =
+                                                new JSONObject(strDocument);
+                                        // utils.createUpdateVersionModel(jsonObjectActivity);
+
+                                        UpdateVersionModel updateversionModel = new UpdateVersionModel();
+
+                                        updateversionModel.setStrAppVersion(jsonObjectActivity.optString("app_version"));
+                                        updateversionModel.setStrSourceName(jsonObjectActivity.optString("source_name"));
+                                        updateversionModel.setStrAppUrl(jsonObjectActivity.optString("app_url"));
+
+
+                                        Config.updateVersionModel.add(updateversionModel);
+
+                                        String version = updateversionModel.getStrAppVersion();
+
+                                        int latestversion = Integer.parseInt(version);
+
+
+                                        if (Config.iAppVersion < latestversion) {
+                                            AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
+                                            builder1.setMessage("Please update your App Version");
+                                            builder1.setCancelable(true);
+                                            builder1.setNeutralButton(android.R.string.ok,
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int id) {
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+
+                                            AlertDialog alert11 = builder1.create();
+                                            alert11.show();
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+                    } else {
+                        utils.toast(2, 2, getString(R.string.warning_internet));
+                    }
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+
+                    if (e != null) {
+                        utils.toast(2, 2, getString(R.string.error));
+                    } else {
+                        utils.toast(2, 2, getString(R.string.warning_internet));
+                    }
+                }
+            });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+    }
+
     public void upgradeApp() {
 
         //get destination to update file and set Uri
@@ -581,7 +682,7 @@ public class LoginActivity extends AppCompatActivity {
         //solution, please inform us in comment
         String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
 
-        destination += "1212";
+        destination += "NewZeal_v0.9.apk";
         final Uri uri = Uri.parse("file://" + destination);
 
         //Delete update file if exists

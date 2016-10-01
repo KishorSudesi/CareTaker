@@ -11,6 +11,7 @@ import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.PictureModel;
 import com.hdfc.models.ProviderModel;
+import com.hdfc.models.UpdateVersionModel;
 
 import org.json.JSONObject;
 
@@ -37,6 +38,7 @@ public class Config {
     public static final String collectionCheckInCare = "checkincare";
     public static final String collectionLoginLog = "login_log";
     public static final String collectionProviderDependent = "providerdependent";
+    public static final String collectionUpdateVersion = "updateversion";
 
 
     public static final int iSdkVersion = Build.VERSION.SDK_INT;
@@ -202,6 +204,7 @@ public class Config {
     //public static ArrayList<String> customerEmail = new ArrayList<>();
     public static List<CheckInCareModel> checkInCareActivityNames = new ArrayList<>();
     public static List<PictureModel> roomtypeName = new ArrayList<>();
+    public static ArrayList<UpdateVersionModel> updateVersionModel = new ArrayList<>();
 
     //public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 

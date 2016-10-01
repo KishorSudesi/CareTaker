@@ -20,8 +20,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,7 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -42,6 +40,9 @@ import com.hdfc.libs.AsyncApp42ServiceApi;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.views.RoundedImageView;
+import com.mikelau.countrypickerx.Country;
+import com.mikelau.countrypickerx.CountryPickerCallbacks;
+import com.mikelau.countrypickerx.CountryPickerDialog;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
@@ -90,7 +91,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
     //editAddress
     private Utils utils;
     private RadioButton mobile;
-    private Spinner citizenship;
+   // private Spinner citizenship;
+   private TextView txtcountryname;
     private String strCustomerImageUrl = "";
     private String strAreaCode = "";
     private Context mContext;
@@ -165,6 +167,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         editContactNo = (EditText) findViewById(R.id.editContactNo);
         editAreaCode = (EditText) findViewById(R.id.editAreaCode);
         editCountryCode = (EditText) findViewById(R.id.editCountryCode);
+
+        txtcountryname = (TextView)findViewById(R.id.txtcountryname);
 
         mContext = this;
         back.setOnClickListener(new View.OnClickListener() {
@@ -274,7 +278,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
         }
 
 
-        citizenship = (Spinner) findViewById(R.id.input_citizenship);
+       /* citizenship = (Spinner) findViewById(R.id.input_citizenship);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(ActivityGuruPersonalInfo.this, R.layout.spinner_item, Config.countryNames);
         citizenship.setAdapter(adapter);
@@ -290,6 +294,21 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });*/
+
+        txtcountryname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CountryPickerDialog countryPicker =
+                        new CountryPickerDialog(ActivityGuruPersonalInfo.this, new CountryPickerCallbacks() {
+                            @Override
+                            public void onCountrySelected(Country country, int flagResId) {
+                                editCountryCode.setText(country.getDialingCode());
+                                txtcountryname.setText(country.getCountryName(ActivityGuruPersonalInfo.this));
+                            }
+                        }, false, 0);
+                countryPicker.show();
             }
         });
 
@@ -690,7 +709,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         //strAddress = editAddress.getText().toString().trim();
         //final String strDob = editTextDate.getText().toString().trim();
-        String strCountry = citizenship.getSelectedItem().toString().trim();
+        String strCountry = txtcountryname.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -739,7 +758,7 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
             if (TextUtils.isEmpty(strCountry) || strCountry.equalsIgnoreCase("Select Country")) {
                 //editAddress.setError(getString(R.string.error_field_required));
-                focusView = citizenship;
+                focusView = txtcountryname;
                 cancel = true;
                 utils.toast(2, 2, getString(R.string.select_country));
                 return;

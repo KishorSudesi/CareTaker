@@ -14,15 +14,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ayz4sci.androidfactory.permissionhelper.PermissionHelper;
@@ -41,6 +38,9 @@ import com.hdfc.config.Config;
 import com.hdfc.dbconfig.DbHelper;
 import com.hdfc.libs.SessionManager;
 import com.hdfc.libs.Utils;
+import com.mikelau.countrypickerx.Country;
+import com.mikelau.countrypickerx.CountryPickerCallbacks;
+import com.mikelau.countrypickerx.CountryPickerDialog;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.App42Exception;
 import com.shephertz.app42.paas.sdk.android.upload.Upload;
@@ -91,7 +91,8 @@ public class MyAccountEditFragment extends Fragment {
     private String strAreaCode, imageUrl = ""; //strCustomerImagePath = "",
 
     private RadioButton mobile;
-    private Spinner citizenship;
+    //private Spinner citizenship;
+    private TextView txtcountryname;
     private SessionManager sessionManager;
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -227,7 +228,7 @@ public class MyAccountEditFragment extends Fragment {
             }
         });
 
-        citizenship = (Spinner) view.findViewById(R.id.input_citizenship);
+       /* citizenship = (Spinner) view.findViewById(R.id.input_citizenship);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, Config.countryNames);
         citizenship.setAdapter(adapter);
@@ -242,7 +243,25 @@ public class MyAccountEditFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+        });*/
+
+        txtcountryname = (TextView)view.findViewById(R.id.txtcountryname);
+
+        txtcountryname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CountryPickerDialog countryPicker =
+                        new CountryPickerDialog(getActivity(), new CountryPickerCallbacks() {
+                            @Override
+                            public void onCountrySelected(Country country, int flagResId) {
+                                editCountryCode.setText(country.getDialingCode());
+                                txtcountryname.setText(country.getCountryName(getActivity()));
+                            }
+                        }, false, 0);
+                countryPicker.show();
+            }
         });
+
 
         roundedImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,7 +311,7 @@ public class MyAccountEditFragment extends Fragment {
             editAreaCode.setText(Config.customerModel.getStrCountryAreaCode());
         }
 
-        citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
+        //citizenship.setSelection(Config.strCountries.indexOf(Config.customerModel.getStrCountryCode()));
         //
 
         txtViewHeader.setText(getActivity().getString(R.string.my_account_edit));
@@ -345,7 +364,7 @@ public class MyAccountEditFragment extends Fragment {
 
                 //strAddress = editAddress.getText().toString().trim();
                 strDob = editDob.getText().toString().trim();
-                strCountry = citizenship.getSelectedItem().toString().trim();
+                strCountry = txtcountryname.getText().toString().trim();
 
                 strName = name.getText().toString().trim();
                 strContactNo = number.getText().toString();
@@ -382,7 +401,7 @@ public class MyAccountEditFragment extends Fragment {
 
                 if (TextUtils.isEmpty(strCountry) || strCountry.equalsIgnoreCase("Select Country")) {
                     //editAddress.setError(getString(R.string.error_field_required));
-                    focusView = citizenship;
+                    focusView = txtcountryname;
                     cancel = true;
                     utils.toast(2, 2, getString(R.string.select_country));
                 }

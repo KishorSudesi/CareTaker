@@ -121,7 +121,7 @@
                          android:maxLength="10"
                          android:paddingLeft="10dp" />-->
 
-                    <Spinner
+                <!--    <Spinner
                         android:id="@+id/input_citizenship"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
@@ -132,7 +132,22 @@
                         android:drawableLeft="@drawable/location"
                         android:drawablePadding="10dp"
                         android:paddingLeft="10dp"
-                        android:paddingRight="10dp" />
+                        android:paddingRight="10dp" /> -->
+
+                    <TextView
+                        android:id="@+id/txtcountryname"
+                        style="@style/TextViewSmallStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginLeft="@dimen/edit_text_margin"
+                        android:layout_marginRight="@dimen/edit_text_margin"
+                        android:layout_marginTop="25dp"
+                        android:drawableLeft="@drawable/location"
+                        android:padding="12dp"
+                        android:drawablePadding="10dp"
+                        android:layout_centerHorizontal="true"
+                        android:hint="Select Country"
+                        />
 
                     <RadioGroup
                         android:layout_width="match_parent"

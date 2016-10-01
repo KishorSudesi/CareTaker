@@ -27,6 +27,7 @@ android {
 
 dependencies {
     compile project(':slideDateTimePicker')
+    compile project(':countrypickerx')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.scottyab:aescrypt:0.0.1'
     compile 'com.yydcdut.sdlv:sdlv:0.4.1@aar'

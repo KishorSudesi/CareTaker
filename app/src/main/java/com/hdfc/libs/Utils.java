@@ -5273,9 +5273,9 @@ public class Utils {
                 Query q1 = QueryBuilder.build("customer_id", strCustomerId, QueryBuilder.Operator.EQUALS);
                 StorageService storageService = new StorageService(_ctxt);
 
-                //storageService.findDocsByQuery(Config.collectionProviderDependent, q1, new App42CallBack() {
-                storageService.findDocsByQueryOrderBy(Config.collectionProviderDependent, q1, 0, 1,
-                        "customer_id", 1, new App42CallBack() {
+                storageService.findDocsByQuery(Config.collectionProviderDependent, q1, new App42CallBack() {
+                    /*storageService.findDocsByQueryOrderBy(Config.collectionProviderDependent, q1, 0, 1,
+                            "customer_id", 1, new App42CallBack() {*/
                     @Override
                     public void onSuccess(Object o) {
 
