@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-      //  updateVersion();
+        //updateVersion();
 
        /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -629,6 +629,7 @@ public class LoginActivity extends AppCompatActivity {
                                             builder1.setNeutralButton(android.R.string.ok,
                                                     new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int id) {
+                                                        //    upgradeApp();
                                                             dialog.cancel();
                                                         }
                                                     });
@@ -692,7 +693,7 @@ public class LoginActivity extends AppCompatActivity {
             file.delete();
 
         //get url of app on server
-        String url = getString(R.string.upcoming_activity);
+        String url = "https://play.google.com/store/apps/details?id=com.imangi.templerun&hl=en";
 
         //set downloadmanager
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
