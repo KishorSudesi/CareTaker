@@ -2234,8 +2234,7 @@ public class Utils {
 
 
     }
-
-    private void createNotificationModel(String strDocumentId, String strDocument) {
+        private void createNotificationModel(String strDocumentId, String strDocument) {
         try {
 
             JSONObject jsonObjectProvider = new JSONObject(strDocument);

@@ -1003,3 +1003,4 @@ public class AddNewActivityStep2Activity extends AppCompatActivity {
 //        }
 //    }
 }
+

@@ -28,6 +28,8 @@ public class NotificationModel {
         this.strCreatedByID = strCreatedByID;
         this.strNotificationID = strNotificationID;
     }
+    public NotificationModel() {
+    }
 
     public boolean isCheckincare() {
         return checkincare;

@@ -8,6 +8,8 @@
     <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_padding">8dp</dimen>
 
+    <dimen name="slv_item_bg_btn_width_img">100dip</dimen>
+
     <dimen name="padding_general">5dp</dimen>
     <dimen name="margin_general">5dp</dimen>
 

@@ -1,7 +1,10 @@
 package com.hdfc.caretaker.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,9 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hdfc.adapters.NotificationAdapter;
@@ -34,11 +35,15 @@ import com.hdfc.models.FieldModel;
 import com.hdfc.models.FileModel;
 import com.hdfc.models.ImageModel;
 import com.hdfc.models.MilestoneModel;
+import com.hdfc.models.NotificationModel;
 import com.hdfc.models.VideoModel;
 import com.shephertz.app42.paas.sdk.android.App42CallBack;
 import com.shephertz.app42.paas.sdk.android.storage.Query;
 import com.shephertz.app42.paas.sdk.android.storage.QueryBuilder;
 import com.shephertz.app42.paas.sdk.android.storage.Storage;
+import com.yydcdut.sdlv.Menu;
+import com.yydcdut.sdlv.MenuItem;
+import com.yydcdut.sdlv.SlideAndDragListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,14 +59,23 @@ import java.util.ArrayList;
  * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NotificationFragment extends Fragment {
-    public static ListView listViewActivities;
+public class NotificationFragment extends Fragment implements SlideAndDragListView.OnListItemLongClickListener,
+        SlideAndDragListView.OnDragListener, SlideAndDragListView.OnSlideListener,
+        SlideAndDragListView.OnMenuItemClickListener, SlideAndDragListView.OnListItemClickListener,
+        SlideAndDragListView.OnItemDeleteListener{
+    public static SlideAndDragListView listViewActivities;
     public static NotificationAdapter notificationAdapter;
+    private static StorageService storageService;
+    private static ProgressDialog progressDialog;
     public static LinearLayout dynamicUserTab;
     private static Utils utils;
     private static Handler threadHandler;
     private SessionManager sessionManager;
     private ActivityModel activityModel = null;
+    private NotificationModel notificationModel;
+    public static String strDocument,strActivityId,strDocID;
+
+    private Menu mMenu;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -91,10 +105,12 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        progressDialog = new ProgressDialog(getActivity());
         View rootView = inflater.inflate(R.layout.fragment_notification, container, false);
 
-        listViewActivities = (ListView) rootView.findViewById(R.id.listViewActivity);
+        initMenu();
+
+        listViewActivities = (SlideAndDragListView) rootView.findViewById(R.id.listViewActivity);
         TextView emptyTextView = (TextView) rootView.findViewById(android.R.id.empty);
         dynamicUserTab = (LinearLayout) rootView.findViewById(R.id.dynamicUserTab);
 
@@ -102,11 +118,17 @@ public class NotificationFragment extends Fragment {
         sessionManager = new SessionManager(getActivity());
 
         listViewActivities.setEmptyView(emptyTextView);
-        utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        listViewActivities.setMenu(mMenu);
+        listViewActivities.setOnSlideListener(this);
+        listViewActivities.setOnMenuItemClickListener(this);
+        listViewActivities.setOnItemDeleteListener(this);
 
-        listViewActivities.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        //fetchDocumentID();
+
+        listViewActivities.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onListItemClick(View v, int position) {
                 ActivityModel activityModel = null;
 //
 //                if (ActivityFragment.activitiesModelArrayList != null && ActivityFragment.activitiesModelArrayList.size() > 0) {
@@ -219,8 +241,8 @@ public class NotificationFragment extends Fragment {
 
                 }*/
 
-
             }
+
         });
 
         return rootView;
@@ -253,8 +275,8 @@ public class NotificationFragment extends Fragment {
                                             Storage.JSONDocument jsonDocument = response.
                                                     getJsonDocList().get(i);
 
-                                            String strDocument = jsonDocument.getJsonDoc();
-                                            String strActivityId = jsonDocument.getDocId();
+                                             strDocument = jsonDocument.getJsonDoc();
+                                             strActivityId = jsonDocument.getDocId();
                                             JSONObject jsonObjectActivity =
                                                     new JSONObject(strDocument);
                                             JSONArray jArray = jsonObjectActivity.optJSONArray("milestones");
@@ -636,6 +658,128 @@ public class NotificationFragment extends Fragment {
         }
     }
 
+
+    private void initMenu() {
+
+        mMenu = new Menu(new ColorDrawable(Color.LTGRAY), true);
+
+      /*  //swipe right
+
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img))
+                .setBackground(getActivity().getResources().getDrawable(R.color.blue))
+                .setIcon(getActivity().getResources().getDrawable(R.drawable.pen))
+                .build());
+*/
+
+        //swipe left
+
+        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img) - 30)
+                .setBackground(getActivity().getResources().getDrawable(R.color.blue))
+                .setDirection(MenuItem.DIRECTION_RIGHT)
+                .setIcon(getResources().getDrawable(R.mipmap.delete))
+                .build());
+
+    }
+
+    @Override
+    public void onDragViewStart(int position) {
+
+    }
+
+    @Override
+    public void onDragViewMoving(int position) {
+
+    }
+
+    @Override
+    public void onDragViewDown(int position) {
+
+    }
+
+    @Override
+    public void onItemDelete(View view, int position) {
+
+    }
+
+    @Override
+    public void onListItemClick(View v, int position) {
+
+    }
+
+    @Override
+    public void onListItemLongClick(View view, int position) {
+
+    }
+
+    @Override
+    public int onMenuItemClick(View v, int itemPosition, int buttonPosition, int direction) {
+        switch (direction) {
+            case MenuItem.DIRECTION_LEFT:
+                switch (buttonPosition) {
+                    case 0:
+
+                        return Menu.ITEM_SCROLL_BACK;
+                }
+                break;
+            case MenuItem.DIRECTION_RIGHT:
+
+                /*String strNo = "";
+
+                if (activityModels.get(itemPosition).getStrDependentID() != null &&
+                        !activityModels.get(itemPosition).getStrDependentID().equalsIgnoreCase("")) {
+
+                    Cursor cursor1 = CareGiver.getDbCon().fetch(
+                            DbHelper.strTableNameCollection, new String[]{DbHelper.COLUMN_DOCUMENT},
+                            DbHelper.COLUMN_COLLECTION_NAME + "=? and " + DbHelper.COLUMN_OBJECT_ID
+                                    + "=?" + " and " + DbHelper.COLUMN_PROVIDER_ID + "=?",
+                            new String[]{Config.collectionDependent,
+                                    activityModels.get(itemPosition).getStrDependentID(),
+                                    activityModels.get(itemPosition).getStrProviderID()
+                            },
+                            null, "0,1", true, null, null
+                    );
+
+
+                    if (cursor1.getCount() > 0) {
+                        cursor1.moveToFirst();
+                        try {
+                            if (cursor1.getString(0) != null && !cursor1.getString(0).
+                                    equalsIgnoreCase("")) {
+                                JSONObject jsonObject = null;
+                                jsonObject = new JSONObject(cursor1.getString(0));
+                                strNo = jsonObject.optString("dependent_contact_no");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    CareGiver.getDbCon().closeCursor(cursor1);
+                }
+*/
+                switch (buttonPosition) {
+
+                    case 0:
+                       // deleteNotification();
+                        return Menu.ITEM_SCROLL_BACK;
+
+                }
+
+
+        }
+        return Menu.ITEM_NOTHING;
+    }
+
+    @Override
+    public void onSlideOpen(View view, View parentView, int position, int direction) {
+
+    }
+
+    @Override
+    public void onSlideClose(View view, View parentView, int position, int direction) {
+
+    }
+
     public class ThreadHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -653,6 +797,146 @@ public class NotificationFragment extends Fragment {
                 e.printStackTrace();
             }
             threadHandler.sendEmptyMessage(0);
+        }
+    }
+
+    public void fetchDocumentID() {
+
+        try {
+        if (utils.isConnectingToInternet()) {
+
+            storageService = new StorageService(getActivity());
+
+            storageService.findAllDocs(Config.collectionNotification, new App42CallBack() {
+
+                @Override
+                public void onSuccess(Object o) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+
+                    Storage response = (Storage) o;
+
+                    if (response != null) {
+
+                        if (response.getJsonDocList().size() > 0) {
+                            try {
+                                for (int i = 0; i < response.getJsonDocList().size(); i++) {
+
+                                    Storage.JSONDocument jsonDocument = response.
+                                            getJsonDocList().get(i);
+
+                                    strDocument = jsonDocument.getJsonDoc();
+                                    strDocID = jsonDocument.getDocId();
+
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+                    } else {
+                        utils.toast(2, 2, getString(R.string.warning_internet));
+                    }
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+
+                    if (e != null) {
+                        utils.toast(2, 2, getString(R.string.error));
+                    } else {
+                        utils.toast(2, 2, getString(R.string.warning_internet));
+                    }
+                }
+            });
+
+        }
+        else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void deleteNotification() {
+
+        if (utils.isConnectingToInternet()) {
+
+            storageService = new StorageService(getActivity());
+
+            storageService.deleteDocById(Config.collectionNotification, strDocID,
+                    new App42CallBack() {
+
+                        @Override
+                        public void onSuccess(Object o) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            Storage response = (Storage) o;
+
+                            if (response != null) {
+
+
+                                try {
+                                    Log.i("TAG", "Service update notifications");
+
+                                    if (response.getJsonDocList().size() > 0) {
+
+
+                                        ArrayList<Storage.JSONDocument> jsonDocList = response.
+                                                getJsonDocList();
+
+                                        for (int i = 0; i < jsonDocList.size(); i++) {
+
+                                            String selection = DbHelper.COLUMN_OBJECT_ID;
+
+                                            String selectionArgs[] = {jsonDocList.get(i).getDocId()};
+                                            CareTaker.dbCon.delete(Config.collectionActivity, selection, selectionArgs);
+                                            utils.toast(2, 2, getString(R.string.activity_deleted));
+
+                                          /*  // WHERE clause arguments
+                                            String[] selectionArgs = {jsonDocList.get(i).getDocId(), notificationModel.getStrUserID()};
+                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);*/
+
+                                        }
+
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        }
+
+                        @Override
+                        public void onException(Exception e) {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            if (e != null) {
+                                Utils.log(e.getMessage(), " Failure ");
+                                utils.toast(2, 2, getString(R.string.error));
+                            } else {
+                                utils.toast(2, 2, getString(R.string.warning_internet));
+                            }
+                        }
+                    });
+
+        } else {
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+            utils.toast(2, 2, getString(R.string.warning_internet));
         }
     }
 

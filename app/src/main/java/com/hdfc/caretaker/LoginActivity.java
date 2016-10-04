@@ -606,7 +606,7 @@ public class LoginActivity extends AppCompatActivity {
                                     try {
                                         JSONObject jsonObjectActivity =
                                                 new JSONObject(strDocument);
-                                        // utils.createUpdateVersionModel(jsonObjectActivity);
+                                         //utils.createUpdateVersionModel(jsonObjectActivity);
 
                                         UpdateVersionModel updateversionModel = new UpdateVersionModel();
 
@@ -629,7 +629,7 @@ public class LoginActivity extends AppCompatActivity {
                                             builder1.setNeutralButton(android.R.string.ok,
                                                     new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int id) {
-                                                        //    upgradeApp();
+                                                         //  upgradeApp();
                                                             dialog.cancel();
                                                         }
                                                     });

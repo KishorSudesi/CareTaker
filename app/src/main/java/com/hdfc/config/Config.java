@@ -9,6 +9,7 @@ import com.hdfc.models.CheckInCareModel;
 import com.hdfc.models.CustomerModel;
 import com.hdfc.models.DependentModel;
 import com.hdfc.models.FileModel;
+import com.hdfc.models.NotificationModel;
 import com.hdfc.models.PictureModel;
 import com.hdfc.models.ProviderModel;
 import com.hdfc.models.UpdateVersionModel;
@@ -205,6 +206,7 @@ public class Config {
     public static List<CheckInCareModel> checkInCareActivityNames = new ArrayList<>();
     public static List<PictureModel> roomtypeName = new ArrayList<>();
     public static ArrayList<UpdateVersionModel> updateVersionModel = new ArrayList<>();
+    public static ArrayList<NotificationModel> notificationModels = new ArrayList<>();
 
     //public enum ActivityStatus {NEW, OPEN, INPROCESS, COMPLETED}
 
