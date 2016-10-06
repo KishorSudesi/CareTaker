@@ -10,5 +10,7 @@
     <!-- The screen names that will appear in reports -->
     <string name="com.hdfc.caretaker.DashboardActivity">CT - DashboardActivity</string>
 
-    <string name="ga_trackingId">UA-82623362-1</string>
+   <string name="ga_trackingId">UA-82623362-1</string>
+
+    <!--<string name="ga_trackingId">UA-84650723-1</string>-->
 </resources>

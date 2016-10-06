@@ -760,7 +760,7 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
                 switch (buttonPosition) {
 
                     case 0:
-                       // deleteNotification();
+                        //deleteNotification();
                         return Menu.ITEM_SCROLL_BACK;
 
                 }
@@ -800,7 +800,7 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
         }
     }
 
-    public void fetchDocumentID() {
+   /* public void fetchDocumentID() {
 
         try {
         if (utils.isConnectingToInternet()) {
@@ -863,10 +863,10 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
-    public void deleteNotification() {
+   /* public void deleteNotification() {
 
         if (utils.isConnectingToInternet()) {
 
@@ -902,9 +902,9 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
                                             CareTaker.dbCon.delete(Config.collectionActivity, selection, selectionArgs);
                                             utils.toast(2, 2, getString(R.string.activity_deleted));
 
-                                          /*  // WHERE clause arguments
+                                          *//*  // WHERE clause arguments
                                             String[] selectionArgs = {jsonDocList.get(i).getDocId(), notificationModel.getStrUserID()};
-                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);*/
+                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);*//*
 
                                         }
 
@@ -938,6 +938,6 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
                 progressDialog.dismiss();
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
-    }
+    }*/
 
 }

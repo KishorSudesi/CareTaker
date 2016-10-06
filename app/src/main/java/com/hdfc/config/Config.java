@@ -46,6 +46,8 @@ public class Config {
     public static final int iAppVersion = BuildConfig.VERSION_CODE;
     public static final String strOs = "android";
     public static final String strAppId = "910502819263";
+    //test
+    //public static final String strAppId = "425694689640";
     public static final String string = Utils.getStringJni();
     public static final int START_CAMERA_REQUEST_CODE = 1;
     public static final int START_GALLERY_REQUEST_CODE = 2;

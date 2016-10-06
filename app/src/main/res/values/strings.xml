@@ -13,6 +13,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="password_hint">*****</string>
     <string name="im_new_here">I am new here</string>
+    <string name="version">UAT 1.0</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="forgot">Forgot Password?</string>
