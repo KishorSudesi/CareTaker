@@ -137,6 +137,8 @@ import java.util.regex.Pattern;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
+import static com.shephertz.app42.paas.sdk.android.storage.QueryBuilder.Operator.OR;
+
 /**
  * Created by balamurugan@adstringo.in on 23-12-2015.
  */
@@ -894,7 +896,7 @@ public class Utils {
         thread.start();
     }
 
-    private static void refreshNotifications() {
+    public static void refreshNotifications() {
 
         try {
             if (NotificationFragment.listViewActivities != null) {
@@ -912,6 +914,14 @@ public class Utils {
             e.printStackTrace();
         }
     }
+
+   /* public static void NotifyNotification(int itemPosition){
+
+        Config.dependentModels.get(Config.intSelectedDependent).
+                getNotificationModels().remove(itemPosition);
+        NotificationFragment.notificationAdapter.notifyDataSetChanged();
+
+    }*/
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         try {
@@ -1952,7 +1962,7 @@ public class Utils {
     }*/
 
     public void populateHeaderDependents(final LinearLayout dynamicUserTab,
-                                         final int intWhichScreen) {
+                                         final int intWhichScreen,final String currentDate) {
 
         try {
             int tabWidth;
@@ -1980,7 +1990,7 @@ public class Utils {
             Config.intSelectedDependent = 0;
 
             if (intWhichScreen == Config.intNotificationScreen)
-                loadDependentData(intWhichScreen);
+                loadDependentData(intWhichScreen,currentDate);
 
             for (int i = 0; i < Config.dependentModels.size(); i++) {
 
@@ -2013,7 +2023,7 @@ public class Utils {
                         try {
                             Config.intSelectedDependent = v.getId();
                             updateTabColor(v.getId(), dynamicUserTab);
-                            loadDependentData(intWhichScreen);
+                            loadDependentData(intWhichScreen,currentDate);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -2031,11 +2041,11 @@ public class Utils {
         }
     }
 
-    private void loadDependentData(int intWhichScreen) {
+    private void loadDependentData(int intWhichScreen,String currentDate) {
 
         try {
             if (intWhichScreen == Config.intNotificationScreen) {
-                loadNotifications();
+                loadNotifications(currentDate);
             }
 
             if (intWhichScreen == Config.intListActivityScreen ||
@@ -2047,7 +2057,7 @@ public class Utils {
         }
     }
 
-    private void loadNotifications() {
+    private void loadNotifications(String currentDate) {
 
         try {
             final ProgressDialog progressDialog = new ProgressDialog(_ctxt);
@@ -2058,8 +2068,10 @@ public class Utils {
 
                     try {
 
+                        //updated_date BETWEEN date('now','-15 day') and date('now')
                         // WHERE  clause
-                        String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
+                        String selection = DbHelper.COLUMN_COLLECTION_NAME + " = ? AND updated_date >= date('now','-15 day') and updated_date <= date('now')" +
+                                " OR updated_date like '"+currentDate+"%' AND " + DbHelper.COLUMN_DEPENDENT_ID + " = ?";
 
                         // WHERE clause arguments
                         String[] selectionArgs = {Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
@@ -4387,8 +4399,8 @@ public class Utils {
                 Query q31 = QueryBuilder.build("status", "inprocess", QueryBuilder.Operator.EQUALS);
                 Query q32 = QueryBuilder.build("status", "open", QueryBuilder.Operator.EQUALS);
 
-                Query q33 = QueryBuilder.compoundOperator(q3, QueryBuilder.Operator.OR, q31);
-                Query q34 = QueryBuilder.compoundOperator(q33, QueryBuilder.Operator.OR, q32);
+                Query q33 = QueryBuilder.compoundOperator(q3, OR, q31);
+                Query q34 = QueryBuilder.compoundOperator(q33, OR, q32);
 
 
                 //Query q4 = QueryBuilder.compoundOperator(q1, QueryBuilder.Operator.AND, q2);

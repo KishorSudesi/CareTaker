@@ -49,7 +49,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+//import com.shephertz.app42.paas.sdk.android.storage.Storage;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,11 +75,13 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
     private static ProgressDialog progressDialog;
     public static LinearLayout dynamicUserTab;
     private static Utils utils;
+    public static String currentDate = "";
     private static Handler threadHandler;
     private SessionManager sessionManager;
     private ActivityModel activityModel = null;
     private NotificationModel notificationModel;
     public static String strDocument,strActivityId,strDocID;
+    public boolean result = false;
 
     private Menu mMenu;
 
@@ -88,13 +96,7 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
         return fragment;
     }
 
-    public static void refreshNotification() {
-        try {
-            utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,7 +125,18 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
         listViewActivities.setOnMenuItemClickListener(this);
         listViewActivities.setOnItemDeleteListener(this);
 
-        utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen);
+        Date myDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.setTime(myDate);
+        Date time = calendar.getTime();
+//        SimpleDateFormat outputFmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS zz");
+        SimpleDateFormat outputFmt = new SimpleDateFormat("yyyy-MM-dd");
+        currentDate = outputFmt.format(time);
+        System.out.println("Current Date =>"+currentDate);
+
+        utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen,currentDate);
         //fetchDocumentID();
 
         listViewActivities.setOnListItemClickListener(new SlideAndDragListView.OnListItemClickListener() {
@@ -246,6 +259,15 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
         });
 
         return rootView;
+    }
+
+
+    public static void refreshNotification() {
+        try {
+            utils.populateHeaderDependents(dynamicUserTab, Config.intNotificationScreen,currentDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public ActivityModel getActivityModel(String activityId) {
@@ -673,12 +695,12 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
 
         //swipe left
 
-        mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img) - 30)
+      /*  mMenu.addItem(new MenuItem.Builder().setWidth((int) getResources().getDimension(R.dimen.slv_item_bg_btn_width_img) - 30)
                 .setBackground(getActivity().getResources().getDrawable(R.color.blue))
                 .setDirection(MenuItem.DIRECTION_RIGHT)
                 .setIcon(getResources().getDrawable(R.mipmap.delete))
                 .build());
-
+*/
     }
 
     @Override
@@ -699,6 +721,7 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
     @Override
     public void onItemDelete(View view, int position) {
 
+        Log.e("test =>","Working");
     }
 
     @Override
@@ -760,8 +783,13 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
                 switch (buttonPosition) {
 
                     case 0:
-                        //deleteNotification();
-                        return Menu.ITEM_SCROLL_BACK;
+                        strDocID = Config.dependentModels.get(Config.intSelectedDependent).
+                                getNotificationModels().get(itemPosition).getStrNotificationID();
+                      //  deleteNotification(strDocID);
+                        if(result){
+//                            utils.NotifyNotification(itemPosition);
+                        }
+                         return Menu.ITEM_SCROLL_BACK;
 
                 }
 
@@ -800,7 +828,7 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
         }
     }
 
-   /* public void fetchDocumentID() {
+    public void fetchDocumentID() {
 
         try {
         if (utils.isConnectingToInternet()) {
@@ -863,10 +891,10 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
 
-   /* public void deleteNotification() {
+    public void deleteNotification(final String strDocID) {
 
         if (utils.isConnectingToInternet()) {
 
@@ -880,40 +908,14 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
                             if (progressDialog.isShowing())
                                 progressDialog.dismiss();
 
-                            Storage response = (Storage) o;
+                            if (o != null) {
+                                String selection = DbHelper.COLUMN_OBJECT_ID;
 
-                            if (response != null) {
+                                String selectionArgs[] = {strDocID};
+                                result = CareTaker.dbCon.delete(Config.collectionNotification, selection, selectionArgs);
+                                //utils.refreshNotifications();
 
-
-                                try {
-                                    Log.i("TAG", "Service update notifications");
-
-                                    if (response.getJsonDocList().size() > 0) {
-
-
-                                        ArrayList<Storage.JSONDocument> jsonDocList = response.
-                                                getJsonDocList();
-
-                                        for (int i = 0; i < jsonDocList.size(); i++) {
-
-                                            String selection = DbHelper.COLUMN_OBJECT_ID;
-
-                                            String selectionArgs[] = {jsonDocList.get(i).getDocId()};
-                                            CareTaker.dbCon.delete(Config.collectionActivity, selection, selectionArgs);
-                                            utils.toast(2, 2, getString(R.string.activity_deleted));
-
-                                          *//*  // WHERE clause arguments
-                                            String[] selectionArgs = {jsonDocList.get(i).getDocId(), notificationModel.getStrUserID()};
-                                            CareTaker.dbCon.update(DbHelper.strTableNameCollection, selection, values, Config.names_collection_table, selectionArgs);*//*
-
-                                        }
-
-                                    }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
+                                utils.toast(2, 2, getString(R.string.notification_deleted));
                             } else {
                                 utils.toast(2, 2, getString(R.string.warning_internet));
                             }
@@ -938,6 +940,6 @@ public class NotificationFragment extends Fragment implements SlideAndDragListVi
                 progressDialog.dismiss();
             utils.toast(2, 2, getString(R.string.warning_internet));
         }
-    }*/
+    }
 
 }

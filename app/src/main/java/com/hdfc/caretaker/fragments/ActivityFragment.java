@@ -20,10 +20,13 @@ import com.hdfc.config.Config;
 import com.hdfc.libs.Utils;
 import com.hdfc.models.ActivityModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +45,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
     private static Button buttonActivity;
     private static Utils utils;
     private static ProgressDialog progressDialog;
+    public static String currentDate = "";
     //private static AppCompatActivity appCompatActivity;
     //public static int iSelectedDependent=0;
     private ImageView prevMonth;
@@ -120,6 +124,17 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         LinearLayout dynamicUserTab = (LinearLayout) view.findViewById(R.id.dynamicUserTab);
         utils = new Utils(getActivity());
+
+        Date myDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.setTime(myDate);
+        Date time = calendar.getTime();
+//        SimpleDateFormat outputFmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS zz");
+        SimpleDateFormat outputFmt = new SimpleDateFormat("yyyy-MM-dd");
+        currentDate = outputFmt.format(time);
+        System.out.println("Current Date =>"+currentDate);
 
         //Context _context = getActivity();
 
@@ -213,7 +228,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
 
-        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu);
+        utils.populateHeaderDependents(dynamicUserTab, Config.intSelectedMenu,currentDate);
 
         boolean bReload = false;
 

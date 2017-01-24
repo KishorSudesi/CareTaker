@@ -329,6 +329,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setJavaScriptEnabled(true);
+
+
         try {
             AssetManager assetManager = mContext.getAssets();
             InputStream stream = assetManager.open("g8u0DU9v.html");
@@ -338,7 +340,8 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
             while ((line = r.readLine()) != null) {
                 total.append(line).append("\n");
             }
-            webView.loadDataWithBaseURL(null, total.toString(), "text/html", "UTF-8", null);
+            String s="<head><meta name='viewport' content='target-densityDpi=device-dpi'/></head>";
+            webView.loadDataWithBaseURL(null,s+total.toString(), "text/html", "utf-8", null);
         } catch (Exception xxx) {
             Log.e("TAG", "Load assets/page.html", xxx);
         }
