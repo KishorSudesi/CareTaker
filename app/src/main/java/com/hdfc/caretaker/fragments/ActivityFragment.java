@@ -127,7 +127,7 @@ public class ActivityFragment extends Fragment implements View.OnClickListener {
 
         Date myDate = new Date();
 
-        Calendar calendar = Calendar.getInstance();
+        calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.setTime(myDate);
         Date time = calendar.getTime();

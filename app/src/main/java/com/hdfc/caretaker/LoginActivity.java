@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        //updateVersion();
+        updateVersion();
 
        /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -629,7 +629,7 @@ public class LoginActivity extends AppCompatActivity {
                                             builder1.setNeutralButton(android.R.string.ok,
                                                     new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int id) {
-                                                         //  upgradeApp();
+                                                           upgradeApp();
                                                             dialog.cancel();
                                                         }
                                                     });

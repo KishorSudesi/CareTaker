@@ -2077,7 +2077,7 @@ public class Utils {
                         String[] selectionArgs = {Config.collectionNotification, Config.dependentModels.get(Config.intSelectedDependent).getStrDependentID()};
                         cursor = CareTaker.dbCon.fetch(DbHelper.strTableNameCollection, Config.names_collection_table, selection, selectionArgs, "datetime(" + DbHelper.COLUMN_UPDATE_DATE + ") DESC", null, false, null, null);
                         Log.i("TAG", "Cursor count:" + cursor.getCount());
-                        if (cursor != null) {
+                        if (cursor != null && cursor.getCount() > 0) {
                             cursor.moveToFirst();
 
                             do {
