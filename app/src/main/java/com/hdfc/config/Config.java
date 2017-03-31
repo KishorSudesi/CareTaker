@@ -58,7 +58,7 @@ public class Config {
     public static final String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
     public static final int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     public static final boolean isDebuggable = true;
-    public static final boolean release = false;
+    public static final boolean release = true;
     public static final int intCompressWidth = 320, intCompressHeight = 480, iQuality = 50;
     public static final String strRelations[] = {"Select a Relation", "Father", "Mother", "Uncle", "Aunt", "Grand Father", "Grand Mother", "Father-in-law", "Mother-in-law", "Other"};
     public static final String[] countryNames = {"Select Country", "Afghanistan", "Albania",

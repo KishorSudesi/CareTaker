@@ -2,14 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.2'
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.hdfc.caretaker"
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 8
+        versionCode 9
         versionName "New Zeal 0.9 (beta)"
+
     }
 
     sourceSets.main {
@@ -23,6 +24,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {

@@ -138,6 +138,8 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
+
+
         updateVersion();
 
        /* editPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -608,7 +610,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 new JSONObject(strDocument);
                                          //utils.createUpdateVersionModel(jsonObjectActivity);
 
-                                        UpdateVersionModel updateversionModel = new UpdateVersionModel();
+                                        final UpdateVersionModel updateversionModel = new UpdateVersionModel();
 
                                         updateversionModel.setStrAppVersion(jsonObjectActivity.optString("app_version"));
                                         updateversionModel.setStrSourceName(jsonObjectActivity.optString("source_name"));
@@ -624,12 +626,13 @@ public class LoginActivity extends AppCompatActivity {
 
                                         if (Config.iAppVersion < latestversion) {
                                             AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
+                                            builder1.setTitle("Update Version");
                                             builder1.setMessage("Please update your App Version");
                                             builder1.setCancelable(true);
                                             builder1.setNeutralButton(android.R.string.ok,
                                                     new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int id) {
-                                                           upgradeApp();
+                                                           upgradeApp(updateversionModel);
                                                             dialog.cancel();
                                                         }
                                                     });
@@ -661,7 +664,8 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                     if (e != null) {
-                        utils.toast(2, 2, getString(R.string.error));
+                        //TODO plz check updateversion collection in app42 that time this toast uncomment
+                      //  utils.toast(2, 2, getString(R.string.error));
                     } else {
                         utils.toast(2, 2, getString(R.string.warning_internet));
                     }
@@ -675,7 +679,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void upgradeApp() {
+    public void upgradeApp(UpdateVersionModel updateversionModel) {
 
         //get destination to update file and set Uri
         //TODO: First I wanted to store my update .apk file on internal storage for my app but apparently android does not allow you to open and install
@@ -693,7 +697,7 @@ public class LoginActivity extends AppCompatActivity {
             file.delete();
 
         //get url of app on server
-        String url = "https://play.google.com/store/apps/details?id=com.imangi.templerun&hl=en";
+        String url = updateversionModel.getStrAppUrl();//"https://play.google.com/store/apps/details?id=com.imangi.templerun&hl=en";
 
         //set downloadmanager
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
