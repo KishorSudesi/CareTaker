@@ -735,9 +735,16 @@ public class MyAccountEditFragment extends Fragment {
 
                 UploadService uploadService = new UploadService(getActivity());
 
+                Calendar calendar = Calendar.getInstance();
+                String strnameimg = String.valueOf(calendar.getTimeInMillis());
+
+                String emailid =  Config.customerModel.getStrEmail();
+                String imagename = emailid.substring(0,4);
+                imagename = imagename.concat("_"+strnameimg);
+
                 uploadService.uploadImageCommon(
                         strCustomerImgName,
-                        Config.strCustomerImageName, "Profile Picture",
+                        imagename, "Profile Picture",
                         Config.customerModel.getStrEmail(),
                         UploadFileType.IMAGE, new App42CallBack() {
                             public void onSuccess(Object response) {

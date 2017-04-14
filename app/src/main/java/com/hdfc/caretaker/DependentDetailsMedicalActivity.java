@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -482,11 +483,14 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         strContacts = dependentModel.getStrContacts();
                     }
+                    Calendar calendar = Calendar.getInstance();
+                    String strnameimg = String.valueOf(calendar.getTimeInMillis());
+
                     if (dependentModel.getStrImagePath() != null &&
                             !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                         uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                                utils.replaceSpace(strContacts), "Profile Picture",
+                                utils.replaceSpace(strContacts)+"_"+strnameimg, "Profile Picture",
                                 strContacts,
                                 UploadFileType.IMAGE, new App42CallBack() {
 
@@ -608,11 +612,14 @@ public class DependentDetailsMedicalActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     strContacts = dependentModel.getStrContacts();
                 }
+                Calendar calendar = Calendar.getInstance();
+                String strnameimg = String.valueOf(calendar.getTimeInMillis());
+
                 if (dependentModel.getStrImagePath() != null &&
                         !dependentModel.getStrImagePath().equalsIgnoreCase("")) {
 
                     uploadService.uploadImageCommon(dependentModel.getStrImagePath(),
-                            utils.replaceSpace(strContacts), "Profile Picture",
+                            utils.replaceSpace(strContacts)+"_"+strnameimg, "Profile Picture",
                             strContacts,
                             UploadFileType.IMAGE, new App42CallBack() {
 

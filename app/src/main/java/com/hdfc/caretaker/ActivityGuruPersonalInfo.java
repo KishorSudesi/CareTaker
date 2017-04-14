@@ -376,9 +376,14 @@ public class ActivityGuruPersonalInfo extends AppCompatActivity {
 
                 /*if (mProgress.isShowing())
                     mProgress.setProgress(uploadSize+1);*/
+                Calendar calendar = Calendar.getInstance();
+                String strnameimg = String.valueOf(calendar.getTimeInMillis());
+
+                String imagename = strEmail.substring(0,4);
+                imagename = imagename.concat("_"+strnameimg);
 
                 uploadService.uploadImageCommon(strCustomerImgName,
-                        strName, "Profile Picture",
+                        imagename, "Profile Picture",
                         strEmail,
                         UploadFileType.IMAGE, new App42CallBack() {
 
